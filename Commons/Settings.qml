@@ -200,6 +200,44 @@ Singleton {
     }
   }
 
+  // Appends a widget id to the end of one section — for the settings
+  // panel's "add widget" control. Same effective-list resolution rule.
+  function addBarWidget(screenName, section, widgetId) {
+    var override = _findScreenOverride(screenName);
+    var usesOverride = !!(override && override.enabled !== false && override.widgets !== undefined);
+    var widgets = JSON.parse(JSON.stringify(usesOverride ? override.widgets : data.bar.widgets));
+    var list = widgets[section];
+    if (!list)
+      return;
+    list.push({
+      "id": widgetId
+    });
+
+    if (usesOverride) {
+      setScreenOverride(screenName, "widgets", widgets);
+    } else {
+      data.bar.widgets[section] = list;
+    }
+  }
+
+  // Removes the widget at index from one section — for the settings
+  // panel's per-row remove button.
+  function removeBarWidget(screenName, section, index) {
+    var override = _findScreenOverride(screenName);
+    var usesOverride = !!(override && override.enabled !== false && override.widgets !== undefined);
+    var widgets = JSON.parse(JSON.stringify(usesOverride ? override.widgets : data.bar.widgets));
+    var list = widgets[section];
+    if (!list || index < 0 || index >= list.length)
+      return;
+    list.splice(index, 1);
+
+    if (usesOverride) {
+      setScreenOverride(screenName, "widgets", widgets);
+    } else {
+      data.bar.widgets[section] = list;
+    }
+  }
+
   // Sets one property on a screen's override entry, creating the entry if needed.
   function setScreenOverride(screenName, property, value) {
     if (!screenName)

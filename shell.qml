@@ -7,6 +7,12 @@ import qs.Commons
 import qs.Modules.Bar
 import qs.Modules.OSD
 import qs.Modules.Polkit
+// Not instantiated here — SettingsWindow is opened by the dynamically
+// Loader-loaded Settings.qml bar widget, which can't resolve a qs.Modules.*
+// module on its own. Statically importing it once here registers it with
+// the engine so the dynamic loader's own `import qs.Modules.SettingsPanel`
+// resolves. See crux skill for the full gotcha writeup.
+import qs.Modules.SettingsPanel
 
 ShellRoot {
   PolkitAgent {}
