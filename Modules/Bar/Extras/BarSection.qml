@@ -117,7 +117,7 @@ Item {
   // Grid.TopToBottom with columns:1 behaves exactly like Column.
   Grid {
     id: sectionRow
-    spacing: 6
+    spacing: Settings.data.bar.widgetSpacing
     flow: sectionRoot.vertical ? Grid.TopToBottom : Grid.LeftToRight
     rows: sectionRoot.vertical ? 1000 : 1
     columns: sectionRoot.vertical ? 1 : 1000

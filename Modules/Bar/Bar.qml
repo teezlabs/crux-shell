@@ -44,8 +44,8 @@ Item {
   // vertical (top/bottom) instead of across it (left/right).
   BarSection {
     id: leftSection
-    x: root.vertical ? (root.width - width) / 2 : 8
-    y: root.vertical ? 8 : (root.height - height) / 2
+    x: root.vertical ? (root.width - width) / 2 : Settings.data.bar.contentPadding
+    y: root.vertical ? Settings.data.bar.contentPadding : (root.height - height) / 2
     section: "left"
     screen: root.screen
     vertical: root.vertical
@@ -66,8 +66,8 @@ Item {
 
   BarSection {
     id: rightSection
-    x: root.vertical ? (root.width - width) / 2 : (root.width - width - 8)
-    y: root.vertical ? (root.height - height - 8) : (root.height - height) / 2
+    x: root.vertical ? (root.width - width) / 2 : (root.width - width - Settings.data.bar.contentPadding)
+    y: root.vertical ? (root.height - height - Settings.data.bar.contentPadding) : (root.height - height) / 2
     section: "right"
     screen: root.screen
     vertical: root.vertical
