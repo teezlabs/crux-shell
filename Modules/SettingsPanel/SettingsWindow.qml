@@ -4,13 +4,15 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import qs.Commons
-import qs.Modules.Bar.Extras
 
-// Settings panel: bar layout, per-section widget management (add/remove —
-// complements the live drag-and-drop reordering on the bar itself), and
-// appearance (the Color/Style tokens every widget now reads from). A
-// proper sized window rather than a small popup, matching how "verbose"
-// noctalia's own settings panel is.
+// Settings panel: General, Bar, Appearance, Audio, System Monitor, and
+// Wallpaper, each a top-level tab in the sidebar — several (Bar,
+// Appearance, General) further split into subtabs via SubTabBar.qml, the
+// same two-level Tab -> SubTab navigation noctalia's own settings panel
+// uses. New top-level tabs go in the `tabs` model below; a tab with only
+// one logical page just skips SubTabBar entirely (see AudioTab.qml,
+// SystemMonitorTab.qml, WallpaperTab.qml) rather than showing a pointless
+// single-pill bar.
 PanelWindow {
   id: root
 
@@ -18,7 +20,34 @@ PanelWindow {
   screen: targetScreen
 
   readonly property string screenName: screen ? screen.name : ""
-  property string activeTab: "bar"
+  property string activeTab: "general"
+
+  readonly property var tabs: [
+    {
+      "id": "general",
+      "label": "General"
+    },
+    {
+      "id": "bar",
+      "label": "Bar"
+    },
+    {
+      "id": "appearance",
+      "label": "Appearance"
+    },
+    {
+      "id": "audio",
+      "label": "Audio"
+    },
+    {
+      "id": "systemMonitor",
+      "label": "System Monitor"
+    },
+    {
+      "id": "wallpaper",
+      "label": "Wallpaper"
+    }
+  ]
 
   function toggle() {
     visible = !visible;
@@ -67,8 +96,8 @@ PanelWindow {
   Rectangle {
     id: card
     anchors.centerIn: parent
-    width: 760
-    height: 560
+    width: 860
+    height: 620
     radius: Style.radiusS
     color: Color.mSurface
     border.color: Color.mOutline
@@ -85,9 +114,9 @@ PanelWindow {
 
       // ---------------- Sidebar ----------------
       ColumnLayout {
-        Layout.preferredWidth: 140
-        Layout.minimumWidth: 140
-        Layout.maximumWidth: 140
+        Layout.preferredWidth: 150
+        Layout.minimumWidth: 150
+        Layout.maximumWidth: 150
         Layout.fillHeight: true
         spacing: 2
 
@@ -111,20 +140,7 @@ PanelWindow {
             }
 
             Repeater {
-              model: [
-                {
-                  "id": "bar",
-                  "label": "Bar"
-                },
-                {
-                  "id": "widgets",
-                  "label": "Widgets"
-                },
-                {
-                  "id": "appearance",
-                  "label": "Appearance"
-                }
-              ]
+              model: root.tabs
 
               delegate: Rectangle {
                 required property var modelData
@@ -136,11 +152,14 @@ PanelWindow {
                 Text {
                   anchors.left: parent.left
                   anchors.leftMargin: 10
+                  anchors.right: parent.right
+                  anchors.rightMargin: 6
                   anchors.verticalCenter: parent.verticalCenter
                   text: modelData.label
                   color: root.activeTab === modelData.id ? Color.mOnPrimary : Color.mOnSurface
                   font.family: Settings.data.ui.fontFamily
                   font.pixelSize: Style.fontSizeM
+                  elide: Text.ElideRight
                 }
 
                 MouseArea {
@@ -166,6 +185,12 @@ PanelWindow {
         Layout.fillWidth: true
         Layout.fillHeight: true
 
+        GeneralTab {
+          anchors.fill: parent
+          anchors.margins: 16
+          visible: root.activeTab === "general"
+        }
+
         BarTab {
           anchors.fill: parent
           anchors.margins: 16
@@ -173,17 +198,28 @@ PanelWindow {
           screenName: root.screenName
         }
 
-        WidgetsTab {
-          anchors.fill: parent
-          anchors.margins: 16
-          visible: root.activeTab === "widgets"
-          screenName: root.screenName
-        }
-
         AppearanceTab {
           anchors.fill: parent
           anchors.margins: 16
           visible: root.activeTab === "appearance"
+        }
+
+        AudioTab {
+          anchors.fill: parent
+          anchors.margins: 16
+          visible: root.activeTab === "audio"
+        }
+
+        SystemMonitorTab {
+          anchors.fill: parent
+          anchors.margins: 16
+          visible: root.activeTab === "systemMonitor"
+        }
+
+        WallpaperTab {
+          anchors.fill: parent
+          anchors.margins: 16
+          visible: root.activeTab === "wallpaper"
         }
       }
     }

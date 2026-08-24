@@ -40,13 +40,13 @@ ShellRoot {
       if (!sink || !sink.audio)
         return;
       sink.audio.muted = false;
-      sink.audio.volume = Math.min(1, sink.audio.volume + 0.05);
+      sink.audio.volume = Math.min(1, sink.audio.volume + Settings.data.audio.step);
     }
     function decrease(): void {
       var sink = Pipewire.ready ? Pipewire.defaultAudioSink : null;
       if (!sink || !sink.audio)
         return;
-      sink.audio.volume = Math.max(0, sink.audio.volume - 0.05);
+      sink.audio.volume = Math.max(0, sink.audio.volume - Settings.data.audio.step);
     }
     function muteOutput(): void {
       var sink = Pipewire.ready ? Pipewire.defaultAudioSink : null;

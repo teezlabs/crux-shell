@@ -108,7 +108,8 @@ Item {
   WheelHandler {
     acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
     onWheel: function (event) {
-      root._setVolume(root.volume + (event.angleDelta.y > 0 ? 0.05 : -0.05));
+      var step = Settings.data.audio.step;
+      root._setVolume(root.volume + (event.angleDelta.y > 0 ? step : -step));
     }
   }
 

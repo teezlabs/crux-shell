@@ -88,6 +88,15 @@ Singleton {
       property string fontFamily: "Departure Mono"
     }
 
+    property JsonObject audio: JsonObject {
+      property real step: 0.05 // volume change per scroll notch / hardware key press
+    }
+
+    property JsonObject systemMonitor: JsonObject {
+      property int refreshInterval: 2000 // ms between /proc/stat and /proc/meminfo reads
+      property int warnThreshold: 85 // % — CPU or RAM at/above this turns the readout mError-colored
+    }
+
     // Semantic color tokens, Material-You-ish naming to match noctalia's
     // Commons/Color.qml convention (the "m" prefix avoids QML reading
     // e.g. "onPrimary" as a signal handler name). Defaults are exactly

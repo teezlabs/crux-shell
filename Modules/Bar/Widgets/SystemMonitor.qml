@@ -91,7 +91,7 @@ Item {
   }
 
   Timer {
-    interval: 2000
+    interval: Settings.data.systemMonitor.refreshInterval
     running: true
     repeat: true
     triggeredOnStart: true
@@ -112,7 +112,7 @@ Item {
       text: "CPU " + root.cpuPercent + "%  RAM " + root.memPercent + "%"
       font.family: Settings.data.ui.fontFamily
       font.pixelSize: 11
-      color: root.cpuPercent > 85 || root.memPercent > 85 ? Color.mError : Color.mOnSurface
+      color: root.cpuPercent >= Settings.data.systemMonitor.warnThreshold || root.memPercent >= Settings.data.systemMonitor.warnThreshold ? Color.mError : Color.mOnSurface
     }
   }
 }
