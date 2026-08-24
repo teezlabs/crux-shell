@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
@@ -330,6 +331,18 @@ PanelWindow {
   MouseArea {
     anchors.fill: parent
     onClicked: root.visible = false
+  }
+
+  // Soft drop shadow behind the card, same treatment as the bar itself
+  // (shell.qml) — depth against whatever's behind the popup.
+  MultiEffect {
+    anchors.fill: card
+    source: card
+    shadowEnabled: true
+    shadowColor: Qt.rgba(0, 0, 0, 0.55)
+    shadowBlur: 0.7
+    shadowVerticalOffset: 3
+    shadowHorizontalOffset: 0
   }
 
   Rectangle {
