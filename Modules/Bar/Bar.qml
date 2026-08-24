@@ -29,17 +29,23 @@ Item {
     property int targetIndex: -1
   }
 
-  // "left"/"right" sections keep those ids regardless of bar orientation
+  // Positioned with plain x/y bindings rather than anchors (anchors.bottom/
+  // anchors.centerIn etc) — Qt's anchor system doesn't reliably react when
+  // a BarSection's height changes via the _sizeVersion workaround in
+  // BarSection.qml (confirmed via console.log: implicitHeight itself
+  // settles to the correct value, an anchored bottom/centerIn position
+  // computed from it does not, staying stuck using the height from before
+  // the workaround kicked in). Plain property bindings read `width`/
+  // `height` directly and don't go through that broken path.
+  //
+  // "left"/"right" section ids stay the same regardless of orientation
   // (Settings.data.bar.widgets is keyed by them either way) — only which
-  // screen edge they anchor to changes: along the bar's main axis when
+  // screen edge they sit against changes: along the bar's main axis when
   // vertical (top/bottom) instead of across it (left/right).
   BarSection {
-    anchors.left: root.vertical ? undefined : parent.left
-    anchors.top: root.vertical ? parent.top : undefined
-    anchors.verticalCenter: root.vertical ? undefined : parent.verticalCenter
-    anchors.horizontalCenter: root.vertical ? parent.horizontalCenter : undefined
-    anchors.leftMargin: root.vertical ? 0 : 8
-    anchors.topMargin: root.vertical ? 8 : 0
+    id: leftSection
+    x: root.vertical ? (root.width - width) / 2 : 8
+    y: root.vertical ? 8 : (root.height - height) / 2
     section: "left"
     screen: root.screen
     vertical: root.vertical
@@ -48,7 +54,9 @@ Item {
   }
 
   BarSection {
-    anchors.centerIn: parent
+    id: centerSection
+    x: (root.width - width) / 2
+    y: (root.height - height) / 2
     section: "center"
     screen: root.screen
     vertical: root.vertical
@@ -57,12 +65,9 @@ Item {
   }
 
   BarSection {
-    anchors.right: root.vertical ? undefined : parent.right
-    anchors.bottom: root.vertical ? parent.bottom : undefined
-    anchors.verticalCenter: root.vertical ? undefined : parent.verticalCenter
-    anchors.horizontalCenter: root.vertical ? parent.horizontalCenter : undefined
-    anchors.rightMargin: root.vertical ? 0 : 8
-    anchors.bottomMargin: root.vertical ? 8 : 0
+    id: rightSection
+    x: root.vertical ? (root.width - width) / 2 : (root.width - width - 8)
+    y: root.vertical ? (root.height - height - 8) : (root.height - height) / 2
     section: "right"
     screen: root.screen
     vertical: root.vertical

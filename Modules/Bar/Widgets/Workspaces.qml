@@ -14,6 +14,7 @@ Item {
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool vertical: false
 
   readonly property string screenName: screen ? screen.name : ""
   property ListModel wsModel: ListModel {}
@@ -77,19 +78,32 @@ Item {
     }
   }
 
-  // Fixed at 32 to match every other bar widget's implicitHeight — BarSection's
-  // outer Row doesn't vertically center children of differing heights (it only
-  // manages the horizontal axis), so a shorter implicitHeight here left this
-  // widget's whole bounding box top-aligned instead of centered in the bar.
-  implicitWidth: row.implicitWidth
-  implicitHeight: 32
+  // Cross-axis size fixed at 32 to match every other bar widget's
+  // implicitHeight — BarSection's Grid doesn't cross-center children of
+  // differing sizes, so a shorter cross-axis size here left this widget's
+  // whole bounding box mis-aligned instead of centered in the bar. The
+  // main-axis size (implicitWidth horizontal / implicitHeight vertical)
+  // still tracks the pills' own total size, same as before. This also
+  // fixes a real bug, not just cosmetics: the pill row previously stayed
+  // horizontal even in a vertical bar, forcing the whole enclosing section
+  // far wider than the bar itself and pushing sibling widgets off-window.
+  // row.width/height, not implicitWidth/implicitHeight — see the matching
+  // comment in BarSection.qml for why Grid's implicit size properties
+  // aren't reliable with the rows:1000/columns:1000 trick used below.
+  implicitWidth: root.vertical ? 32 : row.width
+  implicitHeight: root.vertical ? row.height : 32
   width: implicitWidth
   height: implicitHeight
 
-  Row {
+  // Grid rather than Row/Column so one type covers both bar orientations —
+  // see the same trick/comment in BarSection.qml.
+  Grid {
     id: row
     anchors.centerIn: parent
     spacing: 4
+    flow: root.vertical ? Grid.TopToBottom : Grid.LeftToRight
+    rows: root.vertical ? 1000 : 1
+    columns: root.vertical ? 1 : 1000
 
     Repeater {
       model: root.wsModel

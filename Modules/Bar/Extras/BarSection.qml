@@ -43,8 +43,56 @@ Item {
   property var widgetsModel: []
   required property QtObject dragState
 
-  implicitWidth: sectionRow.implicitWidth
-  implicitHeight: sectionRow.implicitHeight
+  // Computed directly from the repeater's own items rather than bound to
+  // sectionRow (the Grid)'s width/height or implicitWidth/implicitHeight —
+  // confirmed via console.log that neither of Grid's own aggregate size
+  // properties reliably emit a change notification with the
+  // rows:1000/columns:1000 forced-overflow trick used below.
+  //
+  // Even so, implicitWidth/implicitHeight below can NOT just call these
+  // directly as `_mainSize()` — confirmed via further console.log that a
+  // QML binding built by looping `repeater.itemAt(i)` and reading each
+  // item's width/height does not reliably register those reads as binding
+  // dependencies (a fresh *manual* call to the exact same function always
+  // returned the correct, up-to-date value; the *binding* using it as its
+  // body stayed stuck at the value from its first evaluation forever,
+  // proving the value was always computable, just never re-triggered).
+  // `_sizeVersion` works around this: every wrapper delegate bumps it on
+  // its own onWidthChanged/onHeightChanged (plain Item property changes,
+  // which — unlike the loop above — always notify correctly), and reading
+  // it here (even though the value itself is unused) is a direct property
+  // read on sectionRoot itself, which QML's dependency tracker always
+  // picks up reliably, forcing the binding to re-run.
+  property int _sizeVersion: 0
+
+  function _mainSize() {
+    var total = 0;
+    for (var i = 0; i < repeater.count; i++) {
+      var item = repeater.itemAt(i);
+      if (item)
+        total += (vertical ? item.height : item.width) + sectionRow.spacing;
+    }
+    total += vertical ? trailingZone.height : trailingZone.width;
+    return total;
+  }
+  function _crossSize() {
+    var maxCross = vertical ? trailingZone.width : trailingZone.height;
+    for (var i = 0; i < repeater.count; i++) {
+      var item = repeater.itemAt(i);
+      if (item)
+        maxCross = Math.max(maxCross, vertical ? item.width : item.height);
+    }
+    return maxCross;
+  }
+
+  implicitWidth: {
+    _sizeVersion;
+    return vertical ? _crossSize() : _mainSize();
+  }
+  implicitHeight: {
+    _sizeVersion;
+    return vertical ? _mainSize() : _crossSize();
+  }
   width: implicitWidth
   height: implicitHeight
 
@@ -77,6 +125,7 @@ Item {
     Repeater {
       id: repeater
       model: sectionRoot.widgetsModel
+      onCountChanged: sectionRoot._sizeVersion++
 
       delegate: Item {
         id: wrapper
@@ -88,6 +137,8 @@ Item {
         width: loader.implicitWidth
         height: loader.implicitHeight
         opacity: isDragged && dragHandler.active ? 0.35 : 1
+        onWidthChanged: sectionRoot._sizeVersion++
+        onHeightChanged: sectionRoot._sizeVersion++
 
         DropArea {
           anchors.fill: parent
@@ -136,6 +187,7 @@ Item {
             widgetScreen: sectionRoot.screen
             section: sectionRoot.section
             sectionWidgetIndex: wrapper.index
+            vertical: sectionRoot.vertical
           }
 
           // Non-exclusive: a passive grab that watches for a long press
@@ -197,9 +249,19 @@ Item {
     // widget in it currently renders at 0×0 because it's conditionally
     // hidden (nothing playing right now).
     Item {
-      readonly property bool sectionEmpty: sectionRoot.vertical ? sectionRow.height === 0 : sectionRow.width === 0
+      id: trailingZone
+      readonly property bool sectionEmpty: {
+        for (var i = 0; i < repeater.count; i++) {
+          var item = repeater.itemAt(i);
+          if (item && (sectionRoot.vertical ? item.height > 0 : item.width > 0))
+            return false;
+        }
+        return true;
+      }
       width: sectionRoot.vertical ? 24 : Math.max(24, sectionEmpty ? 40 : 0)
       height: sectionRoot.vertical ? Math.max(24, sectionEmpty ? 40 : 0) : 24
+      onWidthChanged: sectionRoot._sizeVersion++
+      onHeightChanged: sectionRoot._sizeVersion++
 
       DropArea {
         anchors.fill: parent

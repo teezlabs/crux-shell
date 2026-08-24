@@ -11,6 +11,7 @@ Item {
   required property var widgetScreen
   required property string section
   required property int sectionWidgetIndex
+  property bool vertical: false
 
   readonly property string _widgetsDir: Quickshell.shellDir + "/Modules/Bar/Widgets/"
 
@@ -31,6 +32,16 @@ Item {
       item.screen = root.widgetScreen;
       item.section = root.section;
       item.sectionWidgetIndex = root.sectionWidgetIndex;
+      // Not every widget cares about orientation, so this is only forwarded
+      // to ones that declare the property — writing to an undeclared QML
+      // property throws, but reading one that doesn't exist just returns
+      // undefined, which is what this check relies on. Bound live (unlike
+      // screen/section/sectionWidgetIndex above) since bar position can
+      // change at runtime via the settings panel, not just at boot.
+      if (item.vertical !== undefined)
+        item.vertical = Qt.binding(function () {
+          return root.vertical;
+        });
     }
   }
 }

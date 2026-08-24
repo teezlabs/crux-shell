@@ -12,6 +12,7 @@ Item {
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool vertical: false
 
   readonly property var players: Mpris.players ? Mpris.players.values : []
   readonly property var activePlayer: {
@@ -27,10 +28,61 @@ Item {
 
   visible: !!activePlayer && trackTitle !== ""
 
-  implicitWidth: visible ? row.implicitWidth + 16 : 0
-  implicitHeight: 32
+  readonly property string displayText: trackArtist !== "" ? trackArtist + " – " + trackTitle : trackTitle
+
+  // Horizontal: one elided line next to the icon, sized to content.
+  // Vertical: a narrow fixed-width column with the icon on top and the
+  // title wrapped underneath — one wide line like the horizontal layout
+  // simply doesn't fit a ~32px-wide bar, same reasoning as Clock.qml.
+  implicitWidth: !visible ? 0 : (root.vertical ? 32 : (row.implicitWidth + 16))
+  implicitHeight: !visible ? 0 : (root.vertical ? (column.implicitHeight + 10) : 32)
   width: implicitWidth
   height: implicitHeight
+
+  // Two thin vertical bars = "playing" glyph; a right-pointing triangle
+  // shape for "paused" — geometric, no font glyph dependency. Shared
+  // between both layouts below via a Component so the drawing logic
+  // isn't duplicated.
+  Component {
+    id: playPauseGlyph
+
+    Item {
+      width: 10
+      height: 12
+
+      Row {
+        visible: root.isPlaying
+        anchors.centerIn: parent
+        spacing: 2
+        Rectangle {
+          width: 3
+          height: 12
+          color: Color.mPrimary
+        }
+        Rectangle {
+          width: 3
+          height: 12
+          color: Color.mPrimary
+        }
+      }
+
+      Canvas {
+        visible: !root.isPlaying
+        anchors.fill: parent
+        onPaint: {
+          var ctx = getContext("2d");
+          ctx.reset();
+          ctx.fillStyle = Color.mOnSurfaceVariant;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(10, 6);
+          ctx.lineTo(0, 12);
+          ctx.closePath();
+          ctx.fill();
+        }
+      }
+    }
+  }
 
   Rectangle {
     anchors.fill: parent
@@ -39,57 +91,48 @@ Item {
 
     Row {
       id: row
+      visible: !root.vertical
       anchors.centerIn: parent
       spacing: 6
 
-      // Two thin vertical bars = "playing" glyph; a right-pointing triangle
-      // shape for "paused" — geometric, no font glyph dependency.
-      Item {
-        width: 10
-        height: 12
+      Loader {
         anchors.verticalCenter: parent.verticalCenter
-
-        Row {
-          visible: root.isPlaying
-          anchors.centerIn: parent
-          spacing: 2
-          Rectangle {
-            width: 3
-            height: 12
-            color: Color.mPrimary
-          }
-          Rectangle {
-            width: 3
-            height: 12
-            color: Color.mPrimary
-          }
-        }
-
-        Canvas {
-          visible: !root.isPlaying
-          anchors.fill: parent
-          onPaint: {
-            var ctx = getContext("2d");
-            ctx.reset();
-            ctx.fillStyle = Color.mOnSurfaceVariant;
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(10, 6);
-            ctx.lineTo(0, 12);
-            ctx.closePath();
-            ctx.fill();
-          }
-        }
+        sourceComponent: playPauseGlyph
       }
 
       Text {
         anchors.verticalCenter: parent.verticalCenter
-        text: root.trackArtist !== "" ? root.trackArtist + " – " + root.trackTitle : root.trackTitle
+        text: root.displayText
         color: Color.mOnSurface
         font.family: Settings.data.ui.fontFamily
         font.pixelSize: 12
         elide: Text.ElideRight
         width: Math.min(implicitWidth, 220)
+      }
+    }
+
+    Column {
+      id: column
+      visible: root.vertical
+      anchors.centerIn: parent
+      spacing: 4
+      width: 28
+
+      Loader {
+        anchors.horizontalCenter: parent.horizontalCenter
+        sourceComponent: playPauseGlyph
+      }
+
+      Text {
+        width: parent.width
+        horizontalAlignment: Text.AlignHCenter
+        text: root.displayText
+        color: Color.mOnSurface
+        font.family: Settings.data.ui.fontFamily
+        font.pixelSize: 10
+        wrapMode: Text.WordWrap
+        maximumLineCount: 3
+        elide: Text.ElideRight
       }
     }
   }
