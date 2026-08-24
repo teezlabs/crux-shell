@@ -25,7 +25,21 @@ Item {
     anchors.fill: parent
     anchors.margins: 4
     radius: 6
-    color: hoverHandler.hovered ? Color.mOutline : "transparent"
+    color: hoverHandler.hovered ? Color.alpha(Color.mPrimary, 0.16) : "transparent"
+    border.color: Color.alpha(Color.mPrimary, 0.55)
+    border.width: hoverHandler.hovered ? 1 : 0
+    scale: hoverHandler.hovered ? 1.1 : 1.0
+    Behavior on color {
+      ColorAnimation {
+        duration: Style.animationFast
+      }
+    }
+    Behavior on scale {
+      NumberAnimation {
+        duration: Style.animationFast
+        easing.type: Easing.OutBack
+      }
+    }
 
     // Geometric power-symbol glyph (circle with a top notch + vertical
     // stroke) drawn on Canvas — the previous "⏻" text glyph rendered with

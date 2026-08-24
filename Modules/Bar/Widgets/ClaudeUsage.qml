@@ -74,7 +74,21 @@ Item {
   Rectangle {
     anchors.fill: parent
     radius: Style.radiusXXS
-    color: hoverHandler.hovered ? Color.mOutline : "transparent"
+    color: hoverHandler.hovered ? Color.alpha(Color.mPrimary, 0.16) : "transparent"
+    border.color: Color.alpha(Color.mPrimary, 0.55)
+    border.width: hoverHandler.hovered ? 1 : 0
+    scale: hoverHandler.hovered ? 1.1 : 1.0
+    Behavior on color {
+      ColorAnimation {
+        duration: Style.animationFast
+      }
+    }
+    Behavior on scale {
+      NumberAnimation {
+        duration: Style.animationFast
+        easing.type: Easing.OutBack
+      }
+    }
 
     Text {
       id: icon
