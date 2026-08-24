@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
+import Quickshell.Services.Pipewire
 import qs.Commons
 import qs.Modules.Background
 import qs.Modules.Bar
@@ -25,6 +26,33 @@ ShellRoot {
     target: "wallpaper"
     function set(path: string): void {
       Settings.data.wallpaper.path = path;
+    }
+  }
+
+  // Backs both the physical volume keys (see keybinds.lua) and anything
+  // else that wants to nudge the default sink without going through the
+  // Sound popup's own UI — same Pipewire read/write pattern as
+  // Modules/Bar/Widgets/Sound.qml and Modules/OSD/VolumeOsd.qml.
+  IpcHandler {
+    target: "volume"
+    function increase(): void {
+      var sink = Pipewire.ready ? Pipewire.defaultAudioSink : null;
+      if (!sink || !sink.audio)
+        return;
+      sink.audio.muted = false;
+      sink.audio.volume = Math.min(1, sink.audio.volume + 0.05);
+    }
+    function decrease(): void {
+      var sink = Pipewire.ready ? Pipewire.defaultAudioSink : null;
+      if (!sink || !sink.audio)
+        return;
+      sink.audio.volume = Math.max(0, sink.audio.volume - 0.05);
+    }
+    function muteOutput(): void {
+      var sink = Pipewire.ready ? Pipewire.defaultAudioSink : null;
+      if (!sink || !sink.audio)
+        return;
+      sink.audio.muted = !sink.audio.muted;
     }
   }
 
