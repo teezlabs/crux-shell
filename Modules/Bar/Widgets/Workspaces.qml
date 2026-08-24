@@ -111,13 +111,16 @@ Item {
           font.pixelSize: 12
         }
 
-        MouseArea {
-          anchors.fill: parent
+        HoverHandler {
           cursorShape: Qt.PointingHandCursor
+        }
+
+        TapHandler {
+          acceptedButtons: Qt.LeftButton
           // This box's Hyprland runs a Lua config; legacy dispatch strings
           // like "workspace N" error out silently through Hyprland.dispatch().
           // hyprctl's Lua-shorthand syntax is the form that actually works here.
-          onClicked: Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.focus({ workspace = " + wsDelegate.wsId + " })"])
+          onTapped: Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.focus({ workspace = " + wsDelegate.wsId + " })"])
         }
       }
     }

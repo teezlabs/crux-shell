@@ -74,7 +74,7 @@ Item {
   Rectangle {
     anchors.fill: parent
     radius: Style.radiusXXS
-    color: mouseArea.containsMouse ? Color.mOutline : "transparent"
+    color: hoverHandler.hovered ? Color.mOutline : "transparent"
 
     Text {
       id: icon
@@ -86,25 +86,27 @@ Item {
     }
   }
 
-  MouseArea {
-    id: mouseArea
-    anchors.fill: parent
-    hoverEnabled: true
+  HoverHandler {
+    id: hoverHandler
     cursorShape: Qt.PointingHandCursor
-    onClicked: menu.toggle()
+  }
 
-    ToolTip {
-      visible: mouseArea.containsMouse
-      delay: 400
-      font.family: Settings.data.ui.fontFamily
-      text: {
-        var parts = [];
-        if (root.sessionPercent >= 0)
-          parts.push("Session: " + Math.round(root.sessionPercent * 100) + "%");
-        if (root.weeklyPercent >= 0)
-          parts.push("Weekly: " + Math.round(root.weeklyPercent * 100) + "%");
-        return parts.length > 0 ? parts.join("\n") : "Claude usage";
-      }
+  TapHandler {
+    acceptedButtons: Qt.LeftButton
+    onTapped: menu.toggle()
+  }
+
+  ToolTip {
+    visible: hoverHandler.hovered
+    delay: 400
+    font.family: Settings.data.ui.fontFamily
+    text: {
+      var parts = [];
+      if (root.sessionPercent >= 0)
+        parts.push("Session: " + Math.round(root.sessionPercent * 100) + "%");
+      if (root.weeklyPercent >= 0)
+        parts.push("Weekly: " + Math.round(root.weeklyPercent * 100) + "%");
+      return parts.length > 0 ? parts.join("\n") : "Claude usage";
     }
   }
 }

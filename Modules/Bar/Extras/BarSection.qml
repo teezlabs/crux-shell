@@ -9,11 +9,17 @@ import qs.Modules.Bar.Extras
 // Widgets/NSectionEditor.qml settings-panel reorder UI.
 //
 // Long-press is detected by a non-exclusive TapHandler (a passive grab —
-// it does not block the widget's own MouseArea underneath, so a plain
-// click keeps working untouched); once armed, an enabled DragHandler
-// takes over the same in-progress press to move the widget, following the
-// same pattern Qt Quick uses to let a Flickable steal a gesture from a
-// child MouseArea mid-press.
+// it does not block the widget's own click handling underneath, so a
+// plain click keeps working untouched); once armed, an enabled DragHandler
+// takes over the same in-progress press to move the widget. This ONLY
+// works if every bar widget's own click handling is also a pointer
+// handler (TapHandler/HoverHandler), not a legacy MouseArea — on this
+// box's Qt 6.11, a passive ancestor TapHandler never receives ANY event
+// (not even a plain press) when a legacy MouseArea sits underneath it,
+// contrary to the usual Flickable-steals-from-MouseArea folklore. Every
+// Modules/Bar/Widgets/*.qml file's own click handling was converted from
+// MouseArea to TapHandler+HoverHandler for this reason — don't reintroduce
+// a MouseArea in a bar widget, or its drag reordering silently breaks.
 //
 // Cross-section support: `dragState` is a single shared object (created
 // once in Bar.qml, passed to all three sections) so a drop in one
@@ -144,15 +150,25 @@ Item {
             grabPermissions: PointerHandler.CanTakeOverFromItems | PointerHandler.CanTakeOverFromHandlersOfDifferentType
             onActiveChanged: {
               if (!active && sectionRoot.dragState.sourceSection === sectionRoot.section && sectionRoot.dragState.sourceIndex === wrapper.index) {
+                // Capture the shared dragState reference and whether we're
+                // over a valid drop target *before* calling Drag.drop() —
+                // that call synchronously commits the move via
+                // Settings.moveBarWidget, which rebuilds this section's
+                // Repeater and destroys this very delegate (sectionRoot,
+                // wrapper) mid-handler. Anything read after drop() must not
+                // touch sectionRoot/wrapper, only the dragState object
+                // itself (owned by Bar.qml, so it outlives the delegate).
+                var st = sectionRoot.dragState;
+                var droppedOnValidTarget = st.targetSection !== "";
                 // DragHandler only toggles Drag.active — nothing calls
                 // Drag.drop() on release the way MouseArea.onReleased did
                 // in the Taskbar.qml pattern this was adapted from. Do it
                 // here, or the DropArea underneath never fires onDropped.
                 draggableContent.Drag.drop();
-                if (sectionRoot.dragState.targetSection === "") {
+                if (!droppedOnValidTarget) {
                   // Dropped nowhere valid — reset.
-                  sectionRoot.dragState.sourceSection = "";
-                  sectionRoot.dragState.sourceIndex = -1;
+                  st.sourceSection = "";
+                  st.sourceIndex = -1;
                 }
               }
             }
@@ -230,7 +246,7 @@ Item {
     st.sourceIndex = -1;
     st.targetSection = "";
     st.targetIndex = -1;
-    if (fromSection !== "" && !(fromSection === toSection && (fromIndex === toIndex || fromIndex === toIndex - 1))) {
+    if (fromSection !== "" && !(fromSection === toSection && fromIndex === toIndex)) {
       Settings.moveBarWidget(screenName, fromSection, fromIndex, toSection, toIndex);
     }
   }

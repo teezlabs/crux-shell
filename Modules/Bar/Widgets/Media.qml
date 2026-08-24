@@ -35,7 +35,7 @@ Item {
   Rectangle {
     anchors.fill: parent
     radius: Style.radiusXXS
-    color: mouseArea.containsMouse ? Color.mOutline : "transparent"
+    color: hoverHandler.hovered ? Color.mOutline : "transparent"
 
     Row {
       id: row
@@ -94,16 +94,17 @@ Item {
     }
   }
 
-  MouseArea {
-    id: mouseArea
-    anchors.fill: parent
-    hoverEnabled: true
+  HoverHandler {
+    id: hoverHandler
     cursorShape: Qt.PointingHandCursor
+  }
+
+  TapHandler {
     acceptedButtons: Qt.LeftButton | Qt.RightButton
-    onClicked: function (mouse) {
+    onTapped: function (point, button) {
       if (!root.activePlayer)
         return;
-      if (mouse.button === Qt.RightButton) {
+      if (button === Qt.RightButton) {
         root.activePlayer.next();
       } else {
         if (root.isPlaying)

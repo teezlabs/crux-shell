@@ -25,7 +25,7 @@ Item {
     anchors.fill: parent
     anchors.margins: 4
     radius: Style.radiusXXS
-    color: mouseArea.containsMouse ? Color.mOutline : "transparent"
+    color: hoverHandler.hovered ? Color.mOutline : "transparent"
 
     // Geometric gear glyph: a ring with notches, drawn on Canvas — no
     // font/emoji glyph dependency.
@@ -67,11 +67,13 @@ Item {
     }
   }
 
-  MouseArea {
-    id: mouseArea
-    anchors.fill: parent
-    hoverEnabled: true
+  HoverHandler {
+    id: hoverHandler
     cursorShape: Qt.PointingHandCursor
-    onClicked: menu.toggle()
+  }
+
+  TapHandler {
+    acceptedButtons: Qt.LeftButton
+    onTapped: menu.toggle()
   }
 }
