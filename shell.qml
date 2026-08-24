@@ -1,6 +1,7 @@
 // crux shell — boot smoke test. Launch with `qs -c crux`.
 
 import QtQuick
+import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
@@ -180,7 +181,30 @@ ShellRoot {
         onHoveredChanged: root.hovered = hovered
       }
 
+      // Soft drop shadow behind the pill for depth against the wallpaper —
+      // MultiEffect (QtQuick.Effects) is the modern replacement for the old
+      // QtGraphicalEffects DropShadow. Declared before barRect so it paints
+      // underneath; a minor double-render of barRect's own pixels (once
+      // normally, once via MultiEffect's captured copy) is harmless here,
+      // there's no simple "shadow only, don't redraw source" mode.
+      MultiEffect {
+        anchors.fill: barRect
+        source: barRect
+        shadowEnabled: true
+        shadowColor: Qt.rgba(0, 0, 0, 0.55)
+        shadowBlur: 0.7
+        shadowVerticalOffset: 2
+        shadowHorizontalOffset: 0
+        opacity: root.barShown ? 1 : 0
+        Behavior on opacity {
+          NumberAnimation {
+            duration: Style.animationNormal
+          }
+        }
+      }
+
       Rectangle {
+        id: barRect
         anchors.fill: parent
         radius: Style.radiusM
         color: Color.alpha(Color.mSurface, Style.barOpacity)

@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import Quickshell
 import Quickshell.Hyprland
 import qs.Commons
@@ -108,7 +109,7 @@ Item {
     Repeater {
       model: root.wsModel
 
-      delegate: Rectangle {
+      delegate: Item {
         id: wsDelegate
         required property int wsId
         required property string name
@@ -116,15 +117,71 @@ Item {
 
         width: 22
         height: 22
-        radius: 4
-        color: active ? Color.mPrimary : "transparent"
-        border.color: Color.mOutline
-        border.width: active ? 0 : 1
+
+        // Inactive pills stay plain rounded squares; the active one becomes
+        // a skewed parallelogram — a deliberate nod to skwd's signature
+        // "everything's a parallelogram" geometry, kept to just the active
+        // indicator rather than applied shell-wide so workspace numbers
+        // stay legible. Drawn on Canvas (an actual slanted polygon) rather
+        // than an Item transform: skewing via Matrix4x4 would skew the
+        // number Text too, and getting a shear matrix's axis/sign right
+        // without visually testing it felt like a worse use of time than
+        // just drawing the four points directly.
+        Rectangle {
+          anchors.fill: parent
+          visible: !wsDelegate.active
+          radius: 4
+          color: "transparent"
+          border.color: Color.mOutline
+          border.width: 1
+        }
+
+        Canvas {
+          id: activeShape
+          anchors.fill: parent
+          anchors.margins: -2
+          visible: wsDelegate.active
+          readonly property color c1: Color.mPrimary
+          readonly property color c2: Qt.lighter(Color.mPrimary, 1.35)
+          onC1Changed: requestPaint()
+          onC2Changed: requestPaint()
+          onPaint: {
+            var ctx = getContext("2d");
+            ctx.reset();
+            var skew = width * 0.18;
+            var grad = ctx.createLinearGradient(0, 0, width, height);
+            grad.addColorStop(0, c2);
+            grad.addColorStop(1, c1);
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.moveTo(skew, 0);
+            ctx.lineTo(width, 0);
+            ctx.lineTo(width - skew, height);
+            ctx.lineTo(0, height);
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
+
+        // Soft glow behind the active shape — reinforces it as "current"
+        // beyond just the fill color, and is the one place on the bar this
+        // session's styling pass adds an outright glow rather than a flat
+        // hover fill.
+        MultiEffect {
+          anchors.fill: activeShape
+          source: activeShape
+          visible: wsDelegate.active
+          shadowEnabled: true
+          shadowColor: Color.mPrimary
+          shadowBlur: 0.6
+          shadowOpacity: 0.7
+          shadowScale: 1
+        }
 
         Text {
           anchors.centerIn: parent
           text: wsDelegate.name
-          color: wsDelegate.active ? Color.mSurface : Color.mOnSurface
+          color: wsDelegate.active ? Color.mOnPrimary : Color.mOnSurface
           font.family: Settings.data.ui.fontFamily
           font.pixelSize: 12
         }
