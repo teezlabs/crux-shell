@@ -78,6 +78,111 @@ ColumnLayout {
   }
 
   Text {
+    text: "Thickness: " + Settings.data.bar.thickness + "px"
+    color: Color.mOnSurfaceVariant
+    font.family: Settings.data.ui.fontFamily
+    font.pixelSize: Style.fontSizeS
+  }
+
+  Slider {
+    Layout.preferredWidth: 260
+    from: 24
+    to: 56
+    stepSize: 1
+    value: Settings.data.bar.thickness
+    onMoved: Settings.data.bar.thickness = Math.round(value)
+  }
+
+  Text {
+    text: "Floating gap: " + Settings.data.bar.floatMargin + "px"
+    color: Color.mOnSurfaceVariant
+    font.family: Settings.data.ui.fontFamily
+    font.pixelSize: Style.fontSizeS
+  }
+
+  Slider {
+    Layout.preferredWidth: 260
+    from: 0
+    to: 24
+    stepSize: 1
+    value: Settings.data.bar.floatMargin
+    onMoved: Settings.data.bar.floatMargin = Math.round(value)
+  }
+
+  RowLayout {
+    spacing: 10
+    Layout.topMargin: 4
+
+    Rectangle {
+      width: 18
+      height: 18
+      radius: Style.radiusXXS
+      color: Settings.data.bar.showBorder ? Color.mPrimary : "transparent"
+      border.color: Color.mOutline
+      border.width: 1
+
+      MouseArea {
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        onClicked: Settings.data.bar.showBorder = !Settings.data.bar.showBorder
+      }
+    }
+
+    Text {
+      text: "Border"
+      color: Color.mOnSurface
+      font.family: Settings.data.ui.fontFamily
+      font.pixelSize: Style.fontSizeS
+    }
+
+    Slider {
+      Layout.preferredWidth: 140
+      Layout.leftMargin: 10
+      enabled: Settings.data.bar.showBorder
+      opacity: enabled ? 1 : 0.4
+      from: 1
+      to: 4
+      stepSize: 0.5
+      value: Settings.data.bar.borderWidth
+      onMoved: Settings.data.bar.borderWidth = value
+    }
+
+    Text {
+      text: Settings.data.bar.borderWidth + "px"
+      color: Color.mOnSurfaceVariant
+      font.family: Settings.data.ui.fontFamily
+      font.pixelSize: Style.fontSizeS
+      opacity: Settings.data.bar.showBorder ? 1 : 0.4
+    }
+  }
+
+  RowLayout {
+    spacing: 10
+
+    Rectangle {
+      width: 18
+      height: 18
+      radius: Style.radiusXXS
+      color: Settings.data.bar.autoHide ? Color.mPrimary : "transparent"
+      border.color: Color.mOutline
+      border.width: 1
+
+      MouseArea {
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        onClicked: Settings.data.bar.autoHide = !Settings.data.bar.autoHide
+      }
+    }
+
+    Text {
+      text: "Auto-hide (show on hover)"
+      color: Color.mOnSurface
+      font.family: Settings.data.ui.fontFamily
+      font.pixelSize: Style.fontSizeS
+    }
+  }
+
+  Text {
     text: "Monitors (empty = show on all)"
     color: Color.mOnSurfaceVariant
     font.family: Settings.data.ui.fontFamily

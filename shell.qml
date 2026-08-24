@@ -134,6 +134,14 @@ ShellRoot {
 
       readonly property string barPosition: Settings.isLoaded ? Settings.getBarPositionForScreen(screen.name) : "top"
       readonly property bool barIsVertical: barPosition === "left" || barPosition === "right"
+      readonly property bool autoHide: Settings.data.bar.autoHide
+      property bool hovered: false
+      // Auto-hide fades the bar out until the pointer reaches its screen
+      // edge; the PanelWindow itself always stays mapped (full opacity 0
+      // wouldn't remove it from the compositor, wlr-layer-shell surfaces
+      // aren't reactive to CSS-style display:none) so hover detection still
+      // works while it's visually hidden.
+      readonly property bool barShown: !autoHide || hovered
 
       anchors {
         top: barPosition === "top" || barIsVertical
@@ -142,14 +150,14 @@ ShellRoot {
         right: barPosition === "right" || !barIsVertical
       }
       margins {
-        top: Style.marginS
-        bottom: Style.marginS
-        left: Style.marginS
-        right: Style.marginS
+        top: Settings.data.bar.floatMargin
+        bottom: Settings.data.bar.floatMargin
+        left: Settings.data.bar.floatMargin
+        right: Settings.data.bar.floatMargin
       }
       // When vertical, top+bottom anchors fill height and only implicitWidth matters (and vice versa).
-      implicitWidth: 32
-      implicitHeight: 32
+      implicitWidth: Settings.data.bar.thickness
+      implicitHeight: Settings.data.bar.thickness
       // Transparent so the margins above actually read as a floating gap
       // around a rounded pill (the Rectangle below), not a plain inset
       // rectangle on a same-colored background.
@@ -157,14 +165,26 @@ ShellRoot {
 
       WlrLayershell.layer: WlrLayer.Top
       WlrLayershell.namespace: "crux-bar"
-      WlrLayershell.exclusionMode: ExclusionMode.Auto
+      // Auto-hide doesn't reserve screen space — that's the point of it;
+      // windows can use the strip the bar only occupies while shown.
+      WlrLayershell.exclusionMode: root.autoHide ? ExclusionMode.Ignore : ExclusionMode.Auto
+
+      HoverHandler {
+        onHoveredChanged: root.hovered = hovered
+      }
 
       Rectangle {
         anchors.fill: parent
         radius: Style.radiusM
         color: Color.alpha(Color.mSurface, Style.barOpacity)
         border.color: Color.mOutline
-        border.width: 1
+        border.width: Settings.data.bar.showBorder ? Settings.data.bar.borderWidth : 0
+        opacity: root.barShown ? 1 : 0
+        Behavior on opacity {
+          NumberAnimation {
+            duration: Style.animationNormal
+          }
+        }
 
         Bar {
           screen: root.screen

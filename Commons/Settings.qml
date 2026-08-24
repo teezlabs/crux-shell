@@ -67,6 +67,11 @@ Singleton {
       property list<string> monitors: [] // empty = show on all monitors
       property int widgetSpacing: 6
       property int contentPadding: 2
+      property int thickness: 32 // cross-axis size (height when top/bottom, width when left/right)
+      property int floatMargin: 6 // gap between the bar and the screen edge on every side
+      property bool showBorder: true
+      property real borderWidth: 1
+      property bool autoHide: false // hide until the pointer touches the bar's screen edge
 
       // Per-section widget lists: [{ "id": "Clock" }, ...]. Order = render order.
       property JsonObject widgets: JsonObject {
