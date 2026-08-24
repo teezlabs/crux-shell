@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
+import qs.Commons
 
 // Per-monitor workspace switcher. Mirrors noctalia-shell's
 // Services/Compositor/HyprlandService.qml workspace-tracking mechanism
@@ -106,6 +107,7 @@ Item {
           anchors.centerIn: parent
           text: wsDelegate.name
           color: wsDelegate.active ? "#1e1e2e" : "#cdd6f4"
+          font.family: Settings.data.ui.fontFamily
           font.pixelSize: 12
         }
 

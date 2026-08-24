@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Networking
+import qs.Commons
 import "NetworkModel.js" as Model
 
 // Wi-Fi popup: real data/behavior ported from Omarchy's
@@ -344,6 +345,7 @@ PanelWindow {
         Layout.fillWidth: true
 
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: "Wi-Fi"
           color: "#cdd6f4"
           font.pixelSize: 14
@@ -388,63 +390,75 @@ PanelWindow {
         rowSpacing: 4
 
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: "Ping"
           color: "#6c7086"
           font.pixelSize: 10
         }
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: Model.formatPingLatency(root.internetPingLatency, root.internetPingSamples.length > 0)
           color: root.internetPingPacketLoss > 0 ? "#f38ba8" : "#cdd6f4"
           font.pixelSize: 11
         }
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: "Loss"
           color: "#6c7086"
           font.pixelSize: 10
         }
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: Model.formatPacketLoss(root.internetPingPacketLoss, root.internetPingSamples.length > 0)
           color: root.internetPingPacketLoss > 0 ? "#f38ba8" : "#cdd6f4"
           font.pixelSize: 11
         }
 
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: "Down"
           color: "#6c7086"
           font.pixelSize: 10
         }
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: root.hasTransferStats ? Model.formatRate(root.downloadRate) : "--"
           color: "#cdd6f4"
           font.pixelSize: 11
         }
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: "Up"
           color: "#6c7086"
           font.pixelSize: 10
         }
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: root.hasTransferStats ? Model.formatRate(root.uploadRate) : "--"
           color: "#cdd6f4"
           font.pixelSize: 11
         }
 
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: "IP"
           color: "#6c7086"
           font.pixelSize: 10
         }
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: root.info.ip || "--"
           color: "#cdd6f4"
           font.pixelSize: 11
         }
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: "Gateway"
           color: "#6c7086"
           font.pixelSize: 10
         }
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: root.info.gateway || "--"
           color: "#cdd6f4"
           font.pixelSize: 11
@@ -457,6 +471,7 @@ PanelWindow {
         spacing: 4
 
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: "DNS PROVIDER"
           color: "#6c7086"
           font.pixelSize: 10
@@ -478,6 +493,7 @@ PanelWindow {
               color: selected ? "#89b4fa" : "#313244"
 
               Text {
+                font.family: Settings.data.ui.fontFamily
                 anchors.centerIn: parent
                 text: parent.modelData
                 color: parent.selected ? "#1e1e2e" : "#cdd6f4"
@@ -520,12 +536,14 @@ PanelWindow {
                 anchors.fill: parent
 
                 Text {
+                  font.family: Settings.data.ui.fontFamily
                   text: rowItem.modelData.connected ? "●" : (rowItem.modelData.known ? "○" : "·")
                   color: rowItem.modelData.connected ? "#89b4fa" : "#6c7086"
                   font.pixelSize: 12
                 }
 
                 Text {
+                  font.family: Settings.data.ui.fontFamily
                   text: rowItem.modelData.ssid
                   color: "#cdd6f4"
                   font.pixelSize: 13
@@ -534,12 +552,14 @@ PanelWindow {
                 }
 
                 Text {
+                  font.family: Settings.data.ui.fontFamily
                   text: rowItem.modelData.signal + "%"
                   color: "#6c7086"
                   font.pixelSize: 11
                 }
 
                 Text {
+                  font.family: Settings.data.ui.fontFamily
                   visible: root.actionKind !== "" && root.actionSsid === rowItem.modelData.ssid
                   text: root.actionKind === "connect" ? "connecting…" : (root.actionKind === "disconnect" ? "disconnecting…" : "forgetting…")
                   color: "#89b4fa"
@@ -560,6 +580,7 @@ PanelWindow {
               spacing: 6
 
               TextInput {
+                font.family: Settings.data.ui.fontFamily
                 Layout.fillWidth: true
                 text: root.passwordText
                 onTextChanged: root.passwordText = text
@@ -580,6 +601,7 @@ PanelWindow {
               }
 
               Text {
+                font.family: Settings.data.ui.fontFamily
                 text: "Connect"
                 color: "#89b4fa"
                 font.pixelSize: 12

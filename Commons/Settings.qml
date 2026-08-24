@@ -78,6 +78,10 @@ Singleton {
       // Per-monitor overrides: [{ "name": "DP-1", "enabled": true, "position": "left", "widgets": {...} }]
       property list<var> screenOverrides: []
     }
+
+    property JsonObject ui: JsonObject {
+      property string fontFamily: "Departure Mono"
+    }
   }
 
   // -----------------------------------------------------

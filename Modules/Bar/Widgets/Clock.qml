@@ -1,4 +1,5 @@
 import QtQuick
+import qs.Commons
 
 // Minimal bar clock. Styling is intentionally plain for now — theming comes later.
 Item {
@@ -28,6 +29,7 @@ Item {
     anchors.centerIn: parent
     text: Qt.formatDateTime(root.now, "ddd MMM d  hh:mm:ss")
     color: "#cdd6f4"
+    font.family: Settings.data.ui.fontFamily
     font.pixelSize: 13
   }
 }

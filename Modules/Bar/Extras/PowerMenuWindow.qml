@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Shapes
 import Quickshell
 import Quickshell.Wayland
+import qs.Commons
 
 // Power menu popup: a row of honeycomb (hexagon) buttons. Separate top-level
 // surface since the bar strip itself is too thin to host a dropdown.
@@ -118,6 +119,7 @@ PanelWindow {
           Text {
             anchors.horizontalCenter: parent.horizontalCenter
             text: hex.modelData.label
+            font.family: Settings.data.ui.fontFamily
             font.pixelSize: 11
             color: hexMouse.containsMouse ? "#1e1e2e" : "#cdd6f4"
           }

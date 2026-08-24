@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import qs.Commons
 
 // Claude usage popup. Data comes straight from Omarchy's
 // omarchy-agent-usage-claude collector (copied verbatim from upstream —
@@ -131,6 +132,7 @@ PanelWindow {
         Layout.fillWidth: true
 
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: "Claude Code"
           color: "#cdd6f4"
           font.pixelSize: 14
@@ -139,6 +141,7 @@ PanelWindow {
         }
 
         Text {
+          font.family: Settings.data.ui.fontFamily
           visible: root.tierLabel !== ""
           text: root.tierLabel
           color: "#6c7086"
@@ -147,6 +150,7 @@ PanelWindow {
       }
 
       Text {
+        font.family: Settings.data.ui.fontFamily
         visible: root.usageStatusText !== ""
         text: root.usageStatusText
         color: "#f9e2af"
@@ -166,12 +170,14 @@ PanelWindow {
           RowLayout {
             Layout.fillWidth: true
             Text {
+              font.family: Settings.data.ui.fontFamily
               text: modelData.label || ""
               color: "#cdd6f4"
               font.pixelSize: 12
               Layout.fillWidth: true
             }
             Text {
+              font.family: Settings.data.ui.fontFamily
               text: Math.round((modelData.percent || 0) * 100) + "%"
               color: "#cdd6f4"
               font.pixelSize: 12
@@ -193,6 +199,7 @@ PanelWindow {
           }
 
           Text {
+            font.family: Settings.data.ui.fontFamily
             text: root.formatResetsAt(modelData.resetsAt)
             color: "#6c7086"
             font.pixelSize: 10
@@ -209,12 +216,14 @@ PanelWindow {
       RowLayout {
         Layout.fillWidth: true
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: "Today"
           color: "#6c7086"
           font.pixelSize: 11
           Layout.fillWidth: true
         }
         Text {
+          font.family: Settings.data.ui.fontFamily
           text: root.todayPrompts + " prompts · " + root.formatTokens(root.todayTotalTokens) + " tokens"
           color: "#cdd6f4"
           font.pixelSize: 11

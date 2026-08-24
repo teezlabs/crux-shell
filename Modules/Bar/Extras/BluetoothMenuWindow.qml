@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Bluetooth
+import qs.Commons
 import "BluetoothModel.js" as Model
 
 // Bluetooth popup: real data/behavior ported from Omarchy's
@@ -182,6 +183,7 @@ PanelWindow {
         Text {
           text: "Bluetooth"
           color: "#cdd6f4"
+          font.family: Settings.data.ui.fontFamily
           font.pixelSize: 14
           font.bold: true
           Layout.fillWidth: true
@@ -222,6 +224,7 @@ PanelWindow {
         Text {
           text: root.adapter ? "Bluetooth is off" : "No adapter"
           color: "#6c7086"
+          font.family: Settings.data.ui.fontFamily
           font.pixelSize: 12
         }
       }
@@ -273,6 +276,7 @@ PanelWindow {
             visible: rowItem.modelData.header !== undefined
             text: rowItem.modelData.header || ""
             color: "#6c7086"
+            font.family: Settings.data.ui.fontFamily
             font.pixelSize: 10
             anchors.verticalCenter: parent.verticalCenter
           }
@@ -287,12 +291,14 @@ PanelWindow {
             Text {
               text: parent.device && parent.device.connected ? "●" : "○"
               color: parent.device && parent.device.connected ? "#89b4fa" : "#6c7086"
+              font.family: Settings.data.ui.fontFamily
               font.pixelSize: 12
             }
 
             Text {
               text: parent.device ? Model.deviceLabel(parent.device) : ""
               color: "#cdd6f4"
+              font.family: Settings.data.ui.fontFamily
               font.pixelSize: 13
               elide: Text.ElideRight
               Layout.fillWidth: true
@@ -302,6 +308,7 @@ PanelWindow {
               visible: !!(parent.device && parent.device.batteryAvailable)
               text: parent.device ? Math.round(parent.device.battery * 100) + "%" : ""
               color: "#6c7086"
+              font.family: Settings.data.ui.fontFamily
               font.pixelSize: 11
             }
 
@@ -309,6 +316,7 @@ PanelWindow {
               visible: parent.pending !== ""
               text: parent.pending + "…"
               color: "#89b4fa"
+              font.family: Settings.data.ui.fontFamily
               font.pixelSize: 11
             }
 
@@ -316,6 +324,7 @@ PanelWindow {
               visible: !!(parent.pending === "" && parent.device && (parent.device.paired || parent.device.bonded || parent.device.trusted))
               text: "forget"
               color: "#f38ba8"
+              font.family: Settings.data.ui.fontFamily
               font.pixelSize: 11
               MouseArea {
                 anchors.fill: parent
