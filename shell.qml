@@ -3,6 +3,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar
 import qs.Modules.OSD
@@ -16,6 +17,74 @@ import qs.Modules.SettingsPanel
 
 ShellRoot {
   PolkitAgent {}
+
+  // Receives live wallpaper-derived colors from aurora-wallpaper-theme
+  // (matugen -> hue-anchored ANSI colors.toml text -> here), the same
+  // "shell.applyTheme(colorsB64, shellB64)" IPC contract Omarchy Quattro's
+  // shell exposed — colorsB64 is base64-encoded colors.toml *text*, parsed
+  // with a lenient line-by-line `key = "value"` scan (shellB64 is unused;
+  // Omarchy's version used it for a second embedded shell-vars.sh payload
+  // crux has no equivalent for). See crux skill's "Wallpaper + theming"
+  // section for the full pipeline this feeds.
+  IpcHandler {
+    target: "shell"
+
+    // QML's JS engine has no atob/btoa (those are browser globals, not
+    // part of the ECMAScript core Qt's QJSEngine implements) — decode
+    // base64 by hand instead.
+    function _base64Decode(b64: string): string {
+      var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+      var str = b64.replace(/[^A-Za-z0-9+/]/g, "");
+      var output = "";
+      for (var i = 0; i < str.length; i += 4) {
+        var e1 = chars.indexOf(str.charAt(i));
+        var e2 = chars.indexOf(str.charAt(i + 1));
+        var e3 = chars.indexOf(str.charAt(i + 2));
+        var e4 = chars.indexOf(str.charAt(i + 3));
+        var c1 = (e1 << 2) | (e2 >> 4);
+        var c2 = ((e2 & 15) << 4) | (e3 >> 2);
+        var c3 = ((e3 & 3) << 6) | e4;
+        output += String.fromCharCode(c1);
+        if (e3 !== -1)
+          output += String.fromCharCode(c2);
+        if (e4 !== -1)
+          output += String.fromCharCode(c3);
+      }
+      return output;
+    }
+
+    function applyTheme(colorsB64: string, shellB64: string): void {
+      var text = _base64Decode(colorsB64);
+      var map = ({});
+      var lines = text.split("\n");
+      for (var i = 0; i < lines.length; i++) {
+        var m = lines[i].match(/^(\w+)\s*=\s*"([^"]*)"/);
+        if (m)
+          map[m[1]] = m[2];
+      }
+      var theme = Settings.data.theme;
+      if (map.accent)
+        theme.mPrimary = map.accent;
+      if (map.background) {
+        theme.mSurface = map.background;
+        theme.mOnPrimary = map.background;
+        theme.mOnSecondary = map.background;
+        theme.mOnError = map.background;
+      }
+      if (map.foreground)
+        theme.mOnSurface = map.foreground;
+      if (map.dark_background)
+        theme.mSurfaceVariant = map.dark_background;
+      if (map.dark_foreground)
+        theme.mOnSurfaceVariant = map.dark_foreground;
+      if (map.muted)
+        theme.mOutline = map.muted;
+      if (map.red) {
+        theme.mSecondary = map.red;
+        theme.mError = map.red;
+      }
+    }
+  }
 
   Variants {
     model: Quickshell.screens
