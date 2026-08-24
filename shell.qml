@@ -135,6 +135,7 @@ ShellRoot {
       readonly property string barPosition: Settings.isLoaded ? Settings.getBarPositionForScreen(screen.name) : "top"
       readonly property bool barIsVertical: barPosition === "left" || barPosition === "right"
       readonly property bool autoHide: Settings.data.bar.autoHide
+      readonly property bool shownOnThisScreen: Settings.data.bar.monitors.length === 0 || Settings.data.bar.monitors.includes(screen.name)
       property bool hovered: false
       // Auto-hide fades the bar out until the pointer reaches its screen
       // edge; the PanelWindow itself always stays mapped (full opacity 0
@@ -162,6 +163,12 @@ ShellRoot {
       // around a rounded pill (the Rectangle below), not a plain inset
       // rectangle on a same-colored background.
       color: "transparent"
+
+      // Fully unmapped (not just faded/transparent) on a screen the
+      // Monitors list excludes — Settings.data.bar.monitors was previously
+      // written by the settings panel's checkboxes but never actually read
+      // anywhere, so toggling a monitor off did nothing.
+      visible: root.shownOnThisScreen
 
       WlrLayershell.layer: WlrLayer.Top
       WlrLayershell.namespace: "crux-bar"
