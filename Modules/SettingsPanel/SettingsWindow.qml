@@ -86,6 +86,8 @@ PanelWindow {
       // ---------------- Sidebar ----------------
       ColumnLayout {
         Layout.preferredWidth: 140
+        Layout.minimumWidth: 140
+        Layout.maximumWidth: 140
         Layout.fillHeight: true
         spacing: 2
 
@@ -160,6 +162,7 @@ PanelWindow {
 
       // ---------------- Content ----------------
       Item {
+        id: contentPane
         Layout.fillWidth: true
         Layout.fillHeight: true
 
