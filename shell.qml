@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar
+import qs.Modules.OSD
 
 ShellRoot {
   Variants {
@@ -35,6 +36,10 @@ ShellRoot {
 
       Bar {
         screen: root.screen
+      }
+
+      VolumeOsd {
+        targetScreen: root.screen
       }
     }
   }
