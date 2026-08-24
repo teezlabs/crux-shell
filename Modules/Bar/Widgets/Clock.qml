@@ -1,0 +1,31 @@
+import QtQuick
+
+// Minimal bar clock. Styling is intentionally plain for now — theming comes later.
+Item {
+  id: root
+
+  property var screen: null
+  property string section: ""
+  property int sectionWidgetIndex: -1
+
+  property date now: new Date()
+
+  Timer {
+    interval: 1000
+    running: true
+    repeat: true
+    triggeredOnStart: true
+    onTriggered: root.now = new Date()
+  }
+
+  implicitWidth: label.implicitWidth + 16
+  implicitHeight: label.implicitHeight + 8
+
+  Text {
+    id: label
+    anchors.centerIn: parent
+    text: Qt.formatDateTime(root.now, "ddd MMM d  hh:mm:ss")
+    color: "#cdd6f4"
+    font.pixelSize: 13
+  }
+}

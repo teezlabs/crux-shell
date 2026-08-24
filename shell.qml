@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import qs.Commons
+import qs.Modules.Bar
 
 ShellRoot {
   Variants {
@@ -32,12 +33,8 @@ ShellRoot {
       WlrLayershell.namespace: "crux-bar"
       WlrLayershell.exclusionMode: ExclusionMode.Auto
 
-      Text {
-        anchors.centerIn: parent
-        text: "crux shell — " + root.screen.name + " (" + root.barPosition + ")"
-        color: "#cdd6f4"
-        font.pixelSize: 14
-        rotation: root.barIsVertical ? 90 : 0
+      Bar {
+        screen: root.screen
       }
     }
   }
