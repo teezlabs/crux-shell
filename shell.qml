@@ -6,8 +6,11 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar
 import qs.Modules.OSD
+import qs.Modules.Polkit
 
 ShellRoot {
+  PolkitAgent {}
+
   Variants {
     model: Quickshell.screens
 
