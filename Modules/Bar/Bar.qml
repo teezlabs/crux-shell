@@ -17,59 +17,28 @@ Item {
 
   anchors.fill: parent
 
-  Row {
-    id: leftRow
+  BarSection {
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
     anchors.leftMargin: 8
-    spacing: 6
-
-    Repeater {
-      model: root.barWidgets.left
-      delegate: BarWidgetLoader {
-        required property var modelData
-        required property int index
-        widgetId: modelData.id || ""
-        widgetScreen: root.screen
-        section: "left"
-        sectionWidgetIndex: index
-      }
-    }
+    section: "left"
+    screen: root.screen
+    widgetsModel: root.barWidgets.left
   }
 
-  Row {
+  BarSection {
     anchors.centerIn: parent
-    spacing: 6
-
-    Repeater {
-      model: root.barWidgets.center
-      delegate: BarWidgetLoader {
-        required property var modelData
-        required property int index
-        widgetId: modelData.id || ""
-        widgetScreen: root.screen
-        section: "center"
-        sectionWidgetIndex: index
-      }
-    }
+    section: "center"
+    screen: root.screen
+    widgetsModel: root.barWidgets.center
   }
 
-  Row {
+  BarSection {
     anchors.right: parent.right
     anchors.verticalCenter: parent.verticalCenter
     anchors.rightMargin: 8
-    spacing: 6
-
-    Repeater {
-      model: root.barWidgets.right
-      delegate: BarWidgetLoader {
-        required property var modelData
-        required property int index
-        widgetId: modelData.id || ""
-        widgetScreen: root.screen
-        section: "right"
-        sectionWidgetIndex: index
-      }
-    }
+    section: "right"
+    screen: root.screen
+    widgetsModel: root.barWidgets.right
   }
 }

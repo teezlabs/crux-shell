@@ -116,6 +116,36 @@ Singleton {
     return data.bar.widgets;
   }
 
+  // Moves the widget at fromIndex to toIndex within one section, on whichever
+  // widget list is actually effective for this screen (a screen override's
+  // own widgets if it has one, else the global list) — same resolution rule
+  // getBarWidgetsForScreen() uses, so a drag on the bar edits what's really
+  // showing there.
+  function reorderBarWidget(screenName, section, fromIndex, toIndex) {
+    if (fromIndex === toIndex)
+      return;
+
+    var override = _findScreenOverride(screenName);
+    var usesOverride = !!(override && override.enabled !== false && override.widgets !== undefined);
+    var widgets = JSON.parse(JSON.stringify(usesOverride ? override.widgets : data.bar.widgets));
+    var list = widgets[section];
+    if (!list || fromIndex < 0 || fromIndex >= list.length || toIndex < 0 || toIndex >= list.length)
+      return;
+
+    var moved = list.splice(fromIndex, 1)[0];
+    list.splice(toIndex, 0, moved);
+
+    if (usesOverride) {
+      setScreenOverride(screenName, "widgets", widgets);
+    } else {
+      // bar.widgets is a JsonObject, not a plain list<var> — reassigning the
+      // whole object (data.bar.widgets = widgets) silently doesn't persist.
+      // Assign directly to the affected list<var> sub-property instead,
+      // same as how screenOverrides (itself a list<var>) is written above.
+      data.bar.widgets[section] = list;
+    }
+  }
+
   // Sets one property on a screen's override entry, creating the entry if needed.
   function setScreenOverride(screenName, property, value) {
     if (!screenName)
