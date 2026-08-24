@@ -103,7 +103,7 @@ Item {
 
   Rectangle {
     anchors.fill: parent
-    radius: 2
+    radius: Style.radiusXXS
     color: "transparent"
 
     Text {
@@ -112,7 +112,7 @@ Item {
       text: "CPU " + root.cpuPercent + "%  RAM " + root.memPercent + "%"
       font.family: Settings.data.ui.fontFamily
       font.pixelSize: 11
-      color: root.cpuPercent > 85 || root.memPercent > 85 ? "#f38ba8" : "#cdd6f4"
+      color: root.cpuPercent > 85 || root.memPercent > 85 ? Color.mError : Color.mOnSurface
     }
   }
 }

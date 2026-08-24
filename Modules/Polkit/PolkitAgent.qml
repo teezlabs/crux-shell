@@ -123,9 +123,9 @@ Item {
       anchors.centerIn: parent
       width: 320
       height: column.implicitHeight + 24
-      radius: 2
-      color: "#1e1e2e"
-      border.color: root.failed ? "#f38ba8" : "#45475a"
+      radius: Style.radiusXXS
+      color: Color.mSurface
+      border.color: root.failed ? Color.mError : Color.mOutline
       border.width: 1
 
       Item {
@@ -146,7 +146,7 @@ Item {
 
           Text {
             text: "Authentication required"
-            color: "#cdd6f4"
+            color: Color.mOnSurface
             font.family: Settings.data.ui.fontFamily
             font.pixelSize: 13
             font.bold: true
@@ -155,7 +155,7 @@ Item {
 
           Text {
             text: root.message
-            color: "#6c7086"
+            color: Color.mOnSurfaceVariant
             font.family: Settings.data.ui.fontFamily
             font.pixelSize: 11
             wrapMode: Text.WordWrap
@@ -165,7 +165,7 @@ Item {
           Text {
             visible: root.failed
             text: "Authentication failed — try again"
-            color: "#f38ba8"
+            color: Color.mError
             font.family: Settings.data.ui.fontFamily
             font.pixelSize: 11
             Layout.fillWidth: true
@@ -181,7 +181,7 @@ Item {
               anchors.margins: 6
               verticalAlignment: TextInput.AlignVCenter
               echoMode: TextInput.Password
-              color: "#cdd6f4"
+              color: Color.mOnSurface
               font.family: Settings.data.ui.fontFamily
               font.pixelSize: 13
               enabled: root.dialogVisible && !root.submitted
@@ -191,8 +191,8 @@ Item {
                 z: -1
                 anchors.fill: parent
                 anchors.margins: -6
-                color: "#313244"
-                radius: 2
+                color: Color.mSurfaceVariant
+                radius: Style.radiusXXS
               }
             }
           }
@@ -207,7 +207,7 @@ Item {
 
             Text {
               text: "Cancel"
-              color: "#6c7086"
+              color: Color.mOnSurfaceVariant
               font.family: Settings.data.ui.fontFamily
               font.pixelSize: 12
               MouseArea {
@@ -219,7 +219,7 @@ Item {
 
             Text {
               text: root.submitted ? "Checking…" : "OK"
-              color: "#89b4fa"
+              color: Color.mPrimary
               font.family: Settings.data.ui.fontFamily
               font.pixelSize: 12
               MouseArea {

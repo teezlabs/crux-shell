@@ -34,8 +34,8 @@ Item {
 
   Rectangle {
     anchors.fill: parent
-    radius: 2
-    color: mouseArea.containsMouse ? "#45475a" : "transparent"
+    radius: Style.radiusXXS
+    color: mouseArea.containsMouse ? Color.mOutline : "transparent"
 
     Row {
       id: row
@@ -56,12 +56,12 @@ Item {
           Rectangle {
             width: 3
             height: 12
-            color: "#89b4fa"
+            color: Color.mPrimary
           }
           Rectangle {
             width: 3
             height: 12
-            color: "#89b4fa"
+            color: Color.mPrimary
           }
         }
 
@@ -71,7 +71,7 @@ Item {
           onPaint: {
             var ctx = getContext("2d");
             ctx.reset();
-            ctx.fillStyle = "#6c7086";
+            ctx.fillStyle = Color.mOnSurfaceVariant;
             ctx.beginPath();
             ctx.moveTo(0, 0);
             ctx.lineTo(10, 6);
@@ -85,7 +85,7 @@ Item {
       Text {
         anchors.verticalCenter: parent.verticalCenter
         text: root.trackArtist !== "" ? root.trackArtist + " – " + root.trackTitle : root.trackTitle
-        color: "#cdd6f4"
+        color: Color.mOnSurface
         font.family: Settings.data.ui.fontFamily
         font.pixelSize: 12
         elide: Text.ElideRight

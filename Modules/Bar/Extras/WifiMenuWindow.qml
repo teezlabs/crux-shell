@@ -340,9 +340,9 @@ PanelWindow {
     anchors.rightMargin: 12
     width: 360
     height: Math.min(560, column.implicitHeight + 24)
-    radius: 2
-    color: "#1e1e2e"
-    border.color: "#45475a"
+    radius: Style.radiusXXS
+    color: Color.mSurface
+    border.color: Color.mOutline
     border.width: 1
 
     MouseArea {
@@ -362,7 +362,7 @@ PanelWindow {
         Text {
           font.family: Settings.data.ui.fontFamily
           text: "Wi-Fi"
-          color: "#cdd6f4"
+          color: Color.mOnSurface
           font.pixelSize: 14
           font.bold: true
           Layout.fillWidth: true
@@ -371,14 +371,14 @@ PanelWindow {
         Rectangle {
           width: 36
           height: 18
-          radius: 2
-          color: Networking.wifiEnabled ? "#89b4fa" : "#45475a"
+          radius: Style.radiusXXS
+          color: Networking.wifiEnabled ? Color.mPrimary : Color.mOutline
 
           Rectangle {
             width: 14
             height: 14
             radius: 1
-            color: "#1e1e2e"
+            color: Color.mSurface
             anchors.verticalCenter: parent.verticalCenter
             x: Networking.wifiEnabled ? parent.width - width - 2 : 2
             Behavior on x {
@@ -407,75 +407,75 @@ PanelWindow {
         Text {
           font.family: Settings.data.ui.fontFamily
           text: "Ping"
-          color: "#6c7086"
+          color: Color.mOnSurfaceVariant
           font.pixelSize: 10
         }
         Text {
           font.family: Settings.data.ui.fontFamily
           text: Model.formatPingLatency(root.internetPingLatency, root.internetPingSamples.length > 0)
-          color: root.internetPingPacketLoss > 0 ? "#f38ba8" : "#cdd6f4"
+          color: root.internetPingPacketLoss > 0 ? Color.mError : Color.mOnSurface
           font.pixelSize: 11
         }
         Text {
           font.family: Settings.data.ui.fontFamily
           text: "Loss"
-          color: "#6c7086"
+          color: Color.mOnSurfaceVariant
           font.pixelSize: 10
         }
         Text {
           font.family: Settings.data.ui.fontFamily
           text: Model.formatPacketLoss(root.internetPingPacketLoss, root.internetPingSamples.length > 0)
-          color: root.internetPingPacketLoss > 0 ? "#f38ba8" : "#cdd6f4"
+          color: root.internetPingPacketLoss > 0 ? Color.mError : Color.mOnSurface
           font.pixelSize: 11
         }
 
         Text {
           font.family: Settings.data.ui.fontFamily
           text: "Down"
-          color: "#6c7086"
+          color: Color.mOnSurfaceVariant
           font.pixelSize: 10
         }
         Text {
           font.family: Settings.data.ui.fontFamily
           text: root.hasTransferStats ? Model.formatRate(root.downloadRate) : "--"
-          color: "#cdd6f4"
+          color: Color.mOnSurface
           font.pixelSize: 11
         }
         Text {
           font.family: Settings.data.ui.fontFamily
           text: "Up"
-          color: "#6c7086"
+          color: Color.mOnSurfaceVariant
           font.pixelSize: 10
         }
         Text {
           font.family: Settings.data.ui.fontFamily
           text: root.hasTransferStats ? Model.formatRate(root.uploadRate) : "--"
-          color: "#cdd6f4"
+          color: Color.mOnSurface
           font.pixelSize: 11
         }
 
         Text {
           font.family: Settings.data.ui.fontFamily
           text: "IP"
-          color: "#6c7086"
+          color: Color.mOnSurfaceVariant
           font.pixelSize: 10
         }
         Text {
           font.family: Settings.data.ui.fontFamily
           text: root.info.ip || "--"
-          color: "#cdd6f4"
+          color: Color.mOnSurface
           font.pixelSize: 11
         }
         Text {
           font.family: Settings.data.ui.fontFamily
           text: "Gateway"
-          color: "#6c7086"
+          color: Color.mOnSurfaceVariant
           font.pixelSize: 10
         }
         Text {
           font.family: Settings.data.ui.fontFamily
           text: root.info.gateway || "--"
-          color: "#cdd6f4"
+          color: Color.mOnSurface
           font.pixelSize: 11
         }
       }
@@ -488,7 +488,7 @@ PanelWindow {
         Text {
           font.family: Settings.data.ui.fontFamily
           text: "DNS PROVIDER"
-          color: "#6c7086"
+          color: Color.mOnSurfaceVariant
           font.pixelSize: 10
         }
 
@@ -505,13 +505,13 @@ PanelWindow {
               Layout.fillWidth: true
               height: 24
               radius: 1
-              color: selected ? "#89b4fa" : "#313244"
+              color: selected ? Color.mPrimary : Color.mSurfaceVariant
 
               Text {
                 font.family: Settings.data.ui.fontFamily
                 anchors.centerIn: parent
                 text: parent.modelData
-                color: parent.selected ? "#1e1e2e" : "#cdd6f4"
+                color: parent.selected ? Color.mSurface : Color.mOnSurface
                 font.pixelSize: 11
               }
 
@@ -553,14 +553,14 @@ PanelWindow {
                 Text {
                   font.family: Settings.data.ui.fontFamily
                   text: rowItem.modelData.connected ? "●" : (rowItem.modelData.known ? "○" : "·")
-                  color: rowItem.modelData.connected ? "#89b4fa" : "#6c7086"
+                  color: rowItem.modelData.connected ? Color.mPrimary : Color.mOnSurfaceVariant
                   font.pixelSize: 12
                 }
 
                 Text {
                   font.family: Settings.data.ui.fontFamily
                   text: rowItem.modelData.ssid
-                  color: "#cdd6f4"
+                  color: Color.mOnSurface
                   font.pixelSize: 13
                   elide: Text.ElideRight
                   Layout.fillWidth: true
@@ -569,7 +569,7 @@ PanelWindow {
                 Text {
                   font.family: Settings.data.ui.fontFamily
                   text: rowItem.modelData.signal + "%"
-                  color: "#6c7086"
+                  color: Color.mOnSurfaceVariant
                   font.pixelSize: 11
                 }
 
@@ -577,7 +577,7 @@ PanelWindow {
                   font.family: Settings.data.ui.fontFamily
                   visible: root.actionKind !== "" && root.actionSsid === rowItem.modelData.ssid
                   text: root.actionKind === "connect" ? "connecting…" : (root.actionKind === "disconnect" ? "disconnecting…" : "forgetting…")
-                  color: "#89b4fa"
+                  color: Color.mPrimary
                   font.pixelSize: 11
                 }
               }
@@ -600,7 +600,7 @@ PanelWindow {
                 text: root.passwordText
                 onTextChanged: root.passwordText = text
                 echoMode: TextInput.Password
-                color: "#cdd6f4"
+                color: Color.mOnSurface
                 font.pixelSize: 12
                 focus: rowItem.modelData.ssid === root.passwordSsid
 
@@ -608,7 +608,7 @@ PanelWindow {
                   z: -1
                   anchors.fill: parent
                   anchors.margins: -4
-                  color: "#313244"
+                  color: Color.mSurfaceVariant
                   radius: 1
                 }
 
@@ -618,7 +618,7 @@ PanelWindow {
               Text {
                 font.family: Settings.data.ui.fontFamily
                 text: "Connect"
-                color: "#89b4fa"
+                color: Color.mPrimary
                 font.pixelSize: 12
                 MouseArea {
                   anchors.fill: parent

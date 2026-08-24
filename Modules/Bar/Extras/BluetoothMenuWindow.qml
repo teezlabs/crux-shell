@@ -175,9 +175,9 @@ PanelWindow {
     anchors.rightMargin: 12
     width: 320
     height: Math.min(480, column.implicitHeight + 24)
-    radius: 2
-    color: "#1e1e2e"
-    border.color: "#45475a"
+    radius: Style.radiusXXS
+    color: Color.mSurface
+    border.color: Color.mOutline
     border.width: 1
 
     MouseArea {
@@ -196,7 +196,7 @@ PanelWindow {
 
         Text {
           text: "Bluetooth"
-          color: "#cdd6f4"
+          color: Color.mOnSurface
           font.family: Settings.data.ui.fontFamily
           font.pixelSize: 14
           font.bold: true
@@ -206,14 +206,14 @@ PanelWindow {
         Rectangle {
           width: 36
           height: 18
-          radius: 2
-          color: root.adapter && root.adapter.enabled ? "#89b4fa" : "#45475a"
+          radius: Style.radiusXXS
+          color: root.adapter && root.adapter.enabled ? Color.mPrimary : Color.mOutline
 
           Rectangle {
             width: 14
             height: 14
             radius: 1
-            color: "#1e1e2e"
+            color: Color.mSurface
             anchors.verticalCenter: parent.verticalCenter
             x: (root.adapter && root.adapter.enabled) ? parent.width - width - 2 : 2
             Behavior on x {
@@ -237,7 +237,7 @@ PanelWindow {
 
         Text {
           text: root.adapter ? "Bluetooth is off" : "No adapter"
-          color: "#6c7086"
+          color: Color.mOnSurfaceVariant
           font.family: Settings.data.ui.fontFamily
           font.pixelSize: 12
         }
@@ -289,7 +289,7 @@ PanelWindow {
           Text {
             visible: rowItem.modelData.header !== undefined
             text: rowItem.modelData.header || ""
-            color: "#6c7086"
+            color: Color.mOnSurfaceVariant
             font.family: Settings.data.ui.fontFamily
             font.pixelSize: 10
             anchors.verticalCenter: parent.verticalCenter
@@ -304,14 +304,14 @@ PanelWindow {
 
             Text {
               text: parent.device && parent.device.connected ? "●" : "○"
-              color: parent.device && parent.device.connected ? "#89b4fa" : "#6c7086"
+              color: parent.device && parent.device.connected ? Color.mPrimary : Color.mOnSurfaceVariant
               font.family: Settings.data.ui.fontFamily
               font.pixelSize: 12
             }
 
             Text {
               text: parent.device ? Model.deviceLabel(parent.device) : ""
-              color: "#cdd6f4"
+              color: Color.mOnSurface
               font.family: Settings.data.ui.fontFamily
               font.pixelSize: 13
               elide: Text.ElideRight
@@ -321,7 +321,7 @@ PanelWindow {
             Text {
               visible: !!(parent.device && parent.device.batteryAvailable)
               text: parent.device ? Math.round(parent.device.battery * 100) + "%" : ""
-              color: "#6c7086"
+              color: Color.mOnSurfaceVariant
               font.family: Settings.data.ui.fontFamily
               font.pixelSize: 11
             }
@@ -329,7 +329,7 @@ PanelWindow {
             Text {
               visible: parent.pending !== ""
               text: parent.pending + "…"
-              color: "#89b4fa"
+              color: Color.mPrimary
               font.family: Settings.data.ui.fontFamily
               font.pixelSize: 11
             }
@@ -337,7 +337,7 @@ PanelWindow {
             Text {
               visible: !!(parent.pending === "" && parent.device && (parent.device.paired || parent.device.bonded || parent.device.trusted))
               text: "forget"
-              color: "#f38ba8"
+              color: Color.mError
               font.family: Settings.data.ui.fontFamily
               font.pixelSize: 11
               MouseArea {

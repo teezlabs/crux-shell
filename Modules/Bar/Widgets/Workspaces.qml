@@ -99,14 +99,14 @@ Item {
         width: 22
         height: 22
         radius: 4
-        color: active ? "#89b4fa" : "transparent"
-        border.color: "#45475a"
+        color: active ? Color.mPrimary : "transparent"
+        border.color: Color.mOutline
         border.width: active ? 0 : 1
 
         Text {
           anchors.centerIn: parent
           text: wsDelegate.name
-          color: wsDelegate.active ? "#1e1e2e" : "#cdd6f4"
+          color: wsDelegate.active ? Color.mSurface : Color.mOnSurface
           font.family: Settings.data.ui.fontFamily
           font.pixelSize: 12
         }

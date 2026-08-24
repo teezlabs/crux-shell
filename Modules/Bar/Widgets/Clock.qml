@@ -28,7 +28,7 @@ Item {
     id: label
     anchors.centerIn: parent
     text: Qt.formatDateTime(root.now, "ddd MMM d  hh:mm:ss")
-    color: "#cdd6f4"
+    color: Color.mOnSurface
     font.family: Settings.data.ui.fontFamily
     font.pixelSize: 13
   }

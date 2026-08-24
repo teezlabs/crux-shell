@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Modules.Bar.Extras
+import qs.Commons
 
 // Plain app-launcher icon on the bar; the search UI lives in the separate
 // LauncherWindow popup.
@@ -23,8 +24,8 @@ Item {
   Rectangle {
     anchors.fill: parent
     anchors.margins: 4
-    radius: 2
-    color: mouseArea.containsMouse ? "#45475a" : "transparent"
+    radius: Style.radiusXXS
+    color: mouseArea.containsMouse ? Color.mOutline : "transparent"
 
     // Geometric grid-of-dots glyph — no font/emoji glyph dependency.
     Grid {
@@ -37,7 +38,7 @@ Item {
           width: 3
           height: 3
           radius: 1
-          color: "#cdd6f4"
+          color: Color.mOnSurface
         }
       }
     }

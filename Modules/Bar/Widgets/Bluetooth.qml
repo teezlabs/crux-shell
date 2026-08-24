@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell.Bluetooth
 import qs.Modules.Bar.Extras
+import qs.Commons
 
 // Plain Bluetooth status icon on the bar; the real device list/connect UI
 // lives in the separate BluetoothMenuWindow popup.
@@ -34,15 +35,15 @@ Item {
   Rectangle {
     anchors.fill: parent
     anchors.margins: 4
-    radius: 2
-    color: mouseArea.containsMouse ? "#45475a" : "transparent"
+    radius: Style.radiusXXS
+    color: mouseArea.containsMouse ? Color.mOutline : "transparent"
 
     // Geometric "B"-glyph stand-in (bowtie) — no font/emoji glyph dependency.
     Canvas {
       anchors.centerIn: parent
       width: 10
       height: 14
-      readonly property color strokeColor: !root.adapter || !root.adapter.enabled ? "#45475a" : (root.anyConnected ? "#89b4fa" : "#6c7086")
+      readonly property color strokeColor: !root.adapter || !root.adapter.enabled ? Color.mOutline : (root.anyConnected ? Color.mPrimary : Color.mOnSurfaceVariant)
       onStrokeColorChanged: requestPaint()
       onPaint: {
         var ctx = getContext("2d");

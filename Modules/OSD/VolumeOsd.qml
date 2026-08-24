@@ -71,9 +71,9 @@ PanelWindow {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
     anchors.bottomMargin: 90
-    radius: 2
-    color: "#1e1e2e"
-    border.color: "#45475a"
+    radius: Style.radiusXXS
+    color: Color.mSurface
+    border.color: Color.mOutline
     border.width: 1
     opacity: root.opened ? 1 : 0
     Behavior on opacity {
@@ -92,7 +92,7 @@ PanelWindow {
         text: root.muted ? "MUTE" : "VOL"
         font.family: Settings.data.ui.fontFamily
         font.pixelSize: 11
-        color: root.muted ? "#f38ba8" : "#89b4fa"
+        color: root.muted ? Color.mError : Color.mPrimary
       }
 
       Rectangle {
@@ -100,13 +100,13 @@ PanelWindow {
         height: 6
         anchors.verticalCenter: parent.verticalCenter
         radius: 1
-        color: "#313244"
+        color: Color.mSurfaceVariant
 
         Rectangle {
           width: parent.width * Math.min(1, root.muted ? 0 : root.volume)
           height: parent.height
           radius: 1
-          color: "#89b4fa"
+          color: Color.mPrimary
           Behavior on width {
             NumberAnimation {
               duration: 100
@@ -120,7 +120,7 @@ PanelWindow {
         text: Math.round((root.muted ? 0 : root.volume) * 100) + "%"
         font.family: Settings.data.ui.fontFamily
         font.pixelSize: 12
-        color: "#cdd6f4"
+        color: Color.mOnSurface
       }
     }
   }

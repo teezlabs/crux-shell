@@ -73,8 +73,8 @@ Item {
 
   Rectangle {
     anchors.fill: parent
-    radius: 2
-    color: mouseArea.containsMouse ? "#45475a" : "transparent"
+    radius: Style.radiusXXS
+    color: mouseArea.containsMouse ? Color.mOutline : "transparent"
 
     Text {
       id: icon
@@ -82,7 +82,7 @@ Item {
         text: "" // "robot" glyph — same icon noctalia uses for this widget
         font.family: tablerIconFont.name
         font.pixelSize: 20
-        color: root.sessionPercent > 0.85 ? "#f38ba8" : "#cdd6f4"
+        color: root.sessionPercent > 0.85 ? Color.mError : Color.mOnSurface
     }
   }
 

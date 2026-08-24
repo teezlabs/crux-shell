@@ -129,9 +129,9 @@ PanelWindow {
     anchors.centerIn: parent
     width: 480
     height: Math.min(480, column.implicitHeight + 24)
-    radius: 2
-    color: "#1e1e2e"
-    border.color: "#45475a"
+    radius: Style.radiusXXS
+    color: Color.mSurface
+    border.color: Color.mOutline
     border.width: 1
 
     MouseArea {
@@ -150,7 +150,7 @@ PanelWindow {
         Layout.fillWidth: true
         text: root.query
         onTextChanged: root.query = text
-        color: "#cdd6f4"
+        color: Color.mOnSurface
         font.family: Settings.data.ui.fontFamily
         font.pixelSize: 16
 
@@ -158,14 +158,14 @@ PanelWindow {
           z: -1
           anchors.fill: parent
           anchors.margins: -8
-          color: "#313244"
-          radius: 2
+          color: Color.mSurfaceVariant
+          radius: Style.radiusXXS
         }
 
         Text {
           visible: searchInput.text === ""
           text: "Search apps…"
-          color: "#6c7086"
+          color: Color.mOnSurfaceVariant
           font.family: Settings.data.ui.fontFamily
           font.pixelSize: 16
         }
@@ -191,8 +191,8 @@ PanelWindow {
 
           Rectangle {
             anchors.fill: parent
-            radius: 2
-            color: rowItem.index === root.selectedIndex ? "#313244" : "transparent"
+            radius: Style.radiusXXS
+            color: rowItem.index === root.selectedIndex ? Color.mSurfaceVariant : "transparent"
           }
 
           RowLayout {
@@ -202,7 +202,7 @@ PanelWindow {
 
             Text {
               text: rowItem.modelData.name || ""
-              color: "#cdd6f4"
+              color: Color.mOnSurface
               font.family: Settings.data.ui.fontFamily
               font.pixelSize: 13
               elide: Text.ElideRight

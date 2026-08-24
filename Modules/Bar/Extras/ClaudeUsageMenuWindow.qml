@@ -127,9 +127,9 @@ PanelWindow {
     anchors.rightMargin: 12
     width: 300
     height: Math.min(400, column.implicitHeight + 24)
-    radius: 2
-    color: "#1e1e2e"
-    border.color: "#45475a"
+    radius: Style.radiusXXS
+    color: Color.mSurface
+    border.color: Color.mOutline
     border.width: 1
 
     MouseArea {
@@ -149,7 +149,7 @@ PanelWindow {
         Text {
           font.family: Settings.data.ui.fontFamily
           text: "Claude Code"
-          color: "#cdd6f4"
+          color: Color.mOnSurface
           font.pixelSize: 14
           font.bold: true
           Layout.fillWidth: true
@@ -159,7 +159,7 @@ PanelWindow {
           font.family: Settings.data.ui.fontFamily
           visible: root.tierLabel !== ""
           text: root.tierLabel
-          color: "#6c7086"
+          color: Color.mOnSurfaceVariant
           font.pixelSize: 11
         }
       }
@@ -168,7 +168,7 @@ PanelWindow {
         font.family: Settings.data.ui.fontFamily
         visible: root.usageStatusText !== ""
         text: root.usageStatusText
-        color: "#f9e2af"
+        color: Color.mError
         font.pixelSize: 11
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
@@ -187,14 +187,14 @@ PanelWindow {
             Text {
               font.family: Settings.data.ui.fontFamily
               text: modelData.label || ""
-              color: "#cdd6f4"
+              color: Color.mOnSurface
               font.pixelSize: 12
               Layout.fillWidth: true
             }
             Text {
               font.family: Settings.data.ui.fontFamily
               text: Math.round((modelData.percent || 0) * 100) + "%"
-              color: "#cdd6f4"
+              color: Color.mOnSurface
               font.pixelSize: 12
             }
           }
@@ -203,20 +203,20 @@ PanelWindow {
             Layout.fillWidth: true
             height: 6
             radius: 1
-            color: "#313244"
+            color: Color.mSurfaceVariant
 
             Rectangle {
               width: parent.width * Math.min(1, modelData.percent || 0)
               height: parent.height
               radius: 1
-              color: (modelData.percent || 0) > 0.85 ? "#f38ba8" : "#89b4fa"
+              color: (modelData.percent || 0) > 0.85 ? Color.mError : Color.mPrimary
             }
           }
 
           Text {
             font.family: Settings.data.ui.fontFamily
             text: root.formatResetsAt(modelData.resetsAt)
-            color: "#6c7086"
+            color: Color.mOnSurfaceVariant
             font.pixelSize: 10
           }
         }
@@ -225,7 +225,7 @@ PanelWindow {
       Rectangle {
         Layout.fillWidth: true
         height: 1
-        color: "#45475a"
+        color: Color.mOutline
       }
 
       RowLayout {
@@ -233,14 +233,14 @@ PanelWindow {
         Text {
           font.family: Settings.data.ui.fontFamily
           text: "Today"
-          color: "#6c7086"
+          color: Color.mOnSurfaceVariant
           font.pixelSize: 11
           Layout.fillWidth: true
         }
         Text {
           font.family: Settings.data.ui.fontFamily
           text: root.todayPrompts + " prompts · " + root.formatTokens(root.todayTotalTokens) + " tokens"
-          color: "#cdd6f4"
+          color: Color.mOnSurface
           font.pixelSize: 11
         }
       }

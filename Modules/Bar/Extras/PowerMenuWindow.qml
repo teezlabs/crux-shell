@@ -106,8 +106,8 @@ PanelWindow {
           preferredRendererType: Shape.CurveRenderer
 
           ShapePath {
-            fillColor: hexMouse.containsMouse ? "#89b4fa" : "#313244"
-            strokeColor: "#45475a"
+            fillColor: hexMouse.containsMouse ? Color.mPrimary : Color.mSurfaceVariant
+            strokeColor: Color.mOutline
             strokeWidth: 1
 
             startX: hex.r * 1.733; startY: hex.r * 0.5
@@ -128,7 +128,7 @@ PanelWindow {
             anchors.horizontalCenter: parent.horizontalCenter
             text: hex.modelData.glyph
             font.pixelSize: 20
-            color: hexMouse.containsMouse ? "#1e1e2e" : "#cdd6f4"
+            color: hexMouse.containsMouse ? Color.mSurface : Color.mOnSurface
           }
 
           Text {
@@ -136,7 +136,7 @@ PanelWindow {
             text: hex.modelData.label
             font.family: Settings.data.ui.fontFamily
             font.pixelSize: 11
-            color: hexMouse.containsMouse ? "#1e1e2e" : "#cdd6f4"
+            color: hexMouse.containsMouse ? Color.mSurface : Color.mOnSurface
           }
         }
 

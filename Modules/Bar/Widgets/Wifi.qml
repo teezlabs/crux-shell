@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell.Networking
 import qs.Modules.Bar.Extras
+import qs.Commons
 
 // Plain Wi-Fi status icon on the bar; the real network list/connect UI lives
 // in the separate WifiMenuWindow popup.
@@ -41,8 +42,8 @@ Item {
   Rectangle {
     anchors.fill: parent
     anchors.margins: 4
-    radius: 2
-    color: mouseArea.containsMouse ? "#45475a" : "transparent"
+    radius: Style.radiusXXS
+    color: mouseArea.containsMouse ? Color.mOutline : "transparent"
 
     // Standard wifi-fan glyph (three concentric arcs + a dot) drawn on
     // Canvas — no font/emoji glyph dependency, and reads as "wifi" at a
@@ -52,7 +53,7 @@ Item {
       anchors.centerIn: parent
       width: 16
       height: 12
-      readonly property color drawColor: !Networking.wifiEnabled ? "#45475a" : (root.connectedNetwork ? "#89b4fa" : "#6c7086")
+      readonly property color drawColor: !Networking.wifiEnabled ? Color.mOutline : (root.connectedNetwork ? Color.mPrimary : Color.mOnSurfaceVariant)
       onDrawColorChanged: requestPaint()
       onPaint: {
         var ctx = getContext("2d");

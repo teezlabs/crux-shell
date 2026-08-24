@@ -171,9 +171,9 @@ PanelWindow {
     anchors.rightMargin: 12
     width: 340
     height: Math.min(480, column.implicitHeight + 24)
-    radius: 2
-    color: "#1e1e2e"
-    border.color: "#45475a"
+    radius: Style.radiusXXS
+    color: Color.mSurface
+    border.color: Color.mOutline
     border.width: 1
 
     MouseArea {
@@ -192,7 +192,7 @@ PanelWindow {
 
         Text {
           text: "Clipboard"
-          color: "#cdd6f4"
+          color: Color.mOnSurface
           font.family: Settings.data.ui.fontFamily
           font.pixelSize: 14
           font.bold: true
@@ -201,7 +201,7 @@ PanelWindow {
 
         Text {
           text: "clear all"
-          color: "#f38ba8"
+          color: Color.mError
           font.family: Settings.data.ui.fontFamily
           font.pixelSize: 11
           MouseArea {
@@ -215,7 +215,7 @@ PanelWindow {
       Text {
         visible: !root.cliphistAvailable
         text: "cliphist not found"
-        color: "#6c7086"
+        color: Color.mOnSurfaceVariant
         font.family: Settings.data.ui.fontFamily
         font.pixelSize: 12
       }
@@ -239,7 +239,7 @@ PanelWindow {
 
             Text {
               text: rowItem.modelData.isImage ? "[image]" : rowItem.modelData.preview
-              color: "#cdd6f4"
+              color: Color.mOnSurface
               font.family: Settings.data.ui.fontFamily
               font.pixelSize: 12
               elide: Text.ElideRight
@@ -248,7 +248,7 @@ PanelWindow {
 
             Text {
               text: "×"
-              color: "#6c7086"
+              color: Color.mOnSurfaceVariant
               font.pixelSize: 14
               MouseArea {
                 anchors.fill: parent
