@@ -4,10 +4,23 @@ import QtQuick.Layouts
 import Quickshell
 import qs.Commons
 
-ColumnLayout {
+// Root is a Flickable, not a plain ColumnLayout — this subtab's content
+// (position/spacing/thickness/gap/border/auto-hide/monitors/per-monitor
+// overrides) grew past what fits in the settings card's fixed height, and
+// a ColumnLayout alone has no scroll of its own. contentHeight tracks the
+// inner ColumnLayout's implicitHeight so it scrolls exactly as far as it
+// needs to, no further.
+Flickable {
   id: root
   property string screenName: ""
-  spacing: 16
+  clip: true
+  contentWidth: width
+  contentHeight: col.implicitHeight
+
+  ColumnLayout {
+    id: col
+    width: parent.width
+    spacing: 16
 
   Text {
     text: "Position"
@@ -246,7 +259,93 @@ ColumnLayout {
     }
   }
 
-  Item {
-    Layout.fillHeight: true
+  Text {
+    text: "Per-monitor position override"
+    color: Color.mOnSurfaceVariant
+    font.family: Settings.data.ui.fontFamily
+    font.pixelSize: Style.fontSizeS
+    Layout.topMargin: 8
+  }
+
+  ColumnLayout {
+    spacing: 8
+
+    Repeater {
+      model: Quickshell.screens
+
+      delegate: ColumnLayout {
+        id: overrideRow
+        required property var modelData
+        readonly property string screenName: modelData.name
+        readonly property bool isCustom: Settings.hasPositionOverride(screenName)
+        spacing: 4
+
+        RowLayout {
+          spacing: 8
+
+          Rectangle {
+            width: 18
+            height: 18
+            radius: Style.radiusXXS
+            color: overrideRow.isCustom ? Color.mPrimary : "transparent"
+            border.color: Color.mOutline
+            border.width: 1
+
+            MouseArea {
+              anchors.fill: parent
+              cursorShape: Qt.PointingHandCursor
+              onClicked: {
+                if (overrideRow.isCustom) {
+                  Settings.setScreenOverride(overrideRow.screenName, "enabled", false);
+                } else {
+                  Settings.setScreenOverride(overrideRow.screenName, "position", Settings.getBarPositionForScreen(overrideRow.screenName));
+                }
+              }
+            }
+          }
+
+          Text {
+            text: overrideRow.screenName + " — custom position"
+            color: Color.mOnSurface
+            font.family: Settings.data.ui.fontFamily
+            font.pixelSize: Style.fontSizeS
+          }
+        }
+
+        RowLayout {
+          spacing: 6
+          visible: overrideRow.isCustom
+          Layout.leftMargin: 26
+
+          Repeater {
+            model: ["top", "bottom", "left", "right"]
+            delegate: Rectangle {
+              id: posBtn
+              required property string modelData
+              Layout.preferredWidth: 64
+              height: 26
+              radius: Style.radiusXS
+              color: Settings.getBarPositionForScreen(overrideRow.screenName) === posBtn.modelData ? Color.mPrimary : Color.mSurfaceVariant
+
+              Text {
+                anchors.centerIn: parent
+                text: posBtn.modelData
+                color: Settings.getBarPositionForScreen(overrideRow.screenName) === posBtn.modelData ? Color.mOnPrimary : Color.mOnSurface
+                font.family: Settings.data.ui.fontFamily
+                font.pixelSize: Style.fontSizeXS
+              }
+
+              MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: Settings.setScreenOverride(overrideRow.screenName, "position", posBtn.modelData)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   }
 }

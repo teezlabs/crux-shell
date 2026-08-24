@@ -86,7 +86,6 @@ Singleton {
 
     property JsonObject wallpaper: JsonObject {
       property string path: "" // current wallpaper, set live via `qs ipc call wallpaper set <path>`
-      property string directory: (Quickshell.env("HOME") || "") + "/.config/wallpapers"
     }
 
     property JsonObject ui: JsonObject {
@@ -147,6 +146,14 @@ Singleton {
       return override.position;
     }
     return data.bar.position || "top";
+  }
+
+  // True if this screen has its own enabled position override (as opposed
+  // to just following data.bar.position globally) — for the settings
+  // panel's per-monitor override UI to know whether to show it as "custom".
+  function hasPositionOverride(screenName) {
+    var override = _findScreenOverride(screenName);
+    return !!(override && override.enabled !== false && override.position !== undefined);
   }
 
   function getBarWidgetsForScreen(screenName) {
