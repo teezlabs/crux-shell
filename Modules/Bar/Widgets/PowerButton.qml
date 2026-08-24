@@ -34,8 +34,8 @@ Item {
     // the crux skill's font gotchas. No font/emoji glyph dependency now.
     Canvas {
       anchors.centerIn: parent
-      width: 15
-      height: 15
+      width: 16
+      height: 16
       readonly property color drawColor: Color.mOnSurface
       onDrawColorChanged: requestPaint()
       onPaint: {
@@ -46,15 +46,21 @@ Item {
         ctx.lineCap = "round";
         var cx = width / 2;
         var cy = height / 2;
-        var r = width / 2 - 1;
+        var r = width / 2 - 1.5;
 
+        // Canvas arc angles are measured from the 3-o'clock point,
+        // increasing clockwise, so "top" is 1.5*PI, not 0 - the previous
+        // version's gap (centered on angle 0, i.e. 3 o'clock) didn't line
+        // up with the vertical stroke below at all, which is what actually
+        // looked wrong, not just "off-center".
+        var gapHalf = 0.16;
         ctx.beginPath();
-        ctx.arc(cx, cy, r, Math.PI * 0.15, Math.PI * 1.85);
+        ctx.arc(cx, cy, r, (1.5 + gapHalf) * Math.PI, (1.5 - gapHalf) * Math.PI + 2 * Math.PI);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.moveTo(cx, 0);
-        ctx.lineTo(cx, cy - 1);
+        ctx.moveTo(cx, cy - r - 1);
+        ctx.lineTo(cx, cy - r * 0.15);
         ctx.stroke();
       }
     }
