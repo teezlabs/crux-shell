@@ -113,17 +113,34 @@ ShellRoot {
         left: barPosition === "left" || !barIsVertical
         right: barPosition === "right" || !barIsVertical
       }
+      margins {
+        top: Style.marginS
+        bottom: Style.marginS
+        left: Style.marginS
+        right: Style.marginS
+      }
       // When vertical, top+bottom anchors fill height and only implicitWidth matters (and vice versa).
       implicitWidth: 32
       implicitHeight: 32
-      color: "#1e1e2e"
+      // Transparent so the margins above actually read as a floating gap
+      // around a rounded pill (the Rectangle below), not a plain inset
+      // rectangle on a same-colored background.
+      color: "transparent"
 
       WlrLayershell.layer: WlrLayer.Top
       WlrLayershell.namespace: "crux-bar"
       WlrLayershell.exclusionMode: ExclusionMode.Auto
 
-      Bar {
-        screen: root.screen
+      Rectangle {
+        anchors.fill: parent
+        radius: Style.radiusM
+        color: Color.alpha(Color.mSurface, Style.barOpacity)
+        border.color: Color.mOutline
+        border.width: 1
+
+        Bar {
+          screen: root.screen
+        }
       }
 
       VolumeOsd {
