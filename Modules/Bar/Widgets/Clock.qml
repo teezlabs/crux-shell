@@ -20,6 +20,8 @@ Item {
 
   implicitWidth: label.implicitWidth + 16
   implicitHeight: label.implicitHeight + 8
+  width: implicitWidth
+  height: implicitHeight
 
   Text {
     id: label

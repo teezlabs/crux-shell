@@ -14,12 +14,16 @@ Item {
 
   readonly property string _widgetsDir: Quickshell.shellDir + "/Modules/Bar/Widgets/"
 
+  // No anchors.fill on the Loader: an explicit size on the Loader forces the
+  // loaded item down to that size (0x0 before the first item loads), which
+  // was collapsing every widget's real hit-test area to a point.
   implicitWidth: loader.item ? loader.item.implicitWidth : 0
   implicitHeight: loader.item ? loader.item.implicitHeight : 0
+  width: implicitWidth
+  height: implicitHeight
 
   Loader {
     id: loader
-    anchors.fill: parent
     active: BarWidgetRegistry.hasWidget(root.widgetId)
     source: active ? root._widgetsDir + root.widgetId + ".qml" : ""
 
