@@ -140,6 +140,7 @@ ShellRoot {
 
         Bar {
           screen: root.screen
+          vertical: root.barIsVertical
         }
       }
 

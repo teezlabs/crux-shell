@@ -8,6 +8,7 @@ Item {
   id: root
 
   property var screen: null
+  property bool vertical: false
   readonly property string screenName: screen ? screen.name : ""
   readonly property var barWidgets: Settings.isLoaded ? Settings.getBarWidgetsForScreen(screenName) : ({
                                                                                                           "left": [],
@@ -28,12 +29,20 @@ Item {
     property int targetIndex: -1
   }
 
+  // "left"/"right" sections keep those ids regardless of bar orientation
+  // (Settings.data.bar.widgets is keyed by them either way) — only which
+  // screen edge they anchor to changes: along the bar's main axis when
+  // vertical (top/bottom) instead of across it (left/right).
   BarSection {
-    anchors.left: parent.left
-    anchors.verticalCenter: parent.verticalCenter
-    anchors.leftMargin: 8
+    anchors.left: root.vertical ? undefined : parent.left
+    anchors.top: root.vertical ? parent.top : undefined
+    anchors.verticalCenter: root.vertical ? undefined : parent.verticalCenter
+    anchors.horizontalCenter: root.vertical ? parent.horizontalCenter : undefined
+    anchors.leftMargin: root.vertical ? 0 : 8
+    anchors.topMargin: root.vertical ? 8 : 0
     section: "left"
     screen: root.screen
+    vertical: root.vertical
     widgetsModel: root.barWidgets.left
     dragState: dragState
   }
@@ -42,16 +51,21 @@ Item {
     anchors.centerIn: parent
     section: "center"
     screen: root.screen
+    vertical: root.vertical
     widgetsModel: root.barWidgets.center
     dragState: dragState
   }
 
   BarSection {
-    anchors.right: parent.right
-    anchors.verticalCenter: parent.verticalCenter
-    anchors.rightMargin: 8
+    anchors.right: root.vertical ? undefined : parent.right
+    anchors.bottom: root.vertical ? parent.bottom : undefined
+    anchors.verticalCenter: root.vertical ? undefined : parent.verticalCenter
+    anchors.horizontalCenter: root.vertical ? parent.horizontalCenter : undefined
+    anchors.rightMargin: root.vertical ? 0 : 8
+    anchors.bottomMargin: root.vertical ? 8 : 0
     section: "right"
     screen: root.screen
+    vertical: root.vertical
     widgetsModel: root.barWidgets.right
     dragState: dragState
   }

@@ -2,11 +2,14 @@ import QtQuick
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// One bar section (left/center/right): lays out its widgets in a Row and
+// One bar section (left/center/right): lays out its widgets in a line and
 // supports long-press-then-drag reordering, including across sections, with
 // a visible insertion-point indicator (a thin bar between widgets) while
 // dragging — same idea as the drop indicator in noctalia's
-// Widgets/NSectionEditor.qml settings-panel reorder UI.
+// Widgets/NSectionEditor.qml settings-panel reorder UI. The `vertical`
+// property (set from Bar.qml, which gets it from the bar's configured
+// position) switches the whole section between a horizontal line (top/
+// bottom bar) and a vertical one (left/right bar).
 //
 // Long-press is detected by a non-exclusive TapHandler (a passive grab —
 // it does not block the widget's own click handling underneath, so a
@@ -27,14 +30,15 @@ import qs.Modules.Bar.Extras
 // Drag.keys/DropArea.keys use one shared key ("crux-bar-widget") rather
 // than a per-section one, so drops are accepted across sections too.
 //
-// The indicator needs to be positioned freely (not locked into the Row's
+// The indicator needs to be positioned freely (not locked into the Grid's
 // own layout flow), so the root here is a plain Item sizing itself to the
-// inner Row, not the Row itself.
+// inner Grid, not the Grid itself.
 Item {
   id: sectionRoot
 
   property string section: ""
   property var screen: null
+  property bool vertical: false
   readonly property string screenName: screen ? screen.name : ""
   property var widgetsModel: []
   required property QtObject dragState
@@ -46,19 +50,29 @@ Item {
 
   readonly property bool isDropTarget: dragState.targetSection === section && dragState.sourceSection !== ""
 
-  function indicatorX() {
+  // Position of the insertion-point indicator along the layout's main axis
+  // (x when horizontal, y when vertical).
+  function indicatorPos() {
     var idx = dragState.targetIndex;
     if (idx <= 0)
       return 0;
     var before = repeater.itemAt(Math.min(idx, repeater.count) - 1);
     if (!before)
       return 0;
-    return before.x + before.width + sectionRow.spacing / 2 - 1;
+    var beforeMain = sectionRoot.vertical ? (before.y + before.height) : (before.x + before.width);
+    return beforeMain + sectionRow.spacing / 2 - 1;
   }
 
-  Row {
+  // Grid rather than Row/Column so one type covers both bar orientations —
+  // with columns/rows forced past the item count, Grid.LeftToRight with
+  // rows:1 behaves exactly like Row (never wraps to a second row), and
+  // Grid.TopToBottom with columns:1 behaves exactly like Column.
+  Grid {
     id: sectionRow
     spacing: 6
+    flow: sectionRoot.vertical ? Grid.TopToBottom : Grid.LeftToRight
+    rows: sectionRoot.vertical ? 1000 : 1
+    columns: sectionRoot.vertical ? 1 : 1000
 
     Repeater {
       id: repeater
@@ -183,8 +197,9 @@ Item {
     // widget in it currently renders at 0×0 because it's conditionally
     // hidden (nothing playing right now).
     Item {
-      width: Math.max(24, sectionRow.width === 0 ? 40 : 0)
-      height: 24
+      readonly property bool sectionEmpty: sectionRoot.vertical ? sectionRow.height === 0 : sectionRow.width === 0
+      width: sectionRoot.vertical ? 24 : Math.max(24, sectionEmpty ? 40 : 0)
+      height: sectionRoot.vertical ? Math.max(24, sectionEmpty ? 40 : 0) : 24
 
       DropArea {
         anchors.fill: parent
@@ -212,13 +227,13 @@ Item {
   // widget will land, positioned between the two widgets it'll sit
   // between (or at the very start/end).
   Rectangle {
-    width: 2
-    height: sectionRow.height > 0 ? sectionRow.height : 24
+    width: sectionRoot.vertical ? (sectionRow.width > 0 ? sectionRow.width : 24) : 2
+    height: sectionRoot.vertical ? 2 : (sectionRow.height > 0 ? sectionRow.height : 24)
     radius: 1
-    color: "#89b4fa"
+    color: Color.mPrimary
     visible: sectionRoot.isDropTarget
-    x: sectionRoot.indicatorX()
-    y: 0
+    x: sectionRoot.vertical ? 0 : sectionRoot.indicatorPos()
+    y: sectionRoot.vertical ? sectionRoot.indicatorPos() : 0
     z: 2000
 
     SequentialAnimation on opacity {
