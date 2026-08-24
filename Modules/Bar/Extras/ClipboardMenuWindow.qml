@@ -122,6 +122,21 @@ PanelWindow {
       refresh();
   }
 
+  IpcHandler {
+    enabled: root.targetScreen === Quickshell.screens[0]
+    target: "clipboard"
+    function toggle() {
+      root.toggle();
+    }
+    function show() {
+      if (!root.visible)
+        root.toggle();
+    }
+    function hide() {
+      root.visible = false;
+    }
+  }
+
   visible: false
   color: "transparent"
 

@@ -306,6 +306,21 @@ PanelWindow {
       passwordSsid = "";
   }
 
+  IpcHandler {
+    enabled: root.targetScreen === Quickshell.screens[0]
+    target: "wifi"
+    function toggle() {
+      root.toggle();
+    }
+    function open() {
+      if (!root.visible)
+        root.toggle();
+    }
+    function close() {
+      root.visible = false;
+    }
+  }
+
   Shortcut {
     sequence: "Escape"
     enabled: root.visible

@@ -142,6 +142,20 @@ PanelWindow {
     visible = !visible;
   }
 
+  IpcHandler {
+    enabled: root.targetScreen === Quickshell.screens[0]
+    target: "bluetooth"
+    function toggle() {
+      root.toggle();
+    }
+    function open() {
+      root.visible = true;
+    }
+    function close() {
+      root.visible = false;
+    }
+  }
+
   Shortcut {
     sequence: "Escape"
     enabled: root.visible

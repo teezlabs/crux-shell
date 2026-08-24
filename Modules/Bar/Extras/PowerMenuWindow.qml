@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Shapes
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 import qs.Commons
 
@@ -57,6 +58,20 @@ PanelWindow {
 
   function toggle() {
     visible = !visible;
+  }
+
+  IpcHandler {
+    enabled: root.targetScreen === Quickshell.screens[0]
+    target: "power"
+    function toggle() {
+      root.toggle();
+    }
+    function open() {
+      root.visible = true;
+    }
+    function close() {
+      root.visible = false;
+    }
   }
 
   Shortcut {
