@@ -44,11 +44,23 @@ Item {
     radius: 2
     color: mouseArea.containsMouse ? "#45475a" : "transparent"
 
-    Text {
+    // Geometric signal-bar icon — no font/emoji glyph dependency.
+    Row {
       anchors.centerIn: parent
-      text: "📶"
-      font.pixelSize: 15
-      opacity: !Networking.wifiEnabled ? 0.35 : (root.connectedNetwork ? 1.0 : 0.6)
+      spacing: 2
+
+      Repeater {
+        model: 4
+        delegate: Rectangle {
+          required property int index
+          readonly property int barHeight: 4 + index * 3
+          width: 3
+          height: barHeight
+          anchors.bottom: parent.bottom
+          radius: 1
+          color: !Networking.wifiEnabled ? "#45475a" : (root.connectedNetwork ? "#89b4fa" : "#6c7086")
+        }
+      }
     }
   }
 
