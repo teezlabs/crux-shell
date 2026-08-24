@@ -19,8 +19,11 @@ Item {
     onTriggered: root.now = new Date()
   }
 
+  // implicitHeight fixed at 32 to match every other bar widget — see the
+  // same fix/comment in Workspaces.qml for why a shorter implicitHeight
+  // here would misalign this widget within BarSection's Row.
   implicitWidth: label.implicitWidth + 16
-  implicitHeight: label.implicitHeight + 8
+  implicitHeight: 32
   width: implicitWidth
   height: implicitHeight
 

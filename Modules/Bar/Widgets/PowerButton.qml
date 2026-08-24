@@ -27,11 +27,36 @@ Item {
     radius: 6
     color: hoverHandler.hovered ? Color.mOutline : "transparent"
 
-    Text {
+    // Geometric power-symbol glyph (circle with a top notch + vertical
+    // stroke) drawn on Canvas — the previous "⏻" text glyph rendered with
+    // enough font-metric baseline offset to look visibly off-center in the
+    // bar despite anchors.centerIn, the same class of issue documented in
+    // the crux skill's font gotchas. No font/emoji glyph dependency now.
+    Canvas {
       anchors.centerIn: parent
-      text: "⏻"
-      font.pixelSize: 16
-      color: Color.mOnSurface
+      width: 15
+      height: 15
+      readonly property color drawColor: Color.mOnSurface
+      onDrawColorChanged: requestPaint()
+      onPaint: {
+        var ctx = getContext("2d");
+        ctx.reset();
+        ctx.strokeStyle = drawColor;
+        ctx.lineWidth = 1.5;
+        ctx.lineCap = "round";
+        var cx = width / 2;
+        var cy = height / 2;
+        var r = width / 2 - 1;
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, Math.PI * 0.15, Math.PI * 1.85);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(cx, 0);
+        ctx.lineTo(cx, cy - 1);
+        ctx.stroke();
+      }
     }
   }
 

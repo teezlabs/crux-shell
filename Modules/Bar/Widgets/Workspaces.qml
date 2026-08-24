@@ -77,8 +77,12 @@ Item {
     }
   }
 
+  // Fixed at 32 to match every other bar widget's implicitHeight — BarSection's
+  // outer Row doesn't vertically center children of differing heights (it only
+  // manages the horizontal axis), so a shorter implicitHeight here left this
+  // widget's whole bounding box top-aligned instead of centered in the bar.
   implicitWidth: row.implicitWidth
-  implicitHeight: row.implicitHeight
+  implicitHeight: 32
   width: implicitWidth
   height: implicitHeight
 
