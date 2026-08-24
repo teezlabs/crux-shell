@@ -44,22 +44,36 @@ Item {
     radius: 2
     color: mouseArea.containsMouse ? "#45475a" : "transparent"
 
-    // Geometric signal-bar icon — no font/emoji glyph dependency.
-    Row {
+    // Standard wifi-fan glyph (three concentric arcs + a dot) drawn on
+    // Canvas — no font/emoji glyph dependency, and reads as "wifi" at a
+    // glance instead of generic signal bars.
+    Canvas {
+      id: wifiCanvas
       anchors.centerIn: parent
-      spacing: 2
+      width: 16
+      height: 12
+      readonly property color drawColor: !Networking.wifiEnabled ? "#45475a" : (root.connectedNetwork ? "#89b4fa" : "#6c7086")
+      onDrawColorChanged: requestPaint()
+      onPaint: {
+        var ctx = getContext("2d");
+        ctx.reset();
+        ctx.strokeStyle = drawColor;
+        ctx.fillStyle = drawColor;
+        ctx.lineWidth = 1.6;
+        ctx.lineCap = "round";
+        var cx = width / 2;
+        var cy = height - 1;
 
-      Repeater {
-        model: 4
-        delegate: Rectangle {
-          required property int index
-          readonly property int barHeight: 4 + index * 3
-          width: 3
-          height: barHeight
-          anchors.bottom: parent.bottom
-          radius: 1
-          color: !Networking.wifiEnabled ? "#45475a" : (root.connectedNetwork ? "#89b4fa" : "#6c7086")
+        for (var i = 0; i < 3; i++) {
+          var radius = 3 + i * 4;
+          ctx.beginPath();
+          ctx.arc(cx, cy, radius, Math.PI * 1.25, Math.PI * 1.75);
+          ctx.stroke();
         }
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, 1.3, 0, Math.PI * 2);
+        ctx.fill();
       }
     }
   }

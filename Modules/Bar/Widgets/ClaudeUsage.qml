@@ -81,7 +81,7 @@ Item {
       anchors.centerIn: parent
         text: "" // "robot" glyph — same icon noctalia uses for this widget
         font.family: tablerIconFont.name
-        font.pixelSize: 15
+        font.pixelSize: 20
         color: root.sessionPercent > 0.85 ? "#f38ba8" : "#cdd6f4"
     }
   }
