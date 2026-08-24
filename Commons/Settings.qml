@@ -79,6 +79,11 @@ Singleton {
       property list<var> screenOverrides: []
     }
 
+    property JsonObject wallpaper: JsonObject {
+      property string path: "" // current wallpaper, set live via `qs ipc call wallpaper set <path>`
+      property string directory: (Quickshell.env("HOME") || "") + "/.config/wallpapers"
+    }
+
     property JsonObject ui: JsonObject {
       property string fontFamily: "Departure Mono"
     }

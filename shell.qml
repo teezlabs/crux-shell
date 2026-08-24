@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
 import qs.Commons
+import qs.Modules.Background
 import qs.Modules.Bar
 import qs.Modules.OSD
 import qs.Modules.Polkit
@@ -14,9 +15,19 @@ import qs.Modules.Polkit
 // the engine so the dynamic loader's own `import qs.Modules.SettingsPanel`
 // resolves. See crux skill for the full gotcha writeup.
 import qs.Modules.SettingsPanel
+import qs.Modules.Wallpaper
 
 ShellRoot {
   PolkitAgent {}
+
+  Background {}
+
+  IpcHandler {
+    target: "wallpaper"
+    function set(path: string): void {
+      Settings.data.wallpaper.path = path;
+    }
+  }
 
   // Receives live wallpaper-derived colors from aurora-wallpaper-theme
   // (matugen -> hue-anchored ANSI colors.toml text -> here), the same
