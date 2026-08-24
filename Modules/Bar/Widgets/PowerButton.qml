@@ -1,0 +1,44 @@
+import QtQuick
+import qs.Modules.Bar.Extras
+
+// Plain power icon on the bar. The honeycomb action menu lives in the
+// separate PowerMenuWindow popup — the bar strip is too thin to host it.
+Item {
+  id: root
+
+  property var screen: null
+  property string section: ""
+  property int sectionWidgetIndex: -1
+
+  implicitWidth: 32
+  implicitHeight: 32
+  width: implicitWidth
+  height: implicitHeight
+
+  PowerMenuWindow {
+    id: menu
+    targetScreen: root.screen
+  }
+
+  Rectangle {
+    anchors.fill: parent
+    anchors.margins: 4
+    radius: 6
+    color: mouseArea.containsMouse ? "#45475a" : "transparent"
+
+    Text {
+      anchors.centerIn: parent
+      text: "⏻"
+      font.pixelSize: 16
+      color: "#cdd6f4"
+    }
+  }
+
+  MouseArea {
+    id: mouseArea
+    anchors.fill: parent
+    hoverEnabled: true
+    cursorShape: Qt.PointingHandCursor
+    onClicked: menu.toggle()
+  }
+}
