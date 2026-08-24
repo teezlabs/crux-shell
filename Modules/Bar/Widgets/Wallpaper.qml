@@ -1,9 +1,14 @@
 import QtQuick
+import Quickshell
 import qs.Commons
-import qs.Modules.Wallpaper
 
-// Plain picture-frame icon on the bar; the actual picker grid lives in the
-// separate WallpaperWindow popup.
+// Plain picture-frame icon on the bar. skwd-wall is its own standalone qs
+// config (ephemeral: spawns fresh, auto-shows, exits itself when closed),
+// not a panel embedded here — same command the SUPER+W keybind runs. See
+// crux skill's wallpaper section for why: skwd-wall's real UI only behaves
+// correctly with a genuine interactive session (mouse/keyboard presence),
+// not when driven headlessly, which ruled out embedding it as a Loader-
+// managed popup the way other bar widgets' menus work.
 Item {
   id: root
 
@@ -15,11 +20,6 @@ Item {
   implicitHeight: 32
   width: implicitWidth
   height: implicitHeight
-
-  WallpaperWindow {
-    id: menu
-    targetScreen: root.screen
-  }
 
   Rectangle {
     anchors.fill: parent
@@ -69,6 +69,6 @@ Item {
 
   TapHandler {
     acceptedButtons: Qt.LeftButton
-    onTapped: menu.toggle()
+    onTapped: Quickshell.execDetached(["qs", "-c", "skwd-wall"])
   }
 }
