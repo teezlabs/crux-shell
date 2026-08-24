@@ -82,6 +82,28 @@ Singleton {
     property JsonObject ui: JsonObject {
       property string fontFamily: "Departure Mono"
     }
+
+    // Semantic color tokens, Material-You-ish naming to match noctalia's
+    // Commons/Color.qml convention (the "m" prefix avoids QML reading
+    // e.g. "onPrimary" as a signal handler name). Defaults are exactly
+    // the palette every crux widget has already been hardcoding all
+    // along — this section makes it configurable, not a visual reset.
+    property JsonObject theme: JsonObject {
+      property string mPrimary: "#89b4fa" // accent
+      property string mOnPrimary: "#1e1e2e"
+      property string mSecondary: "#f38ba8" // warning/error accent
+      property string mOnSecondary: "#1e1e2e"
+      property string mSurface: "#1e1e2e" // popup/card background
+      property string mOnSurface: "#cdd6f4" // primary text
+      property string mSurfaceVariant: "#313244" // input fields, pills
+      property string mOnSurfaceVariant: "#6c7086" // secondary/muted text
+      property string mOutline: "#45475a" // borders, hover fill
+      property string mError: "#f38ba8"
+      property string mOnError: "#1e1e2e"
+
+      property real radiusRatio: 1.0 // multiplies every Style.radius* token
+      property real barOpacity: 1.0 // 0..1, bar + popup background alpha
+    }
   }
 
   // -----------------------------------------------------
@@ -129,7 +151,8 @@ Singleton {
     var usesOverride = !!(override && override.enabled !== false && override.widgets !== undefined);
     var widgets = JSON.parse(JSON.stringify(usesOverride ? override.widgets : data.bar.widgets));
     var list = widgets[section];
-    if (!list || fromIndex < 0 || fromIndex >= list.length || toIndex < 0 || toIndex >= list.length)
+    // toIndex === list.length is valid — "move to the end".
+    if (!list || fromIndex < 0 || fromIndex >= list.length || toIndex < 0 || toIndex > list.length)
       return;
 
     var moved = list.splice(fromIndex, 1)[0];
@@ -143,6 +166,37 @@ Singleton {
       // Assign directly to the affected list<var> sub-property instead,
       // same as how screenOverrides (itself a list<var>) is written above.
       data.bar.widgets[section] = list;
+    }
+  }
+
+  // Moves the widget at fromIndex in fromSection to toIndex in toSection —
+  // the cross-section counterpart to reorderBarWidget above. Same
+  // effective-list resolution rule.
+  function moveBarWidget(screenName, fromSection, fromIndex, toSection, toIndex) {
+    if (fromSection === toSection) {
+      reorderBarWidget(screenName, fromSection, fromIndex, toIndex);
+      return;
+    }
+
+    var override = _findScreenOverride(screenName);
+    var usesOverride = !!(override && override.enabled !== false && override.widgets !== undefined);
+    var widgets = JSON.parse(JSON.stringify(usesOverride ? override.widgets : data.bar.widgets));
+    var fromList = widgets[fromSection];
+    var toList = widgets[toSection];
+    if (!fromList || !toList || fromIndex < 0 || fromIndex >= fromList.length)
+      return;
+
+    var moved = fromList.splice(fromIndex, 1)[0];
+    var insertAt = Math.max(0, Math.min(toIndex, toList.length));
+    toList.splice(insertAt, 0, moved);
+    widgets[fromSection] = fromList;
+    widgets[toSection] = toList;
+
+    if (usesOverride) {
+      setScreenOverride(screenName, "widgets", widgets);
+    } else {
+      data.bar.widgets[fromSection] = fromList;
+      data.bar.widgets[toSection] = toList;
     }
   }
 
