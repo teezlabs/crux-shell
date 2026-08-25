@@ -299,6 +299,7 @@ Flickable {
                   Settings.setScreenOverride(overrideRow.screenName, "enabled", false);
                 } else {
                   Settings.setScreenOverride(overrideRow.screenName, "position", Settings.getBarPositionForScreen(overrideRow.screenName));
+                  Settings.setScreenOverride(overrideRow.screenName, "enabled", true);
                 }
               }
             }
