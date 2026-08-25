@@ -204,17 +204,48 @@ ShellRoot {
         }
       }
 
+      // Faint primary-tinted glow, same "powered on" cue used on the
+      // settings card — separate from the black depth shadow above.
+      MultiEffect {
+        anchors.fill: barRect
+        source: barRect
+        shadowEnabled: true
+        shadowColor: Color.mPrimary
+        shadowBlur: 0.35
+        shadowOpacity: 0.22
+        opacity: root.barShown ? 1 : 0
+        Behavior on opacity {
+          NumberAnimation {
+            duration: Style.animationNormal
+          }
+        }
+      }
+
       Rectangle {
         id: barRect
         anchors.fill: parent
         radius: Style.radiusM
-        color: Color.alpha(Color.mSurface, Style.barOpacity)
-        border.color: Color.mOutline
+        border.color: Color.alpha(Color.mPrimary, 0.35)
         border.width: Settings.data.bar.showBorder ? Settings.data.bar.borderWidth : 0
         opacity: root.barShown ? 1 : 0
         Behavior on opacity {
           NumberAnimation {
             duration: Style.animationNormal
+          }
+        }
+
+        // Subtle top-lit gradient instead of a flat fill — same depth cue
+        // as the settings card (SettingsWindow.qml) and section cards
+        // (Controls/SettingsSection.qml).
+        gradient: Gradient {
+          orientation: root.barIsVertical ? Gradient.Horizontal : Gradient.Vertical
+          GradientStop {
+            position: 0
+            color: Color.alpha(Qt.lighter(Color.mSurface, 1.12), Style.barOpacity)
+          }
+          GradientStop {
+            position: 1
+            color: Color.alpha(Color.mSurface, Style.barOpacity)
           }
         }
 
