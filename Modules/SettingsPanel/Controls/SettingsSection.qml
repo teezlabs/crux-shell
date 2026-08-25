@@ -2,10 +2,11 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 
-// Grouped-card section wrapper — noctalia groups related settings rows
-// inside a bordered card (NBox) with a title above it; this is crux's own
-// lean version of that, used to turn a flat wall of label/control rows
-// into visually distinct, scannable groups.
+// Grouped-card section wrapper. Title reads as a HUD-style label (accent
+// tick + letter-spaced uppercase + trailing gradient rule) rather than
+// plain bold text, and the card itself gets a faint top-lit gradient and a
+// primary-tinted border instead of a flat mOutline box — small cues meant
+// to read as "designed", not just "grouped".
 ColumnLayout {
   id: root
 
@@ -13,17 +14,45 @@ ColumnLayout {
   property string description: ""
   default property alias content: inner.children
 
-  spacing: 6
+  spacing: 8
   Layout.fillWidth: true
 
-  Text {
+  RowLayout {
     visible: root.title !== ""
-    text: root.title
-    color: Color.mOnSurface
-    font.family: Settings.data.ui.fontFamily
-    font.pixelSize: Style.fontSizeM
-    font.bold: true
+    spacing: 8
     Layout.bottomMargin: 2
+
+    Rectangle {
+      width: 3
+      height: 13
+      radius: 1.5
+      color: Color.mPrimary
+    }
+
+    Text {
+      text: root.title.toUpperCase()
+      color: Color.mOnSurface
+      font.family: Settings.data.ui.fontFamily
+      font.pixelSize: Style.fontSizeS
+      font.bold: true
+      font.letterSpacing: 1.5
+    }
+
+    Rectangle {
+      Layout.fillWidth: true
+      Layout.preferredHeight: 1
+      gradient: Gradient {
+        orientation: Gradient.Horizontal
+        GradientStop {
+          position: 0
+          color: Color.alpha(Color.mPrimary, 0.35)
+        }
+        GradientStop {
+          position: 1
+          color: "transparent"
+        }
+      }
+    }
   }
 
   Text {
@@ -39,16 +68,26 @@ ColumnLayout {
 
   Rectangle {
     Layout.fillWidth: true
-    Layout.preferredHeight: inner.implicitHeight + 24
+    Layout.preferredHeight: inner.implicitHeight + 26
     radius: Style.radiusS
-    color: Color.mSurfaceVariant
-    border.color: Color.mOutline
+    border.color: Color.alpha(Color.mPrimary, 0.28)
     border.width: 1
+
+    gradient: Gradient {
+      GradientStop {
+        position: 0
+        color: Qt.lighter(Color.mSurfaceVariant, 1.08)
+      }
+      GradientStop {
+        position: 1
+        color: Color.mSurfaceVariant
+      }
+    }
 
     ColumnLayout {
       id: inner
       anchors.fill: parent
-      anchors.margins: 12
+      anchors.margins: 14
       spacing: 14
     }
   }
