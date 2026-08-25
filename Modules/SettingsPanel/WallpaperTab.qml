@@ -42,7 +42,14 @@ ColumnLayout {
     width: openLabel.implicitWidth + 24
     height: 30
     radius: Style.radiusXS
-    color: openHover.hovered ? Color.mOutline : Color.mSurfaceVariant
+    color: openHover.hovered ? Color.alpha(Color.mPrimary, 0.16) : Color.mSurfaceVariant
+    border.color: Color.alpha(Color.mPrimary, 0.55)
+    border.width: openHover.hovered ? 1 : 0
+    Behavior on color {
+      ColorAnimation {
+        duration: Style.animationFast
+      }
+    }
 
     Text {
       id: openLabel

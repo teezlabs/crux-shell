@@ -57,7 +57,14 @@ ColumnLayout {
       width: restartLabel.implicitWidth + 24
       height: 30
       radius: Style.radiusXS
-      color: restartHover.hovered ? Color.mOutline : Color.mSurfaceVariant
+      color: restartHover.hovered ? Color.alpha(Color.mPrimary, 0.16) : Color.mSurfaceVariant
+      border.color: Color.alpha(Color.mPrimary, 0.55)
+      border.width: restartHover.hovered ? 1 : 0
+      Behavior on color {
+        ColorAnimation {
+          duration: Style.animationFast
+        }
+      }
 
       Text {
         id: restartLabel

@@ -135,7 +135,14 @@ PanelWindow {
           width: 28
           height: 28
           radius: Style.radiusXXS
-          color: hoverMute.hovered ? Color.mOutline : "transparent"
+          color: hoverMute.hovered ? Color.alpha(Color.mPrimary, 0.16) : "transparent"
+          border.color: Color.alpha(Color.mPrimary, 0.55)
+          border.width: hoverMute.hovered ? 1 : 0
+          Behavior on color {
+            ColorAnimation {
+              duration: Style.animationFast
+            }
+          }
 
           Text {
             anchors.centerIn: parent
@@ -195,7 +202,14 @@ PanelWindow {
             height: 32
             radius: Style.radiusXXS
             readonly property bool isDefault: root.sink && modelData.id === root.sink.id
-            color: hoverSink.hovered ? Color.mOutline : "transparent"
+            color: sinkRow.isDefault ? Color.alpha(Color.mPrimary, 0.16) : (hoverSink.hovered ? Color.alpha(Color.mPrimary, 0.12) : "transparent")
+            border.color: Color.alpha(Color.mPrimary, 0.55)
+            border.width: sinkRow.isDefault || hoverSink.hovered ? 1 : 0
+            Behavior on color {
+              ColorAnimation {
+                duration: Style.animationFast
+              }
+            }
 
             RowLayout {
               anchors.fill: parent

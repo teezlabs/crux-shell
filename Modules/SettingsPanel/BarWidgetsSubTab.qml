@@ -121,9 +121,14 @@ RowLayout {
             width: addLabel.implicitWidth + 12
             height: 20
             radius: Style.radiusXXS
-            color: addMouse.containsMouse ? Color.mOutline : Color.mSurfaceVariant
-            border.color: Color.mOutline
+            color: addMouse.containsMouse ? Color.alpha(Color.mPrimary, 0.16) : Color.mSurfaceVariant
+            border.color: Color.alpha(Color.mPrimary, 0.55)
             border.width: 1
+            Behavior on color {
+              ColorAnimation {
+                duration: Style.animationFast
+              }
+            }
 
             Text {
               id: addLabel

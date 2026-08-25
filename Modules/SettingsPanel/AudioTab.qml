@@ -77,7 +77,14 @@ ColumnLayout {
         height: 34
         radius: Style.radiusXXS
         readonly property bool isDefault: root.sink && modelData.id === root.sink.id
-        color: hoverSink.hovered ? Color.mOutline : "transparent"
+        color: sinkRow.isDefault ? Color.alpha(Color.mPrimary, 0.16) : (hoverSink.hovered ? Color.alpha(Color.mPrimary, 0.12) : "transparent")
+        border.color: Color.alpha(Color.mPrimary, 0.55)
+        border.width: sinkRow.isDefault || hoverSink.hovered ? 1 : 0
+        Behavior on color {
+          ColorAnimation {
+            duration: Style.animationFast
+          }
+        }
 
         RowLayout {
           anchors.fill: parent

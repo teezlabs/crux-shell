@@ -155,24 +155,51 @@ PanelWindow {
             Repeater {
               model: root.tabs
 
-              delegate: Rectangle {
+              delegate: Item {
+                id: sidebarItem
                 required property var modelData
+                readonly property bool active: root.activeTab === modelData.id
                 Layout.fillWidth: true
                 height: 32
-                radius: Style.radiusXS
-                color: root.activeTab === modelData.id ? Color.mPrimary : (tabMouse.containsMouse ? Color.mOutline : "transparent")
 
-                Text {
+                Rectangle {
+                  id: activeBar
+                  visible: sidebarItem.active
+                  width: 3
+                  radius: 1.5
                   anchors.left: parent.left
-                  anchors.leftMargin: 10
-                  anchors.right: parent.right
-                  anchors.rightMargin: 6
-                  anchors.verticalCenter: parent.verticalCenter
-                  text: modelData.label
-                  color: root.activeTab === modelData.id ? Color.mOnPrimary : Color.mOnSurface
-                  font.family: Settings.data.ui.fontFamily
-                  font.pixelSize: Style.fontSizeM
-                  elide: Text.ElideRight
+                  anchors.top: parent.top
+                  anchors.bottom: parent.bottom
+                  anchors.margins: 3
+                  color: Color.mPrimary
+                }
+
+                Rectangle {
+                  anchors.fill: parent
+                  anchors.leftMargin: sidebarItem.active ? 6 : 0
+                  radius: Style.radiusXS
+                  color: sidebarItem.active ? Color.alpha(Color.mPrimary, 0.22) : (tabMouse.containsMouse ? Color.alpha(Color.mPrimary, 0.12) : "transparent")
+                  border.color: Color.alpha(Color.mPrimary, 0.55)
+                  border.width: !sidebarItem.active && tabMouse.containsMouse ? 1 : 0
+                  Behavior on color {
+                    ColorAnimation {
+                      duration: Style.animationFast
+                    }
+                  }
+
+                  Text {
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10
+                    anchors.right: parent.right
+                    anchors.rightMargin: 6
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: sidebarItem.modelData.label
+                    color: sidebarItem.active ? Color.mPrimary : Color.mOnSurface
+                    font.family: Settings.data.ui.fontFamily
+                    font.pixelSize: Style.fontSizeM
+                    font.bold: sidebarItem.active
+                    elide: Text.ElideRight
+                  }
                 }
 
                 MouseArea {
@@ -180,7 +207,7 @@ PanelWindow {
                   anchors.fill: parent
                   hoverEnabled: true
                   cursorShape: Qt.PointingHandCursor
-                  onClicked: root.activeTab = modelData.id
+                  onClicked: root.activeTab = sidebarItem.modelData.id
                 }
               }
             }

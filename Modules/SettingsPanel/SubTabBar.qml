@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Effects
 import qs.Commons
 
 // Reusable horizontal pill-tab row for a top-level settings tab that has
@@ -19,22 +20,44 @@ RowLayout {
   Repeater {
     model: root.model
 
-    delegate: Rectangle {
-      id: pill
+    delegate: Item {
+      id: pillWrap
       required property var modelData
       readonly property bool active: root.activeId === modelData.id
       Layout.preferredHeight: 26
       implicitWidth: label.implicitWidth + 20
-      radius: Style.radiusXS
-      color: active ? Color.mPrimary : (hoverHandler.hovered ? Color.mOutline : Color.mSurfaceVariant)
+      implicitHeight: 26
 
-      Text {
-        id: label
-        anchors.centerIn: parent
-        text: pill.modelData.label
-        color: pill.active ? Color.mOnPrimary : Color.mOnSurface
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: Style.fontSizeS
+      MultiEffect {
+        anchors.fill: pill
+        source: pill
+        shadowEnabled: pillWrap.active
+        shadowColor: Color.mPrimary
+        shadowBlur: 0.5
+        shadowOpacity: 0.6
+      }
+
+      Rectangle {
+        id: pill
+        anchors.fill: parent
+        radius: Style.radiusXS
+        color: pillWrap.active ? Color.mPrimary : (hoverHandler.hovered ? Color.alpha(Color.mPrimary, 0.16) : Color.mSurfaceVariant)
+        border.color: Color.alpha(Color.mPrimary, 0.55)
+        border.width: !pillWrap.active && hoverHandler.hovered ? 1 : 0
+        Behavior on color {
+          ColorAnimation {
+            duration: Style.animationFast
+          }
+        }
+
+        Text {
+          id: label
+          anchors.centerIn: parent
+          text: pillWrap.modelData.label
+          color: pillWrap.active ? Color.mOnPrimary : Color.mOnSurface
+          font.family: Settings.data.ui.fontFamily
+          font.pixelSize: Style.fontSizeS
+        }
       }
 
       HoverHandler {
@@ -43,7 +66,7 @@ RowLayout {
       }
 
       TapHandler {
-        onTapped: root.activeId = pill.modelData.id
+        onTapped: root.activeId = pillWrap.modelData.id
       }
     }
   }
