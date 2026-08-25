@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import qs.Commons
+import qs.Modules.SettingsPanel.Controls
 
 // Settings panel: General, Bar, Appearance, Audio, System Monitor, and
 // Wallpaper, each a top-level tab in the sidebar — several (Bar,
@@ -220,46 +221,100 @@ PanelWindow {
       }
 
       // ---------------- Content ----------------
-      Item {
+      ColumnLayout {
         id: contentPane
         Layout.fillWidth: true
         Layout.fillHeight: true
+        Layout.margins: 16
+        spacing: 12
 
-        GeneralTab {
-          anchors.fill: parent
-          anchors.margins: 16
-          visible: root.activeTab === "general"
+        // Per-tab header — noctalia's own settings content header
+        // (SettingsContent.qml): bold accent-colored title + a real close
+        // button, instead of relying only on click-outside/Escape to close.
+        RowLayout {
+          Layout.fillWidth: true
+          spacing: 8
+
+          Text {
+            text: {
+              for (var i = 0; i < root.tabs.length; i++)
+                if (root.tabs[i].id === root.activeTab)
+                  return root.tabs[i].label;
+              return "";
+            }
+            color: Color.mPrimary
+            font.family: Settings.data.ui.fontFamily
+            font.pixelSize: Style.fontSizeL
+            font.bold: true
+            Layout.fillWidth: true
+          }
+
+          Rectangle {
+            id: closeBtn
+            width: 26
+            height: 26
+            radius: Style.radiusXS
+            color: closeHover.hovered ? Color.alpha(Color.mError, 0.18) : "transparent"
+            border.color: Color.alpha(Color.mError, 0.55)
+            border.width: closeHover.hovered ? 1 : 0
+            Behavior on color {
+              ColorAnimation {
+                duration: Style.animationFast
+              }
+            }
+
+            Text {
+              anchors.centerIn: parent
+              text: "×"
+              color: closeHover.hovered ? Color.mError : Color.mOnSurfaceVariant
+              font.pixelSize: Style.fontSizeL
+            }
+
+            HoverHandler {
+              id: closeHover
+              cursorShape: Qt.PointingHandCursor
+            }
+            TapHandler {
+              onTapped: root.visible = false
+            }
+          }
         }
 
-        BarTab {
-          anchors.fill: parent
-          anchors.margins: 16
-          visible: root.activeTab === "bar"
-          screenName: root.screenName
-        }
+        Item {
+          id: tabContentArea
+          Layout.fillWidth: true
+          Layout.fillHeight: true
 
-        AppearanceTab {
-          anchors.fill: parent
-          anchors.margins: 16
-          visible: root.activeTab === "appearance"
-        }
+          GeneralTab {
+            anchors.fill: parent
+            visible: root.activeTab === "general"
+          }
 
-        AudioTab {
-          anchors.fill: parent
-          anchors.margins: 16
-          visible: root.activeTab === "audio"
-        }
+          BarTab {
+            anchors.fill: parent
+            visible: root.activeTab === "bar"
+            screenName: root.screenName
+          }
 
-        SystemMonitorTab {
-          anchors.fill: parent
-          anchors.margins: 16
-          visible: root.activeTab === "systemMonitor"
-        }
+          AppearanceTab {
+            anchors.fill: parent
+            visible: root.activeTab === "appearance"
+          }
 
-        WallpaperTab {
-          anchors.fill: parent
-          anchors.margins: 16
-          visible: root.activeTab === "wallpaper"
+          AudioTab {
+            anchors.fill: parent
+            visible: root.activeTab === "audio"
+          }
+
+          SystemMonitorTab {
+            anchors.fill: parent
+            visible: root.activeTab === "systemMonitor"
+          }
+
+          WallpaperTab {
+            anchors.fill: parent
+            visible: root.activeTab === "wallpaper"
+          }
         }
       }
     }

@@ -17,6 +17,7 @@ import qs.Modules.Polkit
 // the engine so the dynamic loader's own `import qs.Modules.SettingsPanel`
 // resolves. See crux skill for the full gotcha writeup.
 import qs.Modules.SettingsPanel
+import qs.Modules.SettingsPanel.Controls
 
 ShellRoot {
   PolkitAgent {}

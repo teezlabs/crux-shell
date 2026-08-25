@@ -46,17 +46,20 @@ RowLayout {
 
       Text {
         text: sectionColumn.section
-        color: Color.mOnSurfaceVariant
+        color: Color.mOnSurface
         font.family: Settings.data.ui.fontFamily
         font.pixelSize: Style.fontSizeS
+        font.bold: true
         font.capitalization: Font.AllUppercase
       }
 
       Rectangle {
         Layout.fillWidth: true
         Layout.preferredHeight: 160
-        radius: Style.radiusXS
+        radius: Style.radiusS
         color: Color.mSurfaceVariant
+        border.color: Color.mOutline
+        border.width: 1
 
         ListView {
           anchors.fill: parent
@@ -85,14 +88,25 @@ RowLayout {
                 Layout.fillWidth: true
               }
 
-              Text {
-                text: "×"
-                color: Color.mError
-                font.pixelSize: Style.fontSizeM
-                MouseArea {
-                  anchors.fill: parent
+              Rectangle {
+                width: 18
+                height: 18
+                radius: Style.radiusXXS
+                color: removeHover.hovered ? Color.alpha(Color.mError, 0.2) : "transparent"
+
+                Text {
+                  anchors.centerIn: parent
+                  text: "×"
+                  color: Color.mError
+                  font.pixelSize: Style.fontSizeM
+                }
+
+                HoverHandler {
+                  id: removeHover
                   cursorShape: Qt.PointingHandCursor
-                  onClicked: Settings.removeBarWidget(root.screenName, sectionColumn.section, rowItem.index)
+                }
+                TapHandler {
+                  onTapped: Settings.removeBarWidget(root.screenName, sectionColumn.section, rowItem.index)
                 }
               }
             }
