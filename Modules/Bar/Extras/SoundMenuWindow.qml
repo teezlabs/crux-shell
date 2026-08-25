@@ -17,6 +17,17 @@ PanelWindow {
   property var targetScreen: null
   screen: targetScreen
 
+  // Popup used to be hardcoded to the screen's top-right corner regardless
+  // of where the bar actually is — wrong the moment the bar isn't on top
+  // (e.g. this session's left-positioned vertical bar). Anchor to whichever
+  // edge the bar occupies instead, offset past its thickness + float gap so
+  // the popup sits flush beside it rather than overlapping.
+  readonly property string _barPos: Settings.isLoaded ? Settings.getBarPositionForScreen(root.targetScreen ? root.targetScreen.name : "") : "top"
+  readonly property bool _barLeft: root._barPos === "left"
+  readonly property bool _barRight: root._barPos === "right"
+  readonly property bool _barBottom: root._barPos === "bottom"
+  readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 8
+
   readonly property var sink: Pipewire.ready ? Pipewire.defaultAudioSink : null
   readonly property real volume: sink && sink.audio ? sink.audio.volume : 0
   readonly property bool muted: sink && sink.audio ? sink.audio.muted : false
@@ -97,10 +108,14 @@ PanelWindow {
 
   Rectangle {
     id: card
-    anchors.top: parent.top
-    anchors.right: parent.right
-    anchors.topMargin: 40
-    anchors.rightMargin: 12
+    anchors.top: !root._barBottom ? parent.top : undefined
+    anchors.bottom: root._barBottom ? parent.bottom : undefined
+    anchors.left: root._barLeft ? parent.left : undefined
+    anchors.right: !root._barLeft ? parent.right : undefined
+    anchors.topMargin: !root._barBottom ? (root._barLeft || root._barRight ? 12 : root._barOffset) : 0
+    anchors.bottomMargin: root._barBottom ? root._barOffset : 0
+    anchors.leftMargin: root._barLeft ? root._barOffset : 0
+    anchors.rightMargin: !root._barLeft ? (root._barRight ? root._barOffset : 12) : 0
     width: 300
     height: column.implicitHeight + 24
     radius: Style.radiusXXS

@@ -18,6 +18,15 @@ PanelWindow {
   property var targetScreen: null
   screen: targetScreen
 
+  // Anchor beside whichever edge the bar actually occupies instead of a
+  // hardcoded screen corner — see the matching comment in
+  // SoundMenuWindow.qml for the full reasoning.
+  readonly property string _barPos: Settings.isLoaded ? Settings.getBarPositionForScreen(root.targetScreen ? root.targetScreen.name : "") : "top"
+  readonly property bool _barLeft: root._barPos === "left"
+  readonly property bool _barRight: root._barPos === "right"
+  readonly property bool _barBottom: root._barPos === "bottom"
+  readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 8
+
   readonly property var networkDevices: Networking.devices ? Networking.devices.values : []
   readonly property var wifiDevice: findDevice(DeviceType.Wifi)
   readonly property var wifiNetworkObjects: wifiDevice && wifiDevice.networks ? wifiDevice.networks.values : []
@@ -347,10 +356,14 @@ PanelWindow {
 
   Rectangle {
     id: card
-    anchors.top: parent.top
-    anchors.right: parent.right
-    anchors.topMargin: 40
-    anchors.rightMargin: 12
+    anchors.top: !root._barBottom ? parent.top : undefined
+    anchors.bottom: root._barBottom ? parent.bottom : undefined
+    anchors.left: root._barLeft ? parent.left : undefined
+    anchors.right: !root._barLeft ? parent.right : undefined
+    anchors.topMargin: !root._barBottom ? (root._barLeft || root._barRight ? 12 : root._barOffset) : 0
+    anchors.bottomMargin: root._barBottom ? root._barOffset : 0
+    anchors.leftMargin: root._barLeft ? root._barOffset : 0
+    anchors.rightMargin: !root._barLeft ? (root._barRight ? root._barOffset : 12) : 0
     width: 360
     height: Math.min(560, column.implicitHeight + 24)
     radius: Style.radiusXXS
