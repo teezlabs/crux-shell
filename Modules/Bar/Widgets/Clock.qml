@@ -1,7 +1,12 @@
 import QtQuick
 import qs.Commons
 
-// Minimal bar clock. Styling is intentionally plain for now — theming comes later.
+// Vertical-stacked clock: hour on top, minute on bottom, in a small tinted
+// card — used the same way regardless of bar orientation, since a single
+// "Wed Mar 4  14:32:07" line never fit a narrow vertical bar anyway (see
+// crux skill's positioner-anchor gotcha) and reads better stacked than
+// horizontal even on a top/bottom bar. 24-hour format, since a 2-row
+// stack has no room left for an AM/PM marker without a 3rd row.
 Item {
   id: root
 
@@ -20,59 +25,52 @@ Item {
     onTriggered: root.now = new Date()
   }
 
-  // implicitHeight fixed at 32 (horizontal) to match every other bar widget
-  // — see the same fix/comment in Workspaces.qml for why a shorter
-  // implicitHeight would misalign this widget within BarSection's Grid.
-  // Vertical mode swaps to a narrow fixed width and a height that grows to
-  // fit the stacked date/time lines instead — a single wide line like the
-  // horizontal one doesn't fit a narrow vertical bar at all.
-  implicitWidth: root.vertical ? 32 : (label.implicitWidth + 16)
-  implicitHeight: root.vertical ? (column.implicitHeight + 10) : 32
+  implicitWidth: 34
+  implicitHeight: 32
   width: implicitWidth
   height: implicitHeight
 
-  Text {
-    id: label
-    visible: !root.vertical
-    anchors.centerIn: parent
-    text: Qt.formatDateTime(root.now, "ddd MMM d  hh:mm:ss")
-    color: Color.mOnSurface
-    font.family: Settings.data.ui.fontFamily
-    font.pixelSize: 13
-  }
+  Rectangle {
+    id: card
+    anchors.fill: parent
+    radius: Style.radiusXS
+    color: Color.alpha(Color.mPrimary, 0.08)
+    border.color: Color.alpha(Color.mPrimary, 0.4)
+    border.width: 1
 
-  // Stacked date/time for a vertical bar — seconds dropped, one line of
-  // horizontal text like the label above simply doesn't fit a ~32px-wide
-  // column no matter how it's formatted.
-  Column {
-    id: column
-    visible: root.vertical
-    anchors.centerIn: parent
-    spacing: 1
+    // Column is a positioner — a child setting its own anchors conflicts
+    // with it and silently produces broken geometry (documented in the
+    // crux skill after this exact bug once made the whole clock vanish).
+    // Every child below gets an explicit width/x instead of anchors.
+    Column {
+      anchors.centerIn: parent
+      spacing: 2
 
-    // Column is a positioner — it sets its children's x/y itself, so a
-    // child anchoring its own horizontalCenter conflicts with that and
-    // silently produces broken/zero geometry (this is what was actually
-    // making the whole clock disappear, not a sizing miscalculation).
-    // Giving both Text items the same explicit width and letting
-    // horizontalAlignment center the glyphs within it achieves the same
-    // visual result without touching anchors.
-    Text {
-      width: 28
-      horizontalAlignment: Text.AlignHCenter
-      text: Qt.formatDateTime(root.now, "MMM\nd")
-      color: Color.mOnSurfaceVariant
-      font.family: Settings.data.ui.fontFamily
-      font.pixelSize: 9
-      lineHeight: 0.9
-    }
-    Text {
-      width: 28
-      horizontalAlignment: Text.AlignHCenter
-      text: Qt.formatDateTime(root.now, "hh:mm")
-      color: Color.mOnSurface
-      font.family: Settings.data.ui.fontFamily
-      font.pixelSize: 11
+      Text {
+        width: 26
+        horizontalAlignment: Text.AlignHCenter
+        text: Qt.formatDateTime(root.now, "HH")
+        color: Color.mOnSurface
+        font.family: Settings.data.ui.fontFamily
+        font.pixelSize: 13
+        font.bold: true
+      }
+
+      Rectangle {
+        x: (26 - 16) / 2
+        width: 16
+        height: 1
+        color: Color.alpha(Color.mPrimary, 0.6)
+      }
+
+      Text {
+        width: 26
+        horizontalAlignment: Text.AlignHCenter
+        text: Qt.formatDateTime(root.now, "mm")
+        color: Color.mPrimary
+        font.family: Settings.data.ui.fontFamily
+        font.pixelSize: 12
+      }
     }
   }
 }
