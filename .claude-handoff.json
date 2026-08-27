@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-08-27T19:15:00-04:00",
+  "repo": "crux",
+  "branch": "main",
+  "git_state": {
+    "uncommitted_files": "see HANDOFF_NOCTALIA_PORT.md + git status (entire v2 restyle + port wave is uncommitted WIP by standing instruction)",
+    "last_commit_hash": "7bc1b625f53f891ea008c38558d9427060292fe2",
+    "last_commit_message": "fix popups anchored to screen corner instead of the bar's actual edge"
+  },
+  "summary": {
+    "what_we_were_doing": "Continuing the noctalia -> crux feature port (wave 2): audited the Quickshell.screens[0] gate, shipped the Hooks tab + service, shipped the fuzzy settings search, and fixed the sidebar overflow the search bar caused.",
+    "key_decisions": [
+      "screens[0] audit verdict: the `IpcHandler enabled: targetScreen === Quickshell.screens[0]` gate WORKS on real dual-monitor hardware (verified live: every gated alias registered exactly once, zero duplicate warnings; missing targets were just widgets absent from settings.json bar lists). No code change needed — documented in HANDOFF_NOCTALIA_PORT.md.",
+      "Hooks ported minus performanceModeEnabled/Disabled (crux has no performance-mode concept). Wallpaper+darkMode hooks are live-bound Connections on Settings.data.wallpaper.path / theme.darkMode with a _ready guard — catches every setter (IPC, WallpaperTab, skwd picker) instead of per-call-site wiring.",
+      "Session hook is the only blocking one (PowerMenuWindow.activate() runs it before the action via Hooks.runSessionHook(label, cb)). Lock/unlock hooks fire from LockScreen root.active transitions; colorGeneration from Matugen's matugenProc.onExited success.",
+      "Fuzzy search: copied noctalia's Commons/FuzzySort.qml verbatim (pure engine) + a static ~70-entry SettingsSearchIndex.qml (plain strings, no i18n keys) + search field in the settings sidebar with up to 12 results; click navigates activeTab + the tab instance's subTab (tabs got ids generalTab/barTab/appearanceTab/displayTab/lockScreenTab/notificationsTab/idleTab/hooksTab).",
+      "Sidebar overflow fix: adding the search field pushed sidebar content to 714px vs a 604px card viewport, so the bottom tabs rendered OUTSIDE the settings card (the user's bug report). Fixed by wrapping the sidebar in a Flickable (clip: true, contentHeight: sidebarCol.implicitHeight, StopAtBounds).",
+      "Bonus fix: WallpaperThemeStrip.qml was missing `import \"skwd\"` — its SCHEME dropdown's Config.saveKey threw ReferenceError (would crash on click)."
+    ],
+    "current_blockers": [
+      "None. Light-mode color regression from testing was fully repaired (dark branch re-applied via `qs ipc call wallpaper set <same-path>`)."
+    ],
+    "next_steps": [
+      "Wave 2 batch 3 candidates (none started): Region settings tab (clock/date formats — high daily-driver value), ControlCenter settings tab, AudioVisualizer/PowerProfile/SessionMenu bar widgets, Launcher settings depth, parity checks (Connections/UserInterface/SessionMenu/Plugins/ColorScheme-templates).",
+      "Manual visual check of the Hooks tab + search bar on real screens (this session verified via boot-log cleanliness, self-tests, and pixel-region analysis only).",
+      "Remember: kill crux BEFORE editing ~/.config/crux/settings.json — the running instance's debounced write-back clobbers external edits (cost a light-mode scare this session).",
+      "The search index needs new entries whenever settings/tabs/subtabs are added (SettingsSearchIndex.qml)."
+    ],
+    "files_touched": [
+      "Commons/Hooks.qml (new — hook service)",
+      "Commons/FuzzySort.qml (new — copied from noctalia verbatim)",
+      "Commons/Settings.qml (added hooks JsonObject)",
+      "Commons/Matugen.qml (colorGeneration hook)",
+      "Modules/SettingsPanel/SettingsSearchIndex.qml (new — search index)",
+      "Modules/SettingsPanel/SettingsWindow.qml (search UI + sidebar Flickable + tab ids + HooksTab registration)",
+      "Modules/SettingsPanel/HooksTab.qml, HooksGeneralSubTab.qml, HooksListSubTab.qml, HookRow.qml, HookEditPopup.qml (new)",
+      "Modules/LockScreen/LockScreen.qml (lock/unlock hooks)",
+      "Modules/Bar/Extras/PowerMenuWindow.qml (session hook)",
+      "Modules/Bar/Extras/WallpaperThemeStrip.qml (missing skwd import fix)",
+      "shell.qml (Hooks.init() in boot Timer)",
+      "HANDOFF_NOCTALIA_PORT.md (updated — the project's long-running port doc, READ THIS FIRST)",
+      ".claude-handoff.json (this file)"
+    ],
+    "important_context": "Project: crux shell at ~/.config/quickshell/crux (own git repo, branch main, NO remote configured — git push is impossible). Load the `crux` skill before any work on this tree. The handoff doc HANDOFF_NOCTALIA_PORT.md has the full wave-1/2 status and the boot-verification recipe. Dev-loop gotchas that cost time this session: (1) kill/launch MUST be separate tool calls; the reliable launch is `setsid bash -c 'qs -c crux >/tmp/crux-boot.log 2>&1 < /dev/null & echo started pid $!'` — plain nohup+disown dies when the tool's shell exits; (2) verify with `pgrep -af 'qs -c crux'`; (3) NEVER edit ~/.config/crux/settings.json while crux runs (write-back clobbers it; external edits also don't propagate live); (4) editing theme.darkMode externally + rebooting makes boot-time matugen apply and persist the LIGHT branch — restore via a wallpaper-set regen; (5) PNG screenshots can't be viewed inline here — verify rendering via boot-log cleanliness + pixel-region analysis with PIL (unique colors / mean RGB); (6) Search results + sidebar heights verified via temporary onCompleted console.log self-tests (grep the boot log), then removed. Codebase conventions: Chamfer (Modules/Bar/Extras/Chamfer.qml) with radius:0 hard rule, Tokens.* sizing, Color.* roles, pragma-Singletons in Commons auto-register, no MouseArea in bar widgets (TapHandler/HoverHandler only)."
+  }
+}
