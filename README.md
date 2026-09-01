@@ -51,13 +51,13 @@ git clone https://github.com/teezlabs/crux-shell ~/.config/quickshell/crux
 qs -c crux
 ```
 
-Point Hyprland's `exec-once` at `qs -c crux` to make it your real login
-shell.
+Launch it at login:
 
-## Configuration
-
-Bar icon, or `qs -c crux ipc call settings toggle`. Persists to
-`~/.config/crux/settings.json` — plain JSON, no wizard.
+```lua
+hl.on("hyprland.start", function()
+    hl.exec_cmd("qs -c crux")
+end)
+```
 
 <div align="center">
 
