@@ -81,9 +81,18 @@ against noctalia this pass):
 4. **Audio** — still just Volume/Output/Input devices (confirmed current
    `AudioTab.qml` state). Media (player integration prefs) and Visualizer
    (waveform/spectrum) subtabs not built.
-5. **Wallpaper** — still no picker UI, auto-cycle interval, or matugen
-   `useWallpaperColors` toggle; the skwd wallpaper-picker port is still the
-   real blocker here (per crux skill's open-work list).
+5. **Wallpaper** — done, and was already done when this doc first flagged
+   it open (stale entry, corrected 2026-08-31 after actually reading
+   `WallpaperTab.qml`/`WallpaperBrowserWindow.qml` instead of trusting the
+   crux skill's older "not yet ported" note). Has a real thumbnail picker,
+   matugen auto-theme with all 9 scheme types + color-index cycling, a
+   6-type shader transition picker, auto-cycle automation with a real
+   `Timer` driving it in `shell.qml`, a Wallhaven API key field, a 10-app
+   system-templates retheming list, and a full 1417-line Wallhaven search
+   browser (SUPER+W) with purity/resolution filtering and delete. The crux
+   skill's "Wallpaper + theming (not yet ported to crux)" section is
+   itself stale and should be updated or removed next time that file's
+   touched.
 6. **Launcher** — settings (fuzzy-match behavior, result count, clipboard
    history size/ignored MIME types, custom command prefixes) not built; the
    launcher + clipboard widgets themselves work but are unconfigurable.
@@ -118,21 +127,16 @@ against noctalia this pass):
 
 ## What I'd personally sequence first
 
-Two things stand out now that weren't true when this doc was first written:
+**Update 2026-08-31**: the working tree is committed and pushed (own
+Forgejo remote), `FuzzySort.qml` is wired into a real search sidebar, and
+Control Center has its settings tab. Wallpaper turned out to already be
+done (this doc had it wrong — see Tier 1 §5). Remaining highest-value
+items, roughly in order: Tier 1 §2 (Appearance Templates + sync-system-
+theme) is the next "feels finished" win per hour; Tier 1 §1/§3/§4/§6
+(General fonts/scrolling, Bar density/capsule, Audio Media/Visualizer,
+Launcher settings) are all smaller expose-what-exists passes; Tier 2 §2
+(Dock) and §3 (Connections tab) are the remaining real builds, both
+optional/low-priority per their own entries above.
 
-1. **Commit the working tree.** 41 modified + ~15 new files are sitting
-   uncommitted right now — the biggest actual risk to this whole push is
-   losing it, not what to build next.
-2. **Finish or remove `FuzzySort.qml`.** It's the one item on this list
-   that's neither "done" nor "not started" — it's a half-built dependency
-   nothing calls, and with 18 tabs now, a search box is more valuable than
-   when this doc first floated the idea.
-
-After that, Tier 1 items 2 and 5 (Appearance Templates, Wallpaper picker +
-matugen) still get the most "feels finished" per hour, and Wallpaper
-specifically replaces the hand-copied hex palette with the real pipeline.
-Control Center's missing settings tab is the cheapest Tier 2 win since the
-subsystem itself already exists.
-
-But this is your call to reorder — ping me with whichever number(s) you want
-to start on and we'll take it one confirmed step at a time.
+This is your call to reorder — ping me with whichever number(s) you want to
+start on and we'll take it one confirmed step at a time.
