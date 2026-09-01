@@ -66,6 +66,46 @@ Flickable {
     }
 
     SettingRow {
+      label: "Monospaced font"
+
+      Item {
+        Layout.preferredWidth: 200
+        height: 28
+
+        Chamfer {
+          anchors.fill: parent
+          chamferSize: Tokens.chamferIcon
+          cutTopRight: true
+          cutBottomLeft: true
+          fillColor: Color.surface
+          strokeColor: monoFontInput.activeFocus ? Color.primary : Color.outline
+          strokeWidth: Tokens.borderModule
+        }
+
+        TextInput {
+          id: monoFontInput
+          anchors.fill: parent
+          anchors.leftMargin: 8
+          anchors.rightMargin: 8
+          verticalAlignment: Text.AlignVCenter
+          text: Settings.data.ui.monoFontFamily
+          color: Color.surfaceText
+          font.family: Settings.data.ui.monoFontFamily
+          font.pixelSize: Tokens.bodySmSize
+          selectByMouse: true
+          onEditingFinished: Settings.data.ui.monoFontFamily = text
+        }
+      }
+
+      Text {
+        text: "Used by the keybinds viewer and hook command fields"
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.captionSize
+      }
+    }
+
+    SettingRow {
       label: "UI scale"
 
       NSlider {
@@ -82,6 +122,25 @@ Flickable {
         color: Color.labelText
         font.family: Tokens.fontFamily
         font.pixelSize: Tokens.bodySmSize
+      }
+    }
+  }
+
+  SettingsSection {
+    title: "Input"
+    description: "Applied live via hyprctl — takes effect immediately, no reload needed."
+
+    SettingRow {
+      label: "Reverse scrolling"
+      NToggle {
+        checked: Settings.data.general.reverseScroll
+        onToggled: checked => Settings.data.general.reverseScroll = checked
+      }
+      Text {
+        text: "Natural scroll direction (input:natural_scroll)"
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.captionSize
       }
     }
   }

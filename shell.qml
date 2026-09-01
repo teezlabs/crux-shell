@@ -82,6 +82,24 @@ ShellRoot {
     onTriggered: {
       Hooks.init();
       Idle.init();
+      applyReverseScroll();
+    }
+  }
+
+  // input:natural_scroll is a runtime Hyprland keyword, not something
+  // hyprland.lua sets once at compositor startup — needs re-applying on
+  // every boot, plus live on toggle (see the Connections below).
+  Process {
+    id: reverseScrollProc
+  }
+  function applyReverseScroll() {
+    reverseScrollProc.command = ["hyprctl", "keyword", "input:natural_scroll", Settings.data.general.reverseScroll ? "true" : "false"];
+    reverseScrollProc.running = true;
+  }
+  Connections {
+    target: Settings.data.general
+    function onReverseScrollChanged() {
+      applyReverseScroll();
     }
   }
 

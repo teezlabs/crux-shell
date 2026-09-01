@@ -153,7 +153,7 @@ PanelWindow {
           anchors.rightMargin: 8
           verticalAlignment: Text.AlignVCenter
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
+          font.family: Tokens.monoFontFamily
           font.pixelSize: Tokens.bodySmSize
           selectByMouse: true
         }

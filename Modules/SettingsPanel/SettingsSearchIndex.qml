@@ -15,10 +15,13 @@ Item {
     { "label": "Font family", "description": "Interface font used across the shell", "tab": "general", "subTab": "basics", "keywords": "font typeface" },
     { "label": "UI scale", "description": "Global multiplier for every font-size token", "tab": "general", "subTab": "basics", "keywords": "scale zoom size" },
     { "label": "Keybinds", "description": "Edit ~/.config/hypr/keybinds.lua, then hyprctl reload", "tab": "general", "subTab": "keybinds", "keywords": "shortcuts keys hyprland" },
+    { "label": "Monospaced font", "description": "Font used by the keybinds viewer and hook command fields", "tab": "general", "subTab": "basics", "keywords": "font mono code" },
+    { "label": "Reverse scrolling", "description": "Natural scroll direction, applied live via hyprctl", "tab": "general", "subTab": "basics", "keywords": "natural scroll direction touchpad mouse" },
 
     // ---- Bar > Layout / Widgets ----
     { "label": "Bar position", "description": "Which screen edge the bar sits on", "tab": "bar", "subTab": "layout", "keywords": "top bottom left right edge" },
     { "label": "Bar thickness", "description": "Cross-axis size of the bar strip", "tab": "bar", "subTab": "layout", "keywords": "size height width" },
+    { "label": "Density presets", "description": "Comfortable/Compact bundle for thickness, spacing, and padding", "tab": "bar", "subTab": "layout", "keywords": "comfortable compact size" },
     { "label": "Widget spacing", "description": "Gap between bar widgets", "tab": "bar", "subTab": "layout", "keywords": "gap padding" },
     { "label": "Content padding", "description": "Inset between bar content and its edges", "tab": "bar", "subTab": "layout" },
     { "label": "Floating gap", "description": "Gap between the bar and the screen edge", "tab": "bar", "subTab": "layout", "keywords": "float margin" },

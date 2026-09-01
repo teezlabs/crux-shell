@@ -188,10 +188,20 @@ Singleton {
 
     property JsonObject general: JsonObject {
       property bool keepAwake: false // inhibit idle/screen-lock while true — Control Center toggle
+      // Applied live via `hyprctl keyword input:natural_scroll` on toggle,
+      // and re-applied on boot (see shell.qml) since Hyprland doesn't
+      // persist this itself — it's a runtime keyword, not read from
+      // hyprland.lua.
+      property bool reverseScroll: false
     }
 
     property JsonObject ui: JsonObject {
       property string fontFamily: "Departure Mono"
+      // Used only where code/commands are actually displayed (keybinds
+      // viewer, hook command fields) — everything else stays on the one
+      // shared fontFamily above. Not a general-purpose second font system;
+      // crux has no per-role size scale to go with it, just the family.
+      property string monoFontFamily: "Departure Mono"
       property real fontScale: 1.0 // multiplies every Style.fontSize* token
     }
 

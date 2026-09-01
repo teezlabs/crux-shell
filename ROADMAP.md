@@ -83,8 +83,21 @@ against noctalia this pass):
    org.gnome.desktop.interface color-scheme prefer-dark` on regenerate,
    so GTK4/libadwaita apps render dark chrome even though crux ships no
    full GTK theme package for `gtk-theme` itself to point at.
-3. **Bar** — density (comfortable/compact) and capsule/pill background
-   options per widget-group not confirmed present in `BarLayoutSubTab.qml`.
+3. **Bar** — mostly done (2026-08-31). Density is now a real feature: two
+   preset action-buttons ("Comfortable"/"Compact") in `BarLayoutSubTab.qml`
+   that batch-set thickness/widgetSpacing/contentPadding — not a stored
+   mode, since the underlying sliders were already independently tunable
+   and a fourth persisted "density" property would just be redundant state
+   to keep in sync. Background opacity separate from overall theme opacity
+   already existed (`useSeparateOpacity`/`backgroundOpacity`) — this item's
+   "not confirmed present" was itself stale. **Capsule/pill background per
+   widget-group deliberately not built** — crux's whole visual language is
+   chamfered corners with an explicit "no radius" rule (see
+   `ControlCenterWindow.qml`'s one deliberate circular-avatar exception,
+   which calls out radius as the departure); grafting noctalia's rounded
+   pill grouping on top would fight the app's own established identity, not
+   extend it. Skip unless a future request explicitly wants rounded
+   grouping as a real design change, not a checkbox-parity copy.
 4. **Audio** — still just Volume/Output/Input devices (confirmed current
    `AudioTab.qml` state). Media (player integration prefs) and Visualizer
    (waveform/spectrum) subtabs not built.

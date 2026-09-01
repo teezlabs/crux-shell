@@ -59,7 +59,7 @@ ColumnLayout {
         width: parent.width
         text: file.text()
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
+        font.family: Tokens.monoFontFamily
         font.pixelSize: Tokens.captionSize
         wrapMode: Text.NoWrap
       }

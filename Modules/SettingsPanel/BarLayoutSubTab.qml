@@ -74,6 +74,72 @@ Flickable {
       title: "Sizing"
       description: "Spacing, padding, and thickness of the bar and its modules."
 
+      RowLayout {
+        spacing: 10
+
+        Text {
+          text: "Density presets:"
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.captionSize
+        }
+
+        Repeater {
+          model: [
+            {
+              "label": "Comfortable",
+              "thickness": 32,
+              "widgetSpacing": 6,
+              "contentPadding": 2
+            },
+            {
+              "label": "Compact",
+              "thickness": 26,
+              "widgetSpacing": 4,
+              "contentPadding": 1
+            }
+          ]
+          delegate: Item {
+            id: densityTile
+            required property var modelData
+            Layout.preferredWidth: densityLabel.implicitWidth + 20
+            height: 26
+
+            Chamfer {
+              anchors.fill: parent
+              chamferSize: Tokens.chamferIcon
+              cutTopRight: true
+              cutBottomLeft: true
+              fillColor: densityHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
+              strokeColor: Color.outline
+              strokeWidth: Tokens.borderModule
+            }
+
+            Text {
+              id: densityLabel
+              anchors.centerIn: parent
+              text: densityTile.modelData.label
+              color: Color.surfaceText
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.labelXsSize
+              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            }
+
+            HoverHandler {
+              id: densityHover
+              cursorShape: Qt.PointingHandCursor
+            }
+            TapHandler {
+              onTapped: {
+                Settings.data.bar.thickness = densityTile.modelData.thickness;
+                Settings.data.bar.widgetSpacing = densityTile.modelData.widgetSpacing;
+                Settings.data.bar.contentPadding = densityTile.modelData.contentPadding;
+              }
+            }
+          }
+        }
+      }
+
       SettingRow {
         label: "Widget spacing"
         NSlider {

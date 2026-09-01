@@ -21,6 +21,7 @@ QtObject {
   // every widget reads Tokens.fontFamily, that setting silently did
   // nothing anywhere. Fallback only covers Settings not being loaded yet.
   readonly property string fontFamily: Settings.isLoaded ? Settings.data.ui.fontFamily : "JetBrains Mono"
+  readonly property string monoFontFamily: Settings.isLoaded ? Settings.data.ui.monoFontFamily : "JetBrains Mono"
 
   // §2 Type — one representative tracking value picked from each spec
   // range (documented alongside), weight is the *lighter* of any given
