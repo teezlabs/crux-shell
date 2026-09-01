@@ -152,11 +152,21 @@ against noctalia this pass):
    interval (was a hardcoded 2000ms Timer), and the CAPTURE tile's
    screenshot command (was hardcoded to `rishot`, now a text field run
    through `sh -c` so flags work).
-2. **Connections (Wifi/Bluetooth settings tab)** — still just the existing
-   popups (`WifiMenuWindow`, `BluetoothMenuWindow`), no dedicated settings
-   tab for saved networks/priority/forget-network/adapter selection. Still
-   assessed as low priority relative to its size (noctalia's equivalent is
-   ~2400 lines for "more knobs on a thing that already works").
+2. **Connections (Wifi/Bluetooth settings tab)** — a dedicated settings tab
+   (saved-network list, priority ordering, adapter selection) is still not
+   built, and still assessed as low priority relative to its size
+   (noctalia's equivalent is ~2400 lines for "more knobs on a thing that
+   already works"). But while checking this, found and fixed a real bug
+   (2026-08-31): `WifiPanelContent.qml` had a fully-working
+   `forgetRow()`/`network.forget()` path that **nothing in the UI ever
+   called** — a saved network could never actually be forgotten short of
+   `nmcli` by hand, unlike Bluetooth's equivalent `forgetDevice()`, which
+   was correctly wired to a real button. Added a "×" forget affordance on
+   known, non-connected network rows. Not live-verified via screenshot —
+   the Wifi widget isn't in this bar's current layout so there's no popup
+   instance to open — but boot-clean and reuses the exact nested-
+   MouseArea-inside-RowLayout pattern the same file's own CONNECT button
+   already uses successfully.
 
 ## Tier 3 — niche / defer
 

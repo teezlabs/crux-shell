@@ -523,6 +523,29 @@ ColumnLayout {
               font.pixelSize: Tokens.captionSize
             }
 
+            // Forget a saved network — runAction()/forgetRow() already
+            // existed but nothing ever called forgetRow() from the UI, so
+            // a "known" network could never actually be forgotten short of
+            // nmcli by hand. Only shown for known, non-connected networks
+            // (forgetting the currently-connected one would just be a
+            // confusing disconnect-and-forget in one tap).
+            Text {
+              visible: rowItem.modelData.known && !rowItem.modelData.connected && !(root.actionKind !== "" && root.actionSsid === rowItem.modelData.ssid)
+              text: "×"
+              color: forgetHover.hovered ? Color.error : Color.labelText
+              font.pixelSize: Tokens.bodyLgSize
+              HoverHandler {
+                id: forgetHover
+                cursorShape: Qt.PointingHandCursor
+              }
+              MouseArea {
+                anchors.fill: parent
+                anchors.margins: -4
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.forgetRow(rowItem.modelData)
+              }
+            }
+
             Text {
               visible: root.actionKind !== "" && root.actionSsid === rowItem.modelData.ssid
               text: (root.actionKind === "connect" ? "CONNECTING" : (root.actionKind === "disconnect" ? "DISCONNECTING" : "FORGETTING")) + "…"
