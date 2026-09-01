@@ -229,10 +229,14 @@ Item {
             sectionWidgetIndex: wrapper.index
             vertical: sectionRoot.vertical
             contentVertical: sectionRoot.contentVertical
-            // Only the module touching the outer screen edge on each end
-            // inverts (left: first visible; right: last visible) — see
-            // crux skill's notes.md.
-            invertChamfer: (sectionRoot.section === "left" && wrapper.index === 0) || (sectionRoot.section === "right" && wrapper.index === sectionRoot._lastVisibleIndex)
+            // v5 of this rule (see crux skill's notes.md for the full
+            // history — v1-v4 are all superseded, don't resurrect them):
+            // left keeps the original "only the end-cap inverts" rule;
+            // right is the true mirror of that — reverse the sequence AND
+            // flip every shape to its own mirror-image, so the end-cap
+            // there is now the one NON-inverted module and everything
+            // else in the right section inverts.
+            invertChamfer: (sectionRoot.section === "left" && wrapper.index === 0) || (sectionRoot.section === "right" && wrapper.index !== sectionRoot._lastVisibleIndex)
           }
 
           // Non-exclusive: a passive grab that watches for a long press
