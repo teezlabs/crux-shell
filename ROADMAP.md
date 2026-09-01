@@ -172,8 +172,18 @@ against noctalia this pass):
 
 - **Dock** — explicitly declined ("dont need a dock", 2026-08-31). Not
   happening; don't resurrect this without being asked again.
-- **Location** — still not built; bundle into Night-Light work if that ever
-  needs real sunrise/sunset timing rather than building standalone.
+- **Location** — done (2026-08-31), bundled into Night Light exactly as
+  this doc suggested rather than building a standalone LocationService.
+  `Commons/Weather.qml` already IP-geolocates for the Control Center
+  weather card (`_lat`/`_lon`, fetched once at startup) — exposed as
+  `latitude`/`longitude`/`hasLocation` and reused by a new
+  `nightLight.useLocation` toggle, which switches `NightLight.qml`'s
+  `wlsunset` invocation from manual `-S`/`-s` times to real `-l`/`-L`
+  sun-position math. Falls back to the manual schedule until geolocation
+  actually resolves (a real HTTP round-trip, not instant) via a
+  `Weather.hasLocationChanged` reapply hook. Manual schedule sliders in
+  `DisplayNightLightSubTab.qml` gray out while location mode is on and
+  resolved, same disabled-state pattern used elsewhere in the panel.
 - **Region** (date/locale formatting, per-panel clock format) — done
   (2026-08-31). New `ui.clockFormat`/`ui.dateFormat` (defaults matching
   the bar's previous hardcoded "HH:mm"/"ddd dd MMM") in a new "Region"

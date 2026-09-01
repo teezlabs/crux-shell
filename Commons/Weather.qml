@@ -30,6 +30,12 @@ Singleton {
 
   property real _lat: NaN
   property real _lon: NaN
+  // Non-underscored aliases — NightLight.qml's wlsunset -l/-L automatic
+  // sunrise/sunset also wants this same IP-geolocated position, no need
+  // for a separate LocationService just to hold two numbers twice.
+  readonly property real latitude: _lat
+  readonly property real longitude: _lon
+  readonly property bool hasLocation: !isNaN(_lat) && !isNaN(_lon)
 
   function refreshForecast() {
     if (isNaN(root._lat) || isNaN(root._lon))

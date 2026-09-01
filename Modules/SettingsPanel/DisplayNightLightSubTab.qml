@@ -3,10 +3,10 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 
-// Night Light (wlsunset) settings: night/day color temperature and a
-// manual sunset/sunrise schedule — ported from noctalia's
-// Modules/Panels/Settings/Tabs/Display/NightLightSubTab.qml, minus the
-// geolocation-driven auto-schedule mode (crux has no LocationService yet).
+// Night Light (wlsunset) settings: night/day color temperature, a real
+// geolocation-driven auto-schedule (reusing Commons/Weather.qml's own
+// IP-geolocated lat/lon — see NightLight.qml), and a manual sunset/sunrise
+// fallback for when that's off or hasn't resolved yet.
 Flickable {
   id: root
   clip: true
@@ -31,7 +31,7 @@ Flickable {
 
     SettingsSection {
     title: "Night Light"
-    description: "Blue-light filter via wlsunset. Manual schedule only — no geolocation-based sunrise/sunset in crux yet."
+    description: "Blue-light filter via wlsunset."
 
     SettingRow {
       label: "Enabled"
@@ -51,6 +51,20 @@ Flickable {
         enabled: Settings.data.nightLight.enabled
         checked: Settings.data.nightLight.forced
         onToggled: checked => Settings.data.nightLight.forced = checked
+      }
+    }
+
+    SettingRow {
+      label: "Use my location"
+      NToggle {
+        checked: Settings.data.nightLight.useLocation
+        onToggled: checked => Settings.data.nightLight.useLocation = checked
+      }
+      Text {
+        text: Weather.hasLocation ? "Real sunrise/sunset for " + Weather.cityName : "Resolving location…"
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.captionSize
       }
     }
 
@@ -101,41 +115,48 @@ Flickable {
 
   SettingsSection {
     title: "Manual schedule"
-    description: "Ignored while Night Light is forced on."
+    description: "Ignored while Night Light is forced on, or while \"Use my location\" is on and resolved."
 
-    SettingRow {
-      label: "Sunset"
-      NSlider {
-        Layout.preferredWidth: 200
-        from: 0
-        to: 1425
-        stepSize: 15
-        value: root.timeToMinutes(Settings.data.nightLight.manualSunset)
-        onMoved: value => Settings.data.nightLight.manualSunset = root.minutesToLabel(Math.round(value))
-      }
-      Text {
-        text: Settings.data.nightLight.manualSunset
-        color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
-      }
-    }
+    ColumnLayout {
+      Layout.fillWidth: true
+      spacing: 12
+      enabled: !Settings.data.nightLight.useLocation || !Weather.hasLocation
+      opacity: enabled ? 1 : 0.4
 
-    SettingRow {
-      label: "Sunrise"
-      NSlider {
-        Layout.preferredWidth: 200
-        from: 0
-        to: 1425
-        stepSize: 15
-        value: root.timeToMinutes(Settings.data.nightLight.manualSunrise)
-        onMoved: value => Settings.data.nightLight.manualSunrise = root.minutesToLabel(Math.round(value))
+      SettingRow {
+        label: "Sunset"
+        NSlider {
+          Layout.preferredWidth: 200
+          from: 0
+          to: 1425
+          stepSize: 15
+          value: root.timeToMinutes(Settings.data.nightLight.manualSunset)
+          onMoved: value => Settings.data.nightLight.manualSunset = root.minutesToLabel(Math.round(value))
+        }
+        Text {
+          text: Settings.data.nightLight.manualSunset
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.bodySmSize
+        }
       }
-      Text {
-        text: Settings.data.nightLight.manualSunrise
-        color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+
+      SettingRow {
+        label: "Sunrise"
+        NSlider {
+          Layout.preferredWidth: 200
+          from: 0
+          to: 1425
+          stepSize: 15
+          value: root.timeToMinutes(Settings.data.nightLight.manualSunrise)
+          onMoved: value => Settings.data.nightLight.manualSunrise = root.minutesToLabel(Math.round(value))
+        }
+        Text {
+          text: Settings.data.nightLight.manualSunrise
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.bodySmSize
+        }
       }
     }
   }

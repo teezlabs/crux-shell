@@ -55,6 +55,7 @@ Item {
     { "label": "Force night light now", "description": "Bypass the schedule and apply night temperature immediately", "tab": "display", "subTab": "nightLight", "keywords": "force override" },
     { "label": "Night/day temperature", "description": "Kelvin for the night and day color temperatures", "tab": "display", "subTab": "nightLight", "keywords": "kelvin temp" },
     { "label": "Night light schedule", "description": "Manual sunrise and sunset times", "tab": "display", "subTab": "nightLight", "keywords": "sunrise sunset schedule" },
+    { "label": "Use my location", "description": "Real sunrise/sunset for night light via IP geolocation", "tab": "display", "subTab": "nightLight", "keywords": "location geolocation auto automatic" },
 
     // ---- Hue ----
     { "label": "Hue bridge", "description": "Philips Hue bridge IP and authentication", "tab": "hue", "subTab": "", "keywords": "philips lights" },

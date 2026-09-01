@@ -64,6 +64,8 @@ Item {
       // Force full night temperature immediately: sunrise pinned almost a
       // full day away, sunset at midnight, near-instant transition.
       cmd.push("-S", "23:59", "-s", "00:00", "-d", "1");
+    } else if (Settings.data.nightLight.useLocation && Weather.hasLocation) {
+      cmd.push("-l", String(Weather.latitude), "-L", String(Weather.longitude));
     } else {
       cmd.push("-S", Settings.data.nightLight.manualSunrise, "-s", Settings.data.nightLight.manualSunset, "-d", "60");
     }
@@ -133,6 +135,22 @@ Item {
     }
     function onManualSunsetChanged() {
       root.apply();
+    }
+    function onUseLocationChanged() {
+      root.apply();
+    }
+  }
+
+  // Geolocation resolves asynchronously (a real HTTP round-trip) — if
+  // useLocation was already on when wlsunset first launched, that first
+  // apply() ran on the manual-schedule fallback since Weather.hasLocation
+  // was still false. Re-apply once it actually arrives.
+  Connections {
+    target: Weather
+    enabled: root._isPrimaryInstance
+    function onHasLocationChanged() {
+      if (Settings.data.nightLight.useLocation)
+        root.apply();
     }
   }
 
