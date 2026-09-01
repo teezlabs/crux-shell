@@ -212,6 +212,9 @@ PanelWindow {
             color: Color.surfaceText
             font.family: Tokens.fontFamily
             font.pixelSize: Tokens.bodyLgSize
+            // The Rectangle below is the spec caret (§6.2: 2px×17px) — don't
+            // also draw TextInput's own native cursor on top of it.
+            cursorVisible: false
 
             Text {
               visible: searchInput.text === ""
