@@ -35,8 +35,8 @@ ShellRoot {
   LockScreen {}
 
   // Crux's own fullscreen wallpaper browser — one instance per screen (see
-  // WallpaperSelectorWindow.qml), each with its own "wallpaperBrowser_
-  // <screen>" IPC target. Use bin/crux-focused-ipc from a keybind.
+  // WallpaperSelectorWindow.qml). The shared "wallpaperBrowser" IPC target
+  // routes to whichever instance is on the currently-focused monitor.
   WallpaperSelectorWindow {}
 
   // Flat, screen-agnostic IPC target — wallpaper.path/theme aren't per-screen concepts.

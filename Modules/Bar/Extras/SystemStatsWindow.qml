@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
@@ -265,9 +266,10 @@ PanelWindow {
   WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
   exclusionMode: ExclusionMode.Ignore
 
-  // Per-screen IPC target ("systemStats_DP-1") so each monitor's icon reaches its own instance.
+  // Only the instance on the currently-focused monitor claims this target.
   IpcHandler {
-    target: "systemStats_" + (root.targetScreen ? root.targetScreen.name : "0")
+    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
+    target: "systemStats"
     function toggle() {
       root.toggle();
     }
@@ -280,22 +282,6 @@ PanelWindow {
         return;
       }
       root.triggerPos = Qt.point(x, y);
-      root.visible = true;
-    }
-    function close() {
-      root.visible = false;
-    }
-  }
-
-  // A plain "systemStats" alias on just one instance, for a keybind or
-  // script that doesn't know/care which screen it's on.
-  IpcHandler {
-    enabled: root.targetScreen === Quickshell.screens[0]
-    target: "systemStats"
-    function toggle() {
-      root.toggle();
-    }
-    function open() {
       root.visible = true;
     }
     function close() {

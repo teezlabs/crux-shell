@@ -141,7 +141,7 @@ PanelWindow {
   exclusionMode: ExclusionMode.Ignore
 
   IpcHandler {
-    enabled: root.targetScreen === Quickshell.screens[0]
+    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
     target: "sidebar"
     function toggle() {
       root.toggle();

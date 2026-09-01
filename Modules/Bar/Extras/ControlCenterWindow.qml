@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import Quickshell.Networking
 import Quickshell.Bluetooth
 import Quickshell.Services.Pipewire
@@ -365,12 +366,12 @@ PanelWindow {
     }
   }
 
-  // A plain "controlCenter" alias on just one instance, purely so a
-  // keybind or script that doesn't know/care which screen it's on (unlike
-  // a bar click, which always knows its own screen) still has something
-  // simple to call.
+  // A plain "controlCenter" alias, claimed only by the instance on the
+  // currently-focused monitor, for a keybind that doesn't know/care which
+  // screen it's on (unlike a bar click, which always knows its own screen
+  // and uses the per-screen target above instead).
   IpcHandler {
-    enabled: root.targetScreen === Quickshell.screens[0]
+    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
     target: "controlCenter"
     function toggle() {
       root.toggle();

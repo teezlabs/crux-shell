@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.Bar.Extras
@@ -105,26 +106,10 @@ PanelWindow {
     }
   }
 
-  // Per-screen IPC target (via bin/crux-focused-ipc) so SUPER+A opens on the focused monitor, not always screens[0].
+  // Only the instance on the currently-focused monitor claims this target,
+  // so SUPER+A always opens on the right screen with no external routing.
   IpcHandler {
-    target: "launcher_" + (root.targetScreen ? root.targetScreen.name : "0")
-    function toggle() {
-      root.toggle();
-    }
-    function open() {
-      if (!root.visible)
-        root.toggle();
-    }
-    function close() {
-      root.visible = false;
-    }
-  }
-
-  // A plain "launcher" alias on just one instance, purely so a script or
-  // keybind that doesn't know/care which screen it's on still has something
-  // simple to call.
-  IpcHandler {
-    enabled: root.targetScreen === Quickshell.screens[0]
+    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
     target: "launcher"
     function toggle() {
       root.toggle();

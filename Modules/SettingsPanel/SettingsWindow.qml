@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
@@ -138,8 +139,9 @@ PanelWindow {
     visible = !visible;
   }
 
-  // Screen-specific target so a caller opens Settings on its own screen,
-  // not always screens[0] (the generic "settings" target below, was a real bug).
+  // Screen-specific target for callers (e.g. ControlCenterWindow's gear
+  // icon) that already know their own screen and want Settings to open
+  // there specifically, regardless of OS focus.
   IpcHandler {
     target: "settings_" + (root.targetScreen ? root.targetScreen.name : "0")
     function toggle() {
@@ -157,11 +159,11 @@ PanelWindow {
     }
   }
 
-  // A plain "settings" alias on just one instance, purely so a script or
-  // keybind that doesn't know/care which screen it's on still has something
-  // simple to call.
+  // A plain "settings" alias, claimed only by the instance on the
+  // currently-focused monitor, for a keybind that doesn't know/care which
+  // screen it's on.
   IpcHandler {
-    enabled: root.targetScreen === Quickshell.screens[0]
+    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
     target: "settings"
     function toggle() {
       root.toggle();

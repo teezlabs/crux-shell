@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import Quickshell.Services.UPower
 import qs.Commons
 import qs.Modules.Bar.Extras
@@ -67,7 +68,7 @@ PanelWindow {
   exclusionMode: ExclusionMode.Ignore
 
   IpcHandler {
-    enabled: root.targetScreen === Quickshell.screens[0]
+    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
     target: "battery"
     function toggle() {
       root.toggle();

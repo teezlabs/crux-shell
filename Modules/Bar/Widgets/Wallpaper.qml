@@ -4,8 +4,7 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 
 // Picture-frame icon on the bar — opens this screen's own
-// WallpaperBrowserWindow instance (same command SUPER+W runs via
-// bin/crux-focused-ipc). See crux skill's notes.md.
+// WallpaperBrowserWindow instance via its per-screen IPC target.
 Item {
   id: root
 

@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
@@ -50,8 +51,10 @@ PanelWindow {
       root.close();
     }
   }
+  // Claimed only by the instance on the currently-focused monitor, for a
+  // keybind that doesn't know/care which screen it's on.
   IpcHandler {
-    enabled: root.targetScreen === Quickshell.screens[0]
+    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
     target: "wallpaperBrowser"
     function toggle(): void {
       root.toggle();
