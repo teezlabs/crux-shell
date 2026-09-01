@@ -66,8 +66,12 @@ Kept here (not deleted) so it's clear what's no longer open work:
   portrait monitor made input-injection coordinates unreliable enough to
   risk clicking the wrong window — verified by code-path inspection
   instead).
-- **Reset-to-default icon buttons** — not built, no pattern for it anywhere
-  in `Modules/SettingsPanel/Controls/`.
+- **Reset-to-default icon buttons** — explicitly declined ("i dont feel
+  like i need it", 2026-08-31). Not happening; don't resurrect without
+  being asked again. (Would've needed a defaults-registry decision first
+  anyway — no infrastructure for it exists, and duplicating every default
+  value at each call site risks drifting from `Settings.qml`'s own
+  defaults.)
 
 ## Tier 1 — expand tabs crux already has
 
@@ -207,8 +211,9 @@ against noctalia this pass):
 **2026-08-31, end of day**: Tier 0, Tier 1, and Tier 2 are all done —
 every item this doc originally scoped as a real, buildable gap has either
 been built, found to already exist (Wallpaper), or deliberately declined
-(Dock) or skipped with a documented reason (capsule/pill bar backgrounds,
-audio visualizer, clipboard MIME filtering, Bluetooth adapter switching).
+(Dock, reset-to-default buttons) or skipped with a documented reason
+(capsule/pill bar backgrounds, audio visualizer, clipboard MIME
+filtering, Bluetooth adapter switching).
 Location got folded into Night Light as this doc itself suggested, rather
 than built standalone.
 
