@@ -51,12 +51,17 @@ Kept here (not deleted) so it's clear what's no longer open work:
 
 - **Pill-style tab switcher** — `SubTabBar.qml` exists and is in use; not
   re-verified pixel-for-pixel against noctalia's segmented-pill styling.
-- **Fuzzy-search sidebar** — `Commons/FuzzySort.qml` exists but **is not
-  wired into the settings UI anywhere** (grepped: zero references to it
-  outside its own file). This is dead code sitting half-finished, not a
-  "not started" item — either finish wiring it into the sidebar as a search
-  box, or remove the unused file. Still the highest-leverage UX item on this
-  list given 18 tabs now exist to search across.
+- **Fuzzy-search sidebar** — done (2026-08-31). `Commons/FuzzySort.qml` +
+  `Modules/SettingsPanel/SettingsSearchIndex.qml` were both already fully
+  built but unwired; wired a search box into `SettingsWindow.qml`'s sidebar
+  (swaps the tab list for fuzzy-matched hits on `label`/`keywords` while
+  typing) and added an `initialSubTab` bridge prop to every subtab-owning
+  tab (General/Bar/Appearance/Display/LockScreen/Notifications/Idle/Hooks)
+  so a search hit can land on the right subtab, not just the right
+  top-level tab. Boot-verified clean; live click-through not done (rotated
+  portrait monitor made input-injection coordinates unreliable enough to
+  risk clicking the wrong window — verified by code-path inspection
+  instead).
 - **Reset-to-default icon buttons** — not built, no pattern for it anywhere
   in `Modules/SettingsPanel/Controls/`.
 

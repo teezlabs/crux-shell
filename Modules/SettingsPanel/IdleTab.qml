@@ -13,6 +13,10 @@ ColumnLayout {
 
   property string subTab: "behavior"
 
+  property string initialSubTab: ""
+  onInitialSubTabChanged: if (initialSubTab !== "")
+                             root.subTab = initialSubTab
+
   SubTabBar {
     Layout.fillWidth: true
     model: [

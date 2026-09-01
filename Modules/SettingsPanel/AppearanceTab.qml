@@ -9,6 +9,10 @@ ColumnLayout {
 
   property string subTab: "general"
 
+  property string initialSubTab: ""
+  onInitialSubTabChanged: if (initialSubTab !== "")
+                             root.subTab = initialSubTab
+
   SubTabBar {
     Layout.fillWidth: true
     model: [

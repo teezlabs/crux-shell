@@ -24,6 +24,38 @@ PanelWindow {
   readonly property string screenName: screen ? screen.name : ""
   property string activeTab: "general"
 
+  // Fuzzy-search sidebar: query text + the resolved hits, and the subtab
+  // id (if any) the last-jumped-to tab should land on. jumpSubTab is
+  // read once by each subtab-owning tab's initialSubTab prop below — it's
+  // an onChanged reaction there, not a binding, so the user's own
+  // SubTabBar clicks afterward aren't fought by a stale search hit.
+  property string searchQuery: ""
+  property string jumpSubTab: ""
+  readonly property var searchResults: {
+    if (root.searchQuery.trim() === "")
+      return [];
+    var hits = FuzzySort.go(root.searchQuery, searchIndex.entries, {
+                               "keys": ["label", "keywords"],
+                               "limit": 20,
+                               "threshold": 0.3
+                             });
+    var out = [];
+    for (var i = 0; i < hits.length; i++)
+      out.push(hits[i].obj);
+    return out;
+  }
+
+  function jumpToSearchHit(entry) {
+    root.activeTab = entry.tab;
+    if (entry.subTab)
+      root.jumpSubTab = entry.subTab;
+    root.searchQuery = "";
+  }
+
+  SettingsSearchIndex {
+    id: searchIndex
+  }
+
   readonly property var tabs: [
     {
       "id": "general",
@@ -219,76 +251,191 @@ PanelWindow {
             border.width: Tokens.borderPanel
           }
 
-          Flickable {
+          ColumnLayout {
             anchors.fill: parent
             anchors.margins: 8
-            clip: true
-            contentWidth: width
-            contentHeight: sidebarCol.implicitHeight
+            spacing: 6
 
-            ColumnLayout {
-            id: sidebarCol
-            width: parent.width
-            spacing: 4
+            Item {
+              id: searchBox
+              Layout.fillWidth: true
+              Layout.preferredHeight: 28
 
-            Text {
-              text: "SETTINGS"
-              color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.weight: Font.DemiBold
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
-              Layout.bottomMargin: 10
-              Layout.topMargin: 2
-              Layout.leftMargin: 4
-            }
+              Chamfer {
+                anchors.fill: parent
+                chamferSize: Tokens.chamferIcon
+                cutTopRight: true
+                cutBottomLeft: true
+                fillColor: Color.surfaceContainer
+                strokeColor: searchInput.activeFocus ? Color.primary : Color.outline
+                strokeWidth: Tokens.borderModule
+              }
 
-            Repeater {
-              model: root.tabs
-
-              delegate: Item {
-                id: sidebarItem
-                required property var modelData
-                readonly property bool active: root.activeTab === modelData.id
-                Layout.fillWidth: true
-                height: 32
-
-                Rectangle {
-                  anchors.fill: parent
-                  color: sidebarItem.active ? Color.primaryContainer : (tabHover.hovered ? Color.surfaceContainerHigh : "transparent")
-                }
-                Rectangle {
-                  visible: sidebarItem.active
-                  anchors.left: parent.left
-                  anchors.top: parent.top
-                  anchors.bottom: parent.bottom
-                  width: Tokens.borderMarker
-                  color: Color.primary
-                }
+              TextInput {
+                id: searchInput
+                anchors.fill: parent
+                anchors.leftMargin: 8
+                anchors.rightMargin: 8
+                verticalAlignment: TextInput.AlignVCenter
+                color: Color.surfaceText
+                font.family: Tokens.fontFamily
+                font.pixelSize: Tokens.bodySmSize
+                clip: true
+                text: root.searchQuery
+                onTextChanged: root.searchQuery = text
 
                 Text {
-                  anchors.left: parent.left
-                  anchors.leftMargin: 10
-                  anchors.right: parent.right
-                  anchors.rightMargin: 6
-                  anchors.verticalCenter: parent.verticalCenter
-                  text: sidebarItem.modelData.label
-                  color: sidebarItem.active ? Color.primaryContainerText : Color.surfaceText
+                  visible: searchInput.text === "" && !searchInput.activeFocus
+                  text: "Search settings…"
+                  color: Color.labelText
                   font.family: Tokens.fontFamily
                   font.pixelSize: Tokens.bodySmSize
-                  font.weight: sidebarItem.active ? Font.DemiBold : Font.Normal
-                  elide: Text.ElideRight
-                }
-
-                HoverHandler {
-                  id: tabHover
-                  cursorShape: Qt.PointingHandCursor
-                }
-                TapHandler {
-                  onTapped: root.activeTab = sidebarItem.modelData.id
+                  verticalAlignment: Text.AlignVCenter
+                  anchors.fill: parent
                 }
               }
             }
+
+            Flickable {
+              Layout.fillWidth: true
+              Layout.fillHeight: true
+              clip: true
+              contentWidth: width
+              contentHeight: root.searchQuery.trim() === "" ? sidebarCol.implicitHeight : resultsCol.implicitHeight
+
+              ColumnLayout {
+                id: sidebarCol
+                width: parent.width
+                spacing: 4
+                visible: root.searchQuery.trim() === ""
+
+                Text {
+                  text: "SETTINGS"
+                  color: Color.labelText
+                  font.family: Tokens.fontFamily
+                  font.pixelSize: Tokens.labelXsSize
+                  font.weight: Font.DemiBold
+                  font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+                  Layout.bottomMargin: 10
+                  Layout.topMargin: 2
+                  Layout.leftMargin: 4
+                }
+
+                Repeater {
+                  model: root.tabs
+
+                  delegate: Item {
+                    id: sidebarItem
+                    required property var modelData
+                    readonly property bool active: root.activeTab === modelData.id
+                    Layout.fillWidth: true
+                    height: 32
+
+                    Rectangle {
+                      anchors.fill: parent
+                      color: sidebarItem.active ? Color.primaryContainer : (tabHover.hovered ? Color.surfaceContainerHigh : "transparent")
+                    }
+                    Rectangle {
+                      visible: sidebarItem.active
+                      anchors.left: parent.left
+                      anchors.top: parent.top
+                      anchors.bottom: parent.bottom
+                      width: Tokens.borderMarker
+                      color: Color.primary
+                    }
+
+                    Text {
+                      anchors.left: parent.left
+                      anchors.leftMargin: 10
+                      anchors.right: parent.right
+                      anchors.rightMargin: 6
+                      anchors.verticalCenter: parent.verticalCenter
+                      text: sidebarItem.modelData.label
+                      color: sidebarItem.active ? Color.primaryContainerText : Color.surfaceText
+                      font.family: Tokens.fontFamily
+                      font.pixelSize: Tokens.bodySmSize
+                      font.weight: sidebarItem.active ? Font.DemiBold : Font.Normal
+                      elide: Text.ElideRight
+                    }
+
+                    HoverHandler {
+                      id: tabHover
+                      cursorShape: Qt.PointingHandCursor
+                    }
+                    TapHandler {
+                      onTapped: root.activeTab = sidebarItem.modelData.id
+                    }
+                  }
+                }
+              }
+
+              ColumnLayout {
+                id: resultsCol
+                width: parent.width
+                spacing: 2
+                visible: root.searchQuery.trim() !== ""
+
+                Text {
+                  text: root.searchResults.length === 0 ? "No matches" : root.searchResults.length + " match" + (root.searchResults.length === 1 ? "" : "es")
+                  color: Color.labelText
+                  font.family: Tokens.fontFamily
+                  font.pixelSize: Tokens.labelXsSize
+                  font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+                  Layout.bottomMargin: 10
+                  Layout.topMargin: 2
+                  Layout.leftMargin: 4
+                }
+
+                Repeater {
+                  model: root.searchResults
+
+                  delegate: Item {
+                    id: resultItem
+                    required property var modelData
+                    Layout.fillWidth: true
+                    height: 40
+
+                    Rectangle {
+                      anchors.fill: parent
+                      color: resultHover.hovered ? Color.surfaceContainerHigh : "transparent"
+                    }
+
+                    ColumnLayout {
+                      anchors.left: parent.left
+                      anchors.leftMargin: 10
+                      anchors.right: parent.right
+                      anchors.rightMargin: 6
+                      anchors.verticalCenter: parent.verticalCenter
+                      spacing: 1
+
+                      Text {
+                        text: resultItem.modelData.label
+                        color: Color.surfaceText
+                        font.family: Tokens.fontFamily
+                        font.pixelSize: Tokens.bodySmSize
+                        elide: Text.ElideRight
+                        Layout.fillWidth: true
+                      }
+                      Text {
+                        text: resultItem.modelData.description
+                        color: Color.labelText
+                        font.family: Tokens.fontFamily
+                        font.pixelSize: Tokens.captionSize
+                        elide: Text.ElideRight
+                        Layout.fillWidth: true
+                      }
+                    }
+
+                    HoverHandler {
+                      id: resultHover
+                      cursorShape: Qt.PointingHandCursor
+                    }
+                    TapHandler {
+                      onTapped: root.jumpToSearchHit(resultItem.modelData)
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -400,17 +547,20 @@ PanelWindow {
           GeneralTab {
             anchors.fill: parent
             visible: root.activeTab === "general"
+            initialSubTab: root.activeTab === "general" ? root.jumpSubTab : ""
           }
 
           BarTab {
             anchors.fill: parent
             visible: root.activeTab === "bar"
             screenName: root.screenName
+            initialSubTab: root.activeTab === "bar" ? root.jumpSubTab : ""
           }
 
           AppearanceTab {
             anchors.fill: parent
             visible: root.activeTab === "appearance"
+            initialSubTab: root.activeTab === "appearance" ? root.jumpSubTab : ""
           }
 
           AudioTab {
@@ -426,6 +576,7 @@ PanelWindow {
           DisplayTab {
             anchors.fill: parent
             visible: root.activeTab === "display"
+            initialSubTab: root.activeTab === "display" ? root.jumpSubTab : ""
           }
 
           SystemMonitorTab {
@@ -456,16 +607,19 @@ PanelWindow {
           LockScreenTab {
             anchors.fill: parent
             visible: root.activeTab === "lockScreen"
+            initialSubTab: root.activeTab === "lockScreen" ? root.jumpSubTab : ""
           }
 
           IdleTab {
             anchors.fill: parent
             visible: root.activeTab === "idle"
+            initialSubTab: root.activeTab === "idle" ? root.jumpSubTab : ""
           }
 
           NotificationsTab {
             anchors.fill: parent
             visible: root.activeTab === "notifications"
+            initialSubTab: root.activeTab === "notifications" ? root.jumpSubTab : ""
           }
 
           PeripheralsTab {
@@ -477,6 +631,7 @@ PanelWindow {
             anchors.fill: parent
             visible: root.activeTab === "hooks"
             targetScreen: root.targetScreen
+            initialSubTab: root.activeTab === "hooks" ? root.jumpSubTab : ""
           }
 
           PluginsTab {

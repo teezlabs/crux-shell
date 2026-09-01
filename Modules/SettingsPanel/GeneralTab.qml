@@ -9,6 +9,13 @@ ColumnLayout {
 
   property string subTab: "basics"
 
+  // Set by SettingsWindow's search jump — reacting to onChanged (not a
+  // binding) means the SubTabBar's own onActiveIdChanged can still drive
+  // subTab normally afterward, instead of a one-way lock to the search hit.
+  property string initialSubTab: ""
+  onInitialSubTabChanged: if (initialSubTab !== "")
+                             root.subTab = initialSubTab
+
   SubTabBar {
     Layout.fillWidth: true
     model: [
