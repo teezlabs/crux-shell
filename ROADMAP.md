@@ -152,9 +152,7 @@ against noctalia this pass):
    interval (was a hardcoded 2000ms Timer), and the CAPTURE tile's
    screenshot command (was hardcoded to `rishot`, now a text field run
    through `sh -c` so flags work).
-2. **Dock** — still not built at all. Genuinely optional — decide if you
-   want one before sinking time here.
-3. **Connections (Wifi/Bluetooth settings tab)** — still just the existing
+2. **Connections (Wifi/Bluetooth settings tab)** — still just the existing
    popups (`WifiMenuWindow`, `BluetoothMenuWindow`), no dedicated settings
    tab for saved networks/priority/forget-network/adapter selection. Still
    assessed as low priority relative to its size (noctalia's equivalent is
@@ -162,6 +160,8 @@ against noctalia this pass):
 
 ## Tier 3 — niche / defer
 
+- **Dock** — explicitly declined ("dont need a dock", 2026-08-31). Not
+  happening; don't resurrect this without being asked again.
 - **Location** — still not built; bundle into Night-Light work if that ever
   needs real sunrise/sunset timing rather than building standalone.
 - **Region** (date/locale formatting, per-panel clock format) — still not
@@ -182,9 +182,10 @@ got a preferred-MPRIS-player setting shared across three call sites that
 used to duplicate the same picking logic independently.
 
 What's left is genuinely all optional/deferred by this doc's own earlier
-judgment, not oversights: Tier 2 §2 (Dock) and §3 (Connections tab) are
-real, sizable builds nobody's asked for yet; Tier 3 (Location, Region) is
-low-urgency polish; a handful of items were explicitly *not* built because
+judgment, not oversights: Tier 2 §2 (Connections tab) is a real, sizable
+build nobody's asked for yet; Dock is explicitly declined, not just
+deferred; Tier 3 (Location, Region) is low-urgency polish; a handful of
+items were explicitly *not* built because
 they'd fight crux's own established choices rather than extend them
 (capsule/pill bar backgrounds vs. the chamfer-only "no radius" rule) or
 need real new subsystems rather than exposing something already hardcoded
