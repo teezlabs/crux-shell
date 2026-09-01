@@ -1,21 +1,10 @@
 # Maintainer: Teez <dmedoro13@gmail.com>
-#
-# NOTE before submitting to the AUR: `source` below points at this repo's
-# Forgejo remote, which currently only resolves over Tailscale (a private
-# IP, ssh-only, auth-gated) — the AUR build server and anyone running
-# `makepkg` outside your tailnet cannot fetch it. Either expose the
-# Forgejo instance's git-http(s) endpoint publicly (no auth, for read
-# access to this one repo) or mirror the repo to somewhere public
-# (GitHub/GitLab/sr.ht) and point `source` at that instead, before this
-# is submitted for real. Builds and installs fine locally in the meantime
-# (`makepkg -si` from a machine that already has the repo cloned, or that
-# can reach the Forgejo instance).
 pkgname=crux-shell-git
 pkgver=r1.0000000
 pkgrel=1
 pkgdesc="A personal QuickShell desktop shell for Hyprland"
 arch=('any')
-url="https://100.78.182.98/teez/Crux-Shell"
+url="https://github.com/teezlabs/crux-shell"
 license=('custom')
 depends=(
   'quickshell'
@@ -47,7 +36,7 @@ optdepends=(
 )
 provides=('crux-shell')
 conflicts=('crux-shell')
-source=("$pkgname::git+ssh://git@100.78.182.98/teez/Crux-Shell.git")
+source=("$pkgname::git+https://github.com/teezlabs/crux-shell.git")
 sha256sums=('SKIP')
 
 pkgver() {

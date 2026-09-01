@@ -2,7 +2,7 @@ pkgbase = crux-shell-git
 	pkgdesc = A personal QuickShell desktop shell for Hyprland
 	pkgver = r1.0000000
 	pkgrel = 1
-	url = https://100.78.182.98/teez/Crux-Shell
+	url = https://github.com/teezlabs/crux-shell
 	arch = any
 	license = custom
 	depends = quickshell
@@ -31,7 +31,7 @@ pkgbase = crux-shell-git
 	optdepends = sddm: crux ships a matching SDDM login theme (not installed by this package — see the crux repos SKILL.md/notes.md for the manual system-wide setup)
 	provides = crux-shell
 	conflicts = crux-shell
-	source = crux-shell-git::git+ssh://git@100.78.182.98/teez/Crux-Shell.git
+	source = crux-shell-git::git+https://github.com/teezlabs/crux-shell.git
 	sha256sums = SKIP
 
 pkgname = crux-shell-git
