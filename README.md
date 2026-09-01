@@ -37,15 +37,6 @@ match whatever's on screen.
 > Local-folder only — drop a `manifest.json` + `Widget.qml` in
 > `~/.config/crux/plugins/<name>/`. No marketplace, no network.
 
-<table><tr><td>
-<code>D</code><br><code>E</code><br><code>T</code><br><code>A</code><br><code>I</code><br><code>L</code><br><code>S</code><br></td><td><table>
-    <tr><td>OS</td><td>Arch</td></tr>
-    <tr><td>WM</td><td>Hyprland</td></tr>
-    <tr><td>Shell</td><td>crux (QuickShell)</td></tr>
-    <tr><td>Terminal</td><td>Kitty</td></tr>
- </table>
-</td></tr></table>
-
 ## Install
 
 ```
