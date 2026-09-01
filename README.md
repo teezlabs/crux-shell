@@ -39,13 +39,23 @@ match whatever's on screen.
 
 ## Install
 
+**Arch (AUR):**
+
+```
+yay -S crux-shell-git
+qs -c crux
+```
+
+**Manual:**
+
 ```
 git clone https://github.com/teezlabs/crux-shell ~/.config/quickshell/crux
 qs -c crux
 ```
 
 Point Hyprland's `exec-once` at `qs -c crux` to make it your real login
-shell. An AUR package lives in [`packaging/`](./packaging).
+shell. `crux-shell-git` is a VCS package — track upstream `HEAD` with
+`yay -S crux-shell-git --devel`.
 
 ## Configuration
 
