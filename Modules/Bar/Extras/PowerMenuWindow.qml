@@ -1,54 +1,109 @@
 import QtQuick
-import QtQuick.Shapes
-import QtQuick.Effects
+import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import qs.Commons
+import qs.Modules.Bar.Extras
 
-// Power menu popup: a row of honeycomb (hexagon) buttons. Separate top-level
-// surface since the bar strip itself is too thin to host a dropdown.
+// Power menu (§6.9): fullscreen scrim, row of 5 chamfered tiles (hollow
+// square icon, label, single-key hint). LOCK is default-focused
+// (primaryContainer fill + accent border), REBOOT's icon is tertiary,
+// SHUTDOWN's border/text is error. Keys L/S/E/R/P jump straight to an
+// action; ←→ move the keyboard selection; ⏎ confirms.
+//
+// Deviation from the literal spec: the mockup's key-hints (L/S/E/R/P)
+// read as instant single-press triggers, but this project's own earlier
+// session explicitly asked for a confirm step on anything destructive
+// (SessionMenuTab.qml's confirmActions setting) — kept here uniformly
+// across click, letter-key and arrow+Enter, rather than giving Shutdown a
+// bare single-keypress trigger the spec's cosmetic mockup didn't actually
+// need to defend.
 PanelWindow {
   id: root
 
   property var targetScreen: null
   screen: targetScreen
 
-  // Lock/Suspend previously used raw emoji glyphs (u{1F512}/u{1F319}) —
-  // true emoji need color-font support this box's font stack doesn't have
-  // (see crux skill's font gotchas), risking a tofu-box render same as the
-  // wifi-icon issue found early on. "geo" glyphs are drawn on Canvas below
-  // instead, matching the safe pattern every bar widget already uses.
   readonly property var actions: [
     {
       "label": "Lock",
-      "glyph": "geo:lock",
-      "run": ["sh", "-c", "loginctl lock-session"]
+      "display": "LOCK",
+      "key": "L",
+      "tint": "primary",
+      // `loginctl lock-session` alone does nothing unless some session-lock
+      // client is listening for it — crux now is one (Modules/LockScreen),
+      // so trigger it directly over its own IPC target instead.
+      "run": ["qs", "ipc", "-c", "crux", "call", "lockscreen", "lock"]
     },
     {
       "label": "Suspend",
-      "glyph": "geo:moon",
+      "display": "SUSPEND",
+      "key": "S",
+      "tint": "",
       "run": ["sh", "-c", "systemctl suspend || loginctl suspend"]
     },
     {
       "label": "Logout",
-      "glyph": "⏏",
+      "display": "LOG OUT",
+      "key": "E",
+      "tint": "",
       "run": ["sh", "-c", "hyprctl dispatch hl.dsp.exit()"]
     },
     {
       "label": "Reboot",
-      "glyph": "↻",
+      "display": "REBOOT",
+      "key": "R",
+      "tint": "tertiary",
       "run": ["sh", "-c", "systemctl reboot || loginctl reboot"]
     },
     {
       "label": "Shutdown",
-      "glyph": "⏻",
+      "display": "SHUTDOWN",
+      "key": "P",
+      "tint": "error",
       "run": ["sh", "-c", "systemctl poweroff || loginctl poweroff"]
     }
   ]
 
+  readonly property var visibleActions: actions.filter(a => Settings.data.sessionMenu.enabledActions.indexOf(a.label) !== -1)
+
+  property int selectedIndex: 0
+  property string armedLabel: ""
+
+  Timer {
+    id: armTimer
+    interval: 2500
+    onTriggered: root.armedLabel = ""
+  }
+
+  function activate(action) {
+    if (!action)
+      return;
+    var needsConfirm = Settings.data.sessionMenu.confirmActions.indexOf(action.label) !== -1;
+    if (needsConfirm && root.armedLabel !== action.label) {
+      root.armedLabel = action.label;
+      armTimer.restart();
+      return;
+    }
+    root.visible = false;
+    Quickshell.execDetached(action.run);
+  }
+
+  onVisibleChanged: {
+    if (!visible) {
+      armedLabel = "";
+    } else {
+      selectedIndex = Math.max(0, visibleActions.findIndex(a => a.label === "Lock"));
+    }
+  }
+
+  function toggle() {
+    visible = !visible;
+  }
+
   visible: false
-  color: "transparent"
+  color: Color.alpha(Color.surface, 0.9)
 
   anchors {
     top: true
@@ -61,10 +116,6 @@ PanelWindow {
   WlrLayershell.namespace: "crux-power-menu"
   WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
   exclusionMode: ExclusionMode.Ignore
-
-  function toggle() {
-    visible = !visible;
-  }
 
   IpcHandler {
     enabled: root.targetScreen === Quickshell.screens[0]
@@ -85,143 +136,137 @@ PanelWindow {
     enabled: root.visible
     onActivated: root.visible = false
   }
+  Shortcut {
+    sequence: "Left"
+    enabled: root.visible
+    onActivated: root.selectedIndex = Math.max(0, root.selectedIndex - 1)
+  }
+  Shortcut {
+    sequence: "Right"
+    enabled: root.visible
+    onActivated: root.selectedIndex = Math.min(root.visibleActions.length - 1, root.selectedIndex + 1)
+  }
+  Shortcut {
+    sequence: "Return"
+    enabled: root.visible
+    onActivated: root.activate(root.visibleActions[root.selectedIndex])
+  }
+  Instantiator {
+    model: root.visibleActions
+    Shortcut {
+      required property var modelData
+      required property int index
+      sequence: modelData.key
+      enabled: root.visible
+      onActivated: {
+        root.selectedIndex = index;
+        root.activate(modelData);
+      }
+    }
+  }
 
-  // Click outside the row closes the menu.
   MouseArea {
     anchors.fill: parent
     onClicked: root.visible = false
   }
 
-  Row {
+  ColumnLayout {
+    id: layout
     anchors.centerIn: parent
-    spacing: 0
+    spacing: 12
 
-    Repeater {
-      model: root.actions
+    Row {
+      Layout.alignment: Qt.AlignHCenter
+      spacing: 2
 
-      delegate: Item {
-        id: hex
-        required property var modelData
+      Repeater {
+        model: root.visibleActions
 
-        readonly property real r: 46
-        width: r * 1.733
-        height: r * 2
+        delegate: Item {
+          id: tile
+          required property var modelData
+          required property int index
+          readonly property bool selected: index === root.selectedIndex
+          readonly property bool armed: root.armedLabel === modelData.label
+          // Spec §6.9: only REBOOT (icon tertiary) and SHUTDOWN (border AND
+          // text error) carry a permanent tint, unconditionally, whether
+          // selected or not — everything else (including LOCK) is neutral
+          // until selected, at which point it takes the generic "accent"
+          // selection treatment. Previously every tile defaulted to a
+          // "primary" tint even unselected/unarmed (LOCK/SUSPEND/LOGOUT all
+          // showed a permanently primary-colored icon/text), which doesn't
+          // match "LOCK is default-focused" reading as a one-time initial
+          // selection state, not LOCK's own permanent color.
+          readonly property bool hasPermanentTint: modelData.tint === "error" || modelData.tint === "tertiary"
+          readonly property color permanentTint: modelData.tint === "error" ? Color.error : Color.tertiary
+          readonly property color accentColor: tile.hasPermanentTint ? tile.permanentTint : Color.primary
 
-        Shape {
-          id: hexShape
-          anchors.fill: parent
-          preferredRendererType: Shape.CurveRenderer
+          width: 108
+          height: 108
 
-          ShapePath {
-            strokeColor: Color.mOutline
-            strokeWidth: 1
-            fillGradient: LinearGradient {
-              x1: 0
-              y1: 0
-              x2: hex.r * 1.733
-              y2: hex.r * 2
-              GradientStop {
-                position: 0
-                color: hexMouse.containsMouse ? Qt.lighter(Color.mPrimary, 1.3) : Color.mSurfaceVariant
-              }
-              GradientStop {
-                position: 1
-                color: hexMouse.containsMouse ? Color.mPrimary : Color.mSurfaceVariant
-              }
+          Chamfer {
+            anchors.fill: parent
+            chamferSize: 10 // spec §6.9: "each chamfered 10px" (an explicit override of the shared 8-10px tier)
+            cutTopRight: true
+            cutBottomLeft: true
+            // Spec: "LOCK is default-focused: primary_container fill,
+            // accent border" — a flat role fill, not an alpha-blended tint.
+            fillColor: tile.selected ? Color.primaryContainer : Color.surfaceContainer
+            strokeColor: tile.armed ? Color.error : (tile.hasPermanentTint ? tile.permanentTint : (tile.selected ? Color.primary : Color.outline))
+            strokeWidth: tile.selected || tile.armed ? 2 : Tokens.borderModule
+          }
+
+          Column {
+            anchors.centerIn: parent
+            spacing: 8
+
+            Rectangle {
+              anchors.horizontalCenter: parent.horizontalCenter
+              width: 20
+              height: 20
+              color: "transparent"
+              border.color: tile.armed ? Color.error : (tile.hasPermanentTint ? tile.permanentTint : (tile.selected ? Color.primary : Color.labelText))
+              border.width: 2
             }
 
-            startX: hex.r * 1.733; startY: hex.r * 0.5
-            PathLine { x: hex.r * 0.866; y: 0 }
-            PathLine { x: 0; y: hex.r * 0.5 }
-            PathLine { x: 0; y: hex.r * 1.5 }
-            PathLine { x: hex.r * 0.866; y: hex.r * 2 }
-            PathLine { x: hex.r * 1.733; y: hex.r * 1.5 }
-            PathLine { x: hex.r * 1.733; y: hex.r * 0.5 }
-          }
-        }
+            Text {
+              anchors.horizontalCenter: parent.horizontalCenter
+              text: tile.armed ? "CONFIRM?" : tile.modelData.display
+              color: tile.armed ? Color.error : (tile.modelData.tint === "error" ? Color.error : (tile.selected ? Color.primary : Color.surfaceText))
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.labelSize
+              font.weight: Font.DemiBold
+              font.letterSpacing: Tokens.labelSize * Tokens.labelTracking
+            }
 
-        // Glow when hovered, matching the workspace-pill treatment.
-        MultiEffect {
-          anchors.fill: hexShape
-          source: hexShape
-          shadowEnabled: hexMouse.containsMouse
-          shadowColor: Color.mPrimary
-          shadowBlur: 0.6
-          shadowOpacity: 0.7
-        }
-
-        Column {
-          anchors.centerIn: parent
-          spacing: 4
-
-          Text {
-            anchors.horizontalCenter: parent.horizontalCenter
-            visible: !hex.modelData.glyph.startsWith("geo:")
-            text: hex.modelData.glyph
-            font.pixelSize: 20
-            color: hexMouse.containsMouse ? Color.mSurface : Color.mOnSurface
-          }
-
-          Canvas {
-            id: geoIcon
-            anchors.horizontalCenter: parent.horizontalCenter
-            visible: hex.modelData.glyph.startsWith("geo:")
-            width: 18
-            height: 18
-            readonly property color drawColor: hexMouse.containsMouse ? Color.mSurface : Color.mOnSurface
-            onDrawColorChanged: requestPaint()
-            onVisibleChanged: if (visible)
-              requestPaint()
-            onPaint: {
-              var ctx = getContext("2d");
-              ctx.reset();
-              ctx.strokeStyle = drawColor;
-              ctx.fillStyle = drawColor;
-              ctx.lineWidth = 1.4;
-              ctx.lineCap = "round";
-
-              if (hex.modelData.glyph === "geo:lock") {
-                // Padlock: shackle arc + body rect.
-                ctx.beginPath();
-                ctx.arc(9, 7, 4.5, Math.PI, 0, false);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.roundedRect(3, 7, 12, 9, 2, 2);
-                ctx.fill();
-              } else if (hex.modelData.glyph === "geo:moon") {
-                // Crescent moon via destination-out cutout, matching the
-                // Settings gear/PowerButton Canvas pattern.
-                ctx.beginPath();
-                ctx.arc(9, 9, 7, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalCompositeOperation = "destination-out";
-                ctx.beginPath();
-                ctx.arc(12.5, 6.5, 6, 0, Math.PI * 2);
-                ctx.fill();
-              }
+            Text {
+              anchors.horizontalCenter: parent.horizontalCenter
+              text: tile.modelData.key
+              color: Color.labelText
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.labelXsSize
             }
           }
 
-          Text {
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: hex.modelData.label
-            font.family: Settings.data.ui.fontFamily
-            font.pixelSize: 11
-            color: hexMouse.containsMouse ? Color.mSurface : Color.mOnSurface
+          HoverHandler {
+            cursorShape: Qt.PointingHandCursor
+            onHoveredChanged: if (hovered)
+              root.selectedIndex = tile.index
           }
-        }
-
-        MouseArea {
-          id: hexMouse
-          anchors.fill: parent
-          hoverEnabled: true
-          cursorShape: Qt.PointingHandCursor
-          onClicked: {
-            Quickshell.execDetached(hex.modelData.run);
-            root.visible = false;
+          TapHandler {
+            onTapped: root.activate(tile.modelData)
           }
         }
       }
+    }
+
+    Text {
+      Layout.alignment: Qt.AlignHCenter
+      text: "←→ SELECT · ⏎ CONFIRM · ESC CANCEL"
+      color: Color.labelText
+      font.family: Tokens.fontFamily
+      font.pixelSize: Tokens.labelXsSize
+      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
     }
   }
 }

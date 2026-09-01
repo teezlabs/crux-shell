@@ -1,4 +1,11 @@
+//@ pragma UseQApplication
 // crux shell — boot smoke test. Launch with `qs -c crux`.
+//
+// UseQApplication is required for QsMenuAnchor.open() (Tray.qml's real
+// right-click DBusMenu popups) — without it, Quickshell starts in
+// QGuiApplication mode and every QsMenuAnchor.open() call fails outright
+// with "quickshell was not started in QApplication mode" (confirmed via
+// boot log: this was silently breaking every tray right-click).
 
 import QtQuick
 import QtQuick.Effects
@@ -9,8 +16,11 @@ import Quickshell.Services.Pipewire
 import qs.Commons
 import qs.Modules.Background
 import qs.Modules.Bar
+import qs.Modules.Bar.Extras
+import qs.Modules.LockScreen
 import qs.Modules.OSD
 import qs.Modules.Polkit
+import qs.Modules.Tooltip
 // Not instantiated here — SettingsWindow is opened by the dynamically
 // Loader-loaded Settings.qml bar widget, which can't resolve a qs.Modules.*
 // module on its own. Statically importing it once here registers it with
@@ -24,10 +34,91 @@ ShellRoot {
 
   Background {}
 
+  DesktopWidgets {}
+
+  ToastOverlay {}
+
+  LockScreen {}
+
+  // Crux's own fullscreen wallpaper browser — one instance per screen (see
+  // WallpaperSelectorWindow.qml), each with its own "wallpaperBrowser_
+  // <screen>" IPC target. Use bin/crux-focused-ipc from a keybind.
+  WallpaperSelectorWindow {}
+
+  // "wallpaper set"/"retheme" stay as flat, screen-agnostic targets — the
+  // global theme and Settings.data.wallpaper.path aren't per-screen
+  // concepts, so anything scripting a wallpaper change externally (bin/
+  // crux-wallpaper-apply, a plugin) has one stable target regardless of
+  // which monitor's browser window is open.
   IpcHandler {
     target: "wallpaper"
     function set(path: string): void {
       Settings.data.wallpaper.path = path;
+      if (Settings.data.wallpaper.autoTheme)
+        Matugen.generateFrom(path);
+    }
+    function retheme(scheme: string, colorIndex: int): void {
+      Settings.data.wallpaper.matugenScheme = scheme;
+      Settings.data.wallpaper.matugenColorIndex = colorIndex;
+      if (Settings.data.wallpaper.path !== "")
+        Matugen.generateFrom(Settings.data.wallpaper.path);
+    }
+  }
+
+  // Wallpaper auto-cycle — noctalia's Wallpaper "Automation" subtab: rotate
+  // to a new wallpaper from Settings.data.wallpaper.directory on a timer.
+  // One global instance (not per-screen) since it drives the single shared
+  // wallpaper.path setting, same one the picker/IPC `wallpaper set` above
+  // write to — reuses that exact set+retheme path.
+  // Boot init for singletons whose logic must not run at import time (Hooks'
+  // startup hook, Idle's timeout monitors) — both self-handle Settings not
+  // being loaded yet (see Hooks.qml/Idle.qml's own init()), so this can fire
+  // immediately rather than waiting on Settings.isLoaded itself.
+  Timer {
+    id: bootTimer
+    interval: 0
+    running: true
+    repeat: false
+    onTriggered: {
+      Hooks.init();
+      Idle.init();
+    }
+  }
+
+  Timer {
+    id: wallpaperCycleTimer
+    interval: Settings.data.wallpaper.autoCycleMinutes * 60 * 1000
+    running: Settings.isLoaded && Settings.data.wallpaper.autoCycle
+    repeat: true
+    onTriggered: wallpaperCycleScan.running = true
+  }
+
+  Process {
+    id: wallpaperCycleScan
+    command: ["find", Settings.data.wallpaper.directory, "-maxdepth", "1", "-type", "f", "(", "-iname", "*.jpg", "-o", "-iname", "*.jpeg", "-o", "-iname", "*.png", "-o", "-iname", "*.webp", ")"]
+    stdout: StdioCollector {
+      id: wallpaperCycleCollector
+      waitForEnd: true
+    }
+    onExited: exitCode => {
+      var files = wallpaperCycleCollector.text.split("\n").filter(l => l.length > 0);
+      if (files.length === 0)
+        return;
+      files.sort();
+      var next;
+      if (Settings.data.wallpaper.autoCycleMode === "sequential") {
+        var idx = files.indexOf(Settings.data.wallpaper.path);
+        next = files[(idx + 1) % files.length];
+      } else {
+        // Random, but avoid picking the same wallpaper twice in a row when
+        // there's more than one candidate to choose from.
+        do {
+          next = files[Math.floor(Math.random() * files.length)];
+        } while (files.length > 1 && next === Settings.data.wallpaper.path);
+      }
+      Settings.data.wallpaper.path = next;
+      if (Settings.data.wallpaper.autoTheme)
+        Matugen.generateFrom(next);
     }
   }
 
@@ -136,6 +227,35 @@ ShellRoot {
 
       readonly property string barPosition: Settings.isLoaded ? Settings.getBarPositionForScreen(screen.name) : "top"
       readonly property bool barIsVertical: barPosition === "left" || barPosition === "right"
+      // A screen taller than it is wide (a physically rotated portrait
+      // monitor, e.g. this box's DP-1) makes a "top"/"bottom" bar span its
+      // *short* edge — much less room than a normal landscape top bar has,
+      // even though the bar itself is still a physically horizontal strip.
+      // Widget-internal content (Clock's date+time, StatusGroup's NET/VOL
+      // pairs, etc.) should use the same compact/stacked style a true
+      // vertical bar already has for exactly that reason — see
+      // Bar.qml/BarSection.qml's contentVertical.
+      readonly property bool screenIsPortrait: screen.height > screen.width
+      // NOT blanket-applied to every widget (see BarWidgetLoader.qml's
+      // _compactSafeIds) — confirmed real breakage doing that: Tray's and
+      // Workspaces' `vertical` prop means "stack items along the bar's long
+      // axis", which only has room on a real vertical (left/right) bar.
+      // Forcing it on for a horizontal top bar just because the screen is
+      // portrait made Tray's icons stack downward past the bar's own height
+      // with nothing bounding them. Only widgets confirmed to fit a modest
+      // thickness bump (short text stacks, not multi-item grids) opt in.
+      readonly property bool contentVertical: barIsVertical || screenIsPortrait
+      // contentVertical's compact/stacked widget styles (2-3 lines) need
+      // more cross-axis room than the bar's normal single-line thickness
+      // provides — true vertical bars already have that room along their
+      // own long axis, but a "top"/"bottom" bar's cross-axis *is* its
+      // thickness setting, which doesn't grow on its own just because the
+      // content inside got taller. Bump it here specifically for the
+      // portrait-on-horizontal-bar case (confirmed via screenshot: without
+      // this, Clock's stacked HH/mm/date visibly overflowed past the
+      // bottom of its own chamfered module).
+      readonly property bool compactOnHorizontalBar: contentVertical && !barIsVertical
+      readonly property int effectiveThickness: compactOnHorizontalBar ? Math.max(Settings.data.bar.thickness, 56) : Settings.data.bar.thickness
       readonly property bool autoHide: Settings.data.bar.autoHide
       readonly property bool shownOnThisScreen: Settings.data.bar.monitors.length === 0 || Settings.data.bar.monitors.includes(screen.name)
       property bool hovered: false
@@ -152,15 +272,16 @@ ShellRoot {
         left: barPosition === "left" || !barIsVertical
         right: barPosition === "right" || !barIsVertical
       }
+      readonly property int effectiveFloatMargin: Settings.data.bar.floating ? Settings.data.bar.floatMargin : 0
       margins {
-        top: Settings.data.bar.floatMargin
-        bottom: Settings.data.bar.floatMargin
-        left: Settings.data.bar.floatMargin
-        right: Settings.data.bar.floatMargin
+        top: root.effectiveFloatMargin
+        bottom: root.effectiveFloatMargin
+        left: root.effectiveFloatMargin
+        right: root.effectiveFloatMargin
       }
       // When vertical, top+bottom anchors fill height and only implicitWidth matters (and vice versa).
-      implicitWidth: Settings.data.bar.thickness
-      implicitHeight: Settings.data.bar.thickness
+      implicitWidth: root.effectiveThickness
+      implicitHeight: root.effectiveThickness
       // Transparent so the margins above actually read as a floating gap
       // around a rounded pill (the Rectangle below), not a plain inset
       // rectangle on a same-colored background.
@@ -182,51 +303,12 @@ ShellRoot {
         onHoveredChanged: root.hovered = hovered
       }
 
-      // Soft drop shadow behind the pill for depth against the wallpaper —
-      // MultiEffect (QtQuick.Effects) is the modern replacement for the old
-      // QtGraphicalEffects DropShadow. Declared before barRect so it paints
-      // underneath; a minor double-render of barRect's own pixels (once
-      // normally, once via MultiEffect's captured copy) is harmless here,
-      // there's no simple "shadow only, don't redraw source" mode.
-      MultiEffect {
-        anchors.fill: barRect
-        source: barRect
-        shadowEnabled: true
-        shadowColor: Qt.rgba(0, 0, 0, 0.55)
-        shadowBlur: 0.7
-        shadowVerticalOffset: 2
-        shadowHorizontalOffset: 0
-        opacity: root.barShown ? 1 : 0
-        Behavior on opacity {
-          NumberAnimation {
-            duration: Style.animationNormal
-          }
-        }
-      }
-
-      // Faint primary-tinted glow, same "powered on" cue used on the
-      // settings card — separate from the black depth shadow above.
-      MultiEffect {
-        anchors.fill: barRect
-        source: barRect
-        shadowEnabled: true
-        shadowColor: Color.mPrimary
-        shadowBlur: 0.35
-        shadowOpacity: 0.22
-        opacity: root.barShown ? 1 : 0
-        Behavior on opacity {
-          NumberAnimation {
-            duration: Style.animationNormal
-          }
-        }
-      }
-
-      Rectangle {
+      // Transparent bar + edge-glow line by default; a real bar-strip
+      // background is opt-in via Settings.data.bar.showBackground — see
+      // crux skill's notes.md for why this is a toggle, not the default.
+      Item {
         id: barRect
         anchors.fill: parent
-        radius: Style.radiusM
-        border.color: Color.alpha(Color.mPrimary, 0.35)
-        border.width: Settings.data.bar.showBorder ? Settings.data.bar.borderWidth : 0
         opacity: root.barShown ? 1 : 0
         Behavior on opacity {
           NumberAnimation {
@@ -234,28 +316,95 @@ ShellRoot {
           }
         }
 
-        // Subtle top-lit gradient instead of a flat fill — same depth cue
-        // as the settings card (SettingsWindow.qml) and section cards
-        // (Controls/SettingsSection.qml).
-        gradient: Gradient {
-          orientation: root.barIsVertical ? Gradient.Horizontal : Gradient.Vertical
-          GradientStop {
-            position: 0
-            color: Color.alpha(Qt.lighter(Color.mSurface, 1.12), Style.barOpacity)
-          }
-          GradientStop {
-            position: 1
-            color: Color.alpha(Color.mSurface, Style.barOpacity)
+        Chamfer {
+          // Real bar-strip background — off by default (showBackground).
+          // Same two-opposite-corner convention as every other chamfered
+          // surface in crux while floating; square (flush) when docked.
+          visible: Settings.data.bar.showBackground
+          anchors.fill: parent
+          chamferSize: Settings.data.bar.floating ? Tokens.chamferPanel : 0
+          cutTopRight: Settings.data.bar.floating
+          cutBottomLeft: Settings.data.bar.floating
+          fillColor: Color.alpha(Color.surface, Settings.data.bar.barBackgroundOpacity)
+          strokeColor: "transparent"
+        }
+
+        Rectangle {
+          // Plain x/y/width/height instead of anchors — anchors that
+          // conditionally switch a side between a real target and
+          // `undefined` (needed here since which edge this hugs depends on
+          // barIsVertical/barPosition) don't reliably re-resolve once
+          // Settings finishes loading: this binding first evaluates while
+          // Settings.isLoaded is still false (barPosition defaults to
+          // "top"/horizontal for every screen), and a screen whose real
+          // configured position is actually vertical never correctly
+          // flipped its anchors over afterward — confirmed via a debug
+          // console.log that fired with vertical=false/position=top on a
+          // screen configured as "left", and confirmed the line rendered
+          // fine on the "top" screen (no flip ever needed) but never on the
+          // "left" one (needed a flip that never took). Plain property
+          // bindings don't have that staleness — they fully re-evaluate.
+          visible: Settings.data.bar.showBorder
+          x: root.barIsVertical ? (root.barPosition === "left" ? parent.width - Settings.data.bar.borderWidth : 0) : 0
+          y: root.barIsVertical ? 0 : (root.barPosition === "top" ? parent.height - Settings.data.bar.borderWidth : 0)
+          width: root.barIsVertical ? Settings.data.bar.borderWidth : parent.width
+          height: root.barIsVertical ? parent.height : Settings.data.bar.borderWidth
+          color: "transparent"
+
+          gradient: Gradient {
+            orientation: root.barIsVertical ? Gradient.Vertical : Gradient.Horizontal
+            GradientStop {
+              position: 0
+              color: Color.alpha(Color.primary, 0)
+            }
+            GradientStop {
+              position: 0.3
+              color: Color.alpha(Color.primary, 0.32)
+            }
+            GradientStop {
+              position: 0.7
+              color: Color.alpha(Color.primary, 0.32)
+            }
+            GradientStop {
+              position: 1
+              color: Color.alpha(Color.primary, 0)
+            }
           }
         }
 
         Bar {
           screen: root.screen
           vertical: root.barIsVertical
+          contentVertical: root.contentVertical
         }
       }
 
       VolumeOsd {
+        targetScreen: root.screen
+      }
+
+      TooltipOverlay {
+        targetScreen: root.screen
+      }
+
+      NotificationsWindow {
+        targetScreen: root.screen
+      }
+
+      SidebarWindow {
+        targetScreen: root.screen
+      }
+
+      // Always exists per screen regardless of which bar widgets are
+      // configured — StatusGroup and the standalone ControlCenter icon
+      // both just reach it over the "controlCenter" IPC target (see
+      // ControlCenterWindow.qml's openAt). Previously this was only ever
+      // instantiated as a child of StatusGroup.qml, so it silently didn't
+      // exist at all — and the IPC target never registered — on a bar
+      // layout that dropped StatusGroup in favor of just the standalone
+      // icon (confirmed via `qs ipc show` listing no "controlCenter"
+      // target at all).
+      ControlCenterWindow {
         targetScreen: root.screen
       }
     }

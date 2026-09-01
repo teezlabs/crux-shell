@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+# Keeps /usr/share/sddm/themes/crux in sync with the real, live crux
+# wallpaper + theme — run from Matugen.qml's _runPostHooks() whenever
+# Settings.data.wallpaper.templates.sddmGreeter is on, same "off by
+# default, each is a real write" convention every other template toggle
+# there follows. Needs passwordless sudo for the two system-path writes
+# (background image + theme.conf); if that's ever revoked this just fails
+# quietly — the theme keeps whatever it last had, it doesn't go blank.
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+settings_path = Path.home() / ".config/crux/settings.json"
+if not settings_path.exists():
+    sys.exit(0)
+
+settings = json.loads(settings_path.read_text())
+wallpaper_path = settings.get("wallpaper", {}).get("path", "")
+theme = settings.get("theme", {})
+ui = settings.get("ui", {})
+
+if not wallpaper_path or not Path(wallpaper_path).exists():
+    sys.exit(0)
+
+greeter_bg = Path("/usr/share/backgrounds/crux-greeter.png")
+theme_conf = Path("/usr/share/sddm/themes/crux/theme.conf")
+
+conf_lines = [
+    "[General]",
+    f"background={greeter_bg}",
+    "blurRadius=48",
+    f"fontFamily=\"{ui.get('fontFamily', 'JetBrains Mono')}\"",
+    "",
+]
+for key in [
+    "mPrimary", "mOnPrimary", "mSurface", "mOnSurface", "mSurfaceVariant",
+    "mOnSurfaceVariant", "mOutline", "mError", "mOnError",
+]:
+    if key in theme:
+        conf_lines.append(f"{key}={theme[key]}")
+
+staging = Path.home() / ".cache/crux/greeter-theme.conf"
+staging.parent.mkdir(parents=True, exist_ok=True)
+staging.write_text("\n".join(conf_lines) + "\n")
+
+subprocess.run(["sudo", "-n", "cp", wallpaper_path, str(greeter_bg)], check=False)
+subprocess.run(["sudo", "-n", "chmod", "644", str(greeter_bg)], check=False)
+subprocess.run(["sudo", "-n", "cp", str(staging), str(theme_conf)], check=False)
+subprocess.run(["sudo", "-n", "chmod", "644", str(theme_conf)], check=False)

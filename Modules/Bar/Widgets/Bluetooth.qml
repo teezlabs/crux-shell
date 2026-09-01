@@ -3,8 +3,8 @@ import Quickshell.Bluetooth
 import qs.Modules.Bar.Extras
 import qs.Commons
 
-// Plain Bluetooth status icon on the bar; the real device list/connect UI
-// lives in the separate BluetoothMenuWindow popup.
+// Bluetooth status icon on the bar; the real device list/connect UI lives
+// in the separate BluetoothMenuWindow popup.
 Item {
   id: root
 
@@ -22,8 +22,8 @@ Item {
     return false;
   }
 
-  implicitWidth: 32
-  implicitHeight: 32
+  implicitWidth: btn.implicitWidth
+  implicitHeight: btn.implicitHeight
   width: implicitWidth
   height: implicitHeight
 
@@ -32,24 +32,11 @@ Item {
     targetScreen: root.screen
   }
 
-  Rectangle {
-    anchors.fill: parent
-    anchors.margins: 4
-    radius: Style.radiusXXS
-    color: hoverHandler.hovered ? Color.alpha(Color.mPrimary, 0.16) : "transparent"
-    border.color: Color.alpha(Color.mPrimary, 0.55)
-    border.width: hoverHandler.hovered ? 1 : 0
-    scale: hoverHandler.hovered ? 1.1 : 1.0
-    Behavior on color {
-      ColorAnimation {
-        duration: Style.animationFast
-      }
-    }
-    Behavior on scale {
-      NumberAnimation {
-        duration: Style.animationFast
-        easing.type: Easing.OutBack
-      }
+  BarIconButton {
+    id: btn
+    onTapped: {
+      menu.triggerPos = root.mapToItem(null, 0, 0);
+      menu.toggle();
     }
 
     // Geometric "B"-glyph stand-in (bowtie) — no font/emoji glyph dependency.
@@ -57,7 +44,7 @@ Item {
       anchors.centerIn: parent
       width: 10
       height: 14
-      readonly property color strokeColor: !root.adapter || !root.adapter.enabled ? Color.mOutline : (root.anyConnected ? Color.mPrimary : Color.mOnSurfaceVariant)
+      readonly property color strokeColor: !root.adapter || !root.adapter.enabled ? Color.disabledText : (root.anyConnected ? Color.primary : Color.surfaceTextMuted)
       onStrokeColorChanged: requestPaint()
       onPaint: {
         var ctx = getContext("2d");
@@ -76,15 +63,5 @@ Item {
         ctx.stroke();
       }
     }
-  }
-
-  HoverHandler {
-    id: hoverHandler
-    cursorShape: Qt.PointingHandCursor
-  }
-
-  TapHandler {
-    acceptedButtons: Qt.LeftButton
-    onTapped: menu.toggle()
   }
 }

@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+# Splices matugen's rendered starship-palette-block.toml into
+# ~/.config/starship.toml between its marker comments, replacing whichever
+# marker pair is currently there (noctalia's original "NOCTALIA STARSHIP
+# PALETTE" markers, or crux's own "CRUX STARSHIP PALETTE" ones from a
+# previous run) — starship.toml has real user prompt config above this
+# block, so this only ever touches the marked region, never the whole file.
+import re
+import sys
+from pathlib import Path
+
+starship_path = Path.home() / ".config/starship.toml"
+block_path = Path.home() / ".cache/crux/starship-palette-block.toml"
+
+if not starship_path.exists() or not block_path.exists():
+    sys.exit(0)
+
+text = starship_path.read_text()
+new_block = block_path.read_text().rstrip("\n")
+
+pattern = re.compile(
+    r"# >>> (?:NOCTALIA|CRUX) STARSHIP PALETTE >>>.*?# <<< (?:NOCTALIA|CRUX) STARSHIP PALETTE <<<",
+    re.DOTALL,
+)
+
+if pattern.search(text):
+    text = pattern.sub(new_block, text, count=1)
+else:
+    sep = "\n\n" if not text.endswith("\n\n") else ""
+    text = text.rstrip("\n") + "\n" + sep + new_block + "\n"
+
+starship_path.write_text(text)

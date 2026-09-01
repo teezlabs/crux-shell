@@ -1,9 +1,12 @@
 import QtQuick
 import qs.Commons
+import qs.Modules.Bar.Extras
 
-// Vertical-stacked clock: hour on top, minute on bottom. No card/background
-// — just the digits, letting the bold hour + accent-colored minute carry
-// it instead of a boxed-in shape.
+// v2 spec §6.1 Clock module: "WED 25 AUG" (caption, grey) · 1px divider ·
+// "14:32" (body 600, on_surface). Vertical bar: stacked date/time instead
+// (a single horizontal line doesn't fit a ~32px-wide bar) — same reasoning
+// crux's earlier Clock.qml used, kept for the vertical-bar case this spec
+// doesn't itself cover (it targets a single top-anchored bar).
 Item {
   id: root
 
@@ -22,54 +25,85 @@ Item {
     onTriggered: root.now = new Date()
   }
 
-  implicitWidth: 32
-  implicitHeight: 32
+  implicitWidth: module.implicitWidth
+  implicitHeight: module.implicitHeight
   width: implicitWidth
   height: implicitHeight
 
-  Column {
-    anchors.centerIn: parent
-    spacing: 2
+  CalendarWindow {
+    id: calendar
+    targetScreen: root.screen
+  }
 
-    Text {
-      width: 30
-      horizontalAlignment: Text.AlignHCenter
-      text: Qt.formatDateTime(root.now, "HH")
-      color: Color.mOnSurface
-      font.family: Settings.data.ui.fontFamily
-      font.pixelSize: 15
-      font.bold: true
-      font.letterSpacing: 1
-    }
+  HoverHandler {
+    cursorShape: Qt.PointingHandCursor
+  }
+  TapHandler {
+    onTapped: calendar.toggle()
+  }
 
-    // Colon-style divider, two small dots instead of a flat rule.
+  BarModule {
+    id: module
+    vertical: root.vertical
+
     Row {
-      x: (30 - width) / 2
-      spacing: 3
+      visible: !root.vertical
+      spacing: 8
+
+      Text {
+        text: Qt.formatDateTime(root.now, "ddd dd MMM").toUpperCase()
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.captionSize
+        font.letterSpacing: Tokens.captionSize * Tokens.captionTracking
+      }
 
       Rectangle {
-        width: 3
-        height: 3
-        radius: 1.5
-        color: Color.mPrimary
+        width: 1
+        height: 12
+        color: Color.surfaceContainerHigh
       }
-      Rectangle {
-        width: 3
-        height: 3
-        radius: 1.5
-        color: Color.mPrimary
+
+      Text {
+        text: Qt.formatDateTime(root.now, "HH:mm")
+        color: Color.surfaceText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.bodySize
+        font.weight: Font.DemiBold
+        font.letterSpacing: Tokens.bodySize * Tokens.bodyTracking
       }
     }
 
-    Text {
-      width: 30
-      horizontalAlignment: Text.AlignHCenter
-      text: Qt.formatDateTime(root.now, "mm")
-      color: Color.mPrimary
-      font.family: Settings.data.ui.fontFamily
-      font.pixelSize: 13
-      font.bold: true
-      font.letterSpacing: 1
+    Column {
+      visible: root.vertical
+      spacing: 1
+
+      Text {
+        width: 30
+        horizontalAlignment: Text.AlignHCenter
+        text: Qt.formatDateTime(root.now, "HH")
+        color: Color.surfaceText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.bodySize
+        font.weight: Font.DemiBold
+      }
+      Text {
+        width: 30
+        horizontalAlignment: Text.AlignHCenter
+        text: Qt.formatDateTime(root.now, "mm")
+        color: Color.surfaceText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.bodySize
+        font.weight: Font.DemiBold
+      }
+      Text {
+        width: 30
+        horizontalAlignment: Text.AlignHCenter
+        text: Qt.formatDateTime(root.now, "dd/MM")
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.labelXsSize
+      }
     }
   }
 }

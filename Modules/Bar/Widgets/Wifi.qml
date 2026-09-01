@@ -3,8 +3,9 @@ import Quickshell.Networking
 import qs.Modules.Bar.Extras
 import qs.Commons
 
-// Plain Wi-Fi status icon on the bar; the real network list/connect UI lives
-// in the separate WifiMenuWindow popup.
+// Wi-Fi status icon on the bar; the real network list/connect UI lives in
+// the separate WifiMenuWindow popup (StatusGroup's NET segment is a
+// summary-only readout, this owns the actual device list).
 Item {
   id: root
 
@@ -29,8 +30,8 @@ Item {
     return null;
   }
 
-  implicitWidth: 32
-  implicitHeight: 32
+  implicitWidth: btn.implicitWidth
+  implicitHeight: btn.implicitHeight
   width: implicitWidth
   height: implicitHeight
 
@@ -39,35 +40,21 @@ Item {
     targetScreen: root.screen
   }
 
-  Rectangle {
-    anchors.fill: parent
-    anchors.margins: 4
-    radius: Style.radiusXXS
-    color: hoverHandler.hovered ? Color.alpha(Color.mPrimary, 0.16) : "transparent"
-    border.color: Color.alpha(Color.mPrimary, 0.55)
-    border.width: hoverHandler.hovered ? 1 : 0
-    scale: hoverHandler.hovered ? 1.1 : 1.0
-    Behavior on color {
-      ColorAnimation {
-        duration: Style.animationFast
-      }
-    }
-    Behavior on scale {
-      NumberAnimation {
-        duration: Style.animationFast
-        easing.type: Easing.OutBack
-      }
+  BarIconButton {
+    id: btn
+    onTapped: {
+      menu.triggerPos = root.mapToItem(null, 0, 0);
+      menu.toggle();
     }
 
     // Standard wifi-fan glyph (three concentric arcs + a dot) drawn on
-    // Canvas — no font/emoji glyph dependency, and reads as "wifi" at a
-    // glance instead of generic signal bars.
+    // Canvas — no font/emoji glyph dependency.
     Canvas {
       id: wifiCanvas
       anchors.centerIn: parent
       width: 16
       height: 12
-      readonly property color drawColor: !Networking.wifiEnabled ? Color.mOutline : (root.connectedNetwork ? Color.mPrimary : Color.mOnSurfaceVariant)
+      readonly property color drawColor: !Networking.wifiEnabled ? Color.disabledText : (root.connectedNetwork ? Color.primary : Color.surfaceTextMuted)
       onDrawColorChanged: requestPaint()
       onPaint: {
         var ctx = getContext("2d");
@@ -91,15 +78,5 @@ Item {
         ctx.fill();
       }
     }
-  }
-
-  HoverHandler {
-    id: hoverHandler
-    cursorShape: Qt.PointingHandCursor
-  }
-
-  TapHandler {
-    acceptedButtons: Qt.LeftButton
-    onTapped: menu.toggle()
   }
 }

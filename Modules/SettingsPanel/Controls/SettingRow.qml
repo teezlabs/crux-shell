@@ -3,9 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 
 // Label + control row with a fixed-width label column so every row's
-// control starts at the same x — the ad-hoc RowLayouts before this had
-// labels of varying width shoving each row's slider/toggle to a different
-// spot, which read as sloppy rather than deliberate.
+// control starts at the same x.
 RowLayout {
   id: root
 
@@ -17,9 +15,9 @@ RowLayout {
 
   Text {
     text: root.label
-    color: Color.mOnSurfaceVariant
-    font.family: Settings.data.ui.fontFamily
-    font.pixelSize: Style.fontSizeS
+    color: Color.labelText
+    font.family: Tokens.fontFamily
+    font.pixelSize: Tokens.bodySmSize
     Layout.preferredWidth: 130
   }
 

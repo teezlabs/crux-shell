@@ -3,12 +3,20 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 
-ColumnLayout {
+Flickable {
   id: root
-  spacing: 20
+  clip: true
+  contentWidth: width
+  contentHeight: col.implicitHeight
+
+  ColumnLayout {
+    id: col
+    width: parent.width - 4
+    spacing: 20
 
   SettingsSection {
     title: "Sampling"
+    description: "How often CPU/RAM are polled, and the usage level that flags them as high."
 
     SettingRow {
       label: "Refresh"
@@ -22,9 +30,9 @@ ColumnLayout {
       }
       Text {
         text: (Settings.data.systemMonitor.refreshInterval / 1000).toFixed(1) + "s"
-        color: Color.mOnSurfaceVariant
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: Style.fontSizeS
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.bodySmSize
       }
     }
 
@@ -40,23 +48,20 @@ ColumnLayout {
       }
       Text {
         text: Settings.data.systemMonitor.warnThreshold + "%"
-        color: Color.mOnSurfaceVariant
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: Style.fontSizeS
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.bodySmSize
       }
     }
 
     Text {
       text: "CPU or RAM at or above this turns the bar readout error-colored."
-      color: Color.mOnSurfaceVariant
-      font.family: Settings.data.ui.fontFamily
-      font.pixelSize: Style.fontSizeXS
+      color: Color.labelText
+      font.family: Tokens.fontFamily
+      font.pixelSize: Tokens.captionSize
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
     }
   }
-
-  Item {
-    Layout.fillHeight: true
   }
 }

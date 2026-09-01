@@ -28,11 +28,13 @@ Singleton {
   readonly property int marginL: 13
   readonly property int marginXL: 18
 
-  readonly property int fontSizeXS: 10
-  readonly property int fontSizeS: 11
-  readonly property int fontSizeM: 12
-  readonly property int fontSizeL: 14
-  readonly property int fontSizeXL: 16
+  readonly property real fontScale: Settings.data.ui.fontScale
+
+  readonly property int fontSizeXS: Math.round(10 * fontScale)
+  readonly property int fontSizeS: Math.round(11 * fontScale)
+  readonly property int fontSizeM: Math.round(12 * fontScale)
+  readonly property int fontSizeL: Math.round(14 * fontScale)
+  readonly property int fontSizeXL: Math.round(16 * fontScale)
 
   readonly property int animationFast: 120
   readonly property int animationNormal: 200

@@ -1,12 +1,11 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.Commons
+import qs.Modules.Bar.Extras
 
-// Grouped-card section wrapper. Title reads as a HUD-style label (accent
-// tick + letter-spaced uppercase + trailing gradient rule) rather than
-// plain bold text, and the card itself gets a faint top-lit gradient and a
-// primary-tinted border instead of a flat mOutline box — small cues meant
-// to read as "designed", not just "grouped".
+// Grouped-card section wrapper, v2 style: chamfered card (radius: 0, no
+// gradient/glow per hard rules 1/4), accent tick + uppercase label-tier
+// title — same visual language as every other panel's section headers.
 ColumnLayout {
   id: root
 
@@ -24,64 +23,50 @@ ColumnLayout {
 
     Rectangle {
       width: 3
-      height: 13
-      radius: 1.5
-      color: Color.mPrimary
+      height: 12
+      color: Color.primary
     }
 
     Text {
       text: root.title.toUpperCase()
-      color: Color.mOnSurface
-      font.family: Settings.data.ui.fontFamily
-      font.pixelSize: Style.fontSizeS
-      font.bold: true
-      font.letterSpacing: 1.5
+      color: Color.surfaceText
+      font.family: Tokens.fontFamily
+      font.pixelSize: Tokens.labelSize
+      font.weight: Font.DemiBold
+      font.letterSpacing: Tokens.labelSize * Tokens.labelTracking
     }
 
     Rectangle {
       Layout.fillWidth: true
-      Layout.preferredHeight: 1
-      gradient: Gradient {
-        orientation: Gradient.Horizontal
-        GradientStop {
-          position: 0
-          color: Color.alpha(Color.mPrimary, 0.35)
-        }
-        GradientStop {
-          position: 1
-          color: "transparent"
-        }
-      }
+      Layout.preferredHeight: Tokens.borderDivider
+      color: Color.surfaceContainerHigh
     }
   }
 
   Text {
     visible: root.description !== ""
     text: root.description
-    color: Color.mOnSurfaceVariant
-    font.family: Settings.data.ui.fontFamily
-    font.pixelSize: Style.fontSizeXS
+    color: Color.labelText
+    font.family: Tokens.fontFamily
+    font.pixelSize: Tokens.captionSize
+    font.letterSpacing: Tokens.captionSize * Tokens.captionTracking
     wrapMode: Text.WordWrap
     Layout.fillWidth: true
     Layout.bottomMargin: 4
   }
 
-  Rectangle {
+  Item {
     Layout.fillWidth: true
     Layout.preferredHeight: inner.implicitHeight + 26
-    radius: Style.radiusS
-    border.color: Color.alpha(Color.mPrimary, 0.28)
-    border.width: 1
 
-    gradient: Gradient {
-      GradientStop {
-        position: 0
-        color: Qt.lighter(Color.mSurfaceVariant, 1.08)
-      }
-      GradientStop {
-        position: 1
-        color: Color.mSurfaceVariant
-      }
+    Chamfer {
+      anchors.fill: parent
+      chamferSize: Tokens.chamferModule
+      cutTopRight: true
+      cutBottomLeft: true
+      fillColor: Color.surfaceContainer
+      strokeColor: Color.outline
+      strokeWidth: Tokens.borderModule
     }
 
     ColumnLayout {

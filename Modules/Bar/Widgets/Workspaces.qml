@@ -1,13 +1,23 @@
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Hyprland
 import qs.Commons
+import qs.Modules.Bar.Extras
 
-// Per-monitor workspace switcher. Mirrors noctalia-shell's
-// Services/Compositor/HyprlandService.qml workspace-tracking mechanism
-// (Modules/Bar/Widgets/Workspace.qml is the widget on top of it) — a real
-// ListModel rebuilt via Qt.callLater-deferred updates, not a plain JS array,
-// since Repeater/ListModel role bindings are what actually stay reactive here.
+// v2 spec §6.1 Workspaces module: fixed cells, 28px wide each (spec assumes
+// a fixed 5-workspace layout, not "however many exist" — matches the
+// single-monitor-primary target). Active: primaryContainer fill,
+// primaryContainerText text, 2px primary underline inset 6px each side.
+// Occupied: surfaceText. Empty: disabledText.
+//
+// Which IDs each monitor shows is read from real Hyprland config
+// (`hyprctl workspacerules -j`'s per-rule "monitor" field), not hardcoded
+// 1-5 for every screen — this box's own hyprland.lua assigns 1-5 to DP-2
+// and 6-9 to DP-1 (`hl.workspace_rule({ workspace = "N", monitor = "..." })`),
+// and a fixed 1-5 on both bars didn't reflect that at all. Falls back to
+// 1-5 for a monitor with no explicit rule (e.g. a single-monitor setup
+// with no workspace_rule entries at all).
 Item {
   id: root
 
@@ -18,10 +28,40 @@ Item {
 
   readonly property string screenName: screen ? screen.name : ""
   property ListModel wsModel: ListModel {}
+  property var assignedIds: [1, 2, 3, 4, 5]
+
+  Process {
+    id: rulesProc
+    command: ["hyprctl", "workspacerules", "-j"]
+    stdout: StdioCollector {
+      id: rulesCollector
+      waitForEnd: true
+    }
+    onExited: exitCode => {
+      try {
+        var rules = JSON.parse(rulesCollector.text);
+        var ids = [];
+        for (var i = 0; i < rules.length; i++) {
+          var rule = rules[i];
+          if (!rule || !rule.monitor || rule.monitor.toLowerCase() !== root.screenName.toLowerCase())
+            continue;
+          var id = parseInt(rule.workspaceString);
+          if (!isNaN(id))
+            ids.push(id);
+        }
+        if (ids.length > 0) {
+          ids.sort((a, b) => a - b);
+          root.assignedIds = ids;
+          root.refresh();
+        }
+      } catch (e) {}
+    }
+  }
 
   function refresh() {
     var values = Hyprland.workspaces && Hyprland.workspaces.values ? Hyprland.workspaces.values : [];
-    var out = [];
+    var occupied = {};
+    var focusedId = -1;
     for (var i = 0; i < values.length; i++) {
       var ws = values[i];
       if (!ws || (ws.name && ws.name.indexOf("special:") === 0))
@@ -29,27 +69,22 @@ Item {
       var monitorName = ws.monitor && ws.monitor.name ? ws.monitor.name : "";
       if (monitorName.toLowerCase() !== screenName.toLowerCase())
         continue;
-      out.push({
-        "wsId": ws.id,
-        "name": ws.name || String(ws.id),
-        // "focused" is true for exactly one workspace system-wide (whichever
-        // monitor currently has keyboard focus) — that's the single global
-        // highlight we want, unlike "active" which is true per-monitor.
-        "active": ws.focused === true
-      });
+      occupied[ws.id] = true;
+      if (ws.focused === true)
+        focusedId = ws.id;
     }
-    out.sort(function (a, b) {
-      return a.wsId - b.wsId;
-    });
 
     wsModel.clear();
-    for (var j = 0; j < out.length; j++) {
-      wsModel.append(out[j]);
+    for (var i = 0; i < root.assignedIds.length; i++) {
+      var n = root.assignedIds[i];
+      wsModel.append({
+        "wsId": n,
+        "occupied": !!occupied[n],
+        "active": n === focusedId
+      });
     }
   }
 
-  // Deferred so a rawEvent's refreshWorkspaces() (which itself triggers
-  // onValuesChanged synchronously) doesn't cause a double rebuild.
   function _deferredRefresh() {
     Qt.callLater(refresh);
   }
@@ -57,6 +92,7 @@ Item {
   Component.onCompleted: {
     Hyprland.refreshWorkspaces();
     Qt.callLater(refresh);
+    rulesProc.running = true;
   }
 
   Connections {
@@ -69,109 +105,112 @@ Item {
   Connections {
     target: Hyprland
     function onRawEvent(event) {
-      // A plain focus switch mutates active/focused on the existing workspace
-      // objects in place — that's not a structural list change, so
-      // Hyprland.workspaces.onValuesChanged never fires for it. Schedule the
-      // refresh directly instead of relying solely on that signal.
       Hyprland.refreshWorkspaces();
       root._deferredRefresh();
     }
   }
 
-  // Cross-axis size fixed at 32 to match every other bar widget's
-  // implicitHeight — BarSection's Grid doesn't cross-center children of
-  // differing sizes, so a shorter cross-axis size here left this widget's
-  // whole bounding box mis-aligned instead of centered in the bar. The
-  // main-axis size (implicitWidth horizontal / implicitHeight vertical)
-  // still tracks the pills' own total size, same as before. This also
-  // fixes a real bug, not just cosmetics: the pill row previously stayed
-  // horizontal even in a vertical bar, forcing the whole enclosing section
-  // far wider than the bar itself and pushing sibling widgets off-window.
-  // row.width/height, not implicitWidth/implicitHeight — see the matching
-  // comment in BarSection.qml for why Grid's implicit size properties
-  // aren't reliable with the rows:1000/columns:1000 trick used below.
-  implicitWidth: root.vertical ? 32 : row.width
-  implicitHeight: root.vertical ? row.height : 32
+  implicitWidth: module.implicitWidth
+  implicitHeight: module.implicitHeight
   width: implicitWidth
   height: implicitHeight
 
-  // Grid rather than Row/Column so one type covers both bar orientations —
-  // see the same trick/comment in BarSection.qml.
-  Grid {
-    id: row
-    anchors.centerIn: parent
-    spacing: 4
-    flow: root.vertical ? Grid.TopToBottom : Grid.LeftToRight
-    rows: root.vertical ? 1000 : 1
-    columns: root.vertical ? 1 : 1000
+  BarModule {
+    id: module
+    vertical: root.vertical
+    leftPadding: 4
+    rightPadding: 4
+    topPadding: 4
+    bottomPadding: 4
 
-    Repeater {
-      model: root.wsModel
+    // Grid rather than a fixed Row/Column so one delegate set covers both
+    // bar orientations — same Grid.TopToBottom/columns:1 <-> Grid.LeftToRight
+    // /rows:1 trick BarSection.qml itself uses for the same reason.
+    Grid {
+      flow: root.vertical ? Grid.TopToBottom : Grid.LeftToRight
+      rows: root.vertical ? 1000 : 1
+      columns: root.vertical ? 1 : 1000
+      spacing: 0
 
-      // noctalia's own workspace-pill look (Modules/Bar/Extras/WorkspacePill.qml
-      // there): every workspace is a filled, fully-rounded pill; the focused
-      // one grows along the bar's main axis with a springy OutBack animation
-      // rather than changing shape. No skew/gradient/glow — the size change
-      // and the solid accent fill are what carry it.
-      delegate: Item {
-        id: wsDelegate
-        required property int wsId
-        required property string name
-        required property bool active
+      Repeater {
+        model: root.wsModel
 
-        readonly property int crossSize: 20
-        readonly property int mainSizeInactive: 20
-        readonly property int mainSizeActive: 32
+        delegate: Item {
+          id: cell
+          required property int wsId
+          required property bool occupied
+          required property bool active
+          required property int index
 
-        width: root.vertical ? crossSize : (active ? mainSizeActive : mainSizeInactive)
-        height: root.vertical ? (active ? mainSizeActive : mainSizeInactive) : crossSize
+          readonly property int longSide: 28
+          readonly property int shortSide: Tokens.barModuleHeight - 8
+          readonly property bool isFirst: index === 0
+          readonly property bool isLast: index === root.wsModel.count - 1
+          width: root.vertical ? shortSide : longSide
+          height: root.vertical ? longSide : shortSide
 
-        Behavior on width {
-          NumberAnimation {
-            duration: Style.animationNormal
-            easing.type: Easing.OutBack
+          // Only the first and last cells chamfer — matching the module's
+          // own two cut corners (bottom-left, top-right) so the group reads
+          // as one continuous chamfered shape at its outer edges. Everything
+          // in between is a plain highlighted square, per explicit request.
+          //
+          // Which corner goes with "first" flips with orientation: on a
+          // horizontal bar the group reads left-to-right, so the first
+          // (leftmost) cell takes the bottom-left cut and the last
+          // (rightmost) takes top-right. On a vertical bar the group reads
+          // top-to-bottom instead, so the first (topmost) cell should take
+          // the top-right cut and the last (bottommost) the bottom-left —
+          // explicitly requested, since the un-flipped version put the
+          // "wrong" corner (bottom-left) at the top of the strip.
+          Chamfer {
+            anchors.fill: parent
+            visible: cell.active && (cell.isFirst || cell.isLast)
+            chamferSize: Tokens.chamferIcon
+            cutBottomLeft: root.vertical ? cell.isLast : cell.isFirst
+            cutTopRight: root.vertical ? cell.isFirst : cell.isLast
+            fillColor: Color.primaryContainer
           }
-        }
-        Behavior on height {
-          NumberAnimation {
-            duration: Style.animationNormal
-            easing.type: Easing.OutBack
+          Rectangle {
+            anchors.fill: parent
+            visible: cell.active && !cell.isFirst && !cell.isLast
+            color: Color.primaryContainer
           }
-        }
 
-        Rectangle {
-          id: pill
-          anchors.fill: parent
-          radius: Math.min(width, height) / 2
-          color: wsDelegate.active ? Color.mPrimary : (hoverHandler.hovered ? Color.alpha(Color.mPrimary, 0.22) : Color.alpha(Color.mOnSurfaceVariant, 0.18))
-
-          Behavior on color {
-            ColorAnimation {
-              duration: Style.animationFast
-            }
+          // Active marker: bottom edge inset for a horizontal bar, side
+          // edge inset for a vertical one — same "underline" idea rotated
+          // onto whichever edge faces the direction workspaces read in.
+          Rectangle {
+            anchors.bottom: !root.vertical ? parent.bottom : undefined
+            anchors.left: root.vertical ? parent.left : parent.left
+            anchors.right: !root.vertical ? parent.right : undefined
+            anchors.top: root.vertical ? parent.top : undefined
+            anchors.topMargin: root.vertical ? 6 : 0
+            anchors.bottomMargin: root.vertical ? 6 : 0
+            anchors.leftMargin: !root.vertical ? 6 : 0
+            anchors.rightMargin: !root.vertical ? 6 : 0
+            width: root.vertical ? 2 : undefined
+            height: root.vertical ? undefined : 2
+            visible: cell.active
+            color: Color.primary
           }
-        }
 
-        Text {
-          anchors.centerIn: parent
-          text: wsDelegate.name
-          color: wsDelegate.active ? Color.mOnPrimary : Color.mOnSurfaceVariant
-          font.family: Settings.data.ui.fontFamily
-          font.pixelSize: 11
-          font.bold: wsDelegate.active
-        }
+          Text {
+            anchors.centerIn: parent
+            text: String(cell.wsId)
+            color: cell.active ? Color.primaryContainerText : (cell.occupied ? Color.surfaceText : Color.disabledText)
+            font.family: Tokens.fontFamily
+            font.pixelSize: Tokens.bodySize
+            font.letterSpacing: Tokens.bodySize * Tokens.bodyTracking
+          }
 
-        HoverHandler {
-          id: hoverHandler
-          cursorShape: Qt.PointingHandCursor
-        }
+          HoverHandler {
+            cursorShape: Qt.PointingHandCursor
+          }
 
-        TapHandler {
-          acceptedButtons: Qt.LeftButton
-          // This box's Hyprland runs a Lua config; legacy dispatch strings
-          // like "workspace N" error out silently through Hyprland.dispatch().
-          // hyprctl's Lua-shorthand syntax is the form that actually works here.
-          onTapped: Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.focus({ workspace = " + wsDelegate.wsId + " })"])
+          TapHandler {
+            acceptedButtons: Qt.LeftButton
+            onTapped: Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.focus({ workspace = " + cell.wsId + " })"])
+          }
         }
       }
     }

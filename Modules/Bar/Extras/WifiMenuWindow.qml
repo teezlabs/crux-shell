@@ -1,17 +1,13 @@
 import QtQuick
-import QtQuick.Effects
-import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
-import Quickshell.Networking
 import qs.Commons
-import "NetworkModel.js" as Model
+import qs.Modules.Bar.Extras
 
-// Wi-Fi popup: real data/behavior ported from Omarchy's
-// shell/plugins/panels/network Panel.qml + Model.js (same Quickshell.Networking
-// backend, same connect/disconnect/forget/sort logic) — UI rebuilt on crux's
-// own lean primitives instead of importing Omarchy's shared Ui kit.
+// Standalone Wi-Fi popup for the Wifi.qml bar widget — window chrome and
+// anchoring only; the actual network list/connect logic lives in
+// WifiPanelContent.qml (shared with Control Center's inline WIFI expand).
 PanelWindow {
   id: root
 
@@ -25,273 +21,18 @@ PanelWindow {
   readonly property bool _barLeft: root._barPos === "left"
   readonly property bool _barRight: root._barPos === "right"
   readonly property bool _barBottom: root._barPos === "bottom"
-  readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 8
+  readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 20
 
-  readonly property var networkDevices: Networking.devices ? Networking.devices.values : []
-  readonly property var wifiDevice: findDevice(DeviceType.Wifi)
-  readonly property var wifiNetworkObjects: wifiDevice && wifiDevice.networks ? wifiDevice.networks.values : []
-  property var wifiNetworks: []
-
-  property string actionSsid: ""
-  property string actionKind: "" // "connect" | "disconnect" | "forget"
-  readonly property bool busy: actionKind !== ""
-
-  property string passwordSsid: ""
-  property string passwordText: ""
-  property string failureSsid: ""
-  property string failureReason: ""
-
-  readonly property string _binDir: Quickshell.env("HOME") + "/.config/quickshell/crux/bin/"
-
-  // ---------------- Connection details (ported from Omarchy's Panel.qml) ----------------
-  property var info: ({})
-  property real prevRxBytes: 0
-  property real prevTxBytes: 0
-  property real prevSampleTime: 0
-  property string prevIface: ""
-  property real downloadRate: 0
-  property real uploadRate: 0
-  property string pingIface: ""
-  property var routerPingSamples: []
-  property var internetPingSamples: []
-  property real internetPingLatency: -1
-  property int internetPingPacketLoss: 0
-  readonly property bool hasTransferStats: info.rx_bytes !== undefined
-
-  function updateDetails(raw) {
-    var next = Model.parseKeyValue(raw);
-    info = next;
-    var t = Model.throughputState({
-      "prevIface": prevIface,
-      "prevRxBytes": prevRxBytes,
-      "prevTxBytes": prevTxBytes,
-      "prevSampleTime": prevSampleTime,
-      "downloadRate": downloadRate,
-      "uploadRate": uploadRate
-    }, next, Date.now() / 1000);
-    prevIface = t.prevIface;
-    prevRxBytes = t.prevRxBytes;
-    prevTxBytes = t.prevTxBytes;
-    prevSampleTime = t.prevSampleTime;
-    downloadRate = t.downloadRate;
-    uploadRate = t.uploadRate;
-
-    var p = Model.pingLatencyState({
-      "pingIface": pingIface,
-      "routerPingSamples": routerPingSamples,
-      "internetPingSamples": internetPingSamples
-    }, next, 24, 5);
-    pingIface = p.pingIface;
-    routerPingSamples = p.routerPingSamples;
-    internetPingSamples = p.internetPingSamples;
-    internetPingLatency = p.internetPingLatency;
-    internetPingPacketLoss = p.internetPingPacketLoss;
-  }
-
-  Process {
-    id: detailsProc
-    command: [root._binDir + "omarchy-network-status", "--verbose"]
-    stdout: StdioCollector {
-      waitForEnd: true
-      onStreamFinished: root.updateDetails(text)
-    }
-  }
-
-  Timer {
-    interval: 1500
-    repeat: true
-    running: root.visible
-    triggeredOnStart: true
-    onTriggered: if (!detailsProc.running)
-      detailsProc.running = true
-  }
-
-  // ---------------- DNS provider ----------------
-  property string dnsProvider: "DHCP"
-  readonly property var dnsProviders: ["DHCP", "Cloudflare", "Google", "Custom"]
-  property string customDnsText: ""
-
-  Process {
-    id: dnsProc
-    command: ["omarchy-dns"]
-    stdout: StdioCollector {
-      waitForEnd: true
-      onStreamFinished: root.dnsProvider = text.trim() || "DHCP"
-    }
-  }
-
-  Process {
-    id: dnsActionProc
-    onExited: function (exitCode) {
-      if (!dnsProc.running)
-        dnsProc.running = true;
-    }
-  }
-
-  function setDns(provider) {
-    if (dnsActionProc.running)
-      return;
-    if (provider === "Custom") {
-      // Custom takes an arbitrary server list on stdin and can't be
-      // pre-authorized by sudoers, so — same as Omarchy's own panel — it
-      // runs in a real terminal that can prompt for both the servers and,
-      // if needed, a sudo password.
-      Quickshell.execDetached(["kitty", "--", "bash", "-c", "omarchy-dns Custom; read -p 'Press enter to close...'"]);
-      root.visible = false;
-      return;
-    }
-    dnsActionProc.command = ["omarchy-dns", provider];
-    dnsActionProc.running = true;
-  }
-
-  Component.onCompleted: {
-    dnsProc.running = true;
-  }
-
-  function findDevice(type) {
-    var devices = networkDevices || [];
-    for (var i = 0; i < devices.length; i++) {
-      if (devices[i] && devices[i].type === type)
-        return devices[i];
-    }
-    return null;
-  }
-
-  function networkForSsid(ssid) {
-    var networks = wifiNetworkObjects || [];
-    for (var i = 0; i < networks.length; i++) {
-      if (networks[i] && networks[i].name === ssid)
-        return networks[i];
-    }
-    return null;
-  }
-
-  function requiresCredentials(security) {
-    return Model.requiresCredentials(security, WifiSecurityType.Open, WifiSecurityType.Owe);
-  }
-
-  function syncWifiNetworks() {
-    var nets = [];
-    var networks = wifiNetworkObjects || [];
-    for (var i = 0; i < networks.length; i++) {
-      var network = networks[i];
-      if (!network)
-        continue;
-      checkActionCompletion(network);
-      var row = Model.wifiRow(network);
-      if (row)
-        nets.push(row);
-    }
-    wifiNetworks = Model.sortWifiRows(nets);
-  }
-
-  function checkActionCompletion(network) {
-    if (!network || actionKind === "" || actionSsid !== (network.name || ""))
-      return;
-    if (actionKind === "connect" && network.connected)
-      clearAction();
-    else if (actionKind === "disconnect" && !network.connected && !network.stateChanging)
-      clearAction();
-    else if (actionKind === "forget" && !network.known && !network.stateChanging)
-      clearAction();
-  }
-
-  function clearAction() {
-    if (actionKind === "connect")
-      passwordSsid = "";
-    failureSsid = "";
-    failureReason = "";
-    actionSsid = "";
-    actionKind = "";
-  }
-
-  function runAction(kind, network, callback) {
-    if (actionKind !== "" || !network)
-      return;
-    actionSsid = network.name || "";
-    actionKind = kind;
-    failureSsid = "";
-    failureReason = "";
-    callback(network);
-  }
-
-  function activateRow(row) {
-    if (busy)
-      return;
-    var network = networkForSsid(row.ssid);
-    if (!network)
-      return;
-    if (row.connected) {
-      runAction("disconnect", network, function (n) {
-        n.disconnect();
-      });
-      return;
-    }
-    if (requiresCredentials(row.security) && !row.known) {
-      passwordSsid = row.ssid;
-      passwordText = "";
-      return;
-    }
-    runAction("connect", network, function (n) {
-      n.connect();
-    });
-  }
-
-  function submitPassword() {
-    var network = networkForSsid(passwordSsid);
-    if (!network || passwordText === "")
-      return;
-    runAction("connect", network, function (n) {
-      n.connectWithPsk(passwordText);
-    });
-  }
-
-  function forgetRow(row) {
-    var network = networkForSsid(row.ssid);
-    runAction("forget", network, function (n) {
-      n.forget();
-    });
-  }
-
-  function toggleWifi() {
-    Networking.wifiEnabled = !Networking.wifiEnabled;
-    Qt.callLater(function () {
-      root.syncWifiNetworks();
-    });
-  }
-
-  // Nearby (unconnected) networks only show up once the device's scanner is
-  // switched on — Quickshell.Networking doesn't scan passively. scannerEnabled
-  // lives on the shared WifiDevice with no ref-counting, so track which device
-  // this popup turned it on for and release exactly that one on close.
-  property var scannerDevice: null
-
-  function setScannerEnabled(enabled) {
-    var nextDevice = visible ? wifiDevice : null;
-    if (scannerDevice && scannerDevice !== nextDevice)
-      scannerDevice.scannerEnabled = false;
-    scannerDevice = nextDevice;
-    if (scannerDevice)
-      scannerDevice.scannerEnabled = enabled;
-  }
-
-  Component.onDestruction: {
-    if (scannerDevice)
-      scannerDevice.scannerEnabled = false;
-  }
-
-  onVisibleChanged: setScannerEnabled(true)
-  onWifiDeviceChanged: setScannerEnabled(true)
-
-  Timer {
-    id: scanRefresh
-    interval: 1500
-    repeat: true
-    running: root.visible
-    onTriggered: root.syncWifiNetworks()
-  }
-
-  onWifiNetworkObjectsChanged: syncWifiNetworks()
+  // Set by the bar icon that opened this popup (its own position mapped
+  // into the bar window's local space, via mapToItem(null, 0, 0)) so the
+  // popup can line up with it instead of always sitting in a generic
+  // corner. -1 means "not set" (e.g. opened via IPC, not a click) — falls
+  // back to the old fixed near-corner inset in that case. See
+  // SoundMenuWindow.qml for the full cross-window-coordinate reasoning.
+  property point triggerPos: Qt.point(-1, -1)
+  readonly property bool _hasTrigger: triggerPos.x >= 0
+  readonly property real _triggerX: triggerPos.x + Settings.data.bar.floatMargin
+  readonly property real _triggerY: triggerPos.y + Settings.data.bar.floatMargin
 
   visible: false
   color: "transparent"
@@ -310,10 +51,6 @@ PanelWindow {
 
   function toggle() {
     visible = !visible;
-    if (visible)
-      syncWifiNetworks();
-    else
-      passwordSsid = "";
   }
 
   IpcHandler {
@@ -342,320 +79,45 @@ PanelWindow {
     onClicked: root.visible = false
   }
 
-  // Soft drop shadow behind the card, same treatment as the bar itself
-  // (shell.qml) — depth against whatever's behind the popup.
-  MultiEffect {
-    anchors.fill: card
-    source: card
-    shadowEnabled: true
-    shadowColor: Qt.rgba(0, 0, 0, 0.55)
-    shadowBlur: 0.7
-    shadowVerticalOffset: 3
-    shadowHorizontalOffset: 0
-  }
-
-  Rectangle {
+  Item {
     id: card
-    anchors.top: !root._barBottom ? parent.top : undefined
-    anchors.bottom: root._barBottom ? parent.bottom : undefined
-    anchors.left: root._barLeft ? parent.left : undefined
-    anchors.right: !root._barLeft ? parent.right : undefined
-    anchors.topMargin: !root._barBottom ? (root._barLeft || root._barRight ? 12 : root._barOffset) : 0
-    anchors.bottomMargin: root._barBottom ? root._barOffset : 0
-    anchors.leftMargin: root._barLeft ? root._barOffset : 0
-    anchors.rightMargin: !root._barLeft ? (root._barRight ? root._barOffset : 12) : 0
+    // Cross-axis position (along the bar's own length): lines up with the
+    // triggering icon when known, clamped on-screen; falls back to the old
+    // fixed near-corner inset otherwise. Main-axis position (the gap
+    // between the bar and the popup) always uses _barOffset, unchanged.
+    readonly property real _crossFallback: 12
+    readonly property real _crossPos: {
+      if (root._barLeft || root._barRight)
+        return root._hasTrigger ? Math.max(8, Math.min(root._triggerY, root.height - card.height - 8)) : _crossFallback;
+      return root._hasTrigger ? Math.max(8, Math.min(root._triggerX, root.width - card.width - 8)) : root.width - card.width - _crossFallback;
+    }
+
+    x: root._barLeft ? root._barOffset : (root._barRight ? root.width - card.width - root._barOffset : card._crossPos)
+    y: root._barBottom ? root.height - card.height - root._barOffset : (root._barLeft || root._barRight ? card._crossPos : root._barOffset)
     width: 360
-    height: Math.min(560, column.implicitHeight + 24)
-    radius: Style.radiusXXS
-    color: Color.mSurface
-    border.color: Color.mOutline
-    border.width: 1
+    height: Math.min(560, content.implicitHeight + 24)
+
+    Chamfer {
+      anchors.fill: parent
+      chamferSize: Tokens.chamferPanel
+      cutTopRight: true
+      cutBottomLeft: true
+      fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
+      strokeColor: Color.outline
+      strokeWidth: Tokens.borderPanel
+    }
 
     MouseArea {
       anchors.fill: parent
       onClicked: {}
     }
 
-    ColumnLayout {
-      id: column
+    WifiPanelContent {
+      id: content
       anchors.fill: parent
-      anchors.margins: 12
-      spacing: 8
-
-      RowLayout {
-        Layout.fillWidth: true
-
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: "Wi-Fi"
-          color: Color.mOnSurface
-          font.pixelSize: 14
-          font.bold: true
-          Layout.fillWidth: true
-        }
-
-        Rectangle {
-          width: 36
-          height: 18
-          radius: Style.radiusXXS
-          color: Networking.wifiEnabled ? Color.mPrimary : Color.mOutline
-
-          Rectangle {
-            width: 14
-            height: 14
-            radius: 1
-            color: Color.mSurface
-            anchors.verticalCenter: parent.verticalCenter
-            x: Networking.wifiEnabled ? parent.width - width - 2 : 2
-            Behavior on x {
-              NumberAnimation {
-                duration: 120
-              }
-            }
-          }
-
-          MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.toggleWifi()
-          }
-        }
-      }
-
-      // ---------------- Connection details ----------------
-      GridLayout {
-        Layout.fillWidth: true
-        visible: !!root.info.iface
-        columns: 4
-        columnSpacing: 14
-        rowSpacing: 4
-
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: "Ping"
-          color: Color.mOnSurfaceVariant
-          font.pixelSize: 10
-        }
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: Model.formatPingLatency(root.internetPingLatency, root.internetPingSamples.length > 0)
-          color: root.internetPingPacketLoss > 0 ? Color.mError : Color.mOnSurface
-          font.pixelSize: 11
-        }
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: "Loss"
-          color: Color.mOnSurfaceVariant
-          font.pixelSize: 10
-        }
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: Model.formatPacketLoss(root.internetPingPacketLoss, root.internetPingSamples.length > 0)
-          color: root.internetPingPacketLoss > 0 ? Color.mError : Color.mOnSurface
-          font.pixelSize: 11
-        }
-
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: "Down"
-          color: Color.mOnSurfaceVariant
-          font.pixelSize: 10
-        }
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: root.hasTransferStats ? Model.formatRate(root.downloadRate) : "--"
-          color: Color.mOnSurface
-          font.pixelSize: 11
-        }
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: "Up"
-          color: Color.mOnSurfaceVariant
-          font.pixelSize: 10
-        }
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: root.hasTransferStats ? Model.formatRate(root.uploadRate) : "--"
-          color: Color.mOnSurface
-          font.pixelSize: 11
-        }
-
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: "IP"
-          color: Color.mOnSurfaceVariant
-          font.pixelSize: 10
-        }
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: root.info.ip || "--"
-          color: Color.mOnSurface
-          font.pixelSize: 11
-        }
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: "Gateway"
-          color: Color.mOnSurfaceVariant
-          font.pixelSize: 10
-        }
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: root.info.gateway || "--"
-          color: Color.mOnSurface
-          font.pixelSize: 11
-        }
-      }
-
-      // ---------------- DNS provider ----------------
-      ColumnLayout {
-        Layout.fillWidth: true
-        spacing: 4
-
-        Text {
-          font.family: Settings.data.ui.fontFamily
-          text: "DNS PROVIDER"
-          color: Color.mOnSurfaceVariant
-          font.pixelSize: 10
-        }
-
-        RowLayout {
-          Layout.fillWidth: true
-          spacing: 4
-
-          Repeater {
-            model: root.dnsProviders
-
-            delegate: Rectangle {
-              required property string modelData
-              readonly property bool selected: root.dnsProvider === modelData
-              Layout.fillWidth: true
-              height: 24
-              radius: 1
-              color: selected ? Color.mPrimary : Color.mSurfaceVariant
-
-              Text {
-                font.family: Settings.data.ui.fontFamily
-                anchors.centerIn: parent
-                text: parent.modelData
-                color: parent.selected ? Color.mSurface : Color.mOnSurface
-                font.pixelSize: 11
-              }
-
-              MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.setDns(parent.modelData)
-              }
-            }
-          }
-        }
-      }
-
-      ListView {
-        Layout.fillWidth: true
-        Layout.preferredHeight: Math.min(320, contentHeight)
-        clip: true
-        visible: Networking.wifiEnabled
-        model: root.wifiNetworks
-
-        delegate: Item {
-          id: rowItem
-          required property var modelData
-          required property int index
-          width: ListView.view.width
-          height: rowItem.modelData.ssid === root.passwordSsid ? 76 : 36
-
-          Column {
-            anchors.fill: parent
-            spacing: 4
-
-            Item {
-              width: parent.width
-              height: 36
-
-              RowLayout {
-                anchors.fill: parent
-
-                Text {
-                  font.family: Settings.data.ui.fontFamily
-                  text: rowItem.modelData.connected ? "●" : (rowItem.modelData.known ? "○" : "·")
-                  color: rowItem.modelData.connected ? Color.mPrimary : Color.mOnSurfaceVariant
-                  font.pixelSize: 12
-                }
-
-                Text {
-                  font.family: Settings.data.ui.fontFamily
-                  text: rowItem.modelData.ssid
-                  color: Color.mOnSurface
-                  font.pixelSize: 13
-                  elide: Text.ElideRight
-                  Layout.fillWidth: true
-                }
-
-                Text {
-                  font.family: Settings.data.ui.fontFamily
-                  text: rowItem.modelData.signal + "%"
-                  color: Color.mOnSurfaceVariant
-                  font.pixelSize: 11
-                }
-
-                Text {
-                  font.family: Settings.data.ui.fontFamily
-                  visible: root.actionKind !== "" && root.actionSsid === rowItem.modelData.ssid
-                  text: root.actionKind === "connect" ? "connecting…" : (root.actionKind === "disconnect" ? "disconnecting…" : "forgetting…")
-                  color: Color.mPrimary
-                  font.pixelSize: 11
-                }
-              }
-
-              MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.activateRow(rowItem.modelData)
-              }
-            }
-
-            RowLayout {
-              visible: rowItem.modelData.ssid === root.passwordSsid
-              width: parent.width
-              spacing: 6
-
-              TextInput {
-                font.family: Settings.data.ui.fontFamily
-                Layout.fillWidth: true
-                text: root.passwordText
-                onTextChanged: root.passwordText = text
-                echoMode: TextInput.Password
-                color: Color.mOnSurface
-                font.pixelSize: 12
-                focus: rowItem.modelData.ssid === root.passwordSsid
-
-                Rectangle {
-                  z: -1
-                  anchors.fill: parent
-                  anchors.margins: -4
-                  color: Color.mSurfaceVariant
-                  radius: 1
-                }
-
-                Keys.onReturnPressed: root.submitPassword()
-              }
-
-              Text {
-                font.family: Settings.data.ui.fontFamily
-                text: "Connect"
-                color: Color.mPrimary
-                font.pixelSize: 12
-                MouseArea {
-                  anchors.fill: parent
-                  cursorShape: Qt.PointingHandCursor
-                  onClicked: root.submitPassword()
-                }
-              }
-            }
-          }
-        }
-      }
+      anchors.margins: 14
+      panelActive: root.visible
+      onRequestClose: root.visible = false
     }
   }
 }

@@ -1,10 +1,10 @@
 import QtQuick
-import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import qs.Commons
+import qs.Modules.Bar.Extras
 
 // Claude usage popup. Data comes straight from Omarchy's
 // omarchy-agent-usage-claude collector (copied verbatim from upstream —
@@ -24,7 +24,18 @@ PanelWindow {
   readonly property bool _barLeft: root._barPos === "left"
   readonly property bool _barRight: root._barPos === "right"
   readonly property bool _barBottom: root._barPos === "bottom"
-  readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 8
+  readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 20
+
+  // Set by the bar icon that opened this popup (its own position mapped
+  // into the bar window's local space, via mapToItem(null, 0, 0)) so the
+  // popup can line up with it instead of always sitting in a generic
+  // corner. -1 means "not set" (e.g. opened via IPC, not a click) — falls
+  // back to the old fixed near-corner inset in that case. See
+  // SoundMenuWindow.qml for the full cross-window-coordinate reasoning.
+  property point triggerPos: Qt.point(-1, -1)
+  readonly property bool _hasTrigger: triggerPos.x >= 0
+  readonly property real _triggerX: triggerPos.x + Settings.data.bar.floatMargin
+  readonly property real _triggerY: triggerPos.y + Settings.data.bar.floatMargin
 
   readonly property string _binDir: Quickshell.env("HOME") + "/.config/quickshell/crux/bin/"
 
@@ -129,34 +140,33 @@ PanelWindow {
     onClicked: root.visible = false
   }
 
-  // Soft drop shadow behind the card, same treatment as the bar itself
-  // (shell.qml) — depth against whatever's behind the popup.
-  MultiEffect {
-    anchors.fill: card
-    source: card
-    shadowEnabled: true
-    shadowColor: Qt.rgba(0, 0, 0, 0.55)
-    shadowBlur: 0.7
-    shadowVerticalOffset: 3
-    shadowHorizontalOffset: 0
-  }
-
-  Rectangle {
+  Item {
     id: card
-    anchors.top: !root._barBottom ? parent.top : undefined
-    anchors.bottom: root._barBottom ? parent.bottom : undefined
-    anchors.left: root._barLeft ? parent.left : undefined
-    anchors.right: !root._barLeft ? parent.right : undefined
-    anchors.topMargin: !root._barBottom ? (root._barLeft || root._barRight ? 12 : root._barOffset) : 0
-    anchors.bottomMargin: root._barBottom ? root._barOffset : 0
-    anchors.leftMargin: root._barLeft ? root._barOffset : 0
-    anchors.rightMargin: !root._barLeft ? (root._barRight ? root._barOffset : 12) : 0
+    // Cross-axis position (along the bar's own length): lines up with the
+    // triggering icon when known, clamped on-screen; falls back to the old
+    // fixed near-corner inset otherwise. Main-axis position (the gap
+    // between the bar and the popup) always uses _barOffset, unchanged.
+    readonly property real _crossFallback: 12
+    readonly property real _crossPos: {
+      if (root._barLeft || root._barRight)
+        return root._hasTrigger ? Math.max(8, Math.min(root._triggerY, root.height - card.height - 8)) : _crossFallback;
+      return root._hasTrigger ? Math.max(8, Math.min(root._triggerX, root.width - card.width - 8)) : root.width - card.width - _crossFallback;
+    }
+
+    x: root._barLeft ? root._barOffset : (root._barRight ? root.width - card.width - root._barOffset : card._crossPos)
+    y: root._barBottom ? root.height - card.height - root._barOffset : (root._barLeft || root._barRight ? card._crossPos : root._barOffset)
     width: 300
     height: Math.min(400, column.implicitHeight + 24)
-    radius: Style.radiusXXS
-    color: Color.mSurface
-    border.color: Color.mOutline
-    border.width: 1
+
+    Chamfer {
+      anchors.fill: parent
+      chamferSize: Tokens.chamferPanel
+      cutTopRight: true
+      cutBottomLeft: true
+      fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
+      strokeColor: Color.outline
+      strokeWidth: Tokens.borderPanel
+    }
 
     MouseArea {
       anchors.fill: parent
@@ -166,36 +176,37 @@ PanelWindow {
     ColumnLayout {
       id: column
       anchors.fill: parent
-      anchors.margins: 12
-      spacing: 10
+      anchors.margins: 14
+      spacing: 12
 
       RowLayout {
         Layout.fillWidth: true
 
         Text {
-          font.family: Settings.data.ui.fontFamily
-          text: "Claude Code"
-          color: Color.mOnSurface
-          font.pixelSize: 14
-          font.bold: true
+          text: "CLAUDE CODE"
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize
+          font.weight: Font.DemiBold
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
           Layout.fillWidth: true
         }
 
         Text {
-          font.family: Settings.data.ui.fontFamily
           visible: root.tierLabel !== ""
           text: root.tierLabel
-          color: Color.mOnSurfaceVariant
-          font.pixelSize: 11
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.captionSize
         }
       }
 
       Text {
-        font.family: Settings.data.ui.fontFamily
         visible: root.usageStatusText !== ""
         text: root.usageStatusText
-        color: Color.mError
-        font.pixelSize: 11
+        color: Color.error
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.captionSize
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
       }
@@ -206,68 +217,65 @@ PanelWindow {
         delegate: ColumnLayout {
           required property var modelData
           Layout.fillWidth: true
-          spacing: 2
+          spacing: 4
 
           RowLayout {
             Layout.fillWidth: true
             Text {
-              font.family: Settings.data.ui.fontFamily
               text: modelData.label || ""
-              color: Color.mOnSurface
-              font.pixelSize: 12
+              color: Color.surfaceText
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.bodySmSize
               Layout.fillWidth: true
             }
             Text {
-              font.family: Settings.data.ui.fontFamily
               text: Math.round((modelData.percent || 0) * 100) + "%"
-              color: Color.mOnSurface
-              font.pixelSize: 12
+              color: (modelData.percent || 0) > 0.85 ? Color.error : Color.surfaceText
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.bodySmSize
             }
           }
 
-          Rectangle {
+          SegMeter {
             Layout.fillWidth: true
-            height: 6
-            radius: 1
-            color: Color.mSurfaceVariant
-
-            Rectangle {
-              width: parent.width * Math.min(1, modelData.percent || 0)
-              height: parent.height
-              radius: 1
-              color: (modelData.percent || 0) > 0.85 ? Color.mError : Color.mPrimary
-            }
+            cellCount: Tokens.meterTelemetryCells
+            cellHeight: Tokens.meterTelemetryCellHeight
+            value: Math.min(100, (modelData.percent || 0) * 100)
+            interactive: false
+            filledColor: (modelData.percent || 0) > 0.85 ? Color.error : Color.primary
+            emptyColor: Color.surfaceContainerHigh
           }
 
           Text {
-            font.family: Settings.data.ui.fontFamily
             text: root.formatResetsAt(modelData.resetsAt)
-            color: Color.mOnSurfaceVariant
-            font.pixelSize: 10
+            color: Color.labelText
+            font.family: Tokens.fontFamily
+            font.pixelSize: Tokens.captionSize
           }
         }
       }
 
       Rectangle {
         Layout.fillWidth: true
-        height: 1
-        color: Color.mOutline
+        height: Tokens.borderDivider
+        color: Color.surfaceContainerHigh
       }
 
       RowLayout {
         Layout.fillWidth: true
         Text {
-          font.family: Settings.data.ui.fontFamily
-          text: "Today"
-          color: Color.mOnSurfaceVariant
-          font.pixelSize: 11
+          text: "TODAY"
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
           Layout.fillWidth: true
         }
         Text {
-          font.family: Settings.data.ui.fontFamily
           text: root.todayPrompts + " prompts · " + root.formatTokens(root.todayTotalTokens) + " tokens"
-          color: Color.mOnSurface
-          font.pixelSize: 11
+          color: Color.surfaceText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.captionSize
         }
       }
     }

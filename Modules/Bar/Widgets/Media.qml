@@ -2,10 +2,11 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Mpris
 import qs.Commons
+import qs.Modules.Bar.Extras
 
-// Compact "now playing" readout on the bar; hidden entirely when nothing is
-// playing. API pattern (Mpris.players.values, MprisPlaybackState, player
-// control methods) ported from noctalia's Services/Media/MediaService.qml.
+// v2 spec §6.1 Media module: 4-bar equaliser (2px wide, heights 5/11/7/9,
+// primary) + truncated "Title — Artist", max width 210. Click opens the
+// media popover (MediaPlayerWindow.qml, §6.6).
 Item {
   id: root
 
@@ -13,6 +14,14 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false
+  // Portrait-horizontal bar flag (see BarWidgetLoader.qml) — distinct from
+  // `vertical` above, which stays false there since the bar's true
+  // orientation is still horizontal. Media isn't in _compactSafeIds (its
+  // equalizer+title Row doesn't need the vertical stack treatment), but the
+  // title still needs to shrink here or it overlaps the independently-
+  // centered Clock section on a narrow portrait screen.
+  property bool contentVertical: vertical
+  property bool invertChamfer: false
 
   readonly property var players: Mpris.players ? Mpris.players.values : []
   readonly property var activePlayer: {
@@ -25,150 +34,87 @@ Item {
   readonly property bool isPlaying: activePlayer ? activePlayer.playbackState === MprisPlaybackState.Playing : false
   readonly property string trackTitle: activePlayer && activePlayer.trackTitle ? String(activePlayer.trackTitle).replace(/[\r\n]/g, "") : ""
   readonly property string trackArtist: activePlayer && activePlayer.trackArtist ? activePlayer.trackArtist : ""
+  readonly property string displayText: trackArtist !== "" ? trackArtist + " — " + trackTitle : trackTitle
 
   visible: !!activePlayer && trackTitle !== ""
 
-  readonly property string displayText: trackArtist !== "" ? trackArtist + " – " + trackTitle : trackTitle
-
-  // Horizontal: one elided line next to the icon, sized to content.
-  // Vertical: a narrow fixed-width column with the icon on top and the
-  // title wrapped underneath — one wide line like the horizontal layout
-  // simply doesn't fit a ~32px-wide bar, same reasoning as Clock.qml.
-  implicitWidth: !visible ? 0 : (root.vertical ? 32 : (row.implicitWidth + 16))
-  implicitHeight: !visible ? 0 : (root.vertical ? (column.implicitHeight + 10) : 32)
+  implicitWidth: !visible ? 0 : module.implicitWidth
+  implicitHeight: !visible ? 0 : module.implicitHeight
   width: implicitWidth
   height: implicitHeight
 
-  // Two thin vertical bars = "playing" glyph; a right-pointing triangle
-  // shape for "paused" — geometric, no font glyph dependency. Shared
-  // between both layouts below via a Component so the drawing logic
-  // isn't duplicated.
-  Component {
-    id: playPauseGlyph
+  BarModule {
+    id: module
+    vertical: root.vertical
+    invertChamfer: root.invertChamfer
 
-    Item {
-      width: 10
-      height: 12
+    // Vertical bar: just the equaliser, no title/artist text — nothing
+    // resembling "Title — Artist" fits a ~30px-wide column, and eliding it
+    // down to nothing would just be noise. Horizontal: bars + truncated text.
+    Row {
+      visible: !root.vertical
+      spacing: 8
 
       Row {
-        visible: root.isPlaying
-        anchors.centerIn: parent
+        id: eqRowH
         spacing: 2
-        Rectangle {
-          width: 3
-          height: 12
-          color: Color.mPrimary
-        }
-        Rectangle {
-          width: 3
-          height: 12
-          color: Color.mPrimary
+        readonly property var barHeights: [5, 11, 7, 9]
+        readonly property int maxBarHeight: 11
+
+        Repeater {
+          model: 4
+          delegate: Rectangle {
+            required property int index
+            width: 2
+            height: eqRowH.barHeights[index]
+            y: eqRowH.maxBarHeight - height
+            color: Color.primary
+            opacity: root.isPlaying ? 1 : 0.35
+          }
         }
       }
 
-      Canvas {
-        visible: !root.isPlaying
-        anchors.fill: parent
-        onPaint: {
-          var ctx = getContext("2d");
-          ctx.reset();
-          ctx.fillStyle = Color.mOnSurfaceVariant;
-          ctx.beginPath();
-          ctx.moveTo(0, 0);
-          ctx.lineTo(10, 6);
-          ctx.lineTo(0, 12);
-          ctx.closePath();
-          ctx.fill();
-        }
-      }
-    }
-  }
-
-  Rectangle {
-    anchors.fill: parent
-    radius: Style.radiusXXS
-    color: hoverHandler.hovered ? Color.alpha(Color.mPrimary, 0.16) : "transparent"
-    border.color: Color.alpha(Color.mPrimary, 0.55)
-    border.width: hoverHandler.hovered ? 1 : 0
-    scale: hoverHandler.hovered ? 1.1 : 1.0
-    Behavior on color {
-      ColorAnimation {
-        duration: Style.animationFast
-      }
-    }
-    Behavior on scale {
-      NumberAnimation {
-        duration: Style.animationFast
-        easing.type: Easing.OutBack
+      Text {
+        text: root.displayText
+        color: Color.surfaceText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.bodySize
+        font.letterSpacing: Tokens.bodySize * Tokens.bodyTracking
+        elide: Text.ElideRight
+        width: Math.min(implicitWidth, root.contentVertical && !root.vertical ? 70 : 210)
       }
     }
 
     Row {
-      id: row
-      visible: !root.vertical
-      anchors.centerIn: parent
-      spacing: 6
-
-      Loader {
-        anchors.verticalCenter: parent.verticalCenter
-        sourceComponent: playPauseGlyph
-      }
-
-      Text {
-        anchors.verticalCenter: parent.verticalCenter
-        text: root.displayText
-        color: Color.mOnSurface
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: 12
-        elide: Text.ElideRight
-        width: Math.min(implicitWidth, 220)
-      }
-    }
-
-    Column {
-      id: column
       visible: root.vertical
-      anchors.centerIn: parent
-      spacing: 4
-      width: 28
+      spacing: 2
+      readonly property var barHeights: [5, 11, 7, 9]
+      readonly property int maxBarHeight: 11
 
-      Loader {
-        anchors.horizontalCenter: parent.horizontalCenter
-        sourceComponent: playPauseGlyph
-      }
-
-      Text {
-        width: parent.width
-        horizontalAlignment: Text.AlignHCenter
-        text: root.displayText
-        color: Color.mOnSurface
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: 10
-        wrapMode: Text.WordWrap
-        maximumLineCount: 3
-        elide: Text.ElideRight
+      Repeater {
+        model: 4
+        delegate: Rectangle {
+          required property int index
+          width: 2
+          height: parent.barHeights[index]
+          y: parent.maxBarHeight - height
+          color: Color.primary
+          opacity: root.isPlaying ? 1 : 0.35
+        }
       }
     }
   }
 
+  MediaPlayerWindow {
+    id: popover
+    targetScreen: root.screen
+  }
+
   HoverHandler {
-    id: hoverHandler
     cursorShape: Qt.PointingHandCursor
   }
 
   TapHandler {
-    acceptedButtons: Qt.LeftButton | Qt.RightButton
-    onTapped: function (point, button) {
-      if (!root.activePlayer)
-        return;
-      if (button === Qt.RightButton) {
-        root.activePlayer.next();
-      } else {
-        if (root.isPlaying)
-          root.activePlayer.pause();
-        else
-          root.activePlayer.play();
-      }
-    }
+    onTapped: popover.toggle()
   }
 }

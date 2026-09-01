@@ -1,14 +1,11 @@
 import QtQuick
 import Quickshell
 import qs.Commons
+import qs.Modules.Bar.Extras
 
-// Plain picture-frame icon on the bar. skwd-wall is its own standalone qs
-// config (ephemeral: spawns fresh, auto-shows, exits itself when closed),
-// not a panel embedded here — same command the SUPER+W keybind runs. See
-// crux skill's wallpaper section for why: skwd-wall's real UI only behaves
-// correctly with a genuine interactive session (mouse/keyboard presence),
-// not when driven headlessly, which ruled out embedding it as a Loader-
-// managed popup the way other bar widgets' menus work.
+// Picture-frame icon on the bar — opens this screen's own
+// WallpaperBrowserWindow instance (same command SUPER+W runs via
+// bin/crux-focused-ipc). See crux skill's notes.md.
 Item {
   id: root
 
@@ -16,38 +13,35 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
 
-  implicitWidth: 32
-  implicitHeight: 32
+  implicitWidth: btn.implicitWidth
+  implicitHeight: btn.implicitHeight
   width: implicitWidth
   height: implicitHeight
 
-  Rectangle {
-    anchors.fill: parent
-    anchors.margins: 4
-    radius: Style.radiusXXS
-    color: hoverHandler.hovered ? Color.alpha(Color.mPrimary, 0.16) : "transparent"
-    border.color: Color.alpha(Color.mPrimary, 0.55)
-    border.width: hoverHandler.hovered ? 1 : 0
-    scale: hoverHandler.hovered ? 1.1 : 1.0
-    Behavior on color {
-      ColorAnimation {
-        duration: Style.animationFast
-      }
+  BarIconButton {
+    id: btn
+    onTapped: {
+      TooltipService.hideImmediately();
+      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "wallpaperBrowser_" + (root.screen ? root.screen.name : "0"), "toggle"]);
     }
-    Behavior on scale {
-      NumberAnimation {
-        duration: Style.animationFast
-        easing.type: Easing.OutBack
+
+    HoverHandler {
+      cursorShape: Qt.PointingHandCursor
+      onHoveredChanged: {
+        if (hovered)
+          TooltipService.show(root, "Open wallpaper picker (SUPER+W)");
+        else
+          TooltipService.hide();
       }
     }
 
-    // Geometric picture-frame glyph: a rounded rect outline with a small
-    // mountain/sun icon inside — no font/emoji glyph dependency.
+    // Geometric picture-frame glyph: an outline with a small mountain/sun
+    // icon inside — no font/emoji glyph dependency.
     Canvas {
       anchors.centerIn: parent
       width: 16
       height: 14
-      readonly property color drawColor: Color.mOnSurfaceVariant
+      readonly property color drawColor: Color.surfaceTextMuted
       onDrawColorChanged: requestPaint()
       onPaint: {
         var ctx = getContext("2d");
@@ -56,9 +50,7 @@ Item {
         ctx.fillStyle = drawColor;
         ctx.lineWidth = 1.4;
 
-        ctx.beginPath();
-        ctx.roundedRect(0.7, 0.7, width - 1.4, height - 1.4, 2, 2);
-        ctx.stroke();
+        ctx.strokeRect(0.7, 0.7, width - 1.4, height - 1.4);
 
         ctx.beginPath();
         ctx.arc(4.5, 4.5, 1.3, 0, Math.PI * 2);
@@ -74,15 +66,5 @@ Item {
         ctx.fill();
       }
     }
-  }
-
-  HoverHandler {
-    id: hoverHandler
-    cursorShape: Qt.PointingHandCursor
-  }
-
-  TapHandler {
-    acceptedButtons: Qt.LeftButton
-    onTapped: Quickshell.execDetached(["qs", "-c", "skwd-wall"])
   }
 }

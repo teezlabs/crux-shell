@@ -39,6 +39,16 @@ Item {
   property string section: ""
   property var screen: null
   property bool vertical: false
+  // Distinct from `vertical` above: that one governs the *section's own*
+  // module-to-module arrangement (a true left/right bar stacks modules
+  // top-to-bottom). This one governs each *widget's internal* content
+  // style, and is also true when the bar is nominally "top"/"bottom" but
+  // sitting on a portrait-rotated screen — there the bar is still a
+  // physically horizontal strip of modules, but each module only has a
+  // short screen edge's worth of width to work with, so its content should
+  // render the same compact/stacked style a true vertical bar already
+  // uses. See shell.qml's screenIsPortrait for the detection.
+  property bool contentVertical: vertical
   readonly property string screenName: screen ? screen.name : ""
   property var widgetsModel: []
   required property QtObject dragState
@@ -64,6 +74,22 @@ Item {
   // read on sectionRoot itself, which QML's dependency tracker always
   // picks up reliably, forcing the binding to re-run.
   property int _sizeVersion: 0
+
+  // The end-module chamfer accent (below) must target the last module that
+  // actually renders, not just the last entry in the widgets list — a
+  // trailing widget hidden by its own logic (e.g. Updates at 0 count with
+  // hideOnZero) would otherwise "steal" the accent invisibly, leaving the
+  // real visual end (e.g. Sound) looking unstyled. Reads _sizeVersion so it
+  // re-picks whenever a widget's rendered size changes.
+  readonly property int _lastVisibleIndex: {
+    _sizeVersion;
+    for (var i = repeater.count - 1; i >= 0; i--) {
+      var item = repeater.itemAt(i);
+      if (item && (sectionRoot.vertical ? item.height > 0 : item.width > 0))
+        return i;
+    }
+    return repeater.count - 1;
+  }
 
   function _mainSize() {
     var total = 0;
@@ -95,6 +121,20 @@ Item {
   }
   width: implicitWidth
   height: implicitHeight
+
+  // The trailing drop-zone exists purely so "append to the end" is always a
+  // real, droppable target — it isn't visible content. It's counted in
+  // implicitWidth/Height (so the Grid actually reserves room for it and
+  // DropArea hit-testing works), but a caller edge-anchoring or centering
+  // this section around its *visible* widgets — not this invisible tail —
+  // needs to subtract it back out, or the last real widget ends up sitting
+  // short of the edge by exactly this much. Confirmed bug: Bar.qml's
+  // right-section edge-anchor used the full width including this zone,
+  // leaving the power button ~30px short of the actual screen edge.
+  readonly property real trailingSize: {
+    _sizeVersion;
+    return (repeater.count > 0 ? sectionRow.spacing : 0) + (vertical ? trailingZone.height : trailingZone.width);
+  }
 
   readonly property bool isDropTarget: dragState.targetSection === section && dragState.sourceSection !== ""
 
@@ -188,6 +228,11 @@ Item {
             section: sectionRoot.section
             sectionWidgetIndex: wrapper.index
             vertical: sectionRoot.vertical
+            contentVertical: sectionRoot.contentVertical
+            // Only the module touching the outer screen edge on each end
+            // inverts (left: first visible; right: last visible) — see
+            // crux skill's notes.md.
+            invertChamfer: (sectionRoot.section === "left" && wrapper.index === 0) || (sectionRoot.section === "right" && wrapper.index === sectionRoot._lastVisibleIndex)
           }
 
           // Non-exclusive: a passive grab that watches for a long press
@@ -292,7 +337,7 @@ Item {
     width: sectionRoot.vertical ? (sectionRow.width > 0 ? sectionRow.width : 24) : 2
     height: sectionRoot.vertical ? 2 : (sectionRow.height > 0 ? sectionRow.height : 24)
     radius: 1
-    color: Color.mPrimary
+    color: Color.primary
     visible: sectionRoot.isDropTarget
     x: sectionRoot.vertical ? 0 : sectionRoot.indicatorPos()
     y: sectionRoot.vertical ? sectionRoot.indicatorPos() : 0

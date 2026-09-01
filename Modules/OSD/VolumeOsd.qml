@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Pipewire
 import qs.Commons
+import qs.Modules.Bar.Extras
 
 // Volume OSD: shows briefly whenever the default sink's volume or mute state
 // changes, regardless of what caused it (physical keys, another app, this
@@ -11,6 +12,16 @@ import qs.Commons
 // (PwObjectTracker + Connections on sink.audio) ported from noctalia's
 // Services/Media/AudioService.qml — Pipewire nodes don't reliably push
 // property updates unless tracked.
+//
+// v2 spec §6.5: 296×44. Deliberate deviation from the spec text (which says
+// all four corners chamfered 10px, since the OSD floats free of every
+// screen edge): the user explicitly asked for the same two-opposite-corner
+// scheme (top-right + bottom-left) every other chamfered element in the app
+// uses instead, for visual consistency — confirmed twice, most recently
+// when re-checking this exact tradeoff against the literal spec text.
+// 20-cell meter (interactive tier, matches "the value currently being
+// changed" hard rule from §1). Muted: empty meter, error-toned label/
+// border, "—" value.
 PanelWindow {
   id: root
 
@@ -38,13 +49,15 @@ PanelWindow {
   property bool opened: false
 
   function show() {
+    if (!Settings.data.osd.enabled)
+      return;
     opened = true;
     hideTimer.restart();
   }
 
   Timer {
     id: hideTimer
-    interval: 1200
+    interval: Settings.data.osd.durationMs
     onTriggered: root.opened = false
   }
 
@@ -65,21 +78,34 @@ PanelWindow {
   // Visual only — never intercepts clicks meant for whatever's underneath.
   mask: Region {}
 
-  Rectangle {
-    width: 220
-    height: 56
+  Item {
+    id: card
+    width: 296
+    height: 44
     anchors.horizontalCenter: parent.horizontalCenter
-    anchors.bottom: parent.bottom
-    anchors.bottomMargin: 90
-    radius: Style.radiusXXS
-    color: Color.mSurface
-    border.color: Color.mOutline
-    border.width: 1
+    anchors.top: Settings.data.osd.position === "top" ? parent.top : undefined
+    anchors.bottom: Settings.data.osd.position === "bottom" ? parent.bottom : undefined
+    anchors.verticalCenter: Settings.data.osd.position === "center" ? parent.verticalCenter : undefined
+    anchors.topMargin: 60
+    anchors.bottomMargin: 60
     opacity: root.opened ? 1 : 0
     Behavior on opacity {
       NumberAnimation {
-        duration: 120
+        duration: Tokens.durationOsdFade
+        easing.type: Tokens.easingOsdFade
       }
+    }
+
+    Chamfer {
+      anchors.fill: parent
+      chamferSize: Tokens.chamferModule
+      cutTopLeft: false
+      cutTopRight: true
+      cutBottomLeft: true
+      cutBottomRight: false
+      fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
+      strokeColor: root.muted ? Color.alpha(Color.error, Tokens.destructiveBorderAlpha) : Color.outline
+      strokeWidth: Tokens.borderPanel
     }
 
     Row {
@@ -88,39 +114,30 @@ PanelWindow {
       spacing: 12
 
       Text {
-        anchors.verticalCenter: parent.verticalCenter
+        width: 40
         text: root.muted ? "MUTE" : "VOL"
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: 11
-        color: root.muted ? Color.mError : Color.mPrimary
+        color: root.muted ? Color.error : Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.labelSize
+        font.weight: Font.DemiBold
+        font.letterSpacing: Tokens.labelSize * Tokens.labelTracking
       }
 
-      Rectangle {
-        width: 120
-        height: 6
-        anchors.verticalCenter: parent.verticalCenter
-        radius: 1
-        color: Color.mSurfaceVariant
-
-        Rectangle {
-          width: parent.width * Math.min(1, root.muted ? 0 : root.volume)
-          height: parent.height
-          radius: 1
-          color: Color.mPrimary
-          Behavior on width {
-            NumberAnimation {
-              duration: 100
-            }
-          }
-        }
+      SegMeter {
+        width: 168
+        cellCount: Tokens.meterOsdCells
+        cellHeight: Tokens.meterOsdCellHeight
+        value: root.muted ? 0 : root.volume * 100
+        filledColor: Color.primary
+        emptyColor: Color.surfaceContainerHigh
       }
 
       Text {
-        anchors.verticalCenter: parent.verticalCenter
-        text: Math.round((root.muted ? 0 : root.volume) * 100) + "%"
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: 12
-        color: Color.mOnSurface
+        text: root.muted ? "—" : String(Math.round(root.volume * 100))
+        color: root.muted ? Color.labelText : Color.primary
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.bodyLgSize
+        font.weight: Font.DemiBold
       }
     }
   }

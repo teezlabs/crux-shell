@@ -1,18 +1,20 @@
 import QtQuick
 import qs.Commons
+import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel
 
-// Plain gear icon on the bar; the actual settings UI lives in the
-// separate SettingsWindow popup.
+// Gear icon on the bar; the actual settings UI lives in the separate
+// SettingsWindow popup.
 Item {
   id: root
 
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool invertChamfer: false
 
-  implicitWidth: 32
-  implicitHeight: 32
+  implicitWidth: btn.implicitWidth
+  implicitHeight: btn.implicitHeight
   width: implicitWidth
   height: implicitHeight
 
@@ -21,33 +23,17 @@ Item {
     targetScreen: root.screen
   }
 
-  Rectangle {
-    anchors.fill: parent
-    anchors.margins: 4
-    radius: Style.radiusXXS
-    color: hoverHandler.hovered ? Color.alpha(Color.mPrimary, 0.16) : "transparent"
-    border.color: Color.alpha(Color.mPrimary, 0.55)
-    border.width: hoverHandler.hovered ? 1 : 0
-    scale: hoverHandler.hovered ? 1.1 : 1.0
-    Behavior on color {
-      ColorAnimation {
-        duration: Style.animationFast
-      }
-    }
-    Behavior on scale {
-      NumberAnimation {
-        duration: Style.animationFast
-        easing.type: Easing.OutBack
-      }
-    }
+  BarIconButton {
+    id: btn
+    invertChamfer: root.invertChamfer
+    onTapped: menu.toggle()
 
-    // Geometric gear glyph: a ring with notches, drawn on Canvas — no
-    // font/emoji glyph dependency.
+    // Geometric gear glyph: a ring with notches, drawn on Canvas.
     Canvas {
       anchors.centerIn: parent
       width: 16
       height: 16
-      readonly property color drawColor: Color.mOnSurfaceVariant
+      readonly property color drawColor: Color.surfaceTextMuted
       onDrawColorChanged: requestPaint()
       onPaint: {
         var ctx = getContext("2d");
@@ -79,15 +65,5 @@ Item {
         ctx.fill();
       }
     }
-  }
-
-  HoverHandler {
-    id: hoverHandler
-    cursorShape: Qt.PointingHandCursor
-  }
-
-  TapHandler {
-    acceptedButtons: Qt.LeftButton
-    onTapped: menu.toggle()
   }
 }

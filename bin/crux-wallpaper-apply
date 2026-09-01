@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Called by skwd-daemon's externalWallpaperCommand (~/.config/skwd-wall/config.json)
+# with the chosen wallpaper path. Native to crux, no aurora-dots dependency:
+# sets the wallpaper live via crux's own `wallpaper` IPC target
+# (shell.qml), which itself calls Commons/Matugen.qml to re-derive the whole
+# v2 tonal-spot theme when wallpaper.autoTheme is on. Replaces
+# ~/dev/aurora-dots/bin/aurora-wallpaper-apply, which this project has an
+# explicit standing instruction not to depend on.
+set -euo pipefail
+
+PATH_ARG="$1"
+WALLPAPER_DIR="${WALLPAPER_DIR:-$HOME/.config/wallpapers}"
+
+# skwd-daemon's own "restore last wallpaper" on startup has been observed to
+# invoke externalWallpaperCommand with a bare filename (no directory) rather
+# than the full path a live wall.apply always passes - resolve it against
+# the configured wallpaper directory so it doesn't produce an unopenable
+# "file:///<bare-filename>" URL downstream.
+case "$PATH_ARG" in
+  /*) ;;
+  *) PATH_ARG="$WALLPAPER_DIR/$PATH_ARG" ;;
+esac
+
+qs ipc -c crux call wallpaper set "$PATH_ARG"

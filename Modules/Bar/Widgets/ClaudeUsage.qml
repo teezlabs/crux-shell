@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
 import qs.Commons
@@ -56,71 +55,58 @@ Item {
       fetchProc.running = true
   }
 
-  implicitWidth: icon.implicitWidth + 16
-  implicitHeight: 32
+  implicitWidth: btn.implicitWidth
+  implicitHeight: btn.implicitHeight
   width: implicitWidth
   height: implicitHeight
-
-  FontLoader {
-    id: tablerIconFont
-    source: Quickshell.shellDir + "/Assets/Fonts/noctalia-tabler-icons.ttf"
-  }
 
   ClaudeUsageMenuWindow {
     id: menu
     targetScreen: root.screen
   }
 
-  Rectangle {
-    anchors.fill: parent
-    radius: Style.radiusXXS
-    color: hoverHandler.hovered ? Color.alpha(Color.mPrimary, 0.16) : "transparent"
-    border.color: Color.alpha(Color.mPrimary, 0.55)
-    border.width: hoverHandler.hovered ? 1 : 0
-    scale: hoverHandler.hovered ? 1.1 : 1.0
-    Behavior on color {
-      ColorAnimation {
-        duration: Style.animationFast
-      }
-    }
-    Behavior on scale {
-      NumberAnimation {
-        duration: Style.animationFast
-        easing.type: Easing.OutBack
-      }
+  BarIconButton {
+    id: btn
+    attention: root.sessionPercent > 0.85
+    onTapped: {
+      menu.triggerPos = root.mapToItem(null, 0, 0);
+      menu.toggle();
     }
 
-    Text {
-      id: icon
+    // Geometric robot glyph: rounded head outline + two eye dots + antenna —
+    // no font/emoji glyph dependency (the bundled Tabler font was fine, but
+    // moving off it keeps this widget consistent with the rest of the v2
+    // bar's "no icon font" rule).
+    Canvas {
       anchors.centerIn: parent
-        text: "" // "robot" glyph — same icon noctalia uses for this widget
-        font.family: tablerIconFont.name
-        font.pixelSize: 20
-        color: root.sessionPercent > 0.85 ? Color.mError : Color.mOnSurface
-    }
-  }
+      width: 14
+      height: 14
+      readonly property color drawColor: root.sessionPercent > 0.85 ? Color.error : Color.surfaceText
+      onDrawColorChanged: requestPaint()
+      onPaint: {
+        var ctx = getContext("2d");
+        ctx.reset();
+        ctx.strokeStyle = drawColor;
+        ctx.fillStyle = drawColor;
+        ctx.lineWidth = 1.3;
 
-  HoverHandler {
-    id: hoverHandler
-    cursorShape: Qt.PointingHandCursor
-  }
+        ctx.beginPath();
+        ctx.moveTo(7, 0.5);
+        ctx.lineTo(7, 2.5);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(7, 0.5, 0.9, 0, Math.PI * 2);
+        ctx.fill();
 
-  TapHandler {
-    acceptedButtons: Qt.LeftButton
-    onTapped: menu.toggle()
-  }
+        ctx.strokeRect(1, 2.5, 12, 10);
 
-  ToolTip {
-    visible: hoverHandler.hovered
-    delay: 400
-    font.family: Settings.data.ui.fontFamily
-    text: {
-      var parts = [];
-      if (root.sessionPercent >= 0)
-        parts.push("Session: " + Math.round(root.sessionPercent * 100) + "%");
-      if (root.weeklyPercent >= 0)
-        parts.push("Weekly: " + Math.round(root.weeklyPercent * 100) + "%");
-      return parts.length > 0 ? parts.join("\n") : "Claude usage";
+        ctx.beginPath();
+        ctx.arc(4.5, 7, 1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(9.5, 7, 1, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
   }
 }

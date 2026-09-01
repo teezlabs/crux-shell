@@ -45,21 +45,27 @@ RowLayout {
       spacing: 6
 
       Text {
-        text: sectionColumn.section
-        color: Color.mOnSurface
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: Style.fontSizeS
-        font.bold: true
-        font.capitalization: Font.AllUppercase
+        text: sectionColumn.section.toUpperCase()
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.labelXsSize
+        font.weight: Font.DemiBold
+        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
       }
 
-      Rectangle {
+      Item {
         Layout.fillWidth: true
         Layout.preferredHeight: 160
-        radius: Style.radiusS
-        color: Color.mSurfaceVariant
-        border.color: Color.mOutline
-        border.width: 1
+
+        Chamfer {
+          anchors.fill: parent
+          chamferSize: Tokens.chamferModule
+          cutTopRight: true
+          cutBottomLeft: true
+          fillColor: Color.surfaceContainer
+          strokeColor: Color.outline
+          strokeWidth: Tokens.borderModule
+        }
 
         ListView {
           anchors.fill: parent
@@ -82,23 +88,26 @@ RowLayout {
 
               Text {
                 text: rowItem.modelData.id || ""
-                color: Color.mOnSurface
-                font.family: Settings.data.ui.fontFamily
-                font.pixelSize: Style.fontSizeS
+                color: Color.surfaceText
+                font.family: Tokens.fontFamily
+                font.pixelSize: Tokens.bodySmSize
                 Layout.fillWidth: true
               }
 
-              Rectangle {
+              Item {
                 width: 18
                 height: 18
-                radius: Style.radiusXXS
-                color: removeHover.hovered ? Color.alpha(Color.mError, 0.2) : "transparent"
+
+                Rectangle {
+                  anchors.fill: parent
+                  color: removeHover.hovered ? Color.alpha(Color.error, 0.2) : "transparent"
+                }
 
                 Text {
                   anchors.centerIn: parent
                   text: "×"
-                  color: Color.mError
-                  font.pixelSize: Style.fontSizeM
+                  color: Color.error
+                  font.pixelSize: Tokens.bodySize
                 }
 
                 HoverHandler {
@@ -115,10 +124,11 @@ RowLayout {
       }
 
       Text {
-        text: "add"
-        color: Color.mOnSurfaceVariant
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: Style.fontSizeXS
+        text: "ADD"
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.labelXsSize
+        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         Layout.topMargin: 4
       }
 
@@ -127,38 +137,39 @@ RowLayout {
         spacing: 4
 
         Repeater {
-          model: BarWidgetRegistry.ids
+          model: BarWidgetRegistry.ids.concat(Plugins.ids)
 
-          delegate: Rectangle {
+          delegate: Item {
             id: addChip
             required property string modelData
             width: addLabel.implicitWidth + 12
             height: 20
-            radius: Style.radiusXXS
-            color: addMouse.containsMouse ? Color.alpha(Color.mPrimary, 0.16) : Color.mSurfaceVariant
-            border.color: Color.alpha(Color.mPrimary, 0.55)
-            border.width: 1
-            Behavior on color {
-              ColorAnimation {
-                duration: Style.animationFast
-              }
+
+            Chamfer {
+              anchors.fill: parent
+              chamferSize: Tokens.chamferIcon
+              cutTopRight: true
+              cutBottomLeft: true
+              fillColor: addHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
+              strokeColor: Color.outline
+              strokeWidth: Tokens.borderModule
             }
 
             Text {
               id: addLabel
               anchors.centerIn: parent
               text: addChip.modelData
-              color: Color.mOnSurfaceVariant
-              font.family: Settings.data.ui.fontFamily
-              font.pixelSize: Style.fontSizeXS
+              color: Color.labelText
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.labelXsSize
             }
 
-            MouseArea {
-              id: addMouse
-              anchors.fill: parent
-              hoverEnabled: true
+            HoverHandler {
+              id: addHover
               cursorShape: Qt.PointingHandCursor
-              onClicked: Settings.addBarWidget(root.screenName, sectionColumn.section, addChip.modelData)
+            }
+            TapHandler {
+              onTapped: Settings.addBarWidget(root.screenName, sectionColumn.section, addChip.modelData)
             }
           }
         }

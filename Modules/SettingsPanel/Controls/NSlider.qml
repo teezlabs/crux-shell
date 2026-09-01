@@ -1,10 +1,10 @@
 import QtQuick
 import qs.Commons
 
-// Styled slider — flat accent-filled track + circular thumb, replacing the
-// native QtQuick.Controls Slider (unstyled OS-theme chrome) used everywhere
-// in the settings panel before. Modeled on noctalia's NSlider look, minus
-// its NLabel/reset-button/I18n plumbing which crux doesn't have.
+// v2-styled slider: flat track (radius: 0 per hard rule 1), primary fill,
+// a thin tick instead of a circular thumb — kept continuous rather than
+// discretized into SegMeter cells, since settings sliders cover arbitrary
+// ranges (font size, opacity, spacing) a fixed cell count wouldn't suit.
 Item {
   id: root
 
@@ -34,35 +34,36 @@ Item {
     anchors.verticalCenter: parent.verticalCenter
     width: parent.width
     height: 4
-    radius: 2
-    color: Color.mSurfaceVariant
-    border.color: Color.mOutline
-    border.width: 1
+    color: Color.surfaceContainerHigh
+    border.color: Color.outline
+    border.width: Tokens.borderModule
 
     Rectangle {
       width: parent.width * root._ratio
       height: parent.height
-      radius: 2
-      color: Color.mPrimary
+      color: Color.primary
     }
   }
 
   Rectangle {
     id: thumb
-    width: 14
+    width: 2
     height: 14
-    radius: 7
     anchors.verticalCenter: parent.verticalCenter
     x: root._ratio * (root.width - width)
-    color: Color.mPrimary
-    border.color: Color.mOnPrimary
-    border.width: 1
+    color: Color.primary
   }
 
   MouseArea {
     anchors.fill: parent
     anchors.margins: -4
     cursorShape: Qt.PointingHandCursor
+    // Without this, a drag that isn't perfectly horizontal lets an
+    // ancestor Flickable (every settings subtab is one) steal the grab
+    // mid-drag and start scrolling the whole tab instead of moving the
+    // slider — preventStealing keeps this MouseArea's grab once pressed,
+    // regardless of how much vertical movement happens along the way.
+    preventStealing: true
     onPressed: mouse => root._setFromX(mouse.x - 4)
     onPositionChanged: mouse => {
       if (pressed)

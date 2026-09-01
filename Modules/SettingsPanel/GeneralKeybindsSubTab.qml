@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import qs.Commons
+import qs.Modules.Bar.Extras
 
 // Read-only reference view of the live Hyprland keybinds file — not a
 // parsed/editable table. ~/.config/hypr/keybinds.lua mixes simple
@@ -19,9 +20,10 @@ ColumnLayout {
 
   Text {
     text: "~/.config/hypr/keybinds.lua (read-only — edit the file directly, then `hyprctl reload`)"
-    color: Color.mOnSurfaceVariant
-    font.family: Settings.data.ui.fontFamily
-    font.pixelSize: Style.fontSizeXS
+    color: Color.labelText
+    font.family: Tokens.fontFamily
+    font.pixelSize: Tokens.captionSize
+    font.letterSpacing: Tokens.captionSize * Tokens.captionTracking
     wrapMode: Text.WordWrap
     Layout.fillWidth: true
   }
@@ -31,11 +33,19 @@ ColumnLayout {
     path: root._path
   }
 
-  Rectangle {
+  Item {
     Layout.fillWidth: true
     Layout.fillHeight: true
-    radius: Style.radiusXS
-    color: Color.mSurfaceVariant
+
+    Chamfer {
+      anchors.fill: parent
+      chamferSize: Tokens.chamferModule
+      cutTopRight: true
+      cutBottomLeft: true
+      fillColor: Color.surfaceContainer
+      strokeColor: Color.outline
+      strokeWidth: Tokens.borderModule
+    }
 
     Flickable {
       anchors.fill: parent
@@ -48,9 +58,9 @@ ColumnLayout {
         id: text
         width: parent.width
         text: file.text()
-        color: Color.mOnSurface
-        font.family: "monospace"
-        font.pixelSize: Style.fontSizeXS
+        color: Color.surfaceText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.captionSize
         wrapMode: Text.NoWrap
       }
     }

@@ -1,56 +1,59 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.Commons
+import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 
-ColumnLayout {
+Flickable {
   id: root
-  spacing: 20
+  clip: true
+  contentWidth: width
+  contentHeight: col.implicitHeight
+
+  ColumnLayout {
+    id: col
+    width: parent.width - 4
+    spacing: 20
 
   SettingsSection {
     title: "Typography"
+    description: "The font used across the bar, popups, and this settings panel."
 
     SettingRow {
       label: "Font"
-      TextInput {
+      Item {
         Layout.preferredWidth: 200
-        text: Settings.data.ui.fontFamily
-        color: Color.mOnSurface
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: Style.fontSizeS
-        onEditingFinished: Settings.data.ui.fontFamily = text
+        height: 28
 
-        Rectangle {
-          z: -1
+        Chamfer {
           anchors.fill: parent
-          anchors.margins: -4
-          color: Color.mSurface
-          radius: Style.radiusXXS
+          chamferSize: Tokens.chamferIcon
+          cutTopRight: true
+          cutBottomLeft: true
+          fillColor: Color.surface
+          strokeColor: fontInput.activeFocus ? Color.primary : Color.outline
+          strokeWidth: Tokens.borderModule
+        }
+
+        TextInput {
+          id: fontInput
+          anchors.fill: parent
+          anchors.leftMargin: 8
+          anchors.rightMargin: 8
+          verticalAlignment: Text.AlignVCenter
+          text: Settings.data.ui.fontFamily
+          color: Color.surfaceText
+          font.family: Settings.data.ui.fontFamily
+          font.pixelSize: Tokens.bodySmSize
+          onEditingFinished: Settings.data.ui.fontFamily = text
         }
       }
     }
   }
 
   SettingsSection {
-    title: "Shape & transparency"
-
-    SettingRow {
-      label: "Corner radius"
-      NSlider {
-        Layout.preferredWidth: 200
-        from: 0
-        to: 3
-        stepSize: 0.1
-        value: Settings.data.theme.radiusRatio
-        onMoved: value => Settings.data.theme.radiusRatio = value
-      }
-      Text {
-        text: Settings.data.theme.radiusRatio.toFixed(1) + "x"
-        color: Color.mOnSurfaceVariant
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: Style.fontSizeS
-      }
-    }
+    title: "Transparency"
+    description: "How see-through the bar's modules are by default."
 
     SettingRow {
       label: "Bar opacity"
@@ -64,14 +67,11 @@ ColumnLayout {
       }
       Text {
         text: Math.round(Settings.data.theme.barOpacity * 100) + "%"
-        color: Color.mOnSurfaceVariant
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: Style.fontSizeS
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.bodySmSize
       }
     }
   }
-
-  Item {
-    Layout.fillHeight: true
   }
 }

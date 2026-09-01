@@ -1,0 +1,247 @@
+import QtQuick
+import Quickshell
+import Quickshell.Io
+import Quickshell.Networking
+import Quickshell.Services.Pipewire
+import qs.Commons
+import qs.Modules.Bar.Extras
+
+// v2 spec §6.1 Status module: three segments split by 1px dividers — NET,
+// VOL, BAT (+5-cell inline meter) — one merged module rather than three
+// separate bar icons (crux's earlier Wifi.qml/Sound.qml were each their own
+// module; this spec groups them). Click opens Control Center. BAT segment
+// only shows if a power_supply device is actually present — most of this
+// project's dev boxes are desktops with no system battery, and a fake 100%
+// reading would be worse than omitting the segment.
+Item {
+  id: root
+
+  property var screen: null
+  property string section: ""
+  property int sectionWidgetIndex: -1
+  property bool vertical: false
+
+  readonly property var wifiDevice: {
+    var devices = Networking.devices ? Networking.devices.values : [];
+    for (var i = 0; i < devices.length; i++) {
+      if (devices[i] && devices[i].type === DeviceType.Wifi)
+        return devices[i];
+    }
+    return null;
+  }
+  readonly property bool wifiConnected: {
+    var networks = wifiDevice && wifiDevice.networks ? wifiDevice.networks.values : [];
+    for (var i = 0; i < networks.length; i++)
+      if (networks[i] && networks[i].connected)
+        return true;
+    return false;
+  }
+  readonly property string netLabel: !Networking.wifiEnabled ? "OFF" : (wifiConnected ? "WLAN" : "SRCH")
+
+  readonly property var sink: Pipewire.ready ? Pipewire.defaultAudioSink : null
+  readonly property real volume: sink && sink.audio ? sink.audio.volume : 0
+  readonly property bool muted: sink && sink.audio ? sink.audio.muted : false
+
+  PwObjectTracker {
+    objects: root.sink ? [root.sink] : []
+  }
+
+  property bool hasBattery: false
+  property int batteryPercent: 0
+
+  Process {
+    id: batProc
+    command: ["sh", "-c", "cat /sys/class/power_supply/*/capacity 2>/dev/null | head -1"]
+    stdout: StdioCollector {
+      id: batCollector
+      waitForEnd: true
+    }
+    onExited: exitCode => {
+      var text = batCollector.text.trim();
+      root.hasBattery = text !== "";
+      root.batteryPercent = parseInt(text) || 0;
+    }
+  }
+
+  Timer {
+    interval: 30000
+    running: true
+    repeat: true
+    triggeredOnStart: true
+    onTriggered: batProc.running = true
+  }
+
+  implicitWidth: module.implicitWidth
+  implicitHeight: module.implicitHeight
+  width: implicitWidth
+  height: implicitHeight
+
+  BarModule {
+    id: module
+    vertical: root.vertical
+    topPadding: 8
+    bottomPadding: 8
+
+    Row {
+      visible: !root.vertical
+      spacing: 10
+
+      StatText {
+        label: "NET"
+        value: root.netLabel
+        valueColor: Networking.wifiEnabled ? Color.surfaceText : Color.disabledText
+      }
+
+      Rectangle {
+        width: 1
+        height: 12
+        color: Color.surfaceContainerHigh
+      }
+
+      StatText {
+        label: "VOL"
+        value: root.muted ? "—" : String(Math.round(root.volume * 100))
+        valueColor: root.muted ? Color.error : Color.surfaceText
+      }
+
+      Rectangle {
+        visible: root.hasBattery
+        width: 1
+        height: 12
+        color: Color.surfaceContainerHigh
+      }
+
+      StatText {
+        visible: root.hasBattery
+        label: "BAT"
+        value: String(root.batteryPercent)
+      }
+
+      SegMeter {
+        visible: root.hasBattery
+        width: 26
+        value: root.batteryPercent
+        cellCount: Tokens.meterBarBatteryCells
+        cellHeight: Tokens.meterBarBatteryCellHeight
+      }
+    }
+
+    // Vertical bar: each stat as a compact stacked value/label pair (value
+    // on top, tiny label under it) instead of the horizontal "LABEL value"
+    // pairing — a 4-char word like "WLAN" reads fine at label-xs in a
+    // ~30px-wide column; the inline battery meter is dropped here rather
+    // than rotated, the percentage number alone carries it.
+    Column {
+      visible: root.vertical
+      spacing: 8
+
+      Column {
+        width: 24
+        Text {
+          width: 24
+          horizontalAlignment: Text.AlignHCenter
+          text: root.netLabel
+          color: Networking.wifiEnabled ? Color.surfaceText : Color.disabledText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        }
+        Text {
+          width: 24
+          horizontalAlignment: Text.AlignHCenter
+          text: "NET"
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize - 1
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        }
+      }
+
+      Rectangle {
+        width: 24
+        height: 1
+        color: Color.surfaceContainerHigh
+      }
+
+      Column {
+        width: 24
+        Text {
+          width: 24
+          horizontalAlignment: Text.AlignHCenter
+          text: root.muted ? "—" : String(Math.round(root.volume * 100))
+          color: root.muted ? Color.error : Color.surfaceText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        }
+        Text {
+          width: 24
+          horizontalAlignment: Text.AlignHCenter
+          text: "VOL"
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize - 1
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        }
+      }
+
+      Rectangle {
+        visible: root.hasBattery
+        width: 24
+        height: 1
+        color: Color.surfaceContainerHigh
+      }
+
+      Column {
+        visible: root.hasBattery
+        width: 24
+        Text {
+          width: 24
+          horizontalAlignment: Text.AlignHCenter
+          text: String(root.batteryPercent)
+          color: Color.surfaceText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        }
+        Text {
+          width: 24
+          horizontalAlignment: Text.AlignHCenter
+          text: "BAT"
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize - 1
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        }
+      }
+    }
+  }
+
+  HoverHandler {
+    cursorShape: Qt.PointingHandCursor
+  }
+
+  TapHandler {
+    onTapped: {
+      var pos = root.mapToItem(null, 0, 0);
+      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "controlCenter_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
+    }
+  }
+
+  // Scroll-to-adjust volume — this module (not the standalone Sound.qml
+  // widget, which isn't in the default bar layout) is what's actually on
+  // the bar, so this is where users expect to be able to scroll to change
+  // volume. Same step-size convention Sound.qml/VolumeOsd's IPC already use.
+  WheelHandler {
+    acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+    onWheel: function (event) {
+      if (!root.sink || !root.sink.audio)
+        return;
+      var step = Settings.data.audio.step;
+      var next = Math.max(0, Math.min(1, root.volume + (event.angleDelta.y > 0 ? step : -step)));
+      root.sink.audio.volume = next;
+      if (root.sink.audio.muted && next > 0)
+        root.sink.audio.muted = false;
+    }
+  }
+}

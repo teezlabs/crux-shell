@@ -1,132 +1,155 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.Commons
+import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 
-ColumnLayout {
+// Edits the v2 tonal-spot roles directly (Settings.data.theme.primary,
+// .surface, etc.) — this tab previously only edited the legacy mPrimary/
+// mSurface/... roles kept around for pre-v2 widgets, which nothing in the
+// actual v2 UI reads anymore, so every preset/manual edit here was
+// silently inert. Fixed to target the roles that actually paint the app.
+Flickable {
   id: root
-  spacing: 20
+  clip: true
+  contentWidth: width
+  contentHeight: col.implicitHeight
 
   readonly property var colorFields: [
     {
       "label": "Primary",
-      "key": "mPrimary"
+      "key": "primary"
     },
     {
-      "label": "On primary",
-      "key": "mOnPrimary"
+      "label": "Primary container",
+      "key": "primaryContainer"
     },
     {
-      "label": "Secondary",
-      "key": "mSecondary"
+      "label": "On prim. container",
+      "key": "primaryContainerText"
     },
     {
-      "label": "On secondary",
-      "key": "mOnSecondary"
-    },
-    {
-      "label": "Surface",
-      "key": "mSurface"
-    },
-    {
-      "label": "On surface",
-      "key": "mOnSurface"
-    },
-    {
-      "label": "Surface var.",
-      "key": "mSurfaceVariant"
-    },
-    {
-      "label": "On surf. var.",
-      "key": "mOnSurfaceVariant"
-    },
-    {
-      "label": "Outline",
-      "key": "mOutline"
+      "label": "Tertiary",
+      "key": "tertiary"
     },
     {
       "label": "Error",
-      "key": "mError"
+      "key": "errorTone"
+    },
+    {
+      "label": "Surface",
+      "key": "surface"
+    },
+    {
+      "label": "Surface container",
+      "key": "surfaceContainer"
+    },
+    {
+      "label": "On surface",
+      "key": "surfaceText"
+    },
+    {
+      "label": "Muted text",
+      "key": "surfaceTextMuted"
+    },
+    {
+      "label": "Outline",
+      "key": "outline"
     }
   ]
 
   // Full-palette presets — the manual color-picker equivalent of noctalia's
-  // scheme picker (Tabs/ColorScheme). Same caveat applies to both: wallpaper
-  // theming (see Wallpaper tab) overwrites these on the next apply.
+  // scheme picker. Same caveat applies to both: wallpaper theming (see
+  // Wallpaper tab) overwrites these on the next apply.
   readonly property var presets: [
     {
       "name": "Mocha",
       "colors": {
-        "mPrimary": "#89b4fa",
-        "mOnPrimary": "#1e1e2e",
-        "mSecondary": "#f38ba8",
-        "mOnSecondary": "#1e1e2e",
-        "mSurface": "#1e1e2e",
-        "mOnSurface": "#cdd6f4",
-        "mSurfaceVariant": "#313244",
-        "mOnSurfaceVariant": "#a6adc8",
-        "mOutline": "#45475a",
-        "mError": "#f38ba8"
+        "surface": "#1e1e2e",
+        "surfaceContainerLow": "#232334",
+        "surfaceContainer": "#313244",
+        "surfaceContainerHigh": "#3b3d52",
+        "outline": "#45475a",
+        "outlineVariant": "#33344a",
+        "primary": "#89b4fa",
+        "primaryContainer": "#2c3e5c",
+        "primaryContainerText": "#c8dcff",
+        "tertiary": "#f38ba8",
+        "errorTone": "#f38ba8",
+        "surfaceText": "#cdd6f4",
+        "surfaceTextMuted": "#a6adc8"
       }
     },
     {
       "name": "Nord",
       "colors": {
-        "mPrimary": "#88c0d0",
-        "mOnPrimary": "#2e3440",
-        "mSecondary": "#bf616a",
-        "mOnSecondary": "#2e3440",
-        "mSurface": "#2e3440",
-        "mOnSurface": "#eceff4",
-        "mSurfaceVariant": "#3b4252",
-        "mOnSurfaceVariant": "#d8dee9",
-        "mOutline": "#4c566a",
-        "mError": "#bf616a"
+        "surface": "#2e3440",
+        "surfaceContainerLow": "#333a48",
+        "surfaceContainer": "#3b4252",
+        "surfaceContainerHigh": "#434c5e",
+        "outline": "#4c566a",
+        "outlineVariant": "#3a4152",
+        "primary": "#88c0d0",
+        "primaryContainer": "#2e4650",
+        "primaryContainerText": "#c3e3ec",
+        "tertiary": "#bf616a",
+        "errorTone": "#bf616a",
+        "surfaceText": "#eceff4",
+        "surfaceTextMuted": "#d8dee9"
       }
     },
     {
       "name": "Dracula",
       "colors": {
-        "mPrimary": "#bd93f9",
-        "mOnPrimary": "#282a36",
-        "mSecondary": "#ff79c6",
-        "mOnSecondary": "#282a36",
-        "mSurface": "#282a36",
-        "mOnSurface": "#f8f8f2",
-        "mSurfaceVariant": "#44475a",
-        "mOnSurfaceVariant": "#e2e2f7",
-        "mOutline": "#6272a4",
-        "mError": "#ff5555"
+        "surface": "#282a36",
+        "surfaceContainerLow": "#2d2f3d",
+        "surfaceContainer": "#44475a",
+        "surfaceContainerHigh": "#4d5066",
+        "outline": "#6272a4",
+        "outlineVariant": "#464a63",
+        "primary": "#bd93f9",
+        "primaryContainer": "#453465",
+        "primaryContainerText": "#e3d1fd",
+        "tertiary": "#ff79c6",
+        "errorTone": "#ff5555",
+        "surfaceText": "#f8f8f2",
+        "surfaceTextMuted": "#e2e2f7"
       }
     },
     {
       "name": "Gruvbox",
       "colors": {
-        "mPrimary": "#fabd2f",
-        "mOnPrimary": "#282828",
-        "mSecondary": "#fb4934",
-        "mOnSecondary": "#282828",
-        "mSurface": "#282828",
-        "mOnSurface": "#ebdbb2",
-        "mSurfaceVariant": "#3c3836",
-        "mOnSurfaceVariant": "#d5c4a1",
-        "mOutline": "#504945",
-        "mError": "#fb4934"
+        "surface": "#282828",
+        "surfaceContainerLow": "#2d2c2a",
+        "surfaceContainer": "#3c3836",
+        "surfaceContainerHigh": "#46403d",
+        "outline": "#504945",
+        "outlineVariant": "#3a3532",
+        "primary": "#fabd2f",
+        "primaryContainer": "#5a4310",
+        "primaryContainerText": "#ffe9b3",
+        "tertiary": "#fb4934",
+        "errorTone": "#fb4934",
+        "surfaceText": "#ebdbb2",
+        "surfaceTextMuted": "#d5c4a1"
       }
     },
     {
       "name": "Everforest",
       "colors": {
-        "mPrimary": "#a7c080",
-        "mOnPrimary": "#2b3339",
-        "mSecondary": "#e67e80",
-        "mOnSecondary": "#2b3339",
-        "mSurface": "#2b3339",
-        "mOnSurface": "#d3c6aa",
-        "mSurfaceVariant": "#3a454a",
-        "mOnSurfaceVariant": "#c6d1c1",
-        "mOutline": "#4a555b",
-        "mError": "#e67e80"
+        "surface": "#2b3339",
+        "surfaceContainerLow": "#303a40",
+        "surfaceContainer": "#3a454a",
+        "surfaceContainerHigh": "#445055",
+        "outline": "#4a555b",
+        "outlineVariant": "#384247",
+        "primary": "#a7c080",
+        "primaryContainer": "#3d4a30",
+        "primaryContainerText": "#dbe9c8",
+        "tertiary": "#e67e80",
+        "errorTone": "#e67e80",
+        "surfaceText": "#d3c6aa",
+        "surfaceTextMuted": "#c6d1c1"
       }
     }
   ]
@@ -136,6 +159,11 @@ ColumnLayout {
       Settings.data.theme[key] = colors[key];
     }
   }
+
+  ColumnLayout {
+    id: col
+    width: parent.width - 4
+    spacing: 20
 
   SettingsSection {
     title: "Presets"
@@ -148,19 +176,20 @@ ColumnLayout {
       Repeater {
         model: root.presets
 
-        delegate: Rectangle {
+        delegate: Item {
           id: swatch
           required property var modelData
           width: swatchRow.implicitWidth + 20
           height: 34
-          radius: Style.radiusXS
-          color: swatchHover.hovered ? Color.alpha(Color.mPrimary, 0.16) : Color.mSurface
-          border.color: Color.alpha(Color.mPrimary, 0.55)
-          border.width: 1
-          Behavior on color {
-            ColorAnimation {
-              duration: Style.animationFast
-            }
+
+          Chamfer {
+            anchors.fill: parent
+            chamferSize: Tokens.chamferIcon
+            cutTopRight: true
+            cutBottomLeft: true
+            fillColor: swatchHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
+            strokeColor: Color.outline
+            strokeWidth: Tokens.borderModule
           }
 
           RowLayout {
@@ -171,13 +200,13 @@ ColumnLayout {
             Row {
               spacing: 2
               Repeater {
-                model: [swatch.modelData.colors.mPrimary, swatch.modelData.colors.mSecondary, swatch.modelData.colors.mSurface]
+                model: [swatch.modelData.colors.primary, swatch.modelData.colors.tertiary, swatch.modelData.colors.surface]
                 delegate: Rectangle {
+                  required property var modelData
                   width: 12
                   height: 12
-                  radius: 6
                   color: modelData
-                  border.color: Color.mOutline
+                  border.color: Color.outline
                   border.width: 1
                 }
               }
@@ -185,9 +214,9 @@ ColumnLayout {
 
             Text {
               text: swatch.modelData.name
-              color: Color.mOnSurface
-              font.family: Settings.data.ui.fontFamily
-              font.pixelSize: Style.fontSizeS
+              color: Color.surfaceText
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.bodySmSize
             }
           }
 
@@ -205,6 +234,7 @@ ColumnLayout {
 
   SettingsSection {
     title: "Manual"
+    description: "Edit each color role directly by hex code."
 
     GridLayout {
       columns: 2
@@ -222,45 +252,52 @@ ColumnLayout {
           Rectangle {
             width: 22
             height: 22
-            radius: Style.radiusXXS
             color: Settings.data.theme[fieldRow.modelData.key]
-            border.color: Color.mOutline
+            border.color: Color.outline
             border.width: 1
           }
 
           Text {
             text: fieldRow.modelData.label
-            color: Color.mOnSurfaceVariant
-            font.family: Settings.data.ui.fontFamily
-            font.pixelSize: Style.fontSizeS
-            Layout.preferredWidth: 80
+            color: Color.labelText
+            font.family: Tokens.fontFamily
+            font.pixelSize: Tokens.bodySmSize
+            Layout.preferredWidth: 110
           }
 
-          TextInput {
+          Item {
             Layout.preferredWidth: 90
-            text: Settings.data.theme[fieldRow.modelData.key]
-            color: Color.mOnSurface
-            font.family: Settings.data.ui.fontFamily
-            font.pixelSize: Style.fontSizeS
-            onEditingFinished: {
-              if (/^#[0-9a-fA-F]{6,8}$/.test(text))
-                Settings.data.theme[fieldRow.modelData.key] = text;
+            height: 24
+
+            Chamfer {
+              anchors.fill: parent
+              chamferSize: Tokens.chamferIcon
+              cutTopRight: true
+              cutBottomLeft: true
+              fillColor: Color.surface
+              strokeColor: fieldInput.activeFocus ? Color.primary : Color.outline
+              strokeWidth: Tokens.borderModule
             }
 
-            Rectangle {
-              z: -1
+            TextInput {
+              id: fieldInput
               anchors.fill: parent
-              anchors.margins: -4
-              color: Color.mSurface
-              radius: Style.radiusXXS
+              anchors.leftMargin: 6
+              anchors.rightMargin: 6
+              verticalAlignment: Text.AlignVCenter
+              text: Settings.data.theme[fieldRow.modelData.key]
+              color: Color.surfaceText
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.captionSize
+              onEditingFinished: {
+                if (/^#[0-9a-fA-F]{6,8}$/.test(text))
+                  Settings.data.theme[fieldRow.modelData.key] = text;
+              }
             }
           }
         }
       }
     }
   }
-
-  Item {
-    Layout.fillHeight: true
   }
 }

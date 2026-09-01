@@ -1,13 +1,12 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Effects
 import qs.Commons
+import qs.Modules.Bar.Extras
 
 // Reusable horizontal pill-tab row for a top-level settings tab that has
-// more than one logical page (e.g. Bar's "Layout"/"Widgets", Appearance's
-// "General"/"Colors") — the second level of the Tab → SubTab navigation
-// noctalia's settings panel uses. Tabs with only one page skip this
-// entirely rather than showing a pointless single-pill bar.
+// more than one logical page (e.g. Bar's "Layout"/"Widgets"). v2 style:
+// chamfered pill (radius: 0, no glow per hard rules 1/4), primaryContainer
+// fill when active.
 RowLayout {
   id: root
 
@@ -28,35 +27,24 @@ RowLayout {
       implicitWidth: label.implicitWidth + 20
       implicitHeight: 26
 
-      MultiEffect {
-        anchors.fill: pill
-        source: pill
-        shadowEnabled: pillWrap.active
-        shadowColor: Color.mPrimary
-        shadowBlur: 0.5
-        shadowOpacity: 0.6
-      }
-
-      Rectangle {
-        id: pill
+      Chamfer {
         anchors.fill: parent
-        radius: Style.radiusXS
-        color: pillWrap.active ? Color.mPrimary : (hoverHandler.hovered ? Color.alpha(Color.mPrimary, 0.16) : Color.mSurfaceVariant)
-        border.color: Color.alpha(Color.mPrimary, 0.55)
-        border.width: !pillWrap.active && hoverHandler.hovered ? 1 : 0
-        Behavior on color {
-          ColorAnimation {
-            duration: Style.animationFast
-          }
-        }
+        chamferSize: Tokens.chamferIcon
+        cutTopRight: true
+        cutBottomLeft: true
+        fillColor: pillWrap.active ? Color.primaryContainer : (hoverHandler.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer)
+        strokeColor: pillWrap.active ? Color.primary : Color.outline
+        strokeWidth: Tokens.borderModule
 
         Text {
           id: label
           anchors.centerIn: parent
-          text: pillWrap.modelData.label
-          color: pillWrap.active ? Color.mOnPrimary : Color.mOnSurface
-          font.family: Settings.data.ui.fontFamily
-          font.pixelSize: Style.fontSizeS
+          text: pillWrap.modelData.label.toUpperCase()
+          color: pillWrap.active ? Color.primaryContainerText : Color.surfaceText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize
+          font.weight: Font.DemiBold
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
       }
 

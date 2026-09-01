@@ -1,25 +1,32 @@
 import QtQuick
 import Quickshell.Io
 import qs.Commons
+import qs.Modules.Bar.Extras
 
-// CPU% / RAM% readout. Parsing logic (/proc/stat delta-based CPU usage,
-// /proc/meminfo MemTotal-MemAvailable) ported from noctalia's
-// Services/System/SystemStatService.qml.
+// CPU% / RAM% readout module. Parsing logic (/proc/stat delta-based CPU
+// usage, /proc/meminfo MemTotal-MemAvailable) ported from noctalia's
+// Services/System/SystemStatService.qml. "Status is text, not glyphs" —
+// same StatText pairing StatusGroup uses. Click opens SystemStatsWindow, the
+// fuller telemetry panel (per-core CPU, memory, every real disk, temp,
+// uptime/load) — this readout stayed a pure display with no click handler
+// until now.
 Item {
   id: root
 
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool vertical: false
+
+  SystemStatsWindow {
+    id: statsWindow
+    targetScreen: root.screen
+  }
 
   property real cpuPercent: 0
   property real memPercent: 0
   property var prevCpuStats: null
-
-  implicitWidth: label.implicitWidth + 16
-  implicitHeight: 32
-  width: implicitWidth
-  height: implicitHeight
+  readonly property bool warn: cpuPercent >= Settings.data.systemMonitor.warnThreshold || memPercent >= Settings.data.systemMonitor.warnThreshold
 
   function calculateLineUsage(line) {
     var parts = line.split(/\s+/);
@@ -101,18 +108,114 @@ Item {
     }
   }
 
-  Rectangle {
-    anchors.fill: parent
-    radius: Style.radiusXXS
-    color: "transparent"
+  implicitWidth: module.implicitWidth
+  implicitHeight: module.implicitHeight
+  width: implicitWidth
+  height: implicitHeight
 
-    Text {
-      id: label
-      anchors.centerIn: parent
-      text: "CPU " + root.cpuPercent + "%  RAM " + root.memPercent + "%"
-      font.family: Settings.data.ui.fontFamily
-      font.pixelSize: 11
-      color: root.cpuPercent >= Settings.data.systemMonitor.warnThreshold || root.memPercent >= Settings.data.systemMonitor.warnThreshold ? Color.mError : Color.mOnSurface
+  BarModule {
+    id: module
+    vertical: root.vertical
+    topPadding: 8
+    bottomPadding: 8
+
+    Row {
+      visible: !root.vertical
+      spacing: 10
+
+      StatText {
+        label: "CPU"
+        value: root.cpuPercent + "%"
+        valueColor: root.warn ? Color.error : Color.surfaceText
+      }
+
+      Rectangle {
+        width: 1
+        height: 12
+        color: Color.surfaceContainerHigh
+      }
+
+      StatText {
+        label: "RAM"
+        value: root.memPercent + "%"
+        valueColor: root.warn ? Color.error : Color.surfaceText
+      }
+    }
+
+    Column {
+      visible: root.vertical
+      spacing: 8
+
+      Column {
+        width: 28
+        Text {
+          width: 28
+          horizontalAlignment: Text.AlignHCenter
+          text: root.cpuPercent + "%"
+          color: root.warn ? Color.error : Color.surfaceText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        }
+        Text {
+          width: 28
+          horizontalAlignment: Text.AlignHCenter
+          text: "CPU"
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize - 1
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        }
+      }
+
+      Rectangle {
+        width: 28
+        height: 1
+        color: Color.surfaceContainerHigh
+      }
+
+      Column {
+        width: 28
+        Text {
+          width: 28
+          horizontalAlignment: Text.AlignHCenter
+          text: root.memPercent + "%"
+          color: root.warn ? Color.error : Color.surfaceText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        }
+        Text {
+          width: 28
+          horizontalAlignment: Text.AlignHCenter
+          text: "RAM"
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize - 1
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        }
+      }
     }
   }
+
+  HoverHandler {
+    cursorShape: Qt.PointingHandCursor
+    onHoveredChanged: {
+      if (hovered)
+        TooltipService.show(root, "CPU " + root.cpuPercent + "%  ·  RAM " + root.memPercent + "%");
+      else
+        TooltipService.hide();
+    }
+  }
+  TapHandler {
+    onTapped: {
+      TooltipService.hideImmediately();
+      statsWindow.triggerPos = root.mapToItem(null, 0, 0);
+      statsWindow.toggle();
+    }
+  }
+  onCpuPercentChanged: if (TooltipService.anchorItem === root)
+    TooltipService.text = "CPU " + root.cpuPercent + "%  ·  RAM " + root.memPercent + "%"
+  onMemPercentChanged: if (TooltipService.anchorItem === root)
+    TooltipService.text = "CPU " + root.cpuPercent + "%  ·  RAM " + root.memPercent + "%"
 }

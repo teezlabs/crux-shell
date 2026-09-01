@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import qs.Commons
+import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 
 // Root is a Flickable, not a plain ColumnLayout — this subtab's content
@@ -24,30 +25,37 @@ Flickable {
 
     SettingsSection {
       title: "Position"
+      description: "Which screen edge the bar sits on."
 
       RowLayout {
         spacing: 6
 
         Repeater {
           model: ["top", "bottom", "left", "right"]
-          delegate: Rectangle {
+          delegate: Item {
+            id: posTile
             required property string modelData
+            readonly property bool active: Settings.data.bar.position === modelData
             Layout.preferredWidth: 80
             height: 30
-            radius: Style.radiusXS
-            color: Settings.data.bar.position === modelData ? Color.mPrimary : (posHover.hovered ? Color.alpha(Color.mPrimary, 0.16) : Color.mSurface)
-            Behavior on color {
-              ColorAnimation {
-                duration: Style.animationFast
-              }
+
+            Chamfer {
+              anchors.fill: parent
+              chamferSize: Tokens.chamferIcon
+              cutTopRight: true
+              cutBottomLeft: true
+              fillColor: posTile.active ? Color.primaryContainer : (posHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer)
+              strokeColor: posTile.active ? Color.primary : Color.outline
+              strokeWidth: Tokens.borderModule
             }
 
             Text {
               anchors.centerIn: parent
-              text: parent.modelData
-              color: Settings.data.bar.position === parent.modelData ? Color.mOnPrimary : Color.mOnSurface
-              font.family: Settings.data.ui.fontFamily
-              font.pixelSize: Style.fontSizeS
+              text: posTile.modelData.toUpperCase()
+              color: posTile.active ? Color.primaryContainerText : Color.surfaceText
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.labelXsSize
+              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
             }
 
             HoverHandler {
@@ -55,7 +63,7 @@ Flickable {
               cursorShape: Qt.PointingHandCursor
             }
             TapHandler {
-              onTapped: Settings.data.bar.position = parent.modelData
+              onTapped: Settings.data.bar.position = posTile.modelData
             }
           }
         }
@@ -64,6 +72,7 @@ Flickable {
 
     SettingsSection {
       title: "Sizing"
+      description: "Spacing, padding, and thickness of the bar and its modules."
 
       SettingRow {
         label: "Widget spacing"
@@ -77,9 +86,9 @@ Flickable {
         }
         Text {
           text: Settings.data.bar.widgetSpacing + "px"
-          color: Color.mOnSurfaceVariant
-          font.family: Settings.data.ui.fontFamily
-          font.pixelSize: Style.fontSizeS
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.bodySmSize
           Layout.preferredWidth: 34
         }
       }
@@ -96,9 +105,9 @@ Flickable {
         }
         Text {
           text: Settings.data.bar.contentPadding + "px"
-          color: Color.mOnSurfaceVariant
-          font.family: Settings.data.ui.fontFamily
-          font.pixelSize: Style.fontSizeS
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.bodySmSize
           Layout.preferredWidth: 34
         }
       }
@@ -115,15 +124,31 @@ Flickable {
         }
         Text {
           text: Settings.data.bar.thickness + "px"
-          color: Color.mOnSurfaceVariant
-          font.family: Settings.data.ui.fontFamily
-          font.pixelSize: Style.fontSizeS
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.bodySmSize
           Layout.preferredWidth: 34
         }
       }
 
       SettingRow {
+        label: "Floating"
+        NToggle {
+          checked: Settings.data.bar.floating
+          onToggled: checked => Settings.data.bar.floating = checked
+        }
+        Text {
+          text: "Off = a real bar flush with the screen edge, ignoring the gap below"
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.captionSize
+        }
+      }
+
+      SettingRow {
         label: "Floating gap"
+        enabled: Settings.data.bar.floating
+        opacity: enabled ? 1 : 0.4
         NSlider {
           Layout.preferredWidth: 200
           from: 0
@@ -134,9 +159,9 @@ Flickable {
         }
         Text {
           text: Settings.data.bar.floatMargin + "px"
-          color: Color.mOnSurfaceVariant
-          font.family: Settings.data.ui.fontFamily
-          font.pixelSize: Style.fontSizeS
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.bodySmSize
           Layout.preferredWidth: 34
         }
       }
@@ -144,6 +169,7 @@ Flickable {
 
     SettingsSection {
       title: "Appearance"
+      description: "Border, auto-hide, and background/opacity for the bar."
 
       SettingRow {
         label: "Border"
@@ -164,9 +190,9 @@ Flickable {
         }
         Text {
           text: Settings.data.bar.borderWidth + "px"
-          color: Color.mOnSurfaceVariant
-          font.family: Settings.data.ui.fontFamily
-          font.pixelSize: Style.fontSizeS
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.bodySmSize
           opacity: Settings.data.bar.showBorder ? 1 : 0.4
         }
       }
@@ -179,9 +205,61 @@ Flickable {
         }
         Text {
           text: "Show only when the pointer touches the bar's edge"
-          color: Color.mOnSurfaceVariant
-          font.family: Settings.data.ui.fontFamily
-          font.pixelSize: Style.fontSizeXS
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.captionSize
+        }
+      }
+
+      SettingRow {
+        label: "Background"
+        NToggle {
+          checked: Settings.data.bar.showBackground
+          onToggled: checked => Settings.data.bar.showBackground = checked
+        }
+        NSlider {
+          Layout.preferredWidth: 140
+          Layout.leftMargin: 10
+          enabled: Settings.data.bar.showBackground
+          opacity: enabled ? 1 : 0.4
+          from: 0.1
+          to: 1
+          stepSize: 0.05
+          value: Settings.data.bar.barBackgroundOpacity
+          onMoved: value => Settings.data.bar.barBackgroundOpacity = value
+        }
+        Text {
+          text: Math.round(Settings.data.bar.barBackgroundOpacity * 100) + "%"
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.bodySmSize
+          opacity: Settings.data.bar.showBackground ? 1 : 0.4
+        }
+      }
+
+      SettingRow {
+        label: "Separate opacity"
+        NToggle {
+          checked: Settings.data.bar.useSeparateOpacity
+          onToggled: checked => Settings.data.bar.useSeparateOpacity = checked
+        }
+        NSlider {
+          Layout.preferredWidth: 140
+          Layout.leftMargin: 10
+          enabled: Settings.data.bar.useSeparateOpacity
+          opacity: enabled ? 1 : 0.4
+          from: 0.1
+          to: 1
+          stepSize: 0.05
+          value: Settings.data.bar.backgroundOpacity
+          onMoved: value => Settings.data.bar.backgroundOpacity = value
+        }
+        Text {
+          text: Math.round(Settings.data.bar.backgroundOpacity * 100) + "%"
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.bodySmSize
+          opacity: Settings.data.bar.useSeparateOpacity ? 1 : 0.4
         }
       }
     }
@@ -228,9 +306,9 @@ Flickable {
 
             Text {
               text: modelData.name
-              color: Color.mOnSurface
-              font.family: Settings.data.ui.fontFamily
-              font.pixelSize: Style.fontSizeS
+              color: Color.surfaceText
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.bodySmSize
             }
           }
         }
@@ -239,6 +317,7 @@ Flickable {
 
     SettingsSection {
       title: "Per-monitor position override"
+      description: "Give a specific monitor its own bar edge, different from the default above."
 
       ColumnLayout {
         spacing: 12
@@ -270,9 +349,9 @@ Flickable {
 
               Text {
                 text: overrideRow.screenName + " — custom position"
-                color: Color.mOnSurface
-                font.family: Settings.data.ui.fontFamily
-                font.pixelSize: Style.fontSizeS
+                color: Color.surfaceText
+                font.family: Tokens.fontFamily
+                font.pixelSize: Tokens.bodySmSize
               }
             }
 
@@ -283,26 +362,37 @@ Flickable {
 
               Repeater {
                 model: ["top", "bottom", "left", "right"]
-                delegate: Rectangle {
+                delegate: Item {
                   id: posBtn
                   required property string modelData
+                  readonly property bool active: Settings.getBarPositionForScreen(overrideRow.screenName) === posBtn.modelData
                   Layout.preferredWidth: 64
                   height: 26
-                  radius: Style.radiusXS
-                  color: Settings.getBarPositionForScreen(overrideRow.screenName) === posBtn.modelData ? Color.mPrimary : Color.mSurface
+
+                  Chamfer {
+                    anchors.fill: parent
+                    chamferSize: Tokens.chamferIcon
+                    cutTopRight: true
+                    cutBottomLeft: true
+                    fillColor: posBtn.active ? Color.primaryContainer : Color.surfaceContainer
+                    strokeColor: posBtn.active ? Color.primary : Color.outline
+                    strokeWidth: Tokens.borderModule
+                  }
 
                   Text {
                     anchors.centerIn: parent
-                    text: posBtn.modelData
-                    color: Settings.getBarPositionForScreen(overrideRow.screenName) === posBtn.modelData ? Color.mOnPrimary : Color.mOnSurface
-                    font.family: Settings.data.ui.fontFamily
-                    font.pixelSize: Style.fontSizeXS
+                    text: posBtn.modelData.toUpperCase()
+                    color: posBtn.active ? Color.primaryContainerText : Color.surfaceText
+                    font.family: Tokens.fontFamily
+                    font.pixelSize: Tokens.labelXsSize
+                    font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
                   }
 
-                  MouseArea {
-                    anchors.fill: parent
+                  HoverHandler {
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: Settings.setScreenOverride(overrideRow.screenName, "position", posBtn.modelData)
+                  }
+                  TapHandler {
+                    onTapped: Settings.setScreenOverride(overrideRow.screenName, "position", posBtn.modelData)
                   }
                 }
               }

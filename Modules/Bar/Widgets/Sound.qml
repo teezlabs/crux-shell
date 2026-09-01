@@ -1,20 +1,23 @@
 import QtQuick
 import Quickshell
 import Quickshell.Services.Pipewire
-import qs.Modules.Bar.Extras
 import qs.Commons
+import qs.Modules.Bar.Extras
 
 // Volume control on the bar: click opens the output/volume popup, scroll
-// up/down adjusts volume directly, right-click toggles mute. Pipewire node
-// reactivity (PwObjectTracker) matches the same pattern already used in
-// Modules/OSD/VolumeOsd.qml — Pipewire nodes don't reliably push property
-// updates unless tracked.
+// up/down adjusts volume directly, right-click toggles mute. Styled to
+// match StatusGroup.qml's "LABEL value" module treatment (BarModule +
+// StatText) rather than a bare icon square, for visual consistency with
+// the other text-based bar readouts — "status is text, not glyphs" per
+// spec §3, same philosophy StatusGroup already follows.
 Item {
   id: root
 
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool vertical: false
+  property bool invertChamfer: false
 
   readonly property var sink: Pipewire.ready ? Pipewire.defaultAudioSink : null
   readonly property real volume: sink && sink.audio ? sink.audio.volume : 0
@@ -23,11 +26,6 @@ Item {
   PwObjectTracker {
     objects: root.sink ? [root.sink] : []
   }
-
-  implicitWidth: 32
-  implicitHeight: 32
-  width: implicitWidth
-  height: implicitHeight
 
   SoundMenuWindow {
     id: menu
@@ -42,81 +40,72 @@ Item {
       root.sink.audio.muted = false;
   }
 
-  Rectangle {
-    anchors.fill: parent
-    anchors.margins: 4
-    radius: Style.radiusXXS
-    color: hoverHandler.hovered ? Color.alpha(Color.mPrimary, 0.16) : "transparent"
-    border.color: Color.alpha(Color.mPrimary, 0.55)
-    border.width: hoverHandler.hovered ? 1 : 0
-    scale: hoverHandler.hovered ? 1.1 : 1.0
-    Behavior on color {
-      ColorAnimation {
-        duration: Style.animationFast
+  implicitWidth: module.implicitWidth
+  implicitHeight: module.implicitHeight
+  width: implicitWidth
+  height: implicitHeight
+
+  BarModule {
+    id: module
+    vertical: root.vertical
+    invertChamfer: root.invertChamfer
+    topPadding: 8
+    bottomPadding: 8
+
+    Row {
+      visible: !root.vertical
+      spacing: 10
+
+      StatText {
+        label: "VOL"
+        value: root.muted ? "—" : String(Math.round(root.volume * 100))
+        valueColor: root.muted ? Color.error : Color.surfaceText
       }
     }
-    Behavior on scale {
-      NumberAnimation {
-        duration: Style.animationFast
-        easing.type: Easing.OutBack
-      }
-    }
 
-    // Speaker + volume-wave glyph, geometric (no font/emoji glyph
-    // dependency) — a slash overlay when muted, arc count following volume.
-    Canvas {
-      id: canvas
-      anchors.centerIn: parent
-      width: 18
-      height: 16
-      readonly property color drawColor: root.muted ? Color.mOutline : Color.mOnSurface
-      readonly property real vol: root.volume
-      readonly property bool isMuted: root.muted
-      onDrawColorChanged: requestPaint()
-      onVolChanged: requestPaint()
-      onIsMutedChanged: requestPaint()
-      onPaint: {
-        var ctx = getContext("2d");
-        ctx.reset();
-        ctx.strokeStyle = drawColor;
-        ctx.fillStyle = drawColor;
-        ctx.lineWidth = 1.4;
-        ctx.lineCap = "round";
+    Column {
+      visible: root.vertical
+      spacing: 8
 
-        // Speaker body: a small square plus a trapezoid horn.
-        ctx.beginPath();
-        ctx.moveTo(0, 5);
-        ctx.lineTo(3, 5);
-        ctx.lineTo(7, 1.5);
-        ctx.lineTo(7, 14.5);
-        ctx.lineTo(3, 11);
-        ctx.lineTo(0, 11);
-        ctx.closePath();
-        ctx.fill();
-
-        if (isMuted) {
-          ctx.beginPath();
-          ctx.moveTo(10, 3);
-          ctx.lineTo(17, 13);
-          ctx.stroke();
-          return;
+      Column {
+        width: 24
+        Text {
+          width: 24
+          horizontalAlignment: Text.AlignHCenter
+          text: root.muted ? "—" : String(Math.round(root.volume * 100))
+          color: root.muted ? Color.error : Color.surfaceText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
-
-        // Volume arcs — 1 to 3 depending on level.
-        var arcs = vol <= 0 ? 0 : (vol < 0.34 ? 1 : (vol < 0.67 ? 2 : 3));
-        for (var i = 0; i < arcs; i++) {
-          var r = 3 + i * 3.2;
-          ctx.beginPath();
-          ctx.arc(4, 8, r, -Math.PI * 0.32, Math.PI * 0.32);
-          ctx.stroke();
+        Text {
+          width: 24
+          horizontalAlignment: Text.AlignHCenter
+          text: "VOL"
+          color: Color.labelText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.labelXsSize - 1
+          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
       }
     }
   }
 
   HoverHandler {
-    id: hoverHandler
     cursorShape: Qt.PointingHandCursor
+  }
+
+  TapHandler {
+    acceptedButtons: Qt.LeftButton
+    onTapped: {
+      menu.triggerPos = root.mapToItem(null, 0, 0);
+      menu.toggle();
+    }
+  }
+  TapHandler {
+    acceptedButtons: Qt.RightButton
+    onTapped: if (root.sink && root.sink.audio)
+      root.sink.audio.muted = !root.sink.audio.muted
   }
 
   WheelHandler {
@@ -125,16 +114,5 @@ Item {
       var step = Settings.data.audio.step;
       root._setVolume(root.volume + (event.angleDelta.y > 0 ? step : -step));
     }
-  }
-
-  TapHandler {
-    acceptedButtons: Qt.LeftButton
-    onTapped: menu.toggle()
-  }
-
-  TapHandler {
-    acceptedButtons: Qt.RightButton
-    onTapped: if (root.sink && root.sink.audio)
-      root.sink.audio.muted = !root.sink.audio.muted
   }
 }

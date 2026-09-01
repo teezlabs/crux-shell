@@ -4,11 +4,14 @@ import Quickshell.Services.Pipewire
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 
-ColumnLayout {
+Flickable {
   id: root
-  spacing: 20
+  clip: true
+  contentWidth: width
+  contentHeight: col.implicitHeight
 
   readonly property var sink: Pipewire.ready ? Pipewire.defaultAudioSink : null
+  readonly property var source: Pipewire.ready ? Pipewire.defaultAudioSource : null
   readonly property var allSinks: {
     if (!Pipewire.ready || !Pipewire.nodes)
       return [];
@@ -16,13 +19,32 @@ ColumnLayout {
       return n && n.isSink && !n.isStream;
     });
   }
+  // A "source" (mic/input) is any non-stream, non-sink node that still has
+  // an .audio property — same filter noctalia's AudioService.qml uses,
+  // since Pipewire doesn't expose a plain isSource flag.
+  readonly property var allSources: {
+    if (!Pipewire.ready || !Pipewire.nodes)
+      return [];
+    return Pipewire.nodes.values.filter(function (n) {
+      return n && !n.isSink && !n.isStream && n.audio;
+    });
+  }
 
   PwObjectTracker {
     objects: root.sink ? [root.sink] : []
   }
+  PwObjectTracker {
+    objects: root.source ? [root.source] : []
+  }
+
+  ColumnLayout {
+    id: col
+    width: parent.width - 4
+    spacing: 20
 
   SettingsSection {
     title: "Volume"
+    description: "How much each step changes the volume by."
 
     SettingRow {
       label: "Scroll step"
@@ -36,17 +58,17 @@ ColumnLayout {
       }
       Text {
         text: Math.round(Settings.data.audio.step * 100) + "%"
-        color: Color.mOnSurfaceVariant
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: Style.fontSizeS
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.bodySmSize
       }
     }
 
     Text {
-      text: "Per scroll notch on the bar's Sound icon, and per hardware volume key press."
-      color: Color.mOnSurfaceVariant
-      font.family: Settings.data.ui.fontFamily
-      font.pixelSize: Style.fontSizeXS
+      text: "Per scroll notch on the bar's Status module, and per hardware volume key press."
+      color: Color.labelText
+      font.family: Tokens.fontFamily
+      font.pixelSize: Tokens.captionSize
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
     }
@@ -54,6 +76,7 @@ ColumnLayout {
 
   SettingsSection {
     title: "Output devices"
+    description: "Pick which speaker or headset gets audio by default."
 
     ColumnLayout {
       Layout.fillWidth: true
@@ -67,16 +90,8 @@ ColumnLayout {
           required property var modelData
           Layout.fillWidth: true
           height: 34
-          radius: Style.radiusXXS
           readonly property bool isDefault: root.sink && modelData.id === root.sink.id
-          color: sinkRow.isDefault ? Color.alpha(Color.mPrimary, 0.16) : (hoverSink.hovered ? Color.alpha(Color.mPrimary, 0.12) : "transparent")
-          border.color: Color.alpha(Color.mPrimary, 0.55)
-          border.width: sinkRow.isDefault || hoverSink.hovered ? 1 : 0
-          Behavior on color {
-            ColorAnimation {
-              duration: Style.animationFast
-            }
-          }
+          color: sinkRow.isDefault ? Color.primaryContainer : (hoverSink.hovered ? Color.surfaceContainerHigh : "transparent")
 
           RowLayout {
             anchors.fill: parent
@@ -85,16 +100,15 @@ ColumnLayout {
 
             Text {
               text: sinkRow.isDefault ? "●" : "○"
-              color: sinkRow.isDefault ? Color.mPrimary : Color.mOnSurfaceVariant
-              font.family: Settings.data.ui.fontFamily
-              font.pixelSize: Style.fontSizeM
+              color: sinkRow.isDefault ? Color.primary : Color.labelText
+              font.pixelSize: Tokens.bodySize
             }
 
             Text {
               text: sinkRow.modelData.description || sinkRow.modelData.name || ""
-              color: Color.mOnSurface
-              font.family: Settings.data.ui.fontFamily
-              font.pixelSize: Style.fontSizeS
+              color: sinkRow.isDefault ? Color.primaryContainerText : Color.surfaceText
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.bodySmSize
               elide: Text.ElideRight
               Layout.fillWidth: true
             }
@@ -102,9 +116,9 @@ ColumnLayout {
             Text {
               visible: sinkRow.modelData.audio
               text: sinkRow.modelData.audio ? Math.round(sinkRow.modelData.audio.volume * 100) + "%" : ""
-              color: Color.mOnSurfaceVariant
-              font.family: Settings.data.ui.fontFamily
-              font.pixelSize: Style.fontSizeS
+              color: Color.labelText
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.bodySmSize
             }
           }
 
@@ -122,14 +136,80 @@ ColumnLayout {
       Text {
         visible: root.allSinks.length === 0
         text: "No output devices found."
-        color: Color.mOnSurfaceVariant
-        font.family: Settings.data.ui.fontFamily
-        font.pixelSize: Style.fontSizeS
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.bodySmSize
       }
     }
   }
 
-  Item {
-    Layout.fillHeight: true
+  SettingsSection {
+    title: "Input devices"
+    description: "Pick which microphone is used by default."
+
+    ColumnLayout {
+      Layout.fillWidth: true
+      spacing: 4
+
+      Repeater {
+        model: root.allSources
+
+        delegate: Rectangle {
+          id: sourceRow
+          required property var modelData
+          Layout.fillWidth: true
+          height: 34
+          readonly property bool isDefault: root.source && modelData.id === root.source.id
+          color: sourceRow.isDefault ? Color.primaryContainer : (hoverSource.hovered ? Color.surfaceContainerHigh : "transparent")
+
+          RowLayout {
+            anchors.fill: parent
+            anchors.leftMargin: 8
+            anchors.rightMargin: 8
+
+            Text {
+              text: sourceRow.isDefault ? "●" : "○"
+              color: sourceRow.isDefault ? Color.primary : Color.labelText
+              font.pixelSize: Tokens.bodySize
+            }
+
+            Text {
+              text: sourceRow.modelData.description || sourceRow.modelData.name || ""
+              color: sourceRow.isDefault ? Color.primaryContainerText : Color.surfaceText
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.bodySmSize
+              elide: Text.ElideRight
+              Layout.fillWidth: true
+            }
+
+            Text {
+              visible: sourceRow.modelData.audio
+              text: sourceRow.modelData.audio ? Math.round(sourceRow.modelData.audio.volume * 100) + "%" : ""
+              color: Color.labelText
+              font.family: Tokens.fontFamily
+              font.pixelSize: Tokens.bodySmSize
+            }
+          }
+
+          HoverHandler {
+            id: hoverSource
+            cursorShape: Qt.PointingHandCursor
+          }
+
+          TapHandler {
+            onTapped: Pipewire.preferredDefaultAudioSource = sourceRow.modelData
+          }
+        }
+      }
+
+      Text {
+        visible: root.allSources.length === 0
+        text: "No input devices found."
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.bodySmSize
+      }
+    }
+  }
   }
 }

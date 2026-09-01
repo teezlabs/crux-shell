@@ -1,17 +1,14 @@
 import QtQuick
-import QtQuick.Effects
-import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
-import Quickshell.Bluetooth
 import qs.Commons
-import "BluetoothModel.js" as Model
+import qs.Modules.Bar.Extras
 
-// Bluetooth popup: real data/behavior ported from Omarchy's
-// shell/plugins/panels/bluetooth Panel.qml + Model.js (same Quickshell.Bluetooth
-// backend and omarchy-bluetooth-device/omarchy-bluetooth-power CLI helpers) —
-// UI rebuilt on crux's own lean primitives instead of Omarchy's shared Ui kit.
+// Standalone Bluetooth popup for the Bluetooth.qml bar widget — window
+// chrome and anchoring only; the actual device list/pair logic lives in
+// BluetoothPanelContent.qml (shared with Control Center's inline
+// BLUETOOTH expand).
 PanelWindow {
   id: root
 
@@ -25,113 +22,18 @@ PanelWindow {
   readonly property bool _barLeft: root._barPos === "left"
   readonly property bool _barRight: root._barPos === "right"
   readonly property bool _barBottom: root._barPos === "bottom"
-  readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 8
+  readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 20
 
-  readonly property var adapter: Bluetooth.defaultAdapter
-  readonly property var devices: Bluetooth.devices ? Bluetooth.devices.values : []
-  readonly property var deviceGroups: Model.deviceLists(devices)
-  readonly property var connectedDevices: deviceGroups.connected || []
-  readonly property var knownDevices: deviceGroups.known || []
-  readonly property var discoveredDevices: deviceGroups.discovered || []
-
-  // address -> "connecting" | "disconnecting" | "forgetting"
-  property var pendingActions: ({})
-
-  readonly property string _binDir: Quickshell.env("HOME") + "/.config/quickshell/crux/bin/"
-
-  function deviceFor(address) {
-    for (var i = 0; i < devices.length; i++) {
-      if (devices[i] && devices[i].address === address)
-        return devices[i];
-    }
-    return null;
-  }
-
-  function setPendingAction(address, action) {
-    if (!address)
-      return;
-    var next = Model.cloneMap(pendingActions);
-    if (action)
-      next[address] = action;
-    else
-      delete next[address];
-    pendingActions = next;
-  }
-
-  function deviceCommand(action, address) {
-    return [root._binDir + "omarchy-bluetooth-device", action, address];
-  }
-
-  function connectDevice(device) {
-    if (!device || device.connected)
-      return;
-    var action = (device.paired || device.bonded || device.trusted) ? "connect" : "pair";
-    setPendingAction(device.address, "connecting");
-    Quickshell.execDetached(deviceCommand(action, device.address));
-  }
-
-  function disconnectDevice(device) {
-    if (!device || !device.connected)
-      return;
-    setPendingAction(device.address, "disconnecting");
-    if (device.disconnect)
-      device.disconnect();
-    Quickshell.execDetached(deviceCommand("disconnect", device.address));
-  }
-
-  function forgetDevice(device) {
-    if (!device || !device.address)
-      return;
-    setPendingAction(device.address, "forgetting");
-    Quickshell.execDetached(deviceCommand("forget", device.address));
-  }
-
-  function syncPendingActions() {
-    var next = Model.cloneMap(pendingActions);
-    var changed = false;
-    for (var address in next) {
-      var action = next[address];
-      var found = deviceFor(address);
-      var done = (action === "connecting" && found && found.connected) || (action === "disconnecting" && found && !found.connected) || (action === "forgetting" && (!found || (!found.paired && !found.bonded && !found.trusted)));
-      if (done) {
-        delete next[address];
-        changed = true;
-      }
-    }
-    if (changed)
-      pendingActions = next;
-  }
-
-  onDevicesChanged: syncPendingActions()
-
-  Timer {
-    interval: 800
-    repeat: true
-    running: root.visible
-    onTriggered: root.syncPendingActions()
-  }
-
-  function toggleBluetooth() {
-    if (!adapter)
-      return;
-    Quickshell.execDetached([root._binDir + "omarchy-bluetooth-power", adapter.enabled ? "off" : "on"]);
-  }
-
-  // Discovery is a BlueZ session other clients may also hold; only stop it if
-  // this popup was the one that started it.
-  property bool owesDiscoveryStop: false
-
-  onVisibleChanged: {
-    if (visible) {
-      if (adapter && adapter.enabled && !adapter.discovering) {
-        adapter.discovering = true;
-        owesDiscoveryStop = true;
-      }
-    } else if (owesDiscoveryStop && adapter && adapter.discovering) {
-      adapter.discovering = false;
-      owesDiscoveryStop = false;
-    }
-  }
+  // Set by the bar icon that opened this popup (its own position mapped
+  // into the bar window's local space, via mapToItem(null, 0, 0)) so the
+  // popup can line up with it instead of always sitting in a generic
+  // corner. -1 means "not set" (e.g. opened via IPC, not a click) — falls
+  // back to the old fixed near-corner inset in that case. See
+  // SoundMenuWindow.qml for the full cross-window-coordinate reasoning.
+  property point triggerPos: Qt.point(-1, -1)
+  readonly property bool _hasTrigger: triggerPos.x >= 0
+  readonly property real _triggerX: triggerPos.x + Settings.data.bar.floatMargin
+  readonly property real _triggerY: triggerPos.y + Settings.data.bar.floatMargin
 
   visible: false
   color: "transparent"
@@ -177,220 +79,44 @@ PanelWindow {
     onClicked: root.visible = false
   }
 
-  // Soft drop shadow behind the card, same treatment as the bar itself
-  // (shell.qml) — depth against whatever's behind the popup.
-  MultiEffect {
-    anchors.fill: card
-    source: card
-    shadowEnabled: true
-    shadowColor: Qt.rgba(0, 0, 0, 0.55)
-    shadowBlur: 0.7
-    shadowVerticalOffset: 3
-    shadowHorizontalOffset: 0
-  }
-
-  Rectangle {
+  Item {
     id: card
-    anchors.top: !root._barBottom ? parent.top : undefined
-    anchors.bottom: root._barBottom ? parent.bottom : undefined
-    anchors.left: root._barLeft ? parent.left : undefined
-    anchors.right: !root._barLeft ? parent.right : undefined
-    anchors.topMargin: !root._barBottom ? (root._barLeft || root._barRight ? 12 : root._barOffset) : 0
-    anchors.bottomMargin: root._barBottom ? root._barOffset : 0
-    anchors.leftMargin: root._barLeft ? root._barOffset : 0
-    anchors.rightMargin: !root._barLeft ? (root._barRight ? root._barOffset : 12) : 0
+    // Cross-axis position (along the bar's own length): lines up with the
+    // triggering icon when known, clamped on-screen; falls back to the old
+    // fixed near-corner inset otherwise. Main-axis position (the gap
+    // between the bar and the popup) always uses _barOffset, unchanged.
+    readonly property real _crossFallback: 12
+    readonly property real _crossPos: {
+      if (root._barLeft || root._barRight)
+        return root._hasTrigger ? Math.max(8, Math.min(root._triggerY, root.height - card.height - 8)) : _crossFallback;
+      return root._hasTrigger ? Math.max(8, Math.min(root._triggerX, root.width - card.width - 8)) : root.width - card.width - _crossFallback;
+    }
+
+    x: root._barLeft ? root._barOffset : (root._barRight ? root.width - card.width - root._barOffset : card._crossPos)
+    y: root._barBottom ? root.height - card.height - root._barOffset : (root._barLeft || root._barRight ? card._crossPos : root._barOffset)
     width: 320
-    height: Math.min(480, column.implicitHeight + 24)
-    radius: Style.radiusXXS
-    color: Color.mSurface
-    border.color: Color.mOutline
-    border.width: 1
+    height: Math.min(480, content.implicitHeight + 24)
+
+    Chamfer {
+      anchors.fill: parent
+      chamferSize: Tokens.chamferPanel
+      cutTopRight: true
+      cutBottomLeft: true
+      fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
+      strokeColor: Color.outline
+      strokeWidth: Tokens.borderPanel
+    }
 
     MouseArea {
       anchors.fill: parent
       onClicked: {}
     }
 
-    ColumnLayout {
-      id: column
+    BluetoothPanelContent {
+      id: content
       anchors.fill: parent
-      anchors.margins: 12
-      spacing: 8
-
-      RowLayout {
-        Layout.fillWidth: true
-
-        Text {
-          text: "Bluetooth"
-          color: Color.mOnSurface
-          font.family: Settings.data.ui.fontFamily
-          font.pixelSize: 14
-          font.bold: true
-          Layout.fillWidth: true
-        }
-
-        Rectangle {
-          width: 36
-          height: 18
-          radius: Style.radiusXXS
-          color: root.adapter && root.adapter.enabled ? Color.mPrimary : Color.mOutline
-
-          Rectangle {
-            width: 14
-            height: 14
-            radius: 1
-            color: Color.mSurface
-            anchors.verticalCenter: parent.verticalCenter
-            x: (root.adapter && root.adapter.enabled) ? parent.width - width - 2 : 2
-            Behavior on x {
-              NumberAnimation {
-                duration: 120
-              }
-            }
-          }
-
-          MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.toggleBluetooth()
-          }
-        }
-      }
-
-      ColumnLayout {
-        Layout.fillWidth: true
-        visible: !root.adapter || !root.adapter.enabled
-
-        Text {
-          text: root.adapter ? "Bluetooth is off" : "No adapter"
-          color: Color.mOnSurfaceVariant
-          font.family: Settings.data.ui.fontFamily
-          font.pixelSize: 12
-        }
-      }
-
-      ListView {
-        Layout.fillWidth: true
-        Layout.preferredHeight: Math.min(360, contentHeight)
-        clip: true
-        visible: root.adapter && root.adapter.enabled
-        spacing: 2
-
-        model: {
-          var rows = [];
-          if (root.connectedDevices.length > 0)
-            rows.push({
-              "header": "CONNECTED"
-            });
-          for (var i = 0; i < root.connectedDevices.length; i++)
-            rows.push({
-              "device": root.connectedDevices[i]
-            });
-          if (root.knownDevices.length > 0)
-            rows.push({
-              "header": "KNOWN"
-            });
-          for (var j = 0; j < root.knownDevices.length; j++)
-            rows.push({
-              "device": root.knownDevices[j]
-            });
-          if (root.adapter && root.adapter.discovering && root.discoveredDevices.length > 0)
-            rows.push({
-              "header": "NEARBY"
-            });
-          if (root.adapter && root.adapter.discovering)
-            for (var k = 0; k < root.discoveredDevices.length; k++)
-              rows.push({
-                "device": root.discoveredDevices[k]
-              });
-          return rows;
-        }
-
-        delegate: Item {
-          id: rowItem
-          required property var modelData
-          width: ListView.view.width
-          height: modelData.header !== undefined ? 22 : 36
-
-          Text {
-            visible: rowItem.modelData.header !== undefined
-            text: rowItem.modelData.header || ""
-            color: Color.mOnSurfaceVariant
-            font.family: Settings.data.ui.fontFamily
-            font.pixelSize: 10
-            anchors.verticalCenter: parent.verticalCenter
-          }
-
-          RowLayout {
-            visible: rowItem.modelData.device !== undefined
-            anchors.fill: parent
-
-            readonly property var device: rowItem.modelData.device
-            readonly property string pending: device ? Model.pendingAction(root.pendingActions, device.address) : ""
-
-            Text {
-              text: parent.device && parent.device.connected ? "●" : "○"
-              color: parent.device && parent.device.connected ? Color.mPrimary : Color.mOnSurfaceVariant
-              font.family: Settings.data.ui.fontFamily
-              font.pixelSize: 12
-            }
-
-            Text {
-              text: parent.device ? Model.deviceLabel(parent.device) : ""
-              color: Color.mOnSurface
-              font.family: Settings.data.ui.fontFamily
-              font.pixelSize: 13
-              elide: Text.ElideRight
-              Layout.fillWidth: true
-            }
-
-            Text {
-              visible: !!(parent.device && parent.device.batteryAvailable)
-              text: parent.device ? Math.round(parent.device.battery * 100) + "%" : ""
-              color: Color.mOnSurfaceVariant
-              font.family: Settings.data.ui.fontFamily
-              font.pixelSize: 11
-            }
-
-            Text {
-              visible: parent.pending !== ""
-              text: parent.pending + "…"
-              color: Color.mPrimary
-              font.family: Settings.data.ui.fontFamily
-              font.pixelSize: 11
-            }
-
-            Text {
-              visible: !!(parent.pending === "" && parent.device && (parent.device.paired || parent.device.bonded || parent.device.trusted))
-              text: "forget"
-              color: Color.mError
-              font.family: Settings.data.ui.fontFamily
-              font.pixelSize: 11
-              MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.forgetDevice(parent.parent.device)
-              }
-            }
-          }
-
-          MouseArea {
-            visible: rowItem.modelData.device !== undefined
-            anchors.fill: parent
-            z: -1
-            cursorShape: Qt.PointingHandCursor
-            onClicked: {
-              var device = rowItem.modelData.device;
-              if (!device)
-                return;
-              if (device.connected)
-                root.disconnectDevice(device);
-              else
-                root.connectDevice(device);
-            }
-          }
-        }
-      }
+      anchors.margins: 14
+      panelActive: root.visible
     }
   }
 }

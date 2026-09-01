@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Routes a global keybind to whichever screen's own IPC target instance is
+# actually focused, instead of always hitting the screens[0]-gated generic
+# target (confirmed real bug: SUPER+A/SUPER+S always opened the launcher/
+# control center on the first screen, even when triggered from a second
+# monitor). Usage: crux-focused-ipc <target-prefix> <method...>
+# -> resolves to `qs -c crux ipc call <prefix>_<focused-monitor-name> <method...>`
+set -euo pipefail
+
+PREFIX="$1"
+shift
+
+MONITOR="$(hyprctl monitors -j | jq -r '.[] | select(.focused == true) | .name')"
+
+if [ -z "$MONITOR" ]; then
+  # No focused monitor found (shouldn't normally happen) — fall back to the
+  # plain generic target rather than failing silently.
+  exec qs -c crux ipc call "$PREFIX" "$@"
+fi
+
+exec qs -c crux ipc call "${PREFIX}_${MONITOR}" "$@"
