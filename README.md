@@ -54,8 +54,7 @@ qs -c crux
 ```
 
 Point Hyprland's `exec-once` at `qs -c crux` to make it your real login
-shell. `crux-shell-git` is a VCS package — track upstream `HEAD` with
-`yay -S crux-shell-git --devel`.
+shell.
 
 ## Configuration
 
