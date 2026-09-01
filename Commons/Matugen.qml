@@ -28,62 +28,55 @@ Singleton {
   // dominant candidate colors to theme from (see cycleColorIndex below) —
   // it also skips matugen's interactive disambiguation prompt on its own,
   // so no --prefer flag is needed alongside it.
-  // System-wide app retheming (Settings.data.wallpaper.templates.*) —
-  // crux's own equivalent of noctalia's Settings > Color Scheme >
-  // Templates tab. Reuses the SAME output paths noctalia's own templating
-  // already wired into these apps (kitty's current-theme.conf symlink,
-  // gtk.css's @import, yazi's flavor = "noctalia") rather than inventing
-  // new "crux"-named files that would need fresh manual wiring — since
-  // noctalia isn't running any more, crux writing to those same paths is
-  // just as valid an owner of them. Two apps beyond a wallpaper.png
-  // (Hyprland via a .lua template, pywalfox via a pywal-shaped JSON) don't
-  // fit matugen's usual "render text file" model but matugen's templating
-  // is just plain-text substitution, so a .lua/.json file works the same
-  // as any other template.
+  // System-wide app retheming (Settings.data.wallpaper.templates.*).
+  // Every output below is crux-named — Hyprland, kitty, GTK, btop, and
+  // yazi's own config files reference these exact filenames (symlink,
+  // @import, color_theme=, flavor=), so renaming any of these means
+  // updating that consumer too, not just this list.
   readonly property string _templatesDir: Quickshell.shellDir + "/bin/theme-templates/"
   readonly property var _templateDefs: ({
       "hyprland": [
         {
           "input": "hyprland-colors.lua",
-          "output": Quickshell.env("HOME") + "/.config/hypr/noctalia/noctalia-colors.lua"
+          "output": Quickshell.env("HOME") + "/.config/hypr/crux/crux-colors.lua"
         },
         {
           "input": "hyprland-colors.lua",
-          "output": Quickshell.env("HOME") + "/.config/hypr/noctalia.lua"
+          "output": Quickshell.env("HOME") + "/.config/hypr/crux.lua"
         }
       ],
       "kitty": [
         {
           "input": "kitty.conf",
-          "output": Quickshell.env("HOME") + "/.config/kitty/themes/noctalia.conf"
+          "output": Quickshell.env("HOME") + "/.config/kitty/themes/crux.conf"
         }
       ],
       "gtk": [
         {
           "input": "gtk.css",
-          "output": Quickshell.env("HOME") + "/.config/gtk-3.0/noctalia.css"
+          "output": Quickshell.env("HOME") + "/.config/gtk-3.0/crux.css"
         },
         {
           "input": "gtk.css",
-          "output": Quickshell.env("HOME") + "/.config/gtk-4.0/noctalia.css"
+          "output": Quickshell.env("HOME") + "/.config/gtk-4.0/crux.css"
         }
       ],
       "qt": [
         {
           "input": "qt6ct-colors.conf",
-          "output": Quickshell.env("HOME") + "/.config/qt6ct/colors/noctalia.conf"
+          "output": Quickshell.env("HOME") + "/.config/qt6ct/colors/crux.conf"
         }
       ],
       "yazi": [
         {
           "input": "yazi-theme.toml",
-          "output": Quickshell.env("HOME") + "/.config/yazi/flavors/noctalia.yazi/flavor.toml"
+          "output": Quickshell.env("HOME") + "/.config/yazi/flavors/crux.yazi/flavor.toml"
         }
       ],
       "discord": [
         {
           "input": "vesktop.css",
-          "output": Quickshell.env("HOME") + "/.config/vesktop/themes/noctalia.theme.css"
+          "output": Quickshell.env("HOME") + "/.config/vesktop/themes/crux.theme.css"
         }
       ],
       "pywalfox": [
@@ -95,7 +88,7 @@ Singleton {
       "btop": [
         {
           "input": "btop-theme.txt",
-          "output": Quickshell.env("HOME") + "/.config/btop/themes/noctalia.theme"
+          "output": Quickshell.env("HOME") + "/.config/btop/themes/crux.theme"
         }
       ],
       // starship.toml has real user prompt config alongside its palette —
@@ -144,7 +137,7 @@ Singleton {
       // qt6ct only reads whichever file its own color_scheme_path points
       // at — point it at crux's output once (idempotent, cheap to redo on
       // every regen) rather than requiring a one-time manual qt6ct-gui step.
-      cmds.push("sed -i 's|^color_scheme_path=.*|color_scheme_path=" + Quickshell.env("HOME") + "/.config/qt6ct/colors/noctalia.conf|' " + Quickshell.env("HOME") + "/.config/qt6ct/qt6ct.conf");
+      cmds.push("sed -i 's|^color_scheme_path=.*|color_scheme_path=" + Quickshell.env("HOME") + "/.config/qt6ct/colors/crux.conf|' " + Quickshell.env("HOME") + "/.config/qt6ct/qt6ct.conf");
     if (t.starship)
       cmds.push(Quickshell.shellDir + "/bin/crux-splice-starship-palette");
     if (t.sddmGreeter)
@@ -176,10 +169,10 @@ Singleton {
     }
     // mkdir -p first and only write the config/run matugen once that's
     // done — FileView.setText() and matugen's own template output won't
-    // create missing parent directories (yazi's flavors/noctalia.yazi/,
-    // hypr/noctalia/, etc. may not exist yet on a fresh app).
+    // create missing parent directories (yazi's flavors/crux.yazi/,
+    // hypr/crux/, etc. may not exist yet on a fresh app).
     mkdirProc._tomlText = built.toml;
-    mkdirProc.command = ["sh", "-c", "mkdir -p ~/.cache/crux ~/.config/hypr/noctalia ~/.config/kitty/themes ~/.config/qt6ct/colors ~/.config/yazi/flavors/noctalia.yazi ~/.config/vesktop/themes ~/.cache/wal ~/.config/btop/themes"];
+    mkdirProc.command = ["sh", "-c", "mkdir -p ~/.cache/crux ~/.config/hypr/crux ~/.config/kitty/themes ~/.config/qt6ct/colors ~/.config/yazi/flavors/crux.yazi ~/.config/vesktop/themes ~/.cache/wal ~/.config/btop/themes"];
     mkdirProc.running = true;
   }
 
