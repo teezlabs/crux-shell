@@ -25,6 +25,11 @@ history, and a wallpaper-driven Material You theming pipeline that can
 retheme Hyprland, kitty, GTK, Qt, yazi, btop, starship, and Discord to
 match whatever's on screen.
 
+<div align="center">
+<img src=".github/showcase.png" alt="the bar retheming itself across four different wallpapers" width="800">
+<br><sub>same bar, four wallpapers — matugen does the rest</sub>
+</div>
+
 ## Dependencies
 
 > [Hyprland](https://hyprland.org)<br>
