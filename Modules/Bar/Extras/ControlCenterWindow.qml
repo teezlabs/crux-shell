@@ -284,6 +284,12 @@ PanelWindow {
   // ---- Media (real MPRIS, same pattern as MediaPlayerWindow.qml) ----
   readonly property var players: Mpris.players ? Mpris.players.values : []
   readonly property var activePlayer: {
+    var preferred = Settings.isLoaded ? Settings.data.audio.preferredMediaPlayer : "";
+    if (preferred !== "") {
+      for (var j = 0; j < players.length; j++)
+        if (players[j] && players[j].identity === preferred)
+          return players[j];
+    }
     for (var i = 0; i < players.length; i++) {
       if (players[i] && players[i].playbackState === MprisPlaybackState.Playing)
         return players[i];

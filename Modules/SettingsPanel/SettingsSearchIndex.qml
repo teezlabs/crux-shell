@@ -43,6 +43,7 @@ Item {
     { "label": "Volume scroll step", "description": "Volume change per scroll notch / hardware key", "tab": "audio", "subTab": "", "keywords": "step increment" },
     { "label": "Output devices", "description": "Available audio outputs (shown in the sound popup)", "tab": "audio", "subTab": "", "keywords": "sink speaker" },
     { "label": "Input devices", "description": "Available audio inputs", "tab": "audio", "subTab": "", "keywords": "microphone source" },
+    { "label": "Preferred media player", "description": "Which MPRIS player the bar media widget shows when more than one is active", "tab": "audio", "subTab": "", "keywords": "mpris spotify firefox music" },
 
     // ---- Display > Brightness / Night Light ----
     { "label": "Brightness", "description": "Internal backlight control via brightnessctl", "tab": "display", "subTab": "brightness", "keywords": "backlight screen" },

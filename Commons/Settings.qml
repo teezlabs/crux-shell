@@ -207,6 +207,15 @@ Singleton {
 
     property JsonObject audio: JsonObject {
       property real step: 0.05 // volume change per scroll notch / hardware key press
+      // MPRIS player identity ("Spotify", "firefox", ...) to prefer as the
+      // bar/popover's "active" player over the default "whichever is
+      // Playing, else the first one" pick — "" means auto, the old
+      // behavior. Matched against Mpris player.identity in Media.qml,
+      // MediaPlayerWindow.qml, and ControlCenterWindow.qml, which all
+      // independently duplicate the same active-player selection (no
+      // shared singleton for it — keeping this in sync across all three
+      // if that logic ever changes again).
+      property string preferredMediaPlayer: ""
     }
 
     property JsonObject hue: JsonObject {

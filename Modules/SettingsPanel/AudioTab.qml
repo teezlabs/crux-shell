@@ -1,7 +1,9 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Pipewire
+import Quickshell.Services.Mpris
 import qs.Commons
+import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 
 Flickable {
@@ -36,6 +38,8 @@ Flickable {
   PwObjectTracker {
     objects: root.source ? [root.source] : []
   }
+
+  readonly property var mprisPlayers: Mpris.players ? Mpris.players.values : []
 
   ColumnLayout {
     id: col
@@ -209,6 +213,82 @@ Flickable {
         font.family: Tokens.fontFamily
         font.pixelSize: Tokens.bodySmSize
       }
+    }
+  }
+
+  SettingsSection {
+    title: "Media"
+    description: "Which MPRIS player the bar's media widget and popover show, when more than one is active."
+
+    Flow {
+      Layout.fillWidth: true
+      spacing: 4
+
+      Repeater {
+        model: {
+          var list = [{
+              "id": "",
+              "label": "Auto"
+            }];
+          var seen = {};
+          for (var i = 0; i < root.mprisPlayers.length; i++) {
+            var p = root.mprisPlayers[i];
+            if (p && p.identity && !seen[p.identity]) {
+              seen[p.identity] = true;
+              list.push({
+                "id": p.identity,
+                "label": p.identity
+              });
+            }
+          }
+          return list;
+        }
+
+        delegate: Item {
+          id: playerPill
+          required property var modelData
+          readonly property bool selected: Settings.data.audio.preferredMediaPlayer === modelData.id
+          width: playerLabel.implicitWidth + 20
+          height: 26
+
+          Chamfer {
+            anchors.fill: parent
+            chamferSize: Tokens.chamferIcon
+            cutTopRight: true
+            cutBottomLeft: true
+            fillColor: playerPill.selected ? Color.primaryContainer : Color.surfaceContainer
+            strokeColor: playerPill.selected ? Color.primary : Color.outline
+            strokeWidth: Tokens.borderModule
+          }
+
+          Text {
+            id: playerLabel
+            anchors.centerIn: parent
+            text: playerPill.modelData.label
+            color: playerPill.selected ? Color.primaryContainerText : Color.surfaceText
+            font.family: Tokens.fontFamily
+            font.pixelSize: Tokens.labelXsSize
+            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          }
+
+          HoverHandler {
+            cursorShape: Qt.PointingHandCursor
+          }
+          TapHandler {
+            onTapped: Settings.data.audio.preferredMediaPlayer = playerPill.modelData.id
+          }
+        }
+      }
+    }
+
+    Text {
+      visible: root.mprisPlayers.length === 0
+      text: "No MPRIS players currently detected — open one to pick it here."
+      color: Color.labelText
+      font.family: Tokens.fontFamily
+      font.pixelSize: Tokens.bodySmSize
+      wrapMode: Text.WordWrap
+      Layout.fillWidth: true
     }
   }
   }

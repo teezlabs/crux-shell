@@ -98,9 +98,18 @@ against noctalia this pass):
    pill grouping on top would fight the app's own established identity, not
    extend it. Skip unless a future request explicitly wants rounded
    grouping as a real design change, not a checkbox-parity copy.
-4. **Audio** — still just Volume/Output/Input devices (confirmed current
-   `AudioTab.qml` state). Media (player integration prefs) and Visualizer
-   (waveform/spectrum) subtabs not built.
+4. **Audio** — Media preference now built (2026-08-31): a "Preferred media
+   player" pill picker in `AudioTab.qml`, backed by a new
+   `audio.preferredMediaPlayer` setting matched against real MPRIS
+   `player.identity` values — wired into all three places that
+   independently duplicate the "pick the active player" logic
+   (`Media.qml`, `MediaPlayerWindow.qml`, `ControlCenterWindow.qml`), so
+   the bar widget, its popover, and Control Center all agree on the same
+   player. **Visualizer (waveform/spectrum) deliberately not built** — real
+   audio-reactive rendering needs a PipeWire monitor-stream capture + FFT
+   pipeline, a genuinely new subsystem rather than exposing something
+   already hardcoded; roadmap itself flagged this as cosmetic/optional,
+   so left as a real future project, not squeezed into this pass.
 5. **Wallpaper** — done, and was already done when this doc first flagged
    it open (stale entry, corrected 2026-08-31 after actually reading
    `WallpaperTab.qml`/`WallpaperBrowserWindow.qml` instead of trusting the
