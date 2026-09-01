@@ -35,7 +35,7 @@ Item {
 
   Process {
     id: fetchProc
-    command: [root._binDir + "omarchy-agent-usage-claude", "--limits-only"]
+    command: [root._binDir + "crux-agent-usage-claude", "--limits-only"]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: {

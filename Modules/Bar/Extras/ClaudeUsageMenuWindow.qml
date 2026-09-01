@@ -6,7 +6,7 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Claude usage popup. Data from Omarchy's omarchy-agent-usage-claude collector (verbatim); UI rebuilt on crux's own primitives.
+// Claude usage popup. Data from crux-agent-usage-claude.
 PanelWindow {
   id: root
 
@@ -64,7 +64,7 @@ PanelWindow {
 
   Process {
     id: fetchProc
-    command: [root._binDir + "omarchy-agent-usage-claude", "--limits-only"]
+    command: [root._binDir + "crux-agent-usage-claude", "--limits-only"]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: {

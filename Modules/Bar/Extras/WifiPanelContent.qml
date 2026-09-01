@@ -86,7 +86,7 @@ ColumnLayout {
 
   Process {
     id: detailsProc
-    command: [root._binDir + "omarchy-network-status", "--verbose"]
+    command: [root._binDir + "crux-network-status", "--verbose"]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: root.updateDetails(text)

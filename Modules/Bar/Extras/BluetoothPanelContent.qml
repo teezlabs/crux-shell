@@ -51,7 +51,7 @@ ColumnLayout {
   }
 
   function deviceCommand(action, address) {
-    return [root._binDir + "omarchy-bluetooth-device", action, address];
+    return [root._binDir + "crux-bluetooth-device", action, address];
   }
 
   function connectDevice(device) {
@@ -106,7 +106,7 @@ ColumnLayout {
   function toggleBluetooth() {
     if (!adapter)
       return;
-    Quickshell.execDetached([root._binDir + "omarchy-bluetooth-power", adapter.enabled ? "off" : "on"]);
+    Quickshell.execDetached([root._binDir + "crux-bluetooth-power", adapter.enabled ? "off" : "on"]);
   }
 
   // Discovery is a BlueZ session other clients may also hold; only stop it if

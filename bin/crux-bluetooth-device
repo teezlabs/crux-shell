@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# omarchy:summary=Control a Bluetooth device
-# omarchy:group=bluetooth
-# omarchy:args=[pair|connect|disconnect|forget] <address>
-# omarchy:examples=omarchy bluetooth device connect 00:11:22:33:44:55
+# Control a Bluetooth device: pair, connect, disconnect, or forget.
 
 set -e
 
+# Resolved by location, not $PATH — see crux-network-status for why.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 usage() {
-  echo "Usage: omarchy-bluetooth-device [pair|connect|disconnect|forget] <address>" >&2
+  echo "Usage: crux-bluetooth-device [pair|connect|disconnect|forget] <address>" >&2
   exit 1
 }
 
@@ -22,7 +22,7 @@ power_on() {
   [[ $(timeout 2s bluetoothctl show 2>/dev/null) == *"Powered: yes"* ]] && return
   # Not bluetoothctl directly: Bluetooth is turned off by an rfkill soft block,
   # and BlueZ refuses to power an adapter up while one is set.
-  omarchy-bluetooth-power on || true
+  "$SCRIPT_DIR/crux-bluetooth-power" on || true
 }
 
 trust_device() {
