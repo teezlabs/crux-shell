@@ -109,7 +109,7 @@ ColumnLayout {
 
   Process {
     id: dnsProc
-    command: ["omarchy-dns"]
+    command: ["crux-dns"]
     stdout: StdioCollector {
       id: dnsCollector
       waitForEnd: true
@@ -130,14 +130,13 @@ ColumnLayout {
       return;
     if (provider === "Custom") {
       // Custom takes an arbitrary server list on stdin and can't be
-      // pre-authorized by sudoers, so — same as Omarchy's own panel — it
-      // runs in a real terminal that can prompt for both the servers and,
-      // if needed, a sudo password.
-      Quickshell.execDetached(["kitty", "--", "bash", "-c", "omarchy-dns Custom; read -p 'Press enter to close...'"]);
+      // pre-authorized by sudoers, so it runs in a real terminal that can
+      // prompt for both the servers and, if needed, a sudo password.
+      Quickshell.execDetached(["kitty", "--", "bash", "-c", "crux-dns Custom; read -p 'Press enter to close...'"]);
       root.requestClose();
       return;
     }
-    dnsActionProc.command = ["omarchy-dns", provider];
+    dnsActionProc.command = ["crux-dns", provider];
     dnsActionProc.running = true;
   }
 
