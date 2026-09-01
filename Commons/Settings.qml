@@ -85,11 +85,32 @@ Singleton {
       property bool showBackground: false
       property real barBackgroundOpacity: 0.85
 
-      // Per-section widget lists: [{ "id": "Clock" }, ...]. Order = render order.
+      // Per-section widget lists: [{ "id": "Clock" }, ...]. Order = render
+      // order. Defaults give a fresh install (no settings.json yet) an
+      // actual populated bar instead of a bare strip — confirmed real bug:
+      // these were empty arrays, so a genuinely new install (the AUR
+      // package, a second machine, anyone without a hand-tuned settings
+      // file already) booted to a bar with nothing on it at all.
       property JsonObject widgets: JsonObject {
-        property list<var> left: []
-        property list<var> center: []
-        property list<var> right: []
+        property list<var> left: [{
+            "id": "ControlCenter"
+          }, {
+            "id": "Launcher"
+          }, {
+            "id": "Workspaces"
+          }]
+        property list<var> center: [{
+            "id": "Clock"
+          }]
+        property list<var> right: [{
+            "id": "Tray"
+          }, {
+            "id": "StatusGroup"
+          }, {
+            "id": "Settings"
+          }, {
+            "id": "PowerButton"
+          }]
       }
 
       // Per-monitor overrides: [{ "name": "DP-1", "enabled": true, "position": "left", "widgets": {...} }]
