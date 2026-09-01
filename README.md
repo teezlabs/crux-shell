@@ -40,7 +40,7 @@ match whatever's on screen.
 ## Install
 
 ```
-git clone <this repo> ~/.config/quickshell/crux
+git clone https://github.com/teezlabs/crux-shell ~/.config/quickshell/crux
 qs -c crux
 ```
 
