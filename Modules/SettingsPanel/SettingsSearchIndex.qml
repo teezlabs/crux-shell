@@ -17,6 +17,8 @@ Item {
     { "label": "Keybinds", "description": "Edit ~/.config/hypr/keybinds.lua, then hyprctl reload", "tab": "general", "subTab": "keybinds", "keywords": "shortcuts keys hyprland" },
     { "label": "Monospaced font", "description": "Font used by the keybinds viewer and hook command fields", "tab": "general", "subTab": "basics", "keywords": "font mono code" },
     { "label": "Reverse scrolling", "description": "Natural scroll direction, applied live via hyprctl", "tab": "general", "subTab": "basics", "keywords": "natural scroll direction touchpad mouse" },
+    { "label": "Bar clock time format", "description": "Qt date/time format for the bar's Clock widget", "tab": "general", "subTab": "basics", "keywords": "region locale 24 hour 12 hour clock" },
+    { "label": "Bar clock date format", "description": "Qt date/time format for the bar's Clock widget", "tab": "general", "subTab": "basics", "keywords": "region locale date" },
 
     // ---- Bar > Layout / Widgets ----
     { "label": "Bar position", "description": "Which screen edge the bar sits on", "tab": "bar", "subTab": "layout", "keywords": "top bottom left right edge" },

@@ -127,6 +127,91 @@ Flickable {
   }
 
   SettingsSection {
+    title: "Region"
+    description: "Date/time format shown by the bar's Clock widget (a separate pair from the lock screen's own, under Lock Screen → Appearance)."
+
+    SettingRow {
+      label: "Time format"
+
+      Item {
+        Layout.preferredWidth: 160
+        height: 28
+
+        Chamfer {
+          anchors.fill: parent
+          chamferSize: Tokens.chamferIcon
+          cutTopRight: true
+          cutBottomLeft: true
+          fillColor: Color.surface
+          strokeColor: barClockInput.activeFocus ? Color.primary : Color.outline
+          strokeWidth: Tokens.borderModule
+        }
+
+        TextInput {
+          id: barClockInput
+          anchors.fill: parent
+          anchors.leftMargin: 8
+          anchors.rightMargin: 8
+          verticalAlignment: Text.AlignVCenter
+          text: Settings.data.ui.clockFormat
+          color: Color.surfaceText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.bodySmSize
+          selectByMouse: true
+          onEditingFinished: Settings.data.ui.clockFormat = text
+        }
+      }
+
+      Text {
+        text: "Qt date/time format, e.g. HH:mm or h:mm AP"
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.captionSize
+      }
+    }
+
+    SettingRow {
+      label: "Date format"
+
+      Item {
+        Layout.preferredWidth: 160
+        height: 28
+
+        Chamfer {
+          anchors.fill: parent
+          chamferSize: Tokens.chamferIcon
+          cutTopRight: true
+          cutBottomLeft: true
+          fillColor: Color.surface
+          strokeColor: barDateInput.activeFocus ? Color.primary : Color.outline
+          strokeWidth: Tokens.borderModule
+        }
+
+        TextInput {
+          id: barDateInput
+          anchors.fill: parent
+          anchors.leftMargin: 8
+          anchors.rightMargin: 8
+          verticalAlignment: Text.AlignVCenter
+          text: Settings.data.ui.dateFormat
+          color: Color.surfaceText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.bodySmSize
+          selectByMouse: true
+          onEditingFinished: Settings.data.ui.dateFormat = text
+        }
+      }
+
+      Text {
+        text: "Shown uppercased, e.g. WED 25 AUG"
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.captionSize
+      }
+    }
+  }
+
+  SettingsSection {
     title: "Input"
     description: "Applied live via hyprctl — takes effect immediately, no reload needed."
 

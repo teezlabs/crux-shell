@@ -196,6 +196,12 @@ Singleton {
     }
 
     property JsonObject ui: JsonObject {
+      // Bar clock format — a separate pair from lockScreen.clockFormat/
+      // dateFormat below; the bar and lock screen are different surfaces
+      // with their own space constraints, same reasoning that pair was
+      // never shared with anything else either.
+      property string clockFormat: "HH:mm"
+      property string dateFormat: "ddd dd MMM"
       property string fontFamily: "Departure Mono"
       // Used only where code/commands are actually displayed (keybinds
       // viewer, hook command fields) — everything else stays on the one

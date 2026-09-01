@@ -174,8 +174,15 @@ against noctalia this pass):
   happening; don't resurrect this without being asked again.
 - **Location** — still not built; bundle into Night-Light work if that ever
   needs real sunrise/sunset timing rather than building standalone.
-- **Region** (date/locale formatting, per-panel clock format) — still not
-  built; low urgency polish.
+- **Region** (date/locale formatting, per-panel clock format) — done
+  (2026-08-31). New `ui.clockFormat`/`ui.dateFormat` (defaults matching
+  the bar's previous hardcoded "HH:mm"/"ddd dd MMM") in a new "Region"
+  section under General → Basics, same raw-Qt-format-string TextInput
+  pattern `lockScreen.clockFormat`/`dateFormat` already used — a separate
+  pair, not shared, since the bar and lock screen are different surfaces
+  with their own space constraints. The vertical-bar stacked HH/mm/dd-MM
+  layout stays hardcoded — a structural layout choice, not a free-form
+  format string, not worth over-engineering for a niche case.
 
 ---
 

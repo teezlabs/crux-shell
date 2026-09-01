@@ -51,7 +51,7 @@ Item {
       spacing: 8
 
       Text {
-        text: Qt.formatDateTime(root.now, "ddd dd MMM").toUpperCase()
+        text: Qt.formatDateTime(root.now, Settings.data.ui.dateFormat).toUpperCase()
         color: Color.labelText
         font.family: Tokens.fontFamily
         font.pixelSize: Tokens.captionSize
@@ -65,7 +65,7 @@ Item {
       }
 
       Text {
-        text: Qt.formatDateTime(root.now, "HH:mm")
+        text: Qt.formatDateTime(root.now, Settings.data.ui.clockFormat)
         color: Color.surfaceText
         font.family: Tokens.fontFamily
         font.pixelSize: Tokens.bodySize
