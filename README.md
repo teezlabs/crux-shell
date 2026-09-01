@@ -4,7 +4,7 @@
 
 <img src=".github/screenshot.png" alt="crux running on a vertical bar" width="800">
 
-<h4>Built from scratch. No forked UI kit, no plugin marketplace, no telemetry.</h4>
+<h4>My own Hyprland shell, written from scratch instead of forking one.</h4>
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/teezlabs/crux-shell?style=for-the-badge&logo=github&color=pink)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/teezlabs/crux-shell?style=for-the-badge&logo=github&color=lightgreen) <br>
@@ -21,21 +21,19 @@
 ## What it does
 
 Bar, lock screen, notifications, OSD, Control Center, launcher, clipboard
-history, and a wallpaper-driven Material You theming pipeline that can
-retheme Hyprland, kitty, GTK, Qt, yazi, btop, starship, and Discord to
-match whatever's on screen.
+history. Pick a wallpaper and it'll pull colors out of it and push them
+into Hyprland, kitty, GTK, Qt, yazi, btop, starship, and Discord.
 
 ## Dependencies
 
-> [Hyprland](https://hyprland.org)<br>
-> [Quickshell](https://quickshell.org)<br>
-> `matugen`, `brightnessctl`, `wlsunset`, `cliphist`, `wl-clipboard`,
-> `playerctl`, `networkmanager`, `bluez`
+[Hyprland](https://hyprland.org), [Quickshell](https://quickshell.org),
+and `matugen`, `brightnessctl`, `wlsunset`, `cliphist`, `wl-clipboard`,
+`playerctl`, `networkmanager`, `bluez`.
 
 ## Plugins
 
-> Local-folder only — drop a `manifest.json` + `Widget.qml` in
-> `~/.config/crux/plugins/<name>/`. No marketplace, no network.
+Drop a `manifest.json` + `Widget.qml` in `~/.config/crux/plugins/<name>/`.
+That's it, no marketplace.
 
 ## Install
 
