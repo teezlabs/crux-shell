@@ -96,7 +96,8 @@ PanelWindow {
         var lines = text.split("\n").filter(function (l) {
           return l.length > 0;
         });
-        root.entries = lines.map(function (line) {
+        var limit = Settings.isLoaded ? Settings.data.clipboard.historyLimit : 50;
+        root.entries = lines.slice(0, limit).map(function (line) {
           var tab = line.indexOf("\t");
           var id = tab > -1 ? line.slice(0, tab) : line;
           var preview = tab > -1 ? line.slice(tab + 1) : "";

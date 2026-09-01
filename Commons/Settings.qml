@@ -205,6 +205,20 @@ Singleton {
       property real fontScale: 1.0 // multiplies every Style.fontSize* token
     }
 
+    property JsonObject launcher: JsonObject {
+      property bool fuzzyMatch: false // false = the original plain substring filter
+      property int resultLimit: 30
+      // Typing this at the start of the query switches to "run this exact
+      // shell command" mode instead of searching apps — LauncherWindow.qml
+      // had a comment saying it was "apps-only today (no run/windows/calc
+      // modes yet)"; this is that run mode. Empty string disables it.
+      property string execPrefix: ">"
+    }
+
+    property JsonObject clipboard: JsonObject {
+      property int historyLimit: 50 // entries shown/kept in the popup, sliced client-side from cliphist's own list
+    }
+
     property JsonObject audio: JsonObject {
       property real step: 0.05 // volume change per scroll notch / hardware key press
       // MPRIS player identity ("Spotify", "firefox", ...) to prefer as the

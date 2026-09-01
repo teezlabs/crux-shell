@@ -94,6 +94,10 @@ PanelWindow {
       "label": "Control Center"
     },
     {
+      "id": "launcher",
+      "label": "Launcher"
+    },
+    {
       "id": "desktopWidgets",
       "label": "Desktop Widgets"
     },
@@ -596,6 +600,11 @@ PanelWindow {
           ControlCenterTab {
             anchors.fill: parent
             visible: root.activeTab === "controlCenter"
+          }
+
+          LauncherTab {
+            anchors.fill: parent
+            visible: root.activeTab === "launcher"
           }
 
           DesktopWidgetsTab {

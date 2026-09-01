@@ -29,10 +29,27 @@ PanelWindow {
     });
   }
 
+  readonly property string _execPrefix: Settings.isLoaded ? Settings.data.launcher.execPrefix : ""
+  readonly property bool execMode: root._execPrefix !== "" && query.indexOf(root._execPrefix) === 0
+  readonly property string execCommand: root.execMode ? query.slice(root._execPrefix.length) : ""
+  readonly property int _resultLimit: Settings.isLoaded ? Settings.data.launcher.resultLimit : 30
+
   readonly property var results: {
+    if (root.execMode)
+      return [];
     var q = query.trim().toLowerCase();
     var list = allApps;
     if (q !== "") {
+      if (Settings.isLoaded && Settings.data.launcher.fuzzyMatch) {
+        var hits = FuzzySort.go(query, allApps, {
+                                   "keys": ["name", "genericName", "comment"],
+                                   "limit": root._resultLimit
+                                 });
+        list = [];
+        for (var h = 0; h < hits.length; h++)
+          list.push(hits[h].obj);
+        return list;
+      }
       list = allApps.filter(function (a) {
         var name = (a.name || "").toLowerCase();
         var generic = (a.genericName || "").toLowerCase();
@@ -53,7 +70,15 @@ PanelWindow {
         return (a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase());
       });
     }
-    return list.slice(0, 30);
+    return list.slice(0, root._resultLimit);
+  }
+
+  function runExecCommand() {
+    if (root.execCommand.trim() === "")
+      return;
+    Quickshell.execDetached(["sh", "-c", root.execCommand]);
+    root.visible = false;
+    root.query = "";
   }
 
   onQueryChanged: selectedIndex = 0
@@ -262,13 +287,13 @@ PanelWindow {
 
             Keys.onDownPressed: root.selectedIndex = Math.min(root.results.length - 1, root.selectedIndex + 1)
             Keys.onUpPressed: root.selectedIndex = Math.max(0, root.selectedIndex - 1)
-            Keys.onReturnPressed: root.launch(root.results[root.selectedIndex])
+            Keys.onReturnPressed: root.execMode ? root.runExecCommand() : root.launch(root.results[root.selectedIndex])
           }
         }
 
         Text {
-          text: String(root.results.length).padStart(2, "0") + " MATCHES"
-          color: Color.labelText
+          text: root.execMode ? "RUN" : String(root.results.length).padStart(2, "0") + " MATCHES"
+          color: root.execMode ? Color.primary : Color.labelText
           font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
@@ -281,12 +306,32 @@ PanelWindow {
         color: Color.surfaceContainerHigh
       }
 
+      // ---- Exec mode hint (shown instead of the results list) ----
+      Item {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        visible: root.execMode
+
+        Text {
+          anchors.left: parent.left
+          anchors.top: parent.top
+          anchors.margins: 18
+          text: root.execCommand.trim() === "" ? "Type a command to run…" : "⏎  sh -c \"" + root.execCommand + "\""
+          color: root.execCommand.trim() === "" ? Color.labelText : Color.surfaceText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.bodySize
+          wrapMode: Text.WordWrap
+          width: parent.width - 36
+        }
+      }
+
       // ---- Results ----
       ListView {
         id: list
         Layout.fillWidth: true
         Layout.fillHeight: true
         clip: true
+        visible: !root.execMode
         model: root.results
         currentIndex: root.selectedIndex
 

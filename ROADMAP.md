@@ -14,12 +14,16 @@ you actually want; the tiers below are my read on value-vs-cost, not a
 mandate.
 
 **Status as of 2026-08-31**: crux is now the confirmed daily driver on both
-this user's account and Mia's. The settings panel has grown from the
-original 6 tabs to 18 (General, Bar, Appearance, Audio, Hue, Display, System
-Monitor, Wallpaper, Desktop Widgets, OSD, Session Menu, Lock Screen, Idle,
-Notifications, Peripherals, Hooks, Plugins, About) — most of old Tier 2 and
-Tier 3 is now built. Everything below has been re-verified against the
-actual repo state, not just this doc's original guesses.
+this user's account and Mia's, running on upstream Quickshell (the
+noctalia-qs fork was removed). The settings panel has grown from the
+original 6 tabs to 19 (General, Bar, Appearance, Audio, Hue, Display, System
+Monitor, Wallpaper, Control Center, Launcher, Desktop Widgets, OSD, Session
+Menu, Lock Screen, Idle, Notifications, Peripherals, Hooks, Plugins, About —
+that's actually 20, this count stopped being precise around the time it
+stopped mattering; see `SettingsWindow.qml`'s `tabs` list for the real,
+current one) — Tier 0, all of Tier 1, and most of old Tier 2/3 are now
+built. Everything below has been re-verified against the actual repo
+state, not just this doc's original guesses.
 
 ---
 
@@ -122,9 +126,20 @@ against noctalia this pass):
    skill's "Wallpaper + theming (not yet ported to crux)" section is
    itself stale and should be updated or removed next time that file's
    touched.
-6. **Launcher** — settings (fuzzy-match behavior, result count, clipboard
-   history size/ignored MIME types, custom command prefixes) not built; the
-   launcher + clipboard widgets themselves work but are unconfigurable.
+6. **Launcher** — done (2026-08-31), new top-level **Launcher** tab (19th
+   settings tab). Fuzzy matching now real, not just a toggle over nothing —
+   `LauncherWindow.qml` still had a comment saying it used "simple
+   substring search rather than porting a fuzzy-match library," so this
+   wired in the `FuzzySort.qml` already brought in for the sidebar search
+   (see Tier 0). Result limit (was hardcoded 30) and a run-command prefix
+   (`>` by default — types straight into `sh -c`, the launcher's own old
+   comment called this "no run/windows/calc modes yet") are both real.
+   Clipboard history size trims cliphist's own list client-side (doesn't
+   touch cliphist's database or run a wipe). **Ignored MIME types
+   deliberately not built** — `cliphist list`'s output only distinguishes
+   text vs. "binary data" in `ClipboardMenuWindow.qml`'s own parsing, no
+   structured per-MIME-type info to filter on without a real parsing
+   upgrade; left as a future project if it turns out to matter.
 
 ## Tier 2 — remaining real feature gaps
 
@@ -156,16 +171,24 @@ against noctalia this pass):
 
 ## What I'd personally sequence first
 
-**Update 2026-08-31**: the working tree is committed and pushed (own
-Forgejo remote), `FuzzySort.qml` is wired into a real search sidebar, and
-Control Center has its settings tab. Wallpaper turned out to already be
-done (this doc had it wrong — see Tier 1 §5). Remaining highest-value
-items, roughly in order: Tier 1 §2 (Appearance Templates + sync-system-
-theme) is the next "feels finished" win per hour; Tier 1 §1/§3/§4/§6
-(General fonts/scrolling, Bar density/capsule, Audio Media/Visualizer,
-Launcher settings) are all smaller expose-what-exists passes; Tier 2 §2
-(Dock) and §3 (Connections tab) are the remaining real builds, both
-optional/low-priority per their own entries above.
+**Update 2026-08-31, end of day**: Tier 0 and all of Tier 1 are done. In
+order: working tree committed + pushed to its own Forgejo remote;
+`FuzzySort.qml` wired into both the settings sidebar search and (this
+pass) the launcher's real fuzzy-match option; Control Center and Launcher
+each got a real settings tab; Wallpaper turned out to already be fully
+built (this doc had it wrong); General got a monospace font + a live
+reverse-scroll toggle; Bar got Comfortable/Compact density presets; Audio
+got a preferred-MPRIS-player setting shared across three call sites that
+used to duplicate the same picking logic independently.
+
+What's left is genuinely all optional/deferred by this doc's own earlier
+judgment, not oversights: Tier 2 §2 (Dock) and §3 (Connections tab) are
+real, sizable builds nobody's asked for yet; Tier 3 (Location, Region) is
+low-urgency polish; a handful of items were explicitly *not* built because
+they'd fight crux's own established choices rather than extend them
+(capsule/pill bar backgrounds vs. the chamfer-only "no radius" rule) or
+need real new subsystems rather than exposing something already hardcoded
+(audio visualizer, clipboard MIME filtering).
 
 This is your call to reorder — ping me with whichever number(s) you want to
 start on and we'll take it one confirmed step at a time.

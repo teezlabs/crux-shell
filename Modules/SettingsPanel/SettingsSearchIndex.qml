@@ -75,6 +75,12 @@ Item {
     { "label": "Control Center refresh interval", "description": "How often the CPU/MEM/TEMP/DISK gauges refresh", "tab": "controlCenter", "subTab": "", "keywords": "stats gauges cpu mem temp disk" },
     { "label": "Screenshot command", "description": "Command run by the CAPTURE action tile", "tab": "controlCenter", "subTab": "", "keywords": "capture rishot screenshot" },
 
+    // ---- Launcher ----
+    { "label": "Fuzzy matching", "description": "Fuzzy vs plain substring app search", "tab": "launcher", "subTab": "", "keywords": "launcher apps search fuzzysort" },
+    { "label": "Launcher result limit", "description": "Max apps shown in the launcher", "tab": "launcher", "subTab": "", "keywords": "launcher results count" },
+    { "label": "Run-command prefix", "description": "Prefix that runs the rest of the query as a shell command", "tab": "launcher", "subTab": "", "keywords": "launcher exec shell command run" },
+    { "label": "Clipboard history size", "description": "How many cliphist entries are shown/kept in the popup", "tab": "launcher", "subTab": "", "keywords": "clipboard cliphist history" },
+
     // ---- Wallpaper ----
     { "label": "Wallpaper directory", "description": "Where the wallpaper picker looks for images", "tab": "wallpaper", "subTab": "", "keywords": "folder images" },
     { "label": "Auto-theme", "description": "Regenerate theme colors from the wallpaper on pick", "tab": "wallpaper", "subTab": "", "keywords": "matugen colors" },
