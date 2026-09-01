@@ -149,6 +149,8 @@ Singleton {
       cmds.push(Quickshell.shellDir + "/bin/crux-splice-starship-palette");
     if (t.sddmGreeter)
       cmds.push(Quickshell.shellDir + "/bin/crux-sync-greeter");
+    if (t.gsettings)
+      cmds.push("gsettings set org.gnome.desktop.interface color-scheme prefer-dark");
     if (cmds.length === 0)
       return;
     postHookProc.command = ["sh", "-c", cmds.join(" ; ")];

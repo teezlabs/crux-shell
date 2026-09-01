@@ -76,6 +76,7 @@ Item {
     { "label": "Auto-theme", "description": "Regenerate theme colors from the wallpaper on pick", "tab": "wallpaper", "subTab": "", "keywords": "matugen colors" },
     { "label": "Theme generation", "description": "Matugen scheme and source-color index", "tab": "wallpaper", "subTab": "", "keywords": "matugen scheme color index" },
     { "label": "System templates", "description": "Write theme colors into app configs (kitty, GTK, Qt, yazi, ...)", "tab": "wallpaper", "subTab": "", "keywords": "kitty gtk qt yazi discord pywalfox btop starship hyprland" },
+    { "label": "Sync system theme (gsettings)", "description": "Sets color-scheme prefer-dark so GTK4/libadwaita apps render dark", "tab": "wallpaper", "subTab": "", "keywords": "gnome gtk dark mode adwaita" },
 
     // ---- Desktop Widgets ----
     { "label": "Desktop widgets", "description": "Weather and now-playing cards pinned to the desktop", "tab": "desktopWidgets", "subTab": "", "keywords": "desktop cards" },

@@ -176,6 +176,13 @@ Singleton {
         // Syncs /usr/share/sddm/themes/crux's background + colors to
         // whatever's actually live — see bin/crux-sync-greeter.
         property bool sddmGreeter: false
+        // `gsettings set org.gnome.desktop.interface color-scheme
+        // prefer-dark` — the one gsettings key that actually matters here,
+        // since crux ships no full GTK theme package to point gtk-theme
+        // at; this is what libadwaita/GTK4 apps check to render dark
+        // chrome instead of light, independent of the gtk.css @import
+        // above (older GTK3 apps that don't read color-scheme).
+        property bool gsettings: false
       }
     }
 

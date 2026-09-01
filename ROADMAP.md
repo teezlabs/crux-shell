@@ -73,9 +73,16 @@ against noctalia this pass):
 1. **General** — font pickers (default vs monospaced, independent size
    sliders), reverse-scrolling toggle, smooth-scrolling toggle likely still
    missing from `GeneralBasicsSubTab.qml`.
-2. **Appearance / ColorScheme** — Templates subtab (matugen-style per-app
-   config generation: kitty, GTK, etc.) and "sync system theme to gsettings"
-   still not built.
+2. **Appearance / ColorScheme** — done (2026-08-31). The "Templates" piece
+   was already done, just living under the Wallpaper tab instead of
+   Appearance/Colors: `WallpaperTab.qml`'s "System templates" section
+   generates config for 10 apps (Hyprland, Kitty, GTK, Qt, Yazi, Discord,
+   Pywalfox, btop, Starship, SDDM greeter) via `bin/theme-templates/`. The
+   one genuinely missing piece — gsettings sync — is now built too: a
+   new `templates.gsettings` toggle runs `gsettings set
+   org.gnome.desktop.interface color-scheme prefer-dark` on regenerate,
+   so GTK4/libadwaita apps render dark chrome even though crux ships no
+   full GTK theme package for `gtk-theme` itself to point at.
 3. **Bar** — density (comfortable/compact) and capsule/pill background
    options per widget-group not confirmed present in `BarLayoutSubTab.qml`.
 4. **Audio** — still just Volume/Output/Input devices (confirmed current

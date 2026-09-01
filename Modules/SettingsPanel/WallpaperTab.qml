@@ -619,6 +619,10 @@ Flickable {
             {
               "key": "sddmGreeter",
               "label": "SDDM greeter"
+            },
+            {
+              "key": "gsettings",
+              "label": "gsettings (dark mode)"
             }
           ]
 
