@@ -178,7 +178,7 @@ Flickable {
         NSlider {
           Layout.preferredWidth: 200
           from: 24
-          to: 56
+          to: 80
           stepSize: 1
           value: Settings.data.bar.thickness
           onMoved: value => Settings.data.bar.thickness = Math.round(value)
