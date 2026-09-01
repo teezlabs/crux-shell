@@ -219,6 +219,13 @@ Singleton {
       property int warnThreshold: 85 // % — CPU or RAM at/above this turns the readout mError-colored
     }
 
+    property JsonObject controlCenter: JsonObject {
+      property bool showWeather: true
+      property string tempUnit: "fahrenheit" // "fahrenheit" | "celsius" — passed straight to open-meteo
+      property int statsRefreshInterval: 2000 // ms between CPU/MEM/TEMP/DISK reads
+      property string screenshotCommand: "rishot" // run (via sh -c) by the CAPTURE action tile
+    }
+
     // Semantic color tokens, Material-You-ish naming to match noctalia's
     // Commons/Color.qml convention (the "m" prefix avoids QML reading
     // e.g. "onPrimary" as a signal handler name). Defaults are exactly

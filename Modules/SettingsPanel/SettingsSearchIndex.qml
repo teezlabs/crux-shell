@@ -65,6 +65,12 @@ Item {
     { "label": "Lock key indicators", "description": "Show Caps/Num/Scroll Lock indicators, hide when off", "tab": "peripherals", "subTab": "", "keywords": "capslock numlock scrolllock" },
     { "label": "VPN connections", "description": "Configured NetworkManager VPN profiles", "tab": "peripherals", "subTab": "", "keywords": "vpn wireguard nmcli" },
 
+    // ---- Control Center ----
+    { "label": "Show weather card", "description": "Toggle the forecast card in the Control Center popup", "tab": "controlCenter", "subTab": "", "keywords": "forecast weather" },
+    { "label": "Temperature unit", "description": "Fahrenheit or Celsius for the weather card", "tab": "controlCenter", "subTab": "", "keywords": "fahrenheit celsius degrees" },
+    { "label": "Control Center refresh interval", "description": "How often the CPU/MEM/TEMP/DISK gauges refresh", "tab": "controlCenter", "subTab": "", "keywords": "stats gauges cpu mem temp disk" },
+    { "label": "Screenshot command", "description": "Command run by the CAPTURE action tile", "tab": "controlCenter", "subTab": "", "keywords": "capture rishot screenshot" },
+
     // ---- Wallpaper ----
     { "label": "Wallpaper directory", "description": "Where the wallpaper picker looks for images", "tab": "wallpaper", "subTab": "", "keywords": "folder images" },
     { "label": "Auto-theme", "description": "Regenerate theme colors from the wallpaper on pick", "tab": "wallpaper", "subTab": "", "keywords": "matugen colors" },

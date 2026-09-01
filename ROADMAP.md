@@ -90,9 +90,15 @@ against noctalia this pass):
 
 ## Tier 2 — remaining real feature gaps
 
-1. **Control Center** — `ControlCenter.qml` widget + `ControlCenterWindow.qml`
-   popup exist and work, but there's **no settings tab for it** in the
-   18-tab list. Whatever's configurable about it today is hardcoded.
+1. **Control Center settings tab** — done (2026-08-31). Most of the popup's
+   rows are live system state, not preferences (Wifi/Bluetooth/audio/
+   brightness stay hardcoded-to-reality on purpose) — the tab covers the
+   handful of genuinely-hardcoded constants that were there: weather
+   card visibility, temperature unit (F/C, actually re-requests the
+   forecast in the right unit from open-meteo), the stats-gauge refresh
+   interval (was a hardcoded 2000ms Timer), and the CAPTURE tile's
+   screenshot command (was hardcoded to `rishot`, now a text field run
+   through `sh -c` so flags work).
 2. **Dock** — still not built at all. Genuinely optional — decide if you
    want one before sinking time here.
 3. **Connections (Wifi/Bluetooth settings tab)** — still just the existing

@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.Commons
 
 // Real weather for the Control Center's weather card — no API key needed:
 // ip-api.com for a one-time IP geolocation (city + lat/lon), then
@@ -15,6 +16,9 @@ Singleton {
   id: root
 
   property string cityName: ""
+  // Named "F" throughout for historical reasons — actually holds whatever
+  // unit Settings.data.controlCenter.tempUnit last requested; use
+  // unitSuffix ("°F"/"°C") for display, not a hardcoded degree letter.
   property real currentTempF: NaN
   property int currentWeatherCode: -1
   property string gmtOffsetLabel: ""
@@ -22,13 +26,16 @@ Singleton {
   property bool ready: false
   property string lastError: ""
 
+  readonly property string unitSuffix: Settings.isLoaded && Settings.data.controlCenter.tempUnit === "celsius" ? "°C" : "°F"
+
   property real _lat: NaN
   property real _lon: NaN
 
   function refreshForecast() {
     if (isNaN(root._lat) || isNaN(root._lon))
       return;
-    forecastProc.command = ["curl", "-s", "--max-time", "8", "https://api.open-meteo.com/v1/forecast?latitude=" + root._lat + "&longitude=" + root._lon + "&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=auto&forecast_days=6"];
+    var unit = Settings.isLoaded && Settings.data.controlCenter.tempUnit === "celsius" ? "celsius" : "fahrenheit";
+    forecastProc.command = ["curl", "-s", "--max-time", "8", "https://api.open-meteo.com/v1/forecast?latitude=" + root._lat + "&longitude=" + root._lon + "&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=" + unit + "&timezone=auto&forecast_days=6"];
     forecastProc.running = true;
   }
 
@@ -95,6 +102,13 @@ Singleton {
   // laptop), so it's fetched once at startup and the forecast alone
   // refreshes periodically.
   Component.onCompleted: geoProc.running = true
+
+  Connections {
+    target: Settings.data.controlCenter
+    function onTempUnitChanged() {
+      root.refreshForecast();
+    }
+  }
 
   Timer {
     interval: 30 * 60 * 1000

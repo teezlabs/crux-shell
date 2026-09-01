@@ -90,6 +90,10 @@ PanelWindow {
       "label": "Wallpaper"
     },
     {
+      "id": "controlCenter",
+      "label": "Control Center"
+    },
+    {
       "id": "desktopWidgets",
       "label": "Desktop Widgets"
     },
@@ -587,6 +591,11 @@ PanelWindow {
           WallpaperTab {
             anchors.fill: parent
             visible: root.activeTab === "wallpaper"
+          }
+
+          ControlCenterTab {
+            anchors.fill: parent
+            visible: root.activeTab === "controlCenter"
           }
 
           DesktopWidgetsTab {

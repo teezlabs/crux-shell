@@ -188,7 +188,7 @@ PanelWindow {
   }
 
   Timer {
-    interval: 2000
+    interval: Settings.data.controlCenter.statsRefreshInterval
     running: root.visible
     repeat: true
     triggeredOnStart: true
@@ -729,7 +729,7 @@ PanelWindow {
       // see Commons/Weather.qml) ----
       ColumnLayout {
         Layout.fillWidth: true
-        visible: Weather.ready
+        visible: Weather.ready && Settings.data.controlCenter.showWeather
         spacing: 10
 
         RowLayout {
@@ -752,7 +752,7 @@ PanelWindow {
             RowLayout {
               spacing: 6
               Text {
-                text: Math.round(Weather.currentTempF) + "°F"
+                text: Math.round(Weather.currentTempF) + Weather.unitSuffix
                 color: Color.surfaceText
                 font.family: Tokens.fontFamily
                 font.pixelSize: Tokens.bodySmSize
@@ -922,7 +922,7 @@ PanelWindow {
           icon: "camera-photo-symbolic"
           onTapped: {
             root.visible = false;
-            Quickshell.execDetached(["rishot"]);
+            Quickshell.execDetached(["sh", "-c", Settings.data.controlCenter.screenshotCommand]);
           }
         }
         CcActionButton {
