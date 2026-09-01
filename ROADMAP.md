@@ -141,7 +141,7 @@ against noctalia this pass):
    structured per-MIME-type info to filter on without a real parsing
    upgrade; left as a future project if it turns out to matter.
 
-## Tier 2 — remaining real feature gaps
+## Tier 2 — real feature gaps (now all done)
 
 1. **Control Center settings tab** — done (2026-08-31). Most of the popup's
    rows are live system state, not preferences (Wifi/Bluetooth/audio/
@@ -152,21 +152,27 @@ against noctalia this pass):
    interval (was a hardcoded 2000ms Timer), and the CAPTURE tile's
    screenshot command (was hardcoded to `rishot`, now a text field run
    through `sh -c` so flags work).
-2. **Connections (Wifi/Bluetooth settings tab)** — a dedicated settings tab
-   (saved-network list, priority ordering, adapter selection) is still not
-   built, and still assessed as low priority relative to its size
-   (noctalia's equivalent is ~2400 lines for "more knobs on a thing that
-   already works"). But while checking this, found and fixed a real bug
-   (2026-08-31): `WifiPanelContent.qml` had a fully-working
-   `forgetRow()`/`network.forget()` path that **nothing in the UI ever
-   called** — a saved network could never actually be forgotten short of
-   `nmcli` by hand, unlike Bluetooth's equivalent `forgetDevice()`, which
-   was correctly wired to a real button. Added a "×" forget affordance on
-   known, non-connected network rows. Not live-verified via screenshot —
-   the Wifi widget isn't in this bar's current layout so there's no popup
-   instance to open — but boot-clean and reuses the exact nested-
-   MouseArea-inside-RowLayout pattern the same file's own CONNECT button
-   already uses successfully.
+2. **Connections tab** — done (2026-08-31), scoped deliberately narrow
+   rather than matching noctalia's ~2400-line full network-manager UI:
+   the popups (`WifiPanelContent.qml`, `BluetoothPanelContent.qml`) already
+   own live scan/connect/disconnect/forget, so this new
+   `ConnectionsTab.qml` covers only what genuinely wasn't exposed anywhere
+   — saved Wi-Fi networks' autoconnect + autoconnect-priority (a real
+   NetworkManager field via `nmcli connection modify ...
+   connection.autoconnect-priority`, parsed with the same right-to-left
+   colon-splitting `PeripheralsTab.qml`'s VPN list already uses) plus
+   removal, and Bluetooth discoverability (`BluetoothAdapter.discoverable`,
+   also unexposed elsewhere). Live-verified against real system state —
+   the three actual saved networks and their real autoconnect/priority
+   values render correctly. Adapter *selection* skipped: Quickshell's own
+   `Bluetooth.defaultAdapter` is read-only in the qmltypes (no clean API to
+   switch it), and Wifi multi-device selection is low-value on a desktop.
+   Also found and fixed a real bug while investigating: `WifiPanelContent.qml`
+   had a fully-working `forgetRow()`/`network.forget()` path that **nothing
+   in the UI ever called** — a saved network could never actually be
+   forgotten short of `nmcli` by hand, unlike Bluetooth's equivalent
+   `forgetDevice()`, correctly wired already. Added a "×" forget affordance
+   on known, non-connected network rows.
 
 ## Tier 3 — niche / defer
 
@@ -196,27 +202,19 @@ against noctalia this pass):
 
 ---
 
-## What I'd personally sequence first
+## Status
 
-**Update 2026-08-31, end of day**: Tier 0 and all of Tier 1 are done. In
-order: working tree committed + pushed to its own Forgejo remote;
-`FuzzySort.qml` wired into both the settings sidebar search and (this
-pass) the launcher's real fuzzy-match option; Control Center and Launcher
-each got a real settings tab; Wallpaper turned out to already be fully
-built (this doc had it wrong); General got a monospace font + a live
-reverse-scroll toggle; Bar got Comfortable/Compact density presets; Audio
-got a preferred-MPRIS-player setting shared across three call sites that
-used to duplicate the same picking logic independently.
+**2026-08-31, end of day**: Tier 0, Tier 1, and Tier 2 are all done —
+every item this doc originally scoped as a real, buildable gap has either
+been built, found to already exist (Wallpaper), or deliberately declined
+(Dock) or skipped with a documented reason (capsule/pill bar backgrounds,
+audio visualizer, clipboard MIME filtering, Bluetooth adapter switching).
+Location got folded into Night Light as this doc itself suggested, rather
+than built standalone.
 
-What's left is genuinely all optional/deferred by this doc's own earlier
-judgment, not oversights: Tier 2 §2 (Connections tab) is a real, sizable
-build nobody's asked for yet; Dock is explicitly declined, not just
-deferred; Tier 3 (Location, Region) is low-urgency polish; a handful of
-items were explicitly *not* built because
-they'd fight crux's own established choices rather than extend them
-(capsule/pill bar backgrounds vs. the chamfer-only "no radius" rule) or
-need real new subsystems rather than exposing something already hardcoded
-(audio visualizer, clipboard MIME filtering).
-
-This is your call to reorder — ping me with whichever number(s) you want to
-start on and we'll take it one confirmed step at a time.
+What's left: Tier 3's **Region** — wait, also done, see above. Genuinely
+nothing scoped in this document remains open. Any next work needs a fresh
+pass over the actual app (screenshots, a real usage session) to find what
+this doc's original scope didn't anticipate, rather than more items from
+this list — reorganize/prune this file next time it's touched rather than
+keep appending to a list that's now mostly checkmarks.

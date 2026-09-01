@@ -84,6 +84,10 @@ Item {
     { "label": "Run-command prefix", "description": "Prefix that runs the rest of the query as a shell command", "tab": "launcher", "subTab": "", "keywords": "launcher exec shell command run" },
     { "label": "Clipboard history size", "description": "How many cliphist entries are shown/kept in the popup", "tab": "launcher", "subTab": "", "keywords": "clipboard cliphist history" },
 
+    // ---- Connections ----
+    { "label": "Saved Wi-Fi networks", "description": "Autoconnect priority and removal for saved networks", "tab": "connections", "subTab": "", "keywords": "wifi nmcli priority autoconnect forget" },
+    { "label": "Bluetooth discoverable", "description": "Let other devices see this machine while on", "tab": "connections", "subTab": "", "keywords": "bluetooth pairing visible" },
+
     // ---- Wallpaper ----
     { "label": "Wallpaper directory", "description": "Where the wallpaper picker looks for images", "tab": "wallpaper", "subTab": "", "keywords": "folder images" },
     { "label": "Auto-theme", "description": "Regenerate theme colors from the wallpaper on pick", "tab": "wallpaper", "subTab": "", "keywords": "matugen colors" },

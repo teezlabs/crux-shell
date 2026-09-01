@@ -126,6 +126,10 @@ PanelWindow {
       "label": "Peripherals"
     },
     {
+      "id": "connections",
+      "label": "Connections"
+    },
+    {
       "id": "hooks",
       "label": "Hooks"
     },
@@ -643,6 +647,11 @@ PanelWindow {
           PeripheralsTab {
             anchors.fill: parent
             visible: root.activeTab === "peripherals"
+          }
+
+          ConnectionsTab {
+            anchors.fill: parent
+            visible: root.activeTab === "connections"
           }
 
           HooksTab {
