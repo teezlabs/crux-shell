@@ -6,11 +6,7 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 
-// Wallpaper picker + matugen-driven theme generation, both native to crux —
-// no dependency on the external skwd-wall/aurora-* pipeline. Picking a
-// wallpaper sets Settings.data.wallpaper.path directly (Background.qml
-// already reacts live to that) and, if autoTheme is on, regenerates the
-// whole theme palette from it via Commons/Matugen.qml.
+// Wallpaper picker + matugen-driven theme generation, native to crux.
 Flickable {
   id: root
   clip: true
@@ -62,12 +58,7 @@ Flickable {
         }
       }
 
-      // Material 3 scheme type — same 9 algorithms noctalia-shell's skwd
-      // wallpaper selector exposes (Modules/Panels/Wallpaper/skwd/wallpaper/
-      // settings/ThemeSettings.qml's "Scheme type" dropdown), just rendered
-      // as chips (matching WifiPanelContent.qml's DNS-provider picker)
-      // instead of a native dropdown — crux has no dropdown control yet and
-      // 9 short labels wrap into two rows fine as chips.
+      // Material 3 scheme type, rendered as chips (no dropdown control yet)
       ColumnLayout {
         Layout.fillWidth: true
         spacing: 4

@@ -2,11 +2,7 @@ import QtQuick
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// v2 spec §6.1 Clock module: "WED 25 AUG" (caption, grey) · 1px divider ·
-// "14:32" (body 600, on_surface). Vertical bar: stacked date/time instead
-// (a single horizontal line doesn't fit a ~32px-wide bar) — same reasoning
-// crux's earlier Clock.qml used, kept for the vertical-bar case this spec
-// doesn't itself cover (it targets a single top-anchored bar).
+// Date · divider · time on a horizontal bar; stacked date/time on a vertical bar (doesn't fit one line at ~32px wide).
 Item {
   id: root
 

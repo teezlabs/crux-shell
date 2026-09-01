@@ -75,11 +75,8 @@ Singleton {
       property bool useSeparateOpacity: false // false = follow theme.barOpacity
       property real backgroundOpacity: 1.0 // used only when useSeparateOpacity is true
 
-      // Detached floating modules (v2 spec default) when true; a real
-      // continuous bar strip flush with the screen edge (floatMargin
-      // ignored) when false — see shell.qml's barRect for the surface
-      // this actually controls, and crux skill's notes.md for why this
-      // needed to be an opt-in toggle rather than a forced redesign.
+      // Detached floating modules when true, flush edge-to-edge strip when
+      // false — opt-in toggle, see crux skill's notes.md.
       property bool floating: true
       // A real bar-strip background (distinct from useSeparateOpacity/
       // backgroundOpacity above, which only ever affected each module's
@@ -120,14 +117,12 @@ Singleton {
       property list<var> screenOverrides: []
       property bool autoTheme: true // regenerate theme colors (via matugen) whenever a wallpaper is picked
 
-      // scheme-fidelity (not Material 3's default scheme-tonal-spot) — matches
-      // noctalia-shell's skwd default and stays close to the wallpaper's own
-      // saturation instead of tonal-spot's deliberately muted/desaturated look.
+      // scheme-fidelity (not Material 3's default scheme-tonal-spot) — stays
+      // close to the wallpaper's own saturation instead of tonal-spot's
+      // deliberately muted/desaturated look.
       property string matugenScheme: "scheme-fidelity"
       // matugen --source-color-index: which of an image's dominant candidate
-      // colors to theme from (0 = most dominant, up to 4) — same "cycle
-      // through different Material You themes on one wallpaper" control
-      // noctalia-shell's skwd exposes as matugenColorIndex.
+      // colors to theme from (0 = most dominant, up to 4).
       property int matugenColorIndex: 0
 
       // Auto-cycle — noctalia's Wallpaper "Automation" subtab: rotate to a
@@ -158,11 +153,9 @@ Singleton {
       property int transitionDuration: 700 // ms
       property real transitionEdgeSmoothness: 0.05 // wipe/disc/stripes edge softness
 
-      // System-wide app retheming (bin/theme-templates/*, applied via a
-      // matugen --config pass in Commons/Matugen.qml) — crux's own
-      // equivalent of noctalia's Settings > Color Scheme > Templates tab.
-      // Off by default (each is a real write to a real app's config file);
-      // the wallpaper selector's picker settings turn these on explicitly.
+      // System-wide app retheming (bin/theme-templates/*, applied via
+      // matugen --config in Commons/Matugen.qml). Off by default — each is
+      // a real write to a real app's config file.
       property JsonObject templates: JsonObject {
         property bool hyprland: false
         property bool kitty: false
@@ -176,12 +169,8 @@ Singleton {
         // Syncs /usr/share/sddm/themes/crux's background + colors to
         // whatever's actually live — see bin/crux-sync-greeter.
         property bool sddmGreeter: false
-        // `gsettings set org.gnome.desktop.interface color-scheme
-        // prefer-dark` — the one gsettings key that actually matters here,
-        // since crux ships no full GTK theme package to point gtk-theme
-        // at; this is what libadwaita/GTK4 apps check to render dark
-        // chrome instead of light, independent of the gtk.css @import
-        // above (older GTK3 apps that don't read color-scheme).
+        // Sets gsettings color-scheme=prefer-dark — what GTK4/libadwaita
+        // apps check for dark chrome, independent of the gtk.css @import.
         property bool gsettings: false
       }
     }
@@ -227,14 +216,9 @@ Singleton {
 
     property JsonObject audio: JsonObject {
       property real step: 0.05 // volume change per scroll notch / hardware key press
-      // MPRIS player identity ("Spotify", "firefox", ...) to prefer as the
-      // bar/popover's "active" player over the default "whichever is
-      // Playing, else the first one" pick — "" means auto, the old
-      // behavior. Matched against Mpris player.identity in Media.qml,
-      // MediaPlayerWindow.qml, and ControlCenterWindow.qml, which all
-      // independently duplicate the same active-player selection (no
-      // shared singleton for it — keeping this in sync across all three
-      // if that logic ever changes again).
+      // MPRIS player.identity to prefer as "active" over the default
+      // "Playing, else first" pick. "" = auto. Matched independently in
+      // Media.qml, MediaPlayerWindow.qml, ControlCenterWindow.qml.
       property string preferredMediaPlayer: ""
     }
 
@@ -272,11 +256,9 @@ Singleton {
       property string screenshotCommand: "rishot" // run (via sh -c) by the CAPTURE action tile
     }
 
-    // Semantic color tokens, Material-You-ish naming to match noctalia's
-    // Commons/Color.qml convention (the "m" prefix avoids QML reading
-    // e.g. "onPrimary" as a signal handler name). Defaults are exactly
-    // the palette every crux widget has already been hardcoding all
-    // along — this section makes it configurable, not a visual reset.
+    // Semantic color tokens ("m" prefix avoids QML reading "onPrimary" as
+    // a signal handler name). Defaults match what every widget already
+    // hardcoded — configurable, not a visual reset.
     property JsonObject theme: JsonObject {
       property string mPrimary: "#89b4fa" // accent
       property string mOnPrimary: "#1e1e2e"
@@ -293,14 +275,9 @@ Singleton {
       property real radiusRatio: 1.0 // multiplies every Style.radius* token
       property real barOpacity: 1.0 // 0..1, bar + popup background alpha
 
-      // Material-3 tonal-spot role set (scheme-tonal-spot, dark — matugen's
-      // own default scheme/mode), for the "Quickshell Hyprland Shell v2"
-      // design spec's restrained-cyberpunk pass. Additive alongside the
-      // m-prefixed roles above — those stay live on every widget not yet
-      // migrated to this spec; new/rewritten widgets (Bar chrome, Workspaces,
-      // Clock, ...) read only from these. Reference hexes below are matugen's
-      // "off" default (spec's own reference scheme) until Matugen.qml
-      // regenerates a wallpaper-derived set into these same keys.
+      // v2 spec's tonal-spot role set — additive alongside the m-prefixed
+      // roles above (those stay live on widgets not yet migrated). Reference
+      // hexes are matugen's default until a wallpaper regenerates them.
       property string surface: "#080B0E"
       property string surfaceContainerLow: "#0D1115"
       property string surfaceContainer: "#12171C"
@@ -444,11 +421,8 @@ Singleton {
     return data.bar.widgets;
   }
 
-  // Moves the widget at fromIndex to toIndex within one section, on whichever
-  // widget list is actually effective for this screen (a screen override's
-  // own widgets if it has one, else the global list) — same resolution rule
-  // getBarWidgetsForScreen() uses, so a drag on the bar edits what's really
-  // showing there.
+  // Moves a widget within one section, on whichever list is actually
+  // effective for this screen — same resolution rule getBarWidgetsForScreen() uses.
   function reorderBarWidget(screenName, section, fromIndex, toIndex) {
     if (fromIndex === toIndex)
       return;

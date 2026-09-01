@@ -4,16 +4,7 @@ import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Wired-ethernet status. crux already has a dedicated Wifi.qml (built on
-// Quickshell.Networking, which only models Wi-Fi devices — its own
-// DeviceType enum has exactly two values, None and Wifi, no Ethernet) and a
-// dedicated Bluetooth.qml, so a generic "Network" port of noctalia's
-// wifi+ethernet-combined widget would just duplicate Wifi.qml for the
-// wifi half. What crux genuinely doesn't show anywhere yet is *wired*
-// connectivity — this widget fills exactly that gap via `nmcli device
-// status`, and stays hidden entirely on a machine with no ethernet
-// interface at all (most laptops) rather than adding permanent bar
-// clutter.
+// Wired-ethernet status via `nmcli device status`. Wifi.qml already covers wifi (Quickshell.Networking has no Ethernet type), so this fills the wired gap only; hidden entirely on machines with no ethernet interface.
 Item {
   id: root
 

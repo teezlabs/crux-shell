@@ -1,13 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// Segmented meter — the spec's signature element (§5): a row of equal-flex
-// cells, filled cells one solid color, empty cells another, spacing 2.
-// Discrete, not proportional-width: filled = round(value / 100 * cellCount).
-// interactive:true (OSD sliders, control-center VOL/BRI) additionally
-// accepts drag/tap to set value; telemetry meters (interactive:false) are
-// read-only, per spec §5's "20 cells = user sets this by hand, 18 cells =
-// read-only telemetry" distinction — keep call sites honest about which.
+// Segmented meter: discrete cells, filled = round(value / 100 * cellCount). interactive:true also accepts drag/tap to set value.
 Item {
   id: root
 

@@ -4,11 +4,8 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 
-// Control Center settings: ControlCenter.qml (bar icon) + ControlCenterWindow.qml
-// (the popup itself) were built with most rows tied to live system state
-// (Wifi/Bluetooth/audio/brightness aren't user preferences, they're just
-// read live) — this covers the handful of rows that actually were
-// hardcoded constants rather than real data.
+// Control Center settings: only the rows that are real hardcoded
+// constants, not live system state (Wifi/Bluetooth/audio/brightness).
 Flickable {
   id: root
   clip: true

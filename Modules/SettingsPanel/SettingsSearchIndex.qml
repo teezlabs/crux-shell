@@ -1,12 +1,7 @@
 import QtQuick
 
-// Static search index for the settings panel's fuzzy-search sidebar (see
-// SettingsWindow.qml). Each entry: label + description (what's matched),
-// the tab/subtab ids to navigate to, and optional extra keywords. This is
-// crux's equivalent of noctalia's Assets/settings-search-index.json +
-// i18n-key indirection — crux has plain strings, so the index lives
-// inline as one readable list. Keep entries in sync when settings move or
-// new tabs/subtabs land.
+// Static search index for the settings panel's fuzzy-search sidebar.
+// Keep entries in sync when settings move or new tabs/subtabs land.
 Item {
   id: root
 

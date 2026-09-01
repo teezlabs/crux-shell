@@ -2,14 +2,7 @@ import QtQuick
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Light/dark theme toggle (noctalia's Modules/Bar/Widgets/DarkMode.qml).
-// Crux's theme is matugen-driven (wallpaper -> Material3 colors via
-// Commons/Matugen.qml), not a fixed palette pair, so this doesn't swap
-// between two hardcoded color sets — matugen's own --json output always
-// includes both a "dark" and a "light" branch per color regardless of the
-// CLI's --mode flag, so the click just re-maps Settings.data.theme's
-// fields from whichever branch of the cached last-generation response
-// Matugen.setDarkMode() selects (see that function for the real logic).
+// Light/dark toggle. Crux's theme is matugen-driven, not a fixed palette — click just re-maps Settings.data.theme via Matugen.setDarkMode().
 Item {
   id: root
 

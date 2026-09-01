@@ -3,13 +3,7 @@ import Quickshell
 import Quickshell.Widgets
 import qs.Commons
 
-// Control Center 3x2 action-grid button (§6.3): plain bordered cell,
-// centred label-xs text, optional real icon-theme icon to its left (empty
-// `icon` just shows the label alone — no placeholder glyph forced in).
-// `enabled: false` (no backing tool installed, e.g. RECORD/COLOR without
-// wf-recorder/hyprpicker) dims it and blocks taps rather than pretending
-// the action works. `active` highlights a toggle-style action (IDLE OFF/ON)
-// the same way a lit toggle tile would.
+// Control Center action-grid button. `enabled: false` dims and blocks taps when a backing tool is missing; `active` highlights toggle-style actions.
 Item {
   id: root
 

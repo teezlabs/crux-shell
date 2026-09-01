@@ -1,13 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// Shared chamfered card background for a floating panel (launcher, control
-// center, sidebar, media popover, calendar, ...) — §4: 1px outline border,
-// §1: panelOpacity (0.95) fill. Actual backdrop blur is wired at the
-// PanelWindow level per panel (BackgroundEffect.blurRegion, same mechanism
-// noctalia's MainScreen.qml uses) since it's a window-level compositor
-// effect, not something a background Rectangle can do on its own — this
-// component is just the visible card, not the blur.
+// Shared chamfered card background for a floating panel. Backdrop blur is wired separately at the PanelWindow level.
 Item {
   id: root
 

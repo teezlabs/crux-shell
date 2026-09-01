@@ -1,12 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 
-// Top-level "Notifications" settings tab: General/Duration/History as
-// subtabs. Exposes what Commons/Notifs.qml and
-// Modules/Bar/Extras/NotificationsWindow.qml actually read from
-// Settings.data.notifications.* — ported down from noctalia's Notifications
-// settings tabs, General/Duration/History prioritized per scope (per-app
-// Rules and a Sound tab were cut — see the settings panel report).
+// Top-level Notifications tab: General/Duration/History subtabs.
 ColumnLayout {
   id: root
   spacing: 14

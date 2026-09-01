@@ -6,13 +6,8 @@ import Quickshell.Services.Pipewire
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// v2 spec §6.1 Status module: three segments split by 1px dividers — NET,
-// VOL, BAT (+5-cell inline meter) — one merged module rather than three
-// separate bar icons (crux's earlier Wifi.qml/Sound.qml were each their own
-// module; this spec groups them). Click opens Control Center. BAT segment
-// only shows if a power_supply device is actually present — most of this
-// project's dev boxes are desktops with no system battery, and a fake 100%
-// reading would be worse than omitting the segment.
+// Merged NET/VOL/BAT status module (spec §6.1), split by 1px dividers. Click opens Control Center.
+// BAT segment only shows if a power_supply device is present — no fake 100% on battery-less desktops.
 Item {
   id: root
 
@@ -126,11 +121,7 @@ Item {
       }
     }
 
-    // Vertical bar: each stat as a compact stacked value/label pair (value
-    // on top, tiny label under it) instead of the horizontal "LABEL value"
-    // pairing — a 4-char word like "WLAN" reads fine at label-xs in a
-    // ~30px-wide column; the inline battery meter is dropped here rather
-    // than rotated, the percentage number alone carries it.
+    // Vertical bar: stacked value/label pairs instead of "LABEL value"; battery meter dropped, percentage alone carries it.
     Column {
       visible: root.vertical
       spacing: 8

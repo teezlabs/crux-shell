@@ -3,20 +3,8 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Global hover-tooltip primitive. Any widget calls
-// TooltipService.show(itemThatIsHovered, "some text") on hover-enter and
-// TooltipService.hide() on hover-exit (or click) — this singleton just
-// holds "what to show and where", debounced with a short show delay (so a
-// mouse just passing over several widgets doesn't flash a tooltip per
-// widget) and an even shorter hide delay (so leaving one widget and
-// re-entering it a frame later doesn't restart the show delay).
-//
-// The actual rendering is a separate overlay window
-// (Modules/Tooltip/TooltipOverlay.qml, one instance per screen,
-// instantiated once from shell.qml) that just watches this singleton's
-// `visible`/`anchorItem`/`text` and draws the bubble — this file has no
-// visual state of its own, so any number of overlay instances (or none,
-// during early boot) can observe it safely.
+// Global hover-tooltip state (debounced show/hide) — holds no visual state
+// itself. TooltipOverlay.qml (one per screen) watches and draws it.
 Singleton {
   id: root
 

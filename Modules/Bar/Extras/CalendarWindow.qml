@@ -6,13 +6,7 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Calendar popover (§6.7): 308 wide, under the bar clock. Real month grid —
-// Monday-start week, out-of-month days dimmed, today gets primaryContainer
-// fill + a primary bottom border. No agenda list: the mockup shows one
-// ("16:00 Standup", "19:30 Dinner — Kaz") but crux has no calendar/event
-// data source to back it — omitted rather than shown with fabricated
-// events. Add it back once there's a real source (a local .ics read, a
-// CalDAV sync, whatever) to bind to.
+// Calendar popover: Monday-start month grid under the bar clock. No agenda list — no real event data source to bind to yet.
 PanelWindow {
   id: root
 

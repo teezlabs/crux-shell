@@ -4,20 +4,9 @@ import Quickshell.Io
 import qs.Modules.Bar.Extras
 import qs.Commons
 
-// Blue-light filter toggle, backed by `wlsunset` — the same tool
-// noctalia's Services/Location/NightLightService.qml drives (its
-// auto-schedule mode uses geolocation via a LocationService crux doesn't
-// have yet; only the manual sunset/sunrise schedule that service also
-// supports was ported — see Settings.data.nightLight and the Display >
-// Night Light settings tab). Click cycles off -> on -> forced -> off,
-// same three-state UX as noctalia's own bar icon.
-//
-// This widget instantiates once per monitor the bar's on, but wlsunset
-// itself must run exactly once shell-wide — every instance reflects
-// Settings.data.nightLight.enabled for its own icon, but only the instance
-// on Quickshell.screens[0] actually manages the wlsunset process, same
-// "gate to one instance" pattern crux already uses for per-screen
-// IpcHandlers (see SoundMenuWindow.qml and friends).
+// Blue-light filter toggle, backed by `wlsunset`. Click cycles off -> on ->
+// forced -> off. One instance per monitor, but only the Quickshell.screens[0]
+// instance manages the wlsunset process — see Settings.data.nightLight.
 Item {
   id: root
 
@@ -28,24 +17,8 @@ Item {
   readonly property bool active: Settings.data.nightLight.enabled
   readonly property bool forced: Settings.data.nightLight.forced
 
-  // Deliberately NOT a live computed binding (`readonly property bool: ...
-  // Quickshell.screens[0]...`) — confirmed via direct debug logging that a
-  // binding reading through `Quickshell.screens[0]` (array-index access)
-  // does not reliably re-evaluate when `screen` arrives: same class of bug
-  // as the documented Grid/`itemAt()` dependency-tracking gotcha ("reads
-  // mediated through itemAt() aren't tracked reliably... reading your own
-  // property directly is always picked up"). Also confirmed comparing by
-  // object identity (`root.screen === Quickshell.screens[0]`) doesn't work
-  // here either — two real monitors, both instances printed `primary=false`
-  // against Quickshell.screens[0], even though the two are supposed to be
-  // the same QuickshellScreenInfo. This same `===` pattern is used
-  // elsewhere in crux (SoundMenuWindow.qml and friends' per-screen
-  // IpcHandler gates) — worth re-checking those on real multi-monitor
-  // hardware, since they may have the same latent bug.
-  //
-  // Fix: compute it imperatively into a plain stored property at the exact
-  // points that matter (screen arriving, completion), instead of trusting
-  // either binding form to invalidate itself.
+  // Computed imperatively, not as a live binding — see crux skill's
+  // notes.md (Quickshell.screens[0] binding gotcha).
   property bool _isPrimaryInstance: false
   property bool _initDone: false
 

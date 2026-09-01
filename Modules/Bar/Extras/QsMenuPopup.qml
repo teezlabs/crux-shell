@@ -5,22 +5,8 @@ import Quickshell.Wayland
 import Quickshell.Widgets
 import qs.Commons
 
-// Custom-rendered replacement for QsMenuAnchor's native platform QMenu
-// (Tray.qml's right-click DBusMenu popup, and anything else that ends up
-// showing a QsMenuHandle) — QsMenuAnchor.open() pops up the real OS-theme
-// QMenu widget (Fusion/whatever style Qt picked), completely outside
-// crux's own Chamfer/Color/Tokens design system with no way to restyle it.
-// QsMenuOpener exposes the same menu as a plain list of QsMenuEntry
-// objects (text/icon/isSeparator/enabled/checkState/hasChildren) that this
-// renders as ordinary chamfered rows instead, matching every other popup
-// in the app.
-//
-// One level of real submenu support: an entry with hasChildren opens a
-// second instance of this same component, positioned to the right of the
-// row that opened it (recursing further if a submenu itself has
-// submenus) — most tray DBusMenus (Discord, NetworkManager, Bluetooth
-// applets) are flat or one level deep, so this covers the real cases
-// without building a generic infinite-nesting menu system.
+// Custom-rendered replacement for QsMenuAnchor's native platform QMenu, restyled as ordinary chamfered rows.
+// One level of real submenu support: hasChildren opens another instance of this component to the right, recursing if needed.
 PanelWindow {
   id: root
 
@@ -47,12 +33,7 @@ PanelWindow {
       submenuLoader.item.close();
   }
 
-  // A DBusMenu entry's icon can be a bare icon-theme name (needs
-  // Quickshell.iconPath() to resolve through the theme) or an absolute
-  // file path / already-a-URL straight from the app (Quickshell.iconPath()
-  // would wrongly try to look that up as a theme name and fail, rendering
-  // as a broken-image glyph — confirmed real bug via screenshot). Use it
-  // directly whenever it already looks like a path or URL.
+  // Icon can be a bare theme name (needs iconPath()) or already a path/URL — using iconPath() on the latter breaks the glyph.
   function resolveIcon(icon) {
     if (!icon)
       return "";
@@ -198,11 +179,7 @@ PanelWindow {
     }
   }
 
-  // Loaded by URL rather than as `QsMenuPopup { ... }` directly — QML
-  // rejects a component instantiating itself by type name from within its
-  // own definition ("QsMenuPopup is instantiated recursively"), but a
-  // Loader resolving the same file by source URL is a dynamic load, not a
-  // static self-reference, and works fine.
+  // Loaded by URL, not `QsMenuPopup { }` directly — QML rejects a component instantiating itself by type name.
   Loader {
     id: submenuLoader
     active: false

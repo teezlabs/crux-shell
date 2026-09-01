@@ -8,12 +8,7 @@ import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 import "BluetoothModel.js" as Model
 
-// Real Bluetooth device list/pair UI — the guts of BluetoothMenuWindow.qml,
-// pulled out so the same logic and rows can be embedded inline (Control
-// Center's BLUETOOTH tile right-click-expand) instead of only ever opening
-// as a separate popup window. BluetoothMenuWindow.qml wraps this in its own
-// PanelWindow/Chamfer for the standalone Bluetooth.qml bar widget; this
-// file has no window chrome of its own.
+// Bluetooth device list/pair UI, shared between BluetoothMenuWindow.qml and Control Center's inline expand. No window chrome of its own.
 ColumnLayout {
   id: root
 

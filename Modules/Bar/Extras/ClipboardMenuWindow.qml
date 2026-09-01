@@ -6,11 +6,7 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Clipboard history popup. Backend is cliphist (already installed, already
-// what noctalia-shell uses — see Services/Keyboard/ClipboardService.qml for
-// the proven watch/list/decode/delete command shapes this mirrors) rather
-// than Omarchy's own capture.sh, which does its own image-hashing/dedup
-// layer cliphist already handles.
+// Clipboard history popup. Backend is cliphist (same as noctalia-shell), not Omarchy's own capture.sh.
 PanelWindow {
   id: root
 
@@ -26,12 +22,7 @@ PanelWindow {
   readonly property bool _barBottom: root._barPos === "bottom"
   readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 20
 
-  // Set by the bar icon that opened this popup (its own position mapped
-  // into the bar window's local space, via mapToItem(null, 0, 0)) so the
-  // popup can line up with it instead of always sitting in a generic
-  // corner. -1 means "not set" (e.g. opened via IPC, not a click) — falls
-  // back to the old fixed near-corner inset in that case. See
-  // SoundMenuWindow.qml for the full cross-window-coordinate reasoning.
+  // Bar-icon trigger position, mapped into this popup's space; -1 = not set (IPC open). See SoundMenuWindow.qml.
   property point triggerPos: Qt.point(-1, -1)
   readonly property bool _hasTrigger: triggerPos.x >= 0
   readonly property real _triggerX: triggerPos.x + Settings.data.bar.floatMargin

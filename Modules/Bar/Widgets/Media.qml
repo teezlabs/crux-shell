@@ -14,12 +14,7 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false
-  // Portrait-horizontal bar flag (see BarWidgetLoader.qml) — distinct from
-  // `vertical` above, which stays false there since the bar's true
-  // orientation is still horizontal. Media isn't in _compactSafeIds (its
-  // equalizer+title Row doesn't need the vertical stack treatment), but the
-  // title still needs to shrink here or it overlaps the independently-
-  // centered Clock section on a narrow portrait screen.
+  // Portrait-horizontal bar flag (see BarWidgetLoader.qml); title shrinks here to avoid overlapping Clock.
   property bool contentVertical: vertical
   property bool invertChamfer: false
 

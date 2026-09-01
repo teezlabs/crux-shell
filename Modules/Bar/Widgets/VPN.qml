@@ -4,14 +4,8 @@ import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// VPN connection status/toggle, NetworkManager-based (same `nmcli`
-// primitive noctalia-shell's VPNService.qml uses: `connection show` for
-// status — TYPE filtered to "vpn"/"wireguard" only, since nmcli lists every
-// connection profile including plain wifi/ethernet/loopback/bridges — and
-// `connection up/down uuid <uuid>` to toggle). Left-click toggles the first
-// connection (connects if none active, disconnects if one is); the full
-// multi-connection list lives in Settings > Peripherals for boxes with more
-// than one VPN profile.
+// VPN status/toggle via nmcli, TYPE-filtered to vpn/wireguard only. Left-click toggles the first connection;
+// full multi-connection list lives in Settings > Peripherals.
 Item {
   id: root
 

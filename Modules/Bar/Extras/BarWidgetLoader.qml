@@ -14,35 +14,15 @@ Item {
   required property var widgetScreen
   required property string section
   required property int sectionWidgetIndex
-  // Bar's true physical orientation (only ever true for a real left/right
-  // bar) — multi-item grid widgets (Tray, Workspaces) that stack along the
-  // bar's own long axis must use this, never the compact flag below, or
-  // they overflow past the bar's height with nothing bounding them
-  // (confirmed real breakage: Tray's icons did exactly that).
+  // True bar orientation; multi-item grid widgets (Tray, Workspaces) must use this, not the compact flag below.
   property bool vertical: false
-  // "Render your short text stack instead of one wide line" — true for a
-  // real vertical bar too, but also for a horizontal top/bottom bar sitting
-  // on a portrait-rotated screen, which has much less width to work with
-  // than a normal landscape top bar. Only forwarded to widgets confirmed to
-  // actually fit that stack within the bar's thickness (see
-  // _compactSafeIds) — everything else keeps using `vertical` above so its
-  // layout stays tied to genuine bar orientation.
+  // Compact stacked-text layout: true for a real vertical bar, or a horizontal bar on a portrait screen.
   property bool contentVertical: vertical
 
   // Set by BarSection.qml — see crux skill's notes.md.
   property bool invertChamfer: false
 
-  // Confirmed (by screenshot) to fit their compact 2-3 line stack within a
-  // modestly bumped bar thickness: Sound (VOL value), Layout (TILE/layout
-  // name). Deliberately excludes multi-item widgets (Tray, Workspaces) and
-  // anything not yet height-audited (SystemMonitor, StatusGroup, Media) —
-  // add to this list only after confirming via a real screenshot that its
-  // vertical variant's content actually fits.
-  //
-  // Clock was here too, but explicitly asked to be dropped: on a
-  // horizontal (top/bottom) bar, always show the single-line "WED 26 AUG ·
-  // 14:32" format, even on a portrait-rotated screen — only a real
-  // vertical (left/right) bar should stack it.
+  // Widgets confirmed to fit a compact 2-3 line stack; Clock deliberately excluded (always single-line).
   readonly property var _compactSafeIds: ["Sound", "Layout"]
   readonly property bool _effectiveVertical: _compactSafeIds.indexOf(widgetId) !== -1 ? contentVertical : vertical
 
@@ -67,12 +47,7 @@ Item {
       item.screen = root.widgetScreen;
       item.section = root.section;
       item.sectionWidgetIndex = root.sectionWidgetIndex;
-      // Not every widget cares about orientation, so this is only forwarded
-      // to ones that declare the property — writing to an undeclared QML
-      // property throws, but reading one that doesn't exist just returns
-      // undefined, which is what this check relies on. Bound live (unlike
-      // screen/section/sectionWidgetIndex above) since bar position can
-      // change at runtime via the settings panel, not just at boot.
+      // Guarded: writing an undeclared QML property throws, reading one returns undefined. Bound live (bar position can change at runtime).
       if (item.vertical !== undefined)
         item.vertical = Qt.binding(function () {
           return root._effectiveVertical;

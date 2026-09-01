@@ -4,15 +4,8 @@ import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Active keyboard layout on the bar. Hyprland exposes this directly via
-// `hyprctl devices -j` (no separate xkb-tracking service needed) — polled
-// every 2s, same as `hyprctl switchxkblayout <device> next` is used to
-// cycle it on click. Settings.data.keyboard.deviceName lets the user pin
-// which physical keyboard to track (this box's own `hyprctl devices -j`
-// lists 6+ "keyboards" — a headset, a mouse, two power buttons, a virtual
-// ydotoold device, and the one real keyboard — so auto-detecting the first
-// entry would be wrong; "main": true correctly picks the real one here,
-// but the override exists for boxes where it doesn't).
+// Active keyboard layout, polled via `hyprctl devices -j` every 2s; click cycles via switchxkblayout.
+// Settings.data.keyboard.deviceName lets the user pin a device — `devices -j` can list many fake "keyboards" (mice, power buttons, virtual devices) so auto-picking the first isn't reliable.
 Item {
   id: root
 

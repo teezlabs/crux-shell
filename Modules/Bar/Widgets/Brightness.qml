@@ -4,15 +4,7 @@ import Quickshell.Io
 import qs.Modules.Bar.Extras
 import qs.Commons
 
-// Internal-backlight brightness readout + scroll-to-adjust, via
-// brightnessctl — the same tool noctalia's BrightnessService.qml shells out
-// to for non-DDC/non-Apple displays. DDC (external monitor) and Apple
-// Studio Display support from noctalia's service were deliberately not
-// ported (real added complexity — per-monitor ddcutil detection/bus
-// numbers — for hardware this box doesn't have); a laptop's own panel is
-// the common case this covers. Device detection + get/set both run as
-// one-shot `sh -c`/`brightnessctl` Process calls, same "no separate
-// service singleton" spirit as Sound.qml's direct Pipewire access.
+// Internal-backlight brightness readout + scroll-to-adjust via brightnessctl. No DDC/external-monitor support (not needed on this hardware).
 Item {
   id: root
 

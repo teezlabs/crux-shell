@@ -4,14 +4,8 @@ import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Inhibits idle/sleep (noctalia's Modules/Bar/Widgets/KeepAwake.qml +
-// Services/Power/IdleInhibitorService.qml). Crux has no shared idle-
-// inhibitor singleton yet, so this widget manages its own systemd-inhibit
-// subprocess directly — the same fallback mechanism noctalia's service
-// uses when no native Wayland IdleInhibitor surface is wired up. Known
-// simplification: if more than one KeepAwake widget is ever added to the
-// bar, each manages its own inhibitor process independently rather than
-// sharing one global state.
+// Inhibits idle/sleep via its own systemd-inhibit subprocess (no shared idle-inhibitor singleton yet).
+// If multiple KeepAwake widgets are added, each manages its own inhibitor independently.
 Item {
   id: root
 

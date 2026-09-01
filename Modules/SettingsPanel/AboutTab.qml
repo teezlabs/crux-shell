@@ -5,11 +5,7 @@ import Quickshell.Io
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 
-// About: what shell this is, where its files live, and what commit it's
-// running — genuinely useful once crux stops shadowing noctalia's version
-// info and needs its own. git metadata is read live via Process rather than
-// hardcoded, since a hardcoded version string goes stale the moment you
-// commit again.
+// About tab: shell/path/commit info. Git metadata read live, not hardcoded.
 Flickable {
   id: root
   clip: true

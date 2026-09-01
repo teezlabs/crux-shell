@@ -1,13 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// Shared chrome for every single-icon bar module (Launcher, ControlCenter,
-// Wifi, Bluetooth, Sound, ClaudeUsage, Clipboard, Wallpaper, Settings):
-// chamfered 32px cell (§4 chamferModule, cutTopRight+cutBottomLeft — same
-// two-opposite-corner convention as every other chamfered element in
-// crux), hover-lit fill, tertiary border when `attention` is set. Content
-// (a Canvas/Text glyph) is the default property so each widget file stays
-// just its glyph-drawing + tap handling.
+// Shared chamfered-cell chrome for single-icon bar modules; glyph content is the default property.
 Item {
   id: root
 

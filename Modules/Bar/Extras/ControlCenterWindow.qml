@@ -11,16 +11,7 @@ import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Control Center — v2 spec §6.3, rebuilt on Chamfer/SegMeter against the
-// actual mockup PDF. Built only with rows crux has real backing for: Wifi/
-// Bluetooth radios, mic mute, volume, brightness (only if a backlight
-// device actually exists — most of this project's dev boxes are desktops
-// with none), idle-inhibit, screenshot (rishot, the user's own tool — not
-// grim directly), and live CPU/MEM/TEMP/DISK telemetry. Night light,
-// screen recording and color-picker aren't implemented yet (no service/
-// binary backing them — wf-recorder and hyprpicker aren't installed on
-// this box) — shown disabled rather than faked, never omitted outright
-// (the mockup's grid shape stays intact either way).
+// Control Center. Only rows with real backing are wired up; unimplemented ones (night light, recording, color-picker) show disabled, not omitted.
 PanelWindow {
   id: root
 
@@ -33,12 +24,7 @@ PanelWindow {
   readonly property bool _barBottom: root._barPos === "bottom"
   readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 20
 
-  // Set by the bar icon that opened this popup (its own position mapped
-  // into the bar window's local space, via mapToItem(null, 0, 0)) so the
-  // popup can line up with it instead of always sitting in a generic
-  // corner. -1 means "not set" (e.g. opened via IPC, not a click) — falls
-  // back to the old fixed near-corner inset in that case. See
-  // SoundMenuWindow.qml for the full cross-window-coordinate reasoning.
+  // Bar-icon trigger position, mapped into this popup's space; -1 = not set (IPC open). See SoundMenuWindow.qml.
   property point triggerPos: Qt.point(-1, -1)
   readonly property bool _hasTrigger: triggerPos.x >= 0
   readonly property real _triggerX: triggerPos.x + Settings.data.bar.floatMargin
@@ -355,15 +341,7 @@ PanelWindow {
   WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
   exclusionMode: ExclusionMode.Ignore
 
-  // Screen-specific target ("controlCenter_DP-1", not just "controlCenter")
-  // — this window is instantiated once per screen from shell.qml, and a
-  // bar widget must be able to reach *its own screen's* instance
-  // specifically, or clicking the icon on a second monitor would open the
-  // popup on whichever screen happened to own the plain "controlCenter"
-  // name (confirmed real bug: gating to Quickshell.screens[0] only meant
-  // every screen's click opened screen 0's popup). No `enabled` gate is
-  // needed here since the name itself is already unique per screen — every
-  // instance can register its own without colliding.
+  // Per-screen IPC target name ("controlCenter_DP-1") so each monitor's icon reaches its own instance, not screen 0's.
   IpcHandler {
     target: "controlCenter_" + (root.targetScreen ? root.targetScreen.name : "0")
     function toggle() {
@@ -405,11 +383,7 @@ PanelWindow {
     }
   }
 
-  // WIFI/BLUETOOTH tiles' right-click "expand" state — the full network/
-  // device list (WifiPanelContent/BluetoothPanelContent, the same
-  // components the standalone Wifi.qml/Bluetooth.qml popups use) renders
-  // inline inside this same card instead of opening a separate popup
-  // window, so only one of the two is ever open at a time.
+  // WIFI/BLUETOOTH tiles' right-click "expand" state; renders the shared panel content inline instead of a popup.
   property bool wifiExpanded: false
   property bool btExpanded: false
 

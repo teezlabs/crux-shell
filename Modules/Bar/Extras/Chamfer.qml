@@ -1,12 +1,7 @@
 import QtQuick
 import QtQuick.Shapes
 
-// Chamfered-rectangle background — spec §4: "radius: 0 everywhere. Corners
-// are chamfered, not rounded." Per-corner cut flags so a panel can chamfer
-// only the corners it isn't anchored against (§4: "Chamfer only the corners
-// a panel is not anchored against"). PathPolyline over a computed point list
-// rather than a fixed chain of PathLine elements, since the number of
-// vertices changes with how many corners are cut.
+// Chamfered-rectangle background, no rounded corners. Per-corner cut flags; PathPolyline since vertex count varies with cuts.
 Shape {
   id: root
 

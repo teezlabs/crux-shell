@@ -4,12 +4,7 @@ import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// v2 spec §6.1 Layout module: "TILE · MASTER", label grey. Both halves are
-// real Hyprland state, not decoration: left is the focused window's
-// tiled/floating state (hyprctl activewindow), right is the active layout
-// engine (hyprctl getoption general:layout — dwindle/master/whatever plugin
-// is loaded, e.g. this box's own "scrolling" from the scrolloverview plugin
-// per the crux skill's Hyprland config notes).
+// "TILE · MASTER": left is focused window's tiled/floating state, right is the active layout engine — both real Hyprland state.
 Item {
   id: root
 

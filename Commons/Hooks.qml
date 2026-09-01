@@ -5,19 +5,10 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 
-// Pre/post-action shell hooks — ported from noctalia-shell's
-// Services/Control/HooksService.qml. Every settings field
-// (Settings.data.hooks.*) is a shell command string run via `sh -lc` at
-// the corresponding moment, guarded by Settings.data.hooks.enabled.
-// Placeholder substitution matches noctalia: each runner documents its
-// $1/$2/$3 slots. The session hook is the one genuinely blocking one —
-// power-menu actions wait for it to finish before running (noctalia's
-// runPowerHook semantics); every other hook is fire-and-forget.
-//
-// Deliberately dropped from the noctalia original: the
-// performanceModeEnabled/Disabled pair (crux has no performance-mode
-// concept; the Battery popup's power-profiles switcher is a different
-// thing) — the settings rows for those were dropped alongside them.
+// Pre/post-action shell hooks. Each Settings.data.hooks.* field is a shell
+// command run via `sh -lc`, guarded by hooks.enabled. Only the session
+// hook blocks (power-menu actions wait for it); everything else is
+// fire-and-forget.
 Singleton {
   id: root
 
@@ -30,10 +21,8 @@ Singleton {
 
   // ---- Firing points (live-bound to Settings.data) ----
 
-  // Every wallpaper set routes through Settings.data.wallpaper.path
-  // (shell.qml's `wallpaper` IPC, WallpaperTab's grid, the embedded skwd
-  // picker's apply, WallpaperThemeStrip) — watching the property catches
-  // all of them, no per-call-site wiring needed.
+  // Every wallpaper set routes through Settings.data.wallpaper.path —
+  // watching the property catches all of them, no per-call-site wiring needed.
   Connections {
     target: Settings.data.wallpaper
     function onPathChanged() {

@@ -4,12 +4,8 @@ import Quickshell.Services.Pipewire
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Volume control on the bar: click opens the output/volume popup, scroll
-// up/down adjusts volume directly, right-click toggles mute. Styled to
-// match StatusGroup.qml's "LABEL value" module treatment (BarModule +
-// StatText) rather than a bare icon square, for visual consistency with
-// the other text-based bar readouts — "status is text, not glyphs" per
-// spec §3, same philosophy StatusGroup already follows.
+// Volume control: click opens the volume popup, scroll adjusts, right-click toggles mute.
+// Styled as "LABEL value" (StatText) per spec §3's "status is text, not glyphs".
 Item {
   id: root
 

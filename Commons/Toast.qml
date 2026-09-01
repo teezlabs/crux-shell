@@ -2,20 +2,10 @@ pragma Singleton
 
 import QtQuick
 
-// Lightweight transient status-message toasts ("Wallpaper applied", "Theme
-// updated") — distinct from Modules/Bar/Extras/NotificationsWindow.qml's
-// persistent, urgent, dismissible notification cards (real desktop
-// notifications, per-urgency auto-expiry, action buttons, a "clear all"
-// footer). A toast is fire-and-forget: one line of text, no actions, no
-// dismiss control, no urgency coloring — it fades in, sits briefly, fades
-// back out on its own.
-//
-// Ported down from noctalia-shell's Modules/Toast/{Toast,ToastOverlay,
-// ToastScreen}.qml (~683 lines: title+description+icon+type+action-button+
-// swipe-to-dismiss+per-screen queueing). Crux keeps only what's actually
-// useful here — a single message string, a duration, and a FIFO queue —
-// rendered by one global overlay (Modules/OSD/ToastOverlay.qml) instead of
-// an instance per screen.
+// Lightweight transient status toasts ("Wallpaper applied") — fire-and-
+// forget, one line, no actions/dismiss/urgency. Distinct from
+// NotificationsWindow.qml's real, dismissible desktop notifications.
+// Rendered by one global overlay (OSD/ToastOverlay.qml), FIFO queue.
 QtObject {
   id: root
 

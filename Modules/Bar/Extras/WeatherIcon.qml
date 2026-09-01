@@ -35,13 +35,7 @@ Canvas {
     }
   }
 
-  // Filled overlapping circles rather than a single stroked multi-arc path
-  // — chaining ctx.arc() calls with mismatched start/end angles into one
-  // stroked outline self-intersected into a tangled scribble at small sizes
-  // (confirmed by screenshot: looked fine-ish at 40px, a garbled knot at
-  // 22px). Four solid circles filled together (nonzero winding rule fuses
-  // overlapping closed loops cleanly, no chained-arc discontinuities to go
-  // wrong) reads as a simple, robust cloud silhouette at any size.
+  // Filled overlapping circles, not a stroked multi-arc path — chained arcs self-intersected into a tangled scribble at small sizes.
   function drawCloud(ctx, cx, cy, scale) {
     ctx.fillStyle = root.strokeColor;
     ctx.beginPath();

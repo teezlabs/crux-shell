@@ -6,11 +6,7 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Brightness popup: interactive segmented-meter slider, same structural
-// pattern as SoundMenuWindow.qml's volume slider. `controller` is the
-// Brightness.qml widget instance that opened this popup — it owns the
-// actual brightnessctl detect/get/set state, this just reads/writes
-// through it rather than duplicating that logic.
+// Brightness popup slider; `controller` (the Brightness.qml widget) owns the actual brightnessctl state.
 PanelWindow {
   id: root
 

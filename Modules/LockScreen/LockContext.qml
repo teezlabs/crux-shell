@@ -4,11 +4,8 @@ import Quickshell.Io
 import Quickshell.Services.Pam
 import qs.Commons
 
-// Real PAM auth, ported from noctalia-shell's Modules/LockScreen/LockContext.qml
-// (crux skill: "port the real logic, adapt the UI shell"). Trimmed of
-// noctalia-only features crux has no equivalent for yet — i18n, fprintd,
-// an auto-start-auth setting. PamContext itself is Quickshell's own
-// Quickshell.Services.Pam module, not something crux/noctalia wrote.
+// Real PAM auth, ported from noctalia-shell's LockContext. Trimmed of
+// noctalia-only features crux lacks yet (i18n, fprintd, auto-start-auth).
 Scope {
   id: root
 

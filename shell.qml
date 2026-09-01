@@ -1,11 +1,7 @@
 //@ pragma UseQApplication
-// crux shell — boot smoke test. Launch with `qs -c crux`.
-//
-// UseQApplication is required for QsMenuAnchor.open() (Tray.qml's real
-// right-click DBusMenu popups) — without it, Quickshell starts in
-// QGuiApplication mode and every QsMenuAnchor.open() call fails outright
-// with "quickshell was not started in QApplication mode" (confirmed via
-// boot log: this was silently breaking every tray right-click).
+// crux shell entry point. Launch with `qs -c crux`.
+// UseQApplication is required for Tray.qml's right-click DBusMenu popups
+// (QsMenuAnchor.open() fails without it) — don't remove.
 
 import QtQuick
 import QtQuick.Effects
@@ -21,11 +17,9 @@ import qs.Modules.LockScreen
 import qs.Modules.OSD
 import qs.Modules.Polkit
 import qs.Modules.Tooltip
-// Not instantiated here — SettingsWindow is opened by the dynamically
-// Loader-loaded Settings.qml bar widget, which can't resolve a qs.Modules.*
-// module on its own. Statically importing it once here registers it with
-// the engine so the dynamic loader's own `import qs.Modules.SettingsPanel`
-// resolves. See crux skill for the full gotcha writeup.
+// Not instantiated here — statically imported once so the Settings.qml bar
+// widget's own dynamic Loader can resolve qs.Modules.SettingsPanel. See
+// crux skill's SKILL.md.
 import qs.Modules.SettingsPanel
 import qs.Modules.SettingsPanel.Controls
 
@@ -45,11 +39,7 @@ ShellRoot {
   // <screen>" IPC target. Use bin/crux-focused-ipc from a keybind.
   WallpaperSelectorWindow {}
 
-  // "wallpaper set"/"retheme" stay as flat, screen-agnostic targets — the
-  // global theme and Settings.data.wallpaper.path aren't per-screen
-  // concepts, so anything scripting a wallpaper change externally (bin/
-  // crux-wallpaper-apply, a plugin) has one stable target regardless of
-  // which monitor's browser window is open.
+  // Flat, screen-agnostic IPC target — wallpaper.path/theme aren't per-screen concepts.
   IpcHandler {
     target: "wallpaper"
     function set(path: string): void {
@@ -65,15 +55,9 @@ ShellRoot {
     }
   }
 
-  // Wallpaper auto-cycle — noctalia's Wallpaper "Automation" subtab: rotate
-  // to a new wallpaper from Settings.data.wallpaper.directory on a timer.
-  // One global instance (not per-screen) since it drives the single shared
-  // wallpaper.path setting, same one the picker/IPC `wallpaper set` above
-  // write to — reuses that exact set+retheme path.
-  // Boot init for singletons whose logic must not run at import time (Hooks'
-  // startup hook, Idle's timeout monitors) — both self-handle Settings not
-  // being loaded yet (see Hooks.qml/Idle.qml's own init()), so this can fire
-  // immediately rather than waiting on Settings.isLoaded itself.
+  // Boot init for singletons whose logic must not run at import time
+  // (Hooks/Idle self-handle Settings not being loaded yet via their own
+  // init()), so this can fire immediately.
   Timer {
     id: bootTimer
     interval: 0
@@ -167,74 +151,6 @@ ShellRoot {
     }
   }
 
-  // Receives live wallpaper-derived colors from aurora-wallpaper-theme
-  // (matugen -> hue-anchored ANSI colors.toml text -> here), the same
-  // "shell.applyTheme(colorsB64, shellB64)" IPC contract Omarchy Quattro's
-  // shell exposed — colorsB64 is base64-encoded colors.toml *text*, parsed
-  // with a lenient line-by-line `key = "value"` scan (shellB64 is unused;
-  // Omarchy's version used it for a second embedded shell-vars.sh payload
-  // crux has no equivalent for). See crux skill's "Wallpaper + theming"
-  // section for the full pipeline this feeds.
-  IpcHandler {
-    target: "shell"
-
-    // QML's JS engine has no atob/btoa (those are browser globals, not
-    // part of the ECMAScript core Qt's QJSEngine implements) — decode
-    // base64 by hand instead.
-    function _base64Decode(b64: string): string {
-      var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-      var str = b64.replace(/[^A-Za-z0-9+/]/g, "");
-      var output = "";
-      for (var i = 0; i < str.length; i += 4) {
-        var e1 = chars.indexOf(str.charAt(i));
-        var e2 = chars.indexOf(str.charAt(i + 1));
-        var e3 = chars.indexOf(str.charAt(i + 2));
-        var e4 = chars.indexOf(str.charAt(i + 3));
-        var c1 = (e1 << 2) | (e2 >> 4);
-        var c2 = ((e2 & 15) << 4) | (e3 >> 2);
-        var c3 = ((e3 & 3) << 6) | e4;
-        output += String.fromCharCode(c1);
-        if (e3 !== -1)
-          output += String.fromCharCode(c2);
-        if (e4 !== -1)
-          output += String.fromCharCode(c3);
-      }
-      return output;
-    }
-
-    function applyTheme(colorsB64: string, shellB64: string): void {
-      var text = _base64Decode(colorsB64);
-      var map = ({});
-      var lines = text.split("\n");
-      for (var i = 0; i < lines.length; i++) {
-        var m = lines[i].match(/^(\w+)\s*=\s*"([^"]*)"/);
-        if (m)
-          map[m[1]] = m[2];
-      }
-      var theme = Settings.data.theme;
-      if (map.accent)
-        theme.mPrimary = map.accent;
-      if (map.background) {
-        theme.mSurface = map.background;
-        theme.mOnPrimary = map.background;
-        theme.mOnSecondary = map.background;
-        theme.mOnError = map.background;
-      }
-      if (map.foreground)
-        theme.mOnSurface = map.foreground;
-      if (map.dark_background)
-        theme.mSurfaceVariant = map.dark_background;
-      if (map.dark_foreground)
-        theme.mOnSurfaceVariant = map.dark_foreground;
-      if (map.muted)
-        theme.mOutline = map.muted;
-      if (map.red) {
-        theme.mSecondary = map.red;
-        theme.mError = map.red;
-      }
-    }
-  }
-
   Variants {
     model: Quickshell.screens
 
@@ -245,43 +161,17 @@ ShellRoot {
 
       readonly property string barPosition: Settings.isLoaded ? Settings.getBarPositionForScreen(screen.name) : "top"
       readonly property bool barIsVertical: barPosition === "left" || barPosition === "right"
-      // A screen taller than it is wide (a physically rotated portrait
-      // monitor, e.g. this box's DP-1) makes a "top"/"bottom" bar span its
-      // *short* edge — much less room than a normal landscape top bar has,
-      // even though the bar itself is still a physically horizontal strip.
-      // Widget-internal content (Clock's date+time, StatusGroup's NET/VOL
-      // pairs, etc.) should use the same compact/stacked style a true
-      // vertical bar already has for exactly that reason — see
-      // Bar.qml/BarSection.qml's contentVertical.
       readonly property bool screenIsPortrait: screen.height > screen.width
-      // NOT blanket-applied to every widget (see BarWidgetLoader.qml's
-      // _compactSafeIds) — confirmed real breakage doing that: Tray's and
-      // Workspaces' `vertical` prop means "stack items along the bar's long
-      // axis", which only has room on a real vertical (left/right) bar.
-      // Forcing it on for a horizontal top bar just because the screen is
-      // portrait made Tray's icons stack downward past the bar's own height
-      // with nothing bounding them. Only widgets confirmed to fit a modest
-      // thickness bump (short text stacks, not multi-item grids) opt in.
+      // See crux skill's notes.md (Portrait-monitor bar section) — not
+      // blanket-applied to every widget, only ones confirmed safe.
       readonly property bool contentVertical: barIsVertical || screenIsPortrait
-      // contentVertical's compact/stacked widget styles (2-3 lines) need
-      // more cross-axis room than the bar's normal single-line thickness
-      // provides — true vertical bars already have that room along their
-      // own long axis, but a "top"/"bottom" bar's cross-axis *is* its
-      // thickness setting, which doesn't grow on its own just because the
-      // content inside got taller. Bump it here specifically for the
-      // portrait-on-horizontal-bar case (confirmed via screenshot: without
-      // this, Clock's stacked HH/mm/date visibly overflowed past the
-      // bottom of its own chamfered module).
       readonly property bool compactOnHorizontalBar: contentVertical && !barIsVertical
       readonly property int effectiveThickness: compactOnHorizontalBar ? Math.max(Settings.data.bar.thickness, 56) : Settings.data.bar.thickness
       readonly property bool autoHide: Settings.data.bar.autoHide
       readonly property bool shownOnThisScreen: Settings.data.bar.monitors.length === 0 || Settings.data.bar.monitors.includes(screen.name)
       property bool hovered: false
-      // Auto-hide fades the bar out until the pointer reaches its screen
-      // edge; the PanelWindow itself always stays mapped (full opacity 0
-      // wouldn't remove it from the compositor, wlr-layer-shell surfaces
-      // aren't reactive to CSS-style display:none) so hover detection still
-      // works while it's visually hidden.
+      // PanelWindow stays mapped even when auto-hidden (layer-shell surfaces
+      // aren't display:none-reactive), so hover detection still works.
       readonly property bool barShown: !autoHide || hovered
 
       anchors {

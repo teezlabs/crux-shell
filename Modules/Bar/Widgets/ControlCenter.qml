@@ -3,11 +3,7 @@ import Quickshell
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Bar icon opening the Control Center popup directly (StatusGroup's NET/VOL
-// segments also open it). StatusGroup already owns the one ControlCenterWindow
-// instance/IPC registration for this screen (two instances would collide —
-// see the crux skill's IPC section) — this widget just calls it via IPC
-// rather than instantiating a second window.
+// Opens the Control Center popup via IPC — StatusGroup owns the one ControlCenterWindow instance per screen.
 Item {
   id: root
 

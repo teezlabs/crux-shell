@@ -8,11 +8,7 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Wallpaper browser, built fresh on crux's own chamfer/Color/Tokens system
-// — centered floating card, same convention as SettingsWindow/PowerMenu
-// (not the v2 spec PDF's literal fullscreen mockup — asked to switch to
-// centered). Local library only (no Steam Workshop/tag cloud; dropped from
-// scope). See crux skill's notes.md.
+// Wallpaper browser: centered floating card (not the spec's fullscreen mockup). Local library only. See crux skill's notes.md.
 PanelWindow {
   id: root
 
@@ -400,12 +396,8 @@ PanelWindow {
     root.selectedIndex = 0;
   }
 
-  // Keyboard grid nav is the default mode on open — don't steal focus into
-  // searchInput here, or every arrow/Enter/R shortcut below (all gated on
-  // !searchInput.activeFocus) goes dead until the user clicks away from it.
-  // Bound to the Flickable's own real width (Layout-resolved at runtime)
-  // rather than hand-computed from card.width — the rail/panel/spacing
-  // widths around it aren't worth re-deriving by hand and getting wrong.
+  // Don't steal focus into searchInput on open, or arrow/Enter/R shortcuts below (gated on !activeFocus) go dead.
+  // Column count from the Flickable's real width, not hand-computed from card.width.
   readonly property int _columns: Math.max(1, Math.floor(gridFlick.width / 150))
 
   function _moveSelection(dx, dy) {

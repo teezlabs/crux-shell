@@ -7,12 +7,7 @@ import Quickshell.Services.Mpris
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Media player popover (§6.6): 396 wide, under the bar media module. Every
-// control here is real MPRIS (Quickshell.Services.Mpris) — position/length,
-// seek, shuffle, loop-state cycling and prev/play-pause/next are all live
-// against whatever player is active, gated on the player's own
-// can*/​*Supported flags rather than assumed. No fabricated "year" (MPRIS
-// doesn't reliably expose one) — album name only.
+// Media player popover, all controls live MPRIS, gated on the player's own can*/Supported flags. No fabricated "year".
 PanelWindow {
   id: root
 
@@ -35,12 +30,7 @@ PanelWindow {
   }
   readonly property bool isPlaying: activePlayer ? activePlayer.playbackState === MprisPlaybackState.Playing : false
 
-  // MPRIS players don't reliably emit positionChanged during normal
-  // playback (the spec leaves position live-updates to polling) — reading
-  // _positionTick (otherwise unused) inside this binding forces it to
-  // re-evaluate every second regardless, same "read your own property to
-  // force a stale binding to re-run" trick the crux skill documents for
-  // BarSection.qml's Grid sizing.
+  // MPRIS doesn't reliably emit positionChanged during playback; _positionTick forces re-evaluation every second.
   property int _positionTick: 0
   readonly property real position: {
     _positionTick;

@@ -1,12 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 
-// Top-level "Hooks" settings tab: General/Hooks as subtabs, same
-// SubTabBar structure as IdleTab. Real backend is Commons/Hooks.qml —
-// pre/post-action shell hooks, ported from noctalia-shell's HooksService.
-// Noctalia's performance-mode pair of hooks was deliberately dropped (crux
-// has no performance-mode concept; the Battery popup's power-profiles
-// switcher is a different thing).
+// Top-level Hooks tab: General/Hooks subtabs. Backend is Commons/Hooks.qml.
 ColumnLayout {
   id: root
   spacing: 14

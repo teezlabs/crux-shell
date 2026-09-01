@@ -24,16 +24,8 @@ PanelWindow {
   readonly property bool _barBottom: root._barPos === "bottom"
   readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 20
 
-  // Set by the bar icon that opened this popup (its own position mapped
-  // into the bar window's local space, via mapToItem(null, 0, 0)) so the
-  // popup can line up with it instead of always sitting in a generic
-  // corner. -1 means "not set" (e.g. opened via IPC, not a click) — falls
-  // back to the old fixed near-corner inset in that case. The bar window
-  // and this popup window are two separate Wayland surfaces with their own
-  // local origins — Wayland gives clients no real "global screen position"
-  // API, but since both are anchored on the same screen with known margins
-  // (the bar's `floatMargin` on all sides vs. this popup's 0), adding
-  // floatMargin back converts the bar-local point into this popup's space.
+  // Bar-icon position (mapToItem into bar-local space) so the popup lines up with it; -1 = not set (e.g. IPC open),
+  // falls back to a fixed corner inset. floatMargin converts bar-local coords into this popup's separate surface space.
   property point triggerPos: Qt.point(-1, -1)
   readonly property bool _hasTrigger: triggerPos.x >= 0
   readonly property real _triggerX: triggerPos.x + Settings.data.bar.floatMargin

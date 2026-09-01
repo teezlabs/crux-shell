@@ -1,12 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// Control Center 2x2 toggle tile (§6.3): active tile gets primaryContainer
-// fill + a small filled triangle in the top-right corner as the on-marker
-// (per spec text — confirmed against the mockup, which shows exactly that
-// on the WIFI/BLUETOOTH tiles). Inactive/unavailable: plain surface, grey
-// text, non-interactive when `enabled` is false (no fake toggle for a
-// service crux doesn't have, e.g. Night Light).
+// Control Center toggle tile. Active: fill + corner triangle marker. Non-interactive when `enabled` is false (no backing service).
 Item {
   id: root
 

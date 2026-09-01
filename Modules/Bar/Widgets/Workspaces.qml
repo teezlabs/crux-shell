@@ -5,19 +5,8 @@ import Quickshell.Hyprland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// v2 spec §6.1 Workspaces module: fixed cells, 28px wide each (spec assumes
-// a fixed 5-workspace layout, not "however many exist" — matches the
-// single-monitor-primary target). Active: primaryContainer fill,
-// primaryContainerText text, 2px primary underline inset 6px each side.
-// Occupied: surfaceText. Empty: disabledText.
-//
-// Which IDs each monitor shows is read from real Hyprland config
-// (`hyprctl workspacerules -j`'s per-rule "monitor" field), not hardcoded
-// 1-5 for every screen — this box's own hyprland.lua assigns 1-5 to DP-2
-// and 6-9 to DP-1 (`hl.workspace_rule({ workspace = "N", monitor = "..." })`),
-// and a fixed 1-5 on both bars didn't reflect that at all. Falls back to
-// 1-5 for a monitor with no explicit rule (e.g. a single-monitor setup
-// with no workspace_rule entries at all).
+// Workspaces module (spec §6.1): fixed 28px cells, active/occupied/empty color states.
+// Per-monitor workspace IDs read from `hyprctl workspacerules -j`, not hardcoded 1-5; falls back to 1-5 if no rule.
 Item {
   id: root
 
@@ -149,19 +138,8 @@ Item {
           width: root.vertical ? shortSide : longSide
           height: root.vertical ? longSide : shortSide
 
-          // Only the first and last cells chamfer — matching the module's
-          // own two cut corners (bottom-left, top-right) so the group reads
-          // as one continuous chamfered shape at its outer edges. Everything
-          // in between is a plain highlighted square, per explicit request.
-          //
-          // Which corner goes with "first" flips with orientation: on a
-          // horizontal bar the group reads left-to-right, so the first
-          // (leftmost) cell takes the bottom-left cut and the last
-          // (rightmost) takes top-right. On a vertical bar the group reads
-          // top-to-bottom instead, so the first (topmost) cell should take
-          // the top-right cut and the last (bottommost) the bottom-left —
-          // explicitly requested, since the un-flipped version put the
-          // "wrong" corner (bottom-left) at the top of the strip.
+          // Only first/last cells chamfer, matching the module's outer corners. Which corner goes with
+          // "first" flips with orientation (requested after the un-flipped version looked wrong on a vertical bar).
           Chamfer {
             anchors.fill: parent
             visible: cell.active && (cell.isFirst || cell.isLast)

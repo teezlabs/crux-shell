@@ -3,13 +3,7 @@ import Quickshell.Services.UPower
 import qs.Modules.Bar.Extras
 import qs.Commons
 
-// Battery percentage/charging-state readout, ported from noctalia's
-// Services/Hardware/BatteryService.qml logic (state → charging/plugged-in/
-// low/critical) but read straight off Quickshell's own UPower.displayDevice
-// here, same "no separate service singleton" spirit as Sound.qml's direct
-// Pipewire access. Auto-hides on a desktop with no battery (displayDevice
-// present but !isPresent). Click opens BatteryMenuWindow (time remaining,
-// health, power-profile switcher).
+// Battery %/charging state via UPower.displayDevice. Auto-hides if !isPresent. Click opens BatteryMenuWindow.
 Item {
   id: root
 

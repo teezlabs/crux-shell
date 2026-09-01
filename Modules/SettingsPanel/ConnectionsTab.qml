@@ -7,15 +7,8 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 
-// Deliberately NOT a full network-manager UI (noctalia's equivalent is
-// ~2400 lines for "more knobs on a thing that already works" — see
-// ROADMAP.md's own assessment). WifiMenuWindow.qml/WifiPanelContent.qml
-// and BluetoothMenuWindow.qml/BluetoothPanelContent.qml already cover
-// live scan/connect/disconnect/forget in their popups. This tab is only
-// the things those popups genuinely don't do: saved-network autoconnect
-// priority (a real NetworkManager field, nmcli connection show doesn't
-// surface it anywhere else in crux) and Bluetooth discoverability
-// (BluetoothAdapter.discoverable, also unexposed elsewhere).
+// Not a full network-manager UI — just autoconnect priority and Bluetooth
+// discoverability, the two things the Wifi/Bluetooth popups don't expose.
 Flickable {
   id: root
   clip: true

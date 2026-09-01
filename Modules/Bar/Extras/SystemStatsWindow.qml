@@ -6,14 +6,8 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Full system-telemetry panel — a fuller, dedicated view than the bar's
-// SystemMonitor readout (CPU%/RAM% only). Ported metric collection 1:1 from
-// ControlCenterWindow.qml's telemetry section (same /proc/stat delta-based
-// CPU calc, same `sensors -j` k10temp/fallback temperature probe, same
-// `df` disk parsing, same /proc/uptime parsing) rather than reinventing any
-// of it, then adds per-core CPU breakdown, every real mounted filesystem
-// (not just "/"), and load average on top. Same PanelWindow/Chamfer/
-// dual-IpcHandler popup pattern as every other crux popup.
+// Full system-telemetry panel, fuller than the bar's CPU%/RAM% readout. Metric collection ported 1:1 from ControlCenterWindow.qml,
+// plus per-core CPU breakdown, every mounted filesystem, and load average.
 PanelWindow {
   id: root
 
@@ -26,10 +20,7 @@ PanelWindow {
   readonly property bool _barBottom: root._barPos === "bottom"
   readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 20
 
-  // Set by the bar icon that opened this popup (mapToItem(null, 0, 0)) so
-  // the popup lines up with it instead of a generic corner. -1 means "not
-  // set" (e.g. opened via IPC) — falls back to a fixed near-corner inset.
-  // See SoundMenuWindow.qml/ControlCenterWindow.qml for the full reasoning.
+  // Bar-icon trigger position, mapped into this popup's space; -1 = not set (IPC open). See SoundMenuWindow.qml.
   property point triggerPos: Qt.point(-1, -1)
   readonly property bool _hasTrigger: triggerPos.x >= 0
   readonly property real _triggerX: triggerPos.x + Settings.data.bar.floatMargin
@@ -274,13 +265,7 @@ PanelWindow {
   WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
   exclusionMode: ExclusionMode.Ignore
 
-  // Screen-specific target ("systemStats_DP-1", not just "systemStats") —
-  // this window is instantiated once per screen (as a child of the
-  // SystemMonitor bar widget), and a bar widget must be able to reach *its
-  // own screen's* instance specifically, or clicking on a second monitor
-  // would open the popup on whichever screen happened to own the plain
-  // "systemStats" name. No `enabled` gate is needed here since the name
-  // itself is already unique per screen.
+  // Per-screen IPC target ("systemStats_DP-1") so each monitor's icon reaches its own instance.
   IpcHandler {
     target: "systemStats_" + (root.targetScreen ? root.targetScreen.name : "0")
     function toggle() {

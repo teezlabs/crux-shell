@@ -4,13 +4,8 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// One of these is instantiated per screen (see shell.qml's per-screen
-// Variants loop, alongside VolumeOsd) and just renders whatever
-// TooltipService currently says to show. Full-screen, transparent,
-// click-through (mask: Region {} — same trick VolumeOsd.qml/ToastOverlay.qml
-// use so a display-only overlay never steals a click meant for something
-// under it), so this can sit above the bar without breaking any widget's
-// own hover/tap handling.
+// One per screen (shell.qml's Variants loop). Full-screen, transparent,
+// click-through (mask: Region {}), renders whatever TooltipService says.
 PanelWindow {
   id: root
 
@@ -43,12 +38,8 @@ PanelWindow {
   // Click-through — tooltips are display-only, never eat a click.
   mask: Region {}
 
-  // Bubble position, computed fresh whenever the hovered item, its
-  // geometry, the bubble's own measured size, or the screen changes.
-  // Prefers below the item (most bar layouts put widgets near the top or
-  // along an edge, so "below" usually has the most room); falls back
-  // above when there isn't space; always clamped so the bubble never
-  // runs off the screen edge.
+  // Bubble position: prefers below the item, falls back above, clamped
+  // to the screen edge.
   readonly property var _pos: {
     const item = _anchorItem;
     if (!item || !targetScreen)

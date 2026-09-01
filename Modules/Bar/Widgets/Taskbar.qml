@@ -4,14 +4,7 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Running-apps strip (noctalia's Modules/Bar/Widgets/Taskbar.qml, which
-// adds pinning/desktop-entry-icon-lookup/drag-reorder on top — out of
-// scope here). Same data source as ActiveWindow.qml: Quickshell.Wayland's
-// ToplevelManager (wlr-foreign-toplevel-management), which Hyprland
-// implements, gives the live window list directly without any
-// Hyprland-specific IPC. Filtered to the current monitor via each
-// toplevel's own `screens` list, same idea as Workspaces.qml filtering
-// Hyprland.workspaces by monitor name.
+// Running-apps strip via ToplevelManager (same source as ActiveWindow.qml), filtered to the current monitor.
 Item {
   id: root
 

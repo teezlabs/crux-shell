@@ -2,12 +2,7 @@ import QtQuick
 import QtQuick.Effects
 import qs.Commons
 
-// The real Arch Linux distro mark (/usr/share/pixmaps/archlinux-logo.svg,
-// shipped by the archlinux-logos package on every Arch box), recolored to
-// the active matugen accent via MultiEffect's full colorization rather than
-// Arch's own fixed brand blue — so it re-tints along with every other
-// themed element when the palette changes instead of standing out as a
-// fixed color.
+// Real Arch logo SVG, recolored to the active matugen accent via MultiEffect.
 Item {
   id: root
 

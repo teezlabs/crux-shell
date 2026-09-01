@@ -1,14 +1,8 @@
 import QtQuick
 import qs.Commons
 
-// Configurable-width blank gap for manual bar layout spacing (noctalia's
-// Modules/Bar/Widgets/Spacer.qml). Multiple independent instances are
-// expected in the same bar (e.g. two Spacers of different widths on
-// either side of a widget) — width lives on this widget's OWN entry in
-// Settings.data.bar.widgets.<section> (widgetData.width), not a single
-// shared Settings.data singleton, so each instance keeps its own size.
-// See BarWidgetRegistry.multiInstanceIds / BarWidgetsSubTab.qml's inline
-// editor for how that field gets edited.
+// Configurable-width blank gap for manual bar layout. Multi-instance: width lives on this widget's own
+// widgetData entry, not a shared Settings singleton (see BarWidgetRegistry.multiInstanceIds).
 Item {
   id: root
 

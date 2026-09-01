@@ -4,14 +4,8 @@ import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Caps/Num/Scroll lock indicator. `hyprctl devices -j` reports capsLock and
-// numLock per keyboard directly (same device-selection rule as
-// KeyboardLayout.qml, sharing Settings.data.keyboard.deviceName). Scroll
-// lock isn't in Hyprland's device JSON at all, and this box has no
-// /sys/class/leds/*::scrolllock LED to fall back to either (checked
-// directly — no lock LEDs exist in sysfs on this hardware), so its
-// indicator always reads as "unknown" (dim, not lit) rather than lying
-// about the state; the toggle to hide it entirely still works.
+// Caps/Num/Scroll lock indicator. capsLock/numLock come from `hyprctl devices -j`; scroll lock has no
+// source on this hardware (not in Hyprland's JSON, no sysfs LED either) so it always shows "unknown", not a bug.
 Item {
   id: root
 

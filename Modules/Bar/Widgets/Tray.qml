@@ -5,22 +5,12 @@ import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// v2 spec §6.1/§3 Tray module: real systray protocol integration
-// (Quickshell.Services.SystemTray). Spec §3's literal text calls for an
-// abstract "8×8 rotated square" per item, but the user explicitly asked for
-// real per-app tray icons instead — deliberate deviation, confirmed
-// request. IconImage (Quickshell.Widgets) resolves each item's `icon`
-// string through the icon theme the same way a taskbar would, rather than a
-// plain Image (which can't resolve bare icon-theme names, only direct
-// paths/URLs). tertiary-tinted ring when an item requests attention.
-//
-// Real interaction, not just activate(): most tray items that matter day to
-// day (NetworkManager, Bluetooth applets) are "onlyMenu" — they don't do
-// anything useful on a bare activate(), all their real functionality lives
-// behind their DBusMenu (modelData.menu/hasMenu/onlyMenu). QsMenuPopup (a
-// crux-styled Chamfer/Color/Tokens menu, not the native platform QMenu
-// QsMenuAnchor.open() would show) renders that real menu — one shared
-// instance for the whole tray, positioned per-cell via mapToItem.
+// Real systray protocol integration (Quickshell.Services.SystemTray), real
+// per-app icons (not spec §3's abstract rotated-square glyph — confirmed
+// deliberate). Most tray items that matter (NetworkManager, Bluetooth
+// applets) are "onlyMenu" — real functionality lives behind their DBusMenu,
+// rendered here via QsMenuPopup (crux-styled, not the native QMenu),
+// not a bare activate().
 Item {
   id: root
 

@@ -3,13 +3,7 @@ import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// CPU% / RAM% readout module. Parsing logic (/proc/stat delta-based CPU
-// usage, /proc/meminfo MemTotal-MemAvailable) ported from noctalia's
-// Services/System/SystemStatService.qml. "Status is text, not glyphs" —
-// same StatText pairing StatusGroup uses. Click opens SystemStatsWindow, the
-// fuller telemetry panel (per-core CPU, memory, every real disk, temp,
-// uptime/load) — this readout stayed a pure display with no click handler
-// until now.
+// CPU%/RAM% readout (delta-based /proc/stat, MemTotal-MemAvailable). Click opens SystemStatsWindow for full telemetry.
 Item {
   id: root
 

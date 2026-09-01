@@ -4,12 +4,8 @@ import QtQuick
 import Quickshell
 import qs.Commons
 
-// Spacing/radius/font/animation tokens — lean subset of noctalia's
-// Commons/Style.qml (which has ~250 lines covering things crux doesn't
-// need yet, like shadow tuning and per-device UI scale ratios). Radius
-// tokens multiply by Settings.data.theme.radiusRatio the same way
-// noctalia's do, so a single settings-panel slider can go from sharp
-// (crux's current square-ish look) to fully rounded.
+// Spacing/radius/font/animation tokens. Radius tokens multiply by
+// Settings.data.theme.radiusRatio, so one slider goes sharp -> rounded.
 Singleton {
   id: root
 

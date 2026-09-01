@@ -4,30 +4,19 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 
-// Wallpaper -> theme color generation via matugen, called directly (no
-// intermediate colors.toml/base64/IPC round-trip — that pattern existed in
-// an earlier external pipeline built for an Omarchy-shaped shell.applyTheme
-// contract; crux's own theme schema already uses Material-You role names
-// almost 1:1 with matugen's own --json output, so this parses that JSON
-// directly and writes Settings.data.theme itself). Self-contained: crux
-// owns its whole wallpaper-to-theme pipeline, no external script dependency.
+// Wallpaper -> theme color generation via matugen, called directly — parses
+// matugen's --json output and writes Settings.data.theme itself, no
+// external script dependency.
 Singleton {
   id: root
 
   property bool running: false
   property string lastError: ""
 
-  // Direct role-name mapping — dark-mode variant only, since crux has no
-  // light/dark mode concept yet (see Style.qml/Settings.qml: no darkMode
-  // toggle exists). Add a light-mode branch here if that ever changes.
-  //
-  // --type comes from Settings.data.wallpaper.matugenScheme (scheme-fidelity
-  // by default — matches noctalia-shell's skwd, and stays close to the
-  // wallpaper's own saturation instead of Material 3's deliberately muted
-  // scheme-tonal-spot). --source-color-index picks which of an image's
-  // dominant candidate colors to theme from (see cycleColorIndex below) —
-  // it also skips matugen's interactive disambiguation prompt on its own,
-  // so no --prefer flag is needed alongside it.
+  // Dark-mode variant only — crux has no light/dark concept yet. --type is
+  // Settings.data.wallpaper.matugenScheme; --source-color-index picks which
+  // dominant color to theme from (see cycleColorIndex) and also skips
+  // matugen's interactive disambiguation prompt.
   // System-wide app retheming (Settings.data.wallpaper.templates.*).
   // Every output below is crux-named — Hyprland, kitty, GTK, btop, and
   // yazi's own config files reference these exact filenames (symlink,
@@ -91,11 +80,8 @@ Singleton {
           "output": Quickshell.env("HOME") + "/.config/btop/themes/crux.theme"
         }
       ],
-      // starship.toml has real user prompt config alongside its palette —
-      // matugen renders just the palette block to a staging file here,
-      // then bin/crux-splice-starship-palette (a post-hook) swaps it into
-      // starship.toml between marker comments, never touching anything
-      // else in that file.
+      // Renders just the palette block to a staging file; bin/crux-splice-
+      // starship-palette swaps it into starship.toml between markers.
       "starship": [
         {
           "input": "starship-palette-block.toml",
@@ -201,9 +187,7 @@ Singleton {
   }
 
   // Cycles to the next of an image's 5 candidate dominant colors (0-4,
-  // wrapping) and re-runs theme generation on the current wallpaper — the
-  // same "cycle through different Material You themes on one wallpaper"
-  // control noctalia-shell's skwd exposes as matugenColorIndex.
+  // wrapping) and re-runs theme generation on the current wallpaper.
   function cycleColorIndex() {
     Settings.data.wallpaper.matugenColorIndex = (Settings.data.wallpaper.matugenColorIndex + 1) % 5;
     root.generateFrom(Settings.data.wallpaper.path);
@@ -257,54 +241,11 @@ Singleton {
         theme.surfaceText = c.on_surface.dark.color;
         theme.surfaceTextMuted = c.on_surface_variant.dark.color;
 
-        // Also mirror into skwd-wall's own colors.json — the embedded
-        // wallpaper selector (Modules/Bar/Extras/skwd, ported from
-        // noctalia-shell) reads that file live via its own Colors.qml
-        // FileView, so writing it here keeps the picker's own chrome
-        // visually in sync with whatever crux itself just generated,
-        // instead of drifting from skwd-daemon's separately-tracked colors.
-        skwdColorsView.path = Quickshell.env("HOME") + "/.cache/skwd-wall/colors.json";
-        skwdColorsView.setText(JSON.stringify({
-          "primary": c.primary.dark.color,
-          "primaryText": c.on_primary.dark.color,
-          "primaryContainer": c.primary_container.dark.color,
-          "primaryContainerText": c.on_primary_container.dark.color,
-          "onPrimary": c.on_primary.dark.color,
-          "secondary": c.secondary.dark.color,
-          "secondaryText": c.on_secondary.dark.color,
-          "secondaryContainer": c.secondary_container.dark.color,
-          "secondaryContainerText": c.on_secondary_container.dark.color,
-          "tertiary": c.tertiary.dark.color,
-          "tertiaryText": c.on_tertiary.dark.color,
-          "tertiaryContainer": c.tertiary_container.dark.color,
-          "tertiaryContainerText": c.on_tertiary_container.dark.color,
-          "background": c.background.dark.color,
-          "backgroundText": c.on_background.dark.color,
-          "surface": c.surface.dark.color,
-          "surfaceText": c.on_surface.dark.color,
-          "surfaceVariant": c.surface_variant.dark.color,
-          "surfaceVariantText": c.on_surface_variant.dark.color,
-          "surfaceContainer": c.surface_container.dark.color,
-          "outline": c.outline.dark.color,
-          "shadow": c.shadow.dark.color,
-          "inverseSurface": c.inverse_surface.dark.color,
-          "inverseSurfaceText": c.inverse_on_surface.dark.color,
-          "inversePrimary": c.inverse_primary.dark.color,
-          "error": c.error.dark.color,
-          "errorText": c.on_error.dark.color,
-          "errorContainer": c.error_container.dark.color,
-          "errorContainerText": c.on_error_container.dark.color
-        }, null, 2));
-
         root._runPostHooks();
         Toast.show("Theme updated");
       } catch (e) {
         root.lastError = "Couldn't parse matugen output: " + e;
       }
     }
-  }
-
-  FileView {
-    id: skwdColorsView
   }
 }

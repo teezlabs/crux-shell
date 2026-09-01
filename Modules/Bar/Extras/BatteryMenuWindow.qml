@@ -7,12 +7,7 @@ import Quickshell.Services.UPower
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Battery detail popup: percent + status text, health (when the device
-// reports it), and a PowerSaver/Balanced/Performance switcher via
-// Quickshell's PowerProfiles singleton (talks to power-profiles-daemon over
-// DBus — silently a no-op if that daemon isn't running, same as noctalia's
-// own showPowerProfiles toggle). Same structural pattern as
-// SoundMenuWindow.qml/WifiMenuWindow.qml.
+// Battery detail popup: percent/status, health, and a power-profile switcher via PowerProfiles (no-op if the daemon isn't running).
 PanelWindow {
   id: root
 

@@ -6,20 +6,10 @@ import Quickshell.Wayland
 import qs.Commons
 
 // Real idle-timeout backend — ext-idle-notify-v1 via Quickshell.Wayland's
-// IdleMonitor, the same native Wayland protocol swayidle/hypridle use, not a
-// generated hypridle.conf + external process (crux has no idle infra at
-// all yet, and this box has hypridle installed but never configured).
-// Ported down from noctalia-shell's Services/Power/IdleService.qml (crux
-// skill: "port the real logic, adapt the UI shell") — trimmed of its
-// CompositorService abstraction (crux only targets Hyprland directly) and
-// its fade-to-black overlay (out of scope for this pass; each stage still
-// waits Settings.data.idle.fadeDurationSec before firing, cancellable by
-// any activity, just without the visual fade).
-//
-// Three built-in stages (screenOff/lock/suspend) plus arbitrary user-defined
-// custom commands, each backed by its own dynamically-created IdleMonitor
-// (Qt.createQmlObject, same as noctalia — IdleMonitor throws on a compositor
-// without the protocol, so every creation is wrapped in try/catch).
+// IdleMonitor (native Wayland protocol), not a generated hypridle.conf.
+// Three built-in stages (screenOff/lock/suspend) plus custom commands,
+// each its own dynamically-created IdleMonitor (throws without the
+// protocol, so wrapped in try/catch).
 Singleton {
   id: root
 

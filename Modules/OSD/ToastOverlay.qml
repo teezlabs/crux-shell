@@ -4,18 +4,9 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Toast overlay: renders Commons/Toast.qml's queued messages as a small
-// chamfered pill, bottom-center of the primary screen. One global instance
-// (see shell.qml) rather than per-screen like VolumeOsd.qml/
-// NotificationsWindow.qml — a toast ("Theme updated", "Wallpaper applied")
-// isn't tied to any one monitor's audio/notification state, so a single
-// shared surface is simpler and reads just as correctly.
-//
-// Structurally this is VolumeOsd.qml's own "transient, auto-hiding, no user
-// interaction" pattern (opened flag + Timer + click-through mask), plus a
-// small FIFO queue on top so back-to-back Toast.show() calls (e.g. cycling
-// through wallpaper accents quickly) each get their own brief pill instead
-// of clobbering one another mid-fade.
+// Toast overlay: renders Commons/Toast.qml's queue as a chamfered pill,
+// bottom-center. One global instance (not per-screen like VolumeOsd), plus
+// a small FIFO queue so rapid Toast.show() calls don't clobber each other.
 PanelWindow {
   id: root
 

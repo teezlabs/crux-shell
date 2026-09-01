@@ -6,19 +6,8 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Power menu (§6.9): fullscreen scrim, row of 5 chamfered tiles (hollow
-// square icon, label, single-key hint). LOCK is default-focused
-// (primaryContainer fill + accent border), REBOOT's icon is tertiary,
-// SHUTDOWN's border/text is error. Keys L/S/E/R/P jump straight to an
-// action; ←→ move the keyboard selection; ⏎ confirms.
-//
-// Deviation from the literal spec: the mockup's key-hints (L/S/E/R/P)
-// read as instant single-press triggers, but this project's own earlier
-// session explicitly asked for a confirm step on anything destructive
-// (SessionMenuTab.qml's confirmActions setting) — kept here uniformly
-// across click, letter-key and arrow+Enter, rather than giving Shutdown a
-// bare single-keypress trigger the spec's cosmetic mockup didn't actually
-// need to defend.
+// Power menu: fullscreen scrim, row of 5 chamfered tiles. Keys L/S/E/R/P select; ←→ move selection; ⏎ confirms.
+// All paths go through a confirm step (SessionMenuTab.qml's confirmActions) — no bare single-keypress trigger for destructive actions.
 PanelWindow {
   id: root
 
@@ -188,15 +177,7 @@ PanelWindow {
           required property int index
           readonly property bool selected: index === root.selectedIndex
           readonly property bool armed: root.armedLabel === modelData.label
-          // Spec §6.9: only REBOOT (icon tertiary) and SHUTDOWN (border AND
-          // text error) carry a permanent tint, unconditionally, whether
-          // selected or not — everything else (including LOCK) is neutral
-          // until selected, at which point it takes the generic "accent"
-          // selection treatment. Previously every tile defaulted to a
-          // "primary" tint even unselected/unarmed (LOCK/SUSPEND/LOGOUT all
-          // showed a permanently primary-colored icon/text), which doesn't
-          // match "LOCK is default-focused" reading as a one-time initial
-          // selection state, not LOCK's own permanent color.
+          // Only REBOOT/SHUTDOWN carry a permanent tint; others (incl. LOCK) are neutral until selected.
           readonly property bool hasPermanentTint: modelData.tint === "error" || modelData.tint === "tertiary"
           readonly property color permanentTint: modelData.tint === "error" ? Color.error : Color.tertiary
           readonly property color accentColor: tile.hasPermanentTint ? tile.permanentTint : Color.primary

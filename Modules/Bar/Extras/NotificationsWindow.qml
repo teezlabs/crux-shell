@@ -6,16 +6,8 @@ import Quickshell.Services.Notifications
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Notifications (§6.4): persistent top-right stack (not click-triggered —
-// it appears whenever Commons/Notifs.qml has tracked notifications, same
-// as a real notification daemon's popup). Card: surfaceContainer @ 94%,
-// 2px left border by urgency (primary critical / tertiary normal / outline
-// low). Real actions (notification.actions[].invoke()), real dismiss.
-// Auto-expiry: 6s normal, 12s critical, never for resident — implemented
-// as a real per-notification dismiss() timer, not a visual-only fade,
-// since crux has no separate "collapse to history" state yet (see
-// ROADMAP.md's Notifications entry for the fuller history-view gap this
-// leaves).
+// Notifications: persistent top-right stack, appears whenever Commons/Notifs.qml has tracked notifications.
+// Auto-expiry via a real per-notification dismiss() timer (6s normal, 12s critical, never for resident), not a visual-only fade.
 PanelWindow {
   id: root
 
@@ -51,12 +43,7 @@ PanelWindow {
 
   ColumnLayout {
     id: stack
-    // Plain x/y, not anchors — the window is only ever anchored to the
-    // two edges matching the chosen corner, so it's already content-sized
-    // to exactly this stack; positioning the stack via a conditional
-    // anchors.top/bottom pair on a value that can change at runtime hits
-    // the same staleness class of bug plain x/y sidesteps elsewhere in
-    // this codebase (see crux skill's SKILL.md gotchas).
+    // Plain x/y, not conditional anchors — avoids the anchor-staleness class of bug (see crux skill notes.md).
     x: 14
     y: root.pos.startsWith("top") ? (Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 8) : 14
     width: 388
@@ -161,14 +148,7 @@ PanelWindow {
             spacing: 0
             visible: (card.modelData.actions || []).length > 0 || true
 
-            // Spec §6.4: "adjoining 1px-bordered buttons, shared edges
-            // collapsed (border-left: none on all but the first). Primary
-            // action bordered in a mid-accent tone with accent text; others
-            // grey." Only the very first cell in the row (the first real
-            // action, or DISMISS itself when there are no actions) is
-            // "primary" and gets accent styling + its own left edge; every
-            // other cell only draws top/right/bottom (its left edge is the
-            // previous cell's right edge, so no doubled-up 2px seam).
+            // Adjoining bordered cells with collapsed shared edges; only the first cell draws its own left edge.
             Repeater {
               model: card.modelData.actions || []
               delegate: Rectangle {

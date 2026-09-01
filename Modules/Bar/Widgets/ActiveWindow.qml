@@ -4,13 +4,7 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Shows the focused window's app name + title (noctalia's
-// Modules/Bar/Widgets/ActiveWindow.qml, which reads a whole
-// multi-compositor CompositorService abstraction). Crux only targets
-// Hyprland, and Quickshell.Wayland's ToplevelManager (backed by the
-// wlr-foreign-toplevel-management protocol, which Hyprland implements)
-// gives the focused window directly via ToplevelManager.activeToplevel —
-// no need for Hyprland-specific IPC/hyprctl parsing here.
+// Focused window's app name + title, via ToplevelManager.activeToplevel (Hyprland-only, no hyprctl needed).
 Item {
   id: root
 

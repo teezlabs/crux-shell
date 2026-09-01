@@ -9,21 +9,10 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.LockScreen
 
-// Spec §6.10: fullscreen blurred wallpaper, 132px clock top-left, password
-// field bottom-left, NET/BAT/VOL status top-right, notification summaries
-// bottom-right.
-//
-// A single WlSessionLock instance controls every screen at once — its
-// `surface` component (the default property) is instantiated once per
-// connected output automatically, each with its own `screen`, rather than
-// this file wrapping a Variants{model: Quickshell.screens} loop itself (see
-// Quickshell.Wayland's WlSessionLock/WlSessionLockSurface). Real session
-// lock, not a fullscreen popup pretending to be one — `locked: true` grabs
-// every input surface at the compositor level via ext-session-lock-v1,
-// same protocol swaylock uses.
-//
-// PAM flow ported from noctalia-shell's LockContext (see
-// Modules/LockScreen/LockContext.qml) — that part is real auth, not a stub.
+// Spec §6.10: fullscreen blurred wallpaper, clock top-left, password field
+// bottom-left, NET/BAT/VOL top-right, notification summaries bottom-right.
+// Single WlSessionLock instantiates its `surface` per screen automatically.
+// Real ext-session-lock-v1 lock (same protocol swaylock uses), not a popup.
 Loader {
   id: root
   active: false
@@ -220,11 +209,7 @@ Loader {
             blurEnabled: true
             blur: Settings.data.lockScreen.blurAmount
             blurMax: 64
-            // Off — the wallpaper already fully covers the surface (no
-            // transparent edge for the blur to legitimately need extra
-            // padding for), and the default `true` was extending the blur's
-            // render bounds past the surface's real edges, bleeding out as
-            // a soft glow ring around the whole screen.
+            // Off — default true bled a soft glow ring past the screen edge.
             autoPaddingEnabled: false
           }
 
@@ -348,13 +333,8 @@ Loader {
             }
           }
 
-          // Power options — Suspend/Reboot/Shutdown, below the NET/BAT/VOL
-          // row. Same commands + arm-then-confirm-on-destructive convention
-          // as PowerMenuWindow.qml (see its own comment for why), just
-          // without a Logout/Lock entry (redundant here — you're already
-          // locked, and there's nothing to log out of that isn't this
-          // exact screen). Same Canvas glyphs as the bar's PowerButton.qml
-          // and the crux-themed SDDM greeter.
+          // Power options: Suspend/Reboot/Shutdown, arm-then-confirm like
+          // PowerMenuWindow.qml. No Logout/Lock entry — redundant here.
           property string armedPowerAction: ""
           Timer {
             id: powerArmTimer

@@ -5,13 +5,8 @@ import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Read-only reference view of the live Hyprland keybinds file — not a
-// parsed/editable table. ~/.config/hypr/keybinds.lua mixes simple
-// hl.bind(mod(...), ...) calls with loops, multi-line gesture blocks, and
-// function() callbacks (see e.g. the ScrollOverview shift-scroll section);
-// a regex parser robust enough to summarize all of that reliably isn't
-// worth the fragility for a reference view. Edit the file directly to
-// change bindings — Hyprland picks up `hyprctl reload` live.
+// Read-only reference view of the live keybinds.lua — not parsed/editable,
+// the Lua mixes too many call shapes to reliably summarize. Edit the file directly.
 ColumnLayout {
   id: root
   spacing: 8

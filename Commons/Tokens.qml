@@ -3,31 +3,19 @@ pragma Singleton
 import QtQuick
 import qs.Commons
 
-// Design tokens for the "Quickshell Hyprland Shell v2" spec: type scale,
-// chamfer sizes, segmented-meter geometry, panel opacity/blur, and motion
-// durations/easings. Every panel built against that spec reads only from
-// here for those values — see the spec's §9 hard rule 2 (no hardcoded
-// literals) extended to these tokens too.
-//
-// font.letterSpacing in Qt is absolute pixels, not em — the *Tracking
-// properties below are em fractions per the spec's own units; multiply by
-// the matching *Size at the call site (font.letterSpacing: Tokens.captionSize
-// * Tokens.captionTracking) rather than hardcoding a px value.
+// Design tokens: type scale, chamfer sizes, meter geometry, panel opacity/
+// blur, motion durations/easings. font.letterSpacing is absolute px in Qt,
+// not em — *Tracking values are em fractions, multiply by the matching
+// *Size at the call site.
 QtObject {
   id: root
 
-  // Was hardcoded to "JetBrains Mono" regardless of the General settings
-  // tab's own font picker (Settings.data.ui.fontFamily) — since nearly
-  // every widget reads Tokens.fontFamily, that setting silently did
-  // nothing anywhere. Fallback only covers Settings not being loaded yet.
   readonly property string fontFamily: Settings.isLoaded ? Settings.data.ui.fontFamily : "JetBrains Mono"
   readonly property string monoFontFamily: Settings.isLoaded ? Settings.data.ui.monoFontFamily : "JetBrains Mono"
 
-  // §2 Type — one representative tracking value picked from each spec
-  // range (documented alongside), weight is the *lighter* of any given
-  // pair (QML Text has one font.weight; call sites bump to the heavier
-  // value themselves — e.g. font.weight: Font.DemiBold — where the spec's
-  // "600" variant applies, such as a selected/active state).
+  // §2 Type — weight is the lighter of any spec pair; call sites bump to
+  // the heavier variant themselves (e.g. font.weight: Font.DemiBold) for
+  // selected/active states.
   readonly property int displaySize: 132
   readonly property int displayWeight: Font.ExtraLight // 200
   readonly property real displayTracking: -0.04

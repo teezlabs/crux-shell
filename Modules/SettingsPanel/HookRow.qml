@@ -3,11 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// One hook entry: label + description + the current command (elided to one
-// line) + an EDIT/SET button that opens HookEditPopup (see
-// HooksListSubTab). The label turns from muted to full text once a command
-// is set — the same "configured vs not" visual distinction noctalia's
-// HookRow uses via its label color.
+// One hook entry: label + command preview + EDIT/SET button (opens HookEditPopup).
 RowLayout {
   id: root
 

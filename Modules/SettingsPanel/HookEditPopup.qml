@@ -5,14 +5,8 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Modal command-editor popup for a single hook — the crux-native equivalent
-// of noctalia's HookEditPopup (which used a QtQuick.Controls Popup over
-// Overlay.overlay; crux's popup language is PanelWindow overlays, so this
-// is a full-screen scrim + centered chamfered card, same structure as
-// PowerMenuWindow but with a text field). The caller (HooksListSubTab)
-// provides the label/description/placeholder/current value plus save and
-// test callbacks via openFor(); SAVE commits the edited command, TEST runs
-// the hook's runner with sample placeholder values (see the subtab).
+// Modal command-editor popup for a single hook (PanelWindow scrim + card,
+// like PowerMenuWindow). Caller (HooksListSubTab) drives it via openFor().
 PanelWindow {
   id: root
 

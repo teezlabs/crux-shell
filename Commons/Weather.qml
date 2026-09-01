@@ -5,13 +5,9 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 
-// Real weather for the Control Center's weather card — no API key needed:
-// ip-api.com for a one-time IP geolocation (city + lat/lon), then
-// open-meteo.com for the actual forecast (free, keyless, and its
-// `timezone_abbreviation` field hands back an exact "GMT-4"-style string
-// for free too). Both fetched via curl + Process, the same pattern every
-// other real-data integration in crux uses (matugen, hyprctl, sensors),
-// rather than QML's XMLHttpRequest.
+// Real weather via ip-api.com (geolocation) + open-meteo.com (forecast,
+// free/keyless) — no API key needed. Fetched via curl + Process, not
+// QML's XMLHttpRequest.
 Singleton {
   id: root
 

@@ -7,14 +7,8 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 
-// Settings panel: General, Bar, Appearance, Audio, System Monitor, and
-// Wallpaper, each a top-level tab in the sidebar — several (Bar,
-// Appearance, General) further split into subtabs via SubTabBar.qml, the
-// same two-level Tab -> SubTab navigation noctalia's own settings panel
-// uses. New top-level tabs go in the `tabs` model below; a tab with only
-// one logical page just skips SubTabBar entirely (see AudioTab.qml,
-// SystemMonitorTab.qml, WallpaperTab.qml) rather than showing a pointless
-// single-pill bar.
+// Settings panel: top-level tabs in the sidebar, some split into subtabs
+// via SubTabBar.qml. New top-level tabs go in the `tabs` model below.
 PanelWindow {
   id: root
 
@@ -24,11 +18,8 @@ PanelWindow {
   readonly property string screenName: screen ? screen.name : ""
   property string activeTab: "general"
 
-  // Fuzzy-search sidebar: query text + the resolved hits, and the subtab
-  // id (if any) the last-jumped-to tab should land on. jumpSubTab is
-  // read once by each subtab-owning tab's initialSubTab prop below — it's
-  // an onChanged reaction there, not a binding, so the user's own
-  // SubTabBar clicks afterward aren't fought by a stale search hit.
+  // Fuzzy-search sidebar state. jumpSubTab is read once (onChanged, not a
+  // binding) so later manual SubTabBar clicks aren't fought by a stale hit.
   property string searchQuery: ""
   property string jumpSubTab: ""
   readonly property var searchResults: {
@@ -147,14 +138,8 @@ PanelWindow {
     visible = !visible;
   }
 
-  // Screen-specific target so a caller that already knows which screen it's
-  // on (Control Center's own gear icon, bin/crux-focused-ipc for a keybind)
-  // can reach *this* screen's instance specifically instead of always
-  // hitting whichever screen owns the generic "settings" name below —
-  // confirmed real bug: Control Center's gear icon always opened Settings
-  // on screens[0], not the screen Control Center itself was open on. No
-  // `enabled` gate needed since the name itself is already unique per
-  // screen.
+  // Screen-specific target so a caller opens Settings on its own screen,
+  // not always screens[0] (the generic "settings" target below, was a real bug).
   IpcHandler {
     target: "settings_" + (root.targetScreen ? root.targetScreen.name : "0")
     function toggle() {
@@ -549,11 +534,7 @@ PanelWindow {
           id: tabContentArea
           Layout.fillWidth: true
           Layout.fillHeight: true
-          // Defensive — a tab whose content is taller than the card was
-          // rendering straight past the panel's edge instead of scrolling
-          // (most tabs are a plain ColumnLayout, not a Flickable). This
-          // stops the visual spill; the real fix is giving each tab actual
-          // scroll (see crux skill's notes.md).
+          // Defensive: clips tabs taller than the card (see notes.md).
           clip: true
 
           GeneralTab {

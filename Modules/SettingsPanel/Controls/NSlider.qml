@@ -58,11 +58,8 @@ Item {
     anchors.fill: parent
     anchors.margins: -4
     cursorShape: Qt.PointingHandCursor
-    // Without this, a drag that isn't perfectly horizontal lets an
-    // ancestor Flickable (every settings subtab is one) steal the grab
-    // mid-drag and start scrolling the whole tab instead of moving the
-    // slider — preventStealing keeps this MouseArea's grab once pressed,
-    // regardless of how much vertical movement happens along the way.
+    // Without this, a slightly-off-horizontal drag lets the ancestor
+    // Flickable steal the grab and scroll the tab instead of dragging.
     preventStealing: true
     onPressed: mouse => root._setFromX(mouse.x - 4)
     onPositionChanged: mouse => {

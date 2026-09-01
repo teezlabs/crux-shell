@@ -5,16 +5,12 @@ import Quickshell.Wayland
 import Quickshell.Services.Polkit
 import qs.Commons
 
-// Polkit authentication agent. This machine has none currently running
-// (Hyprland's config references "hyprpolkitagent" via systemd, but that
-// unit doesn't exist here — confirmed directly: `pkexec` calls fail
-// silently with no agent to show a prompt). Fixing that only improves
-// things — there's no working agent to conflict with or regress.
-//
-// API (PolkitAgent { path }, flow.message/inputPrompt/isResponseRequired/
-// submit()/cancelAuthenticationRequest()) confirmed from Omarchy's real
-// shell/plugins/polkit/PolkitAgent.qml; UI rebuilt plain (no icon-font
-// glyphs, no fingerprint/lid-detection — this box has no laptop battery).
+// Polkit authentication agent. This machine has none running (referenced
+// "hyprpolkitagent" systemd unit doesn't exist — pkexec fails silently
+// with no agent to prompt), so this fills a genuine gap, not a duplicate.
+// API confirmed from Omarchy's real PolkitAgent.qml; UI rebuilt plain.
+// Real PAM auth flow — never trigger it programmatically for testing; see
+// crux skill notes on faillock lockout risk.
 Item {
   id: root
 

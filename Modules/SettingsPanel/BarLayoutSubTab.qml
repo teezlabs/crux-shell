@@ -5,12 +5,7 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 
-// Root is a Flickable, not a plain ColumnLayout — this subtab's content
-// (position/spacing/thickness/gap/border/auto-hide/monitors/per-monitor
-// overrides) grew past what fits in the settings card's fixed height, and
-// a ColumnLayout alone has no scroll of its own. contentHeight tracks the
-// inner ColumnLayout's implicitHeight so it scrolls exactly as far as it
-// needs to, no further.
+// Flickable, not ColumnLayout — content is taller than the settings card.
 Flickable {
   id: root
   property string screenName: ""

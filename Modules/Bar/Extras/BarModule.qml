@@ -1,12 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// Shared chamfered container for a detached bar module (§6.1: "the bar is
-// not a strip — it is a row of detached modules, 30px tall"). Per the actual
-// v2 mockup (not just the text spec): each module chamfers exactly two
-// opposite corners — top-right and bottom-left — not all four. Hover swaps
-// the fill instantly to surfaceContainerHigh — no transition (§7: "No hover
-// animation on bar modules").
+// Shared chamfered container for a detached bar module. Chamfers two opposite corners; no hover transition.
 Item {
   id: root
 
@@ -30,11 +25,7 @@ Item {
   height: implicitHeight
   width: implicitWidth
 
-  // Settings.data.bar.useSeparateOpacity picks which user-configurable
-  // opacity applies here — theme.barOpacity (Appearance tab) by default,
-  // or bar.backgroundOpacity (Bar Layout tab) when that's explicitly
-  // turned on. Was hardcoded to the fixed Tokens.barModuleOpacity (0.88)
-  // instead, so neither slider ever did anything — confirmed real bug.
+  // Picks user-configurable opacity source; was hardcoded before, making both sliders no-ops.
   readonly property real effectiveOpacity: Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity
 
   Chamfer {

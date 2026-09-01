@@ -4,12 +4,8 @@ import QtQuick
 import Quickshell
 import qs.Commons
 
-// Semantic color tokens, sourced live from Settings.data.theme — this is
-// what makes the color scheme actually configurable (settings-panel work),
-// rather than every widget hardcoding its own hex strings the way crux did
-// up through tonight. Naming convention (mPrimary, mOnPrimary, ...) matches
-// noctalia's Commons/Color.qml on purpose — same idea, "m" prefix so QML
-// doesn't misread e.g. "onPrimary" as a signal handler name.
+// Semantic color tokens, sourced live from Settings.data.theme. "m" prefix
+// avoids QML misreading e.g. "onPrimary" as a signal handler name.
 Singleton {
   id: root
 

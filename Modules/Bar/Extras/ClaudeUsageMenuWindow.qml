@@ -6,11 +6,7 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Claude usage popup. Data comes straight from Omarchy's
-// omarchy-agent-usage-claude collector (copied verbatim from upstream —
-// pure Python, stdlib-only, reads ~/.claude locally + Anthropic's OAuth
-// usage endpoint with the CLI's own saved token). UI rebuilt on crux's own
-// primitives instead of Omarchy's shared Ui kit / multi-agent panel.
+// Claude usage popup. Data from Omarchy's omarchy-agent-usage-claude collector (verbatim); UI rebuilt on crux's own primitives.
 PanelWindow {
   id: root
 
@@ -26,12 +22,7 @@ PanelWindow {
   readonly property bool _barBottom: root._barPos === "bottom"
   readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 20
 
-  // Set by the bar icon that opened this popup (its own position mapped
-  // into the bar window's local space, via mapToItem(null, 0, 0)) so the
-  // popup can line up with it instead of always sitting in a generic
-  // corner. -1 means "not set" (e.g. opened via IPC, not a click) — falls
-  // back to the old fixed near-corner inset in that case. See
-  // SoundMenuWindow.qml for the full cross-window-coordinate reasoning.
+  // Bar-icon trigger position, mapped into this popup's space; -1 = not set (IPC open). See SoundMenuWindow.qml.
   property point triggerPos: Qt.point(-1, -1)
   readonly property bool _hasTrigger: triggerPos.x >= 0
   readonly property real _triggerX: triggerPos.x + Settings.data.bar.floatMargin

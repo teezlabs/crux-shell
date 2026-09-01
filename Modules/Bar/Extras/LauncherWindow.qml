@@ -7,12 +7,7 @@ import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// App launcher popup. Uses Quickshell's built-in DesktopEntries singleton
-// (DesktopEntries.applications.values) — the same proven data source
-// noctalia's Modules/Panels/Launcher/Providers/ApplicationsProvider.qml
-// uses — rather than scanning .desktop files by hand. Simple substring
-// search rather than porting a fuzzy-match library; good enough to find an
-// app by name fast.
+// App launcher popup. Uses Quickshell's DesktopEntries singleton rather than scanning .desktop files by hand.
 PanelWindow {
   id: root
 
@@ -110,13 +105,7 @@ PanelWindow {
     }
   }
 
-  // Screen-specific target so a keybind can reach *this* screen's instance
-  // specifically (via bin/crux-focused-ipc, which resolves the currently
-  // focused monitor) instead of always hitting whichever screen owns the
-  // generic "launcher" name below — confirmed real bug: SUPER+A always
-  // opened the launcher on screens[0] regardless of which monitor was
-  // actually focused. No `enabled` gate needed since the name itself is
-  // already unique per screen.
+  // Per-screen IPC target (via bin/crux-focused-ipc) so SUPER+A opens on the focused monitor, not always screens[0].
   IpcHandler {
     target: "launcher_" + (root.targetScreen ? root.targetScreen.name : "0")
     function toggle() {
@@ -175,30 +164,14 @@ PanelWindow {
     onClicked: root.visible = false
   }
 
-  // v2 spec §6.2: 660 wide, centred. Input row 56px ("> " prompt in
-  // primary, query at body-lg, 2px cyan caret, "NN MATCHES" right-aligned
-  // label-xs). Rows 48px: 2-digit index (label-xs), 18px chamfered icon
-  // (filled primary when selected, outline otherwise), name, right-aligned
-  // path in grey — crux's launcher is apps-only today (no run/windows/calc
-  // modes yet, so no EXEC/FOCUS distinction to make; every row shows its
-  // real exec path). Footer 40px on surfaceContainerLow.
+  // 660 wide, centred; apps-only launcher today (no run/windows/calc modes, so no EXEC/FOCUS distinction).
   Item {
     id: card
     anchors.centerIn: parent
     width: 660
-    // Fixed height rather than sized to content: the app list loads
-    // asynchronously (DesktopEntries populating), so a height computed from
-    // list.contentHeight kept changing after the card (and its Chamfer
-    // background) had already rendered. The list absorbs the fixed space
-    // instead (Layout.fillHeight below).
-    //
-    // Even with a fixed height, boot still logs a handful of "binding loop
-    // detected for property _points" warnings from this card's Chamfer at
-    // startup (Shape/PathPolyline settling during first layout — same
-    // symptom class documented in the crux skill's Grid-staleness gotchas)
-    // — confirmed bounded (log stops growing, CPU stays idle) and the panel
-    // renders and functions correctly despite it. Revisit if it ever stops
-    // settling.
+    // Fixed height, not content-sized: DesktopEntries loads async, so contentHeight-driven sizing kept
+    // changing after the Chamfer background had already rendered.
+    // Logs a bounded handful of Chamfer "binding loop" warnings at startup (Shape/PathPolyline settling) — harmless.
     height: 560
 
     Chamfer {
@@ -385,14 +358,7 @@ PanelWindow {
               Layout.preferredWidth: 22
               Layout.preferredHeight: 22
 
-              // Wrapped in a fixed-size Item rather than setting Layout.*
-              // directly on the Shape — a Shape's own implicit sizing
-              // (derived from its rendered path, which is itself derived
-              // from width/height here) fights the Layout-assigned width
-              // when there's no anchors.fill in between, producing an
-              // infinite "_points" binding loop. Every other Chamfer in
-              // the app already goes through a sized wrapper; this was
-              // the one spot that didn't.
+              // Fixed-size wrapper, not Layout.* directly on the Shape — avoids an infinite "_points" binding loop.
               Chamfer {
                 anchors.fill: parent
                 chamferSize: Tokens.chamferIcon
@@ -403,12 +369,7 @@ PanelWindow {
                 strokeWidth: 1
               }
 
-              // Real per-app icon: DesktopEntry.icon is a bare icon-theme
-              // name (the Icon= value straight out of the .desktop file),
-              // not a usable path — Quickshell.iconPath() resolves it
-              // through the installed icon theme the same way a taskbar
-              // would (confirmed against noctalia-shell's own launcher,
-              // Commons/ThemeIcons.qml, which does the same lookup).
+              // DesktopEntry.icon is a bare icon-theme name, not a path — Quickshell.iconPath() resolves it via the icon theme.
               IconImage {
                 anchors.centerIn: parent
                 anchors.margins: 2

@@ -4,19 +4,8 @@ import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// User-configurable button that runs an arbitrary shell command
-// (noctalia's Modules/Bar/Widgets/CustomButton.qml, which additionally
-// supports JSON-parsed dynamic output, marquee-scrolling text, per-wheel-
-// direction commands, IPC registration, etc. — trimmed here to the
-// genuinely load-bearing power-user subset: icon glyph, label, left/right
-// click commands, and an optional periodically-refreshed text command).
-//
-// Multiple independent instances are expected in the bar at once (several
-// different CustomButtons) — every field below reads from THIS widget's
-// own entry in Settings.data.bar.widgets.<section> (widgetData), not a
-// shared Settings.data singleton, so each instance keeps its own config.
-// See BarWidgetRegistry.multiInstanceIds / BarWidgetsSubTab.qml's inline
-// editor for how those fields get edited.
+// User-configurable button: icon, label, left/right click commands, optional refreshed text command.
+// Multi-instance: each button reads its own widgetData entry, not a shared Settings singleton (see BarWidgetRegistry.multiInstanceIds).
 Item {
   id: root
 

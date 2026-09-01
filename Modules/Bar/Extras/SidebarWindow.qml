@@ -9,14 +9,7 @@ import Quickshell.Services.Notifications
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Sidebar Dashboard (§6.8): 388 wide, full height, left-anchored, slides in.
-// Sections: Clock, Now Playing, Notifications, Workspaces. Every section
-// reuses the same real data sources already wired for the bar/popups —
-// Hyprland for workspaces, Mpris for Now Playing, Notifs for the
-// notification list — nothing here is fabricated. Workspace "previews" are
-// occupied/active chips, not actual window thumbnails: Quickshell exposes
-// no live per-workspace screenshot source, so a real 16:9 image preview
-// would have to be faked — the spec's slot is filled honestly instead.
+// Sidebar Dashboard: Clock/Now Playing/Notifications/Workspaces, all real data. Workspace "previews" are occupied/active chips, not thumbnails (no live screenshot source).
 PanelWindow {
   id: root
 

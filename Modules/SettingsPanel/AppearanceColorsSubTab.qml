@@ -4,11 +4,8 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 
-// Edits the v2 tonal-spot roles directly (Settings.data.theme.primary,
-// .surface, etc.) — this tab previously only edited the legacy mPrimary/
-// mSurface/... roles kept around for pre-v2 widgets, which nothing in the
-// actual v2 UI reads anymore, so every preset/manual edit here was
-// silently inert. Fixed to target the roles that actually paint the app.
+// Edits the v2 tonal-spot roles (theme.primary/.surface/...) directly —
+// editing the legacy mPrimary/mSurface roles here was silently inert.
 Flickable {
   id: root
   clip: true

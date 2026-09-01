@@ -5,23 +5,11 @@ import Quickshell.Services.Pipewire
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Volume OSD: shows briefly whenever the default sink's volume or mute state
-// changes, regardless of what caused it (physical keys, another app, this
-// shell) — reacts to real Pipewire state rather than being IPC-triggered,
-// so it needs no keybind wiring to be testable. Node reactivity pattern
-// (PwObjectTracker + Connections on sink.audio) ported from noctalia's
-// Services/Media/AudioService.qml — Pipewire nodes don't reliably push
-// property updates unless tracked.
-//
-// v2 spec §6.5: 296×44. Deliberate deviation from the spec text (which says
-// all four corners chamfered 10px, since the OSD floats free of every
-// screen edge): the user explicitly asked for the same two-opposite-corner
-// scheme (top-right + bottom-left) every other chamfered element in the app
-// uses instead, for visual consistency — confirmed twice, most recently
-// when re-checking this exact tradeoff against the literal spec text.
-// 20-cell meter (interactive tier, matches "the value currently being
-// changed" hard rule from §1). Muted: empty meter, error-toned label/
-// border, "—" value.
+// Volume OSD: shows briefly on any default-sink volume/mute change, from
+// any source. Reacts to real Pipewire state (PwObjectTracker required —
+// nodes don't reliably push updates unless tracked), not IPC-triggered.
+// Uses the app's standard two-opposite-corner chamfer, not spec §6.5's
+// all-four-corners text — confirmed deliberate, for visual consistency.
 PanelWindow {
   id: root
 

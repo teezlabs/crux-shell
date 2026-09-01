@@ -7,12 +7,7 @@ import Quickshell.Services.Notifications
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Notification history popup: a persistent, reviewable log of past
-// notifications (Commons/Notifs.qml's `history`), distinct from
-// NotificationsWindow.qml's live toast stack — that one shows a notification
-// when it first arrives and forgets it the moment it's dismissed/expires;
-// this is the "what did I miss" view. Same PanelWindow/Chamfer/triggerPos
-// pattern as ClipboardMenuWindow.qml/SoundMenuWindow.qml.
+// Notification history popup: persistent log of past notifications, distinct from NotificationsWindow.qml's live toast stack.
 PanelWindow {
   id: root
 

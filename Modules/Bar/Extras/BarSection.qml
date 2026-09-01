@@ -2,37 +2,10 @@ import QtQuick
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// One bar section (left/center/right): lays out its widgets in a line and
-// supports long-press-then-drag reordering, including across sections, with
-// a visible insertion-point indicator (a thin bar between widgets) while
-// dragging — same idea as the drop indicator in noctalia's
-// Widgets/NSectionEditor.qml settings-panel reorder UI. The `vertical`
-// property (set from Bar.qml, which gets it from the bar's configured
-// position) switches the whole section between a horizontal line (top/
-// bottom bar) and a vertical one (left/right bar).
-//
-// Long-press is detected by a non-exclusive TapHandler (a passive grab —
-// it does not block the widget's own click handling underneath, so a
-// plain click keeps working untouched); once armed, an enabled DragHandler
-// takes over the same in-progress press to move the widget. This ONLY
-// works if every bar widget's own click handling is also a pointer
-// handler (TapHandler/HoverHandler), not a legacy MouseArea — on this
-// box's Qt 6.11, a passive ancestor TapHandler never receives ANY event
-// (not even a plain press) when a legacy MouseArea sits underneath it,
-// contrary to the usual Flickable-steals-from-MouseArea folklore. Every
-// Modules/Bar/Widgets/*.qml file's own click handling was converted from
-// MouseArea to TapHandler+HoverHandler for this reason — don't reintroduce
-// a MouseArea in a bar widget, or its drag reordering silently breaks.
-//
-// Cross-section support: `dragState` is a single shared object (created
-// once in Bar.qml, passed to all three sections) so a drop in one
-// section's DropArea can read which *other* section the drag started in.
-// Drag.keys/DropArea.keys use one shared key ("crux-bar-widget") rather
-// than a per-section one, so drops are accepted across sections too.
-//
-// The indicator needs to be positioned freely (not locked into the Grid's
-// own layout flow), so the root here is a plain Item sizing itself to the
-// inner Grid, not the Grid itself.
+// One bar section (left/center/right): lays out its widgets and supports
+// long-press-then-drag reordering, including across sections. See crux
+// skill's notes.md — don't reintroduce a MouseArea in a bar widget, it
+// silently breaks this.
 Item {
   id: sectionRoot
 

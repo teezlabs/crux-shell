@@ -8,12 +8,7 @@ import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 import "NetworkModel.js" as Model
 
-// Real Wi-Fi network list/connect UI — the guts of WifiMenuWindow.qml,
-// pulled out so the same logic and rows can be embedded inline (Control
-// Center's WIFI tile right-click-expand) instead of only ever opening as
-// a separate popup window. WifiMenuWindow.qml wraps this in its own
-// PanelWindow/Chamfer for the standalone Wifi.qml bar widget; this file
-// has no window chrome of its own.
+// Wi-Fi network list/connect UI, shared between WifiMenuWindow.qml and Control Center's inline expand. No window chrome of its own.
 ColumnLayout {
   id: root
 
@@ -262,11 +257,7 @@ ColumnLayout {
     });
   }
 
-  // Nearby (unconnected) networks only show up once the device's scanner is
-  // switched on — Quickshell.Networking doesn't scan passively. scannerEnabled
-  // lives on the shared WifiDevice with no ref-counting, so track which device
-  // this panel turned it on for and release exactly that one when it goes
-  // inactive.
+  // scannerEnabled lives on the shared WifiDevice with no ref-counting — track which device we enabled it on.
   property var scannerDevice: null
 
   function setScannerEnabled(enabled) {
@@ -523,12 +514,7 @@ ColumnLayout {
               font.pixelSize: Tokens.captionSize
             }
 
-            // Forget a saved network — runAction()/forgetRow() already
-            // existed but nothing ever called forgetRow() from the UI, so
-            // a "known" network could never actually be forgotten short of
-            // nmcli by hand. Only shown for known, non-connected networks
-            // (forgetting the currently-connected one would just be a
-            // confusing disconnect-and-forget in one tap).
+            // Forget a saved network; only shown for known, non-connected networks (avoids a confusing disconnect+forget).
             Text {
               visible: rowItem.modelData.known && !rowItem.modelData.connected && !(root.actionKind !== "" && root.actionSsid === rowItem.modelData.ssid)
               text: "×"

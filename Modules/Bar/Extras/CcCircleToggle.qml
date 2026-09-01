@@ -1,11 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// Circular icon toggle for the Control Center's top row — explicitly
-// requested to match a specific reference look, a deliberate one-off
-// departure from the rest of the app's "no radius" rule, scoped to this
-// one panel. Content (a Canvas glyph) is the default property, same
-// pattern BarIconButton.qml uses.
+// Circular icon toggle for Control Center's top row — deliberate one-off departure from the app's "no radius" rule.
 Item {
   id: root
 

@@ -6,35 +6,8 @@ import Quickshell.Services.Mpris
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Desktop info cards, pinned to the wallpaper layer — sit behind normal app
-// windows (WlrLayer.Bottom, same tier noctalia-shell uses for its own
-// DesktopWidgets: above the wallpaper's WlrLayer.Background, below anything
-// a real window would occupy). One PanelWindow per screen, full-screen and
-// transparent like Background.qml, but this one must NOT reserve exclusive
-// space (ExclusionMode.Ignore) and must NOT swallow mouse input over its
-// transparent regions — only the two card rectangles below are ever
-// hit-testable, via an explicit Region mask (the same technique noctalia's
-// DesktopWidgets.qml uses, simplified: two fixed cards instead of a dynamic
-// per-widget list).
-//
-// Draggable (DragHandler per card) with position persisted to
-// Settings.data.desktopWidgets.weatherX/Y|mediaX/Y (-1 sentinel = "never
-// moved, use the default bar-aware corner"), plus individual weatherEnabled/
-// mediaEnabled toggles — see Modules/SettingsPanel/DesktopWidgetsTab.qml.
-// Not a port of noctalia's full drag-to-reposition/edit-mode system
-// (DraggableDesktopWidget.qml, grid-snap overlay, add-widget popup) — just
-// enough to move/hide these two fixed cards.
-//
-// Weather: reuses Commons/Weather.qml (real ip-api.com + open-meteo.com
-// data, already fetched/refreshed for the Control Center's weather card) and
-// Modules/Bar/Extras/WeatherIcon.qml for the glyph — no new data source, no
-// new icon drawing.
-//
-// Media: reuses the same Quickshell.Services.Mpris pattern as
-// Modules/Bar/Extras/MediaPlayerWindow.qml/ControlCenterWindow.qml (pick the
-// first actively-playing player, else the first player at all), and reuses
-// MpTransportButton.qml + SegMeter.qml for the transport row/seek bar rather
-// than rebuilding either.
+// Desktop info cards (weather, media), pinned to the wallpaper layer,
+// draggable, individually toggleable. See crux skill's notes.md.
 Variants {
   model: Quickshell.screens
 
