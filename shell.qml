@@ -165,8 +165,11 @@ ShellRoot {
       // See crux skill's notes.md (Portrait-monitor bar section) — not
       // blanket-applied to every widget, only ones confirmed safe.
       readonly property bool contentVertical: barIsVertical || screenIsPortrait
-      readonly property bool compactOnHorizontalBar: contentVertical && !barIsVertical
-      readonly property int effectiveThickness: compactOnHorizontalBar ? Math.max(Settings.data.bar.thickness, 56) : Settings.data.bar.thickness
+      // Used to be floored at 56px here for portrait-screen horizontal
+      // bars, because Sound/ControlCenter grew taller in that case and
+      // overflowed a thinner bar. Both are fixed to stay standard-height
+      // now (see crux skill's notes.md), so the floor no longer applies.
+      readonly property int effectiveThickness: Settings.data.bar.thickness
       readonly property bool autoHide: Settings.data.bar.autoHide
       readonly property bool shownOnThisScreen: Settings.data.bar.monitors.length === 0 || Settings.data.bar.monitors.includes(screen.name)
       property bool hovered: false
