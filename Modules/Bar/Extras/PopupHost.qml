@@ -85,7 +85,7 @@ PanelWindow {
     host: root
     barPos: root.barPos
     cardWidth: 300
-    cardHeight: soundContent.implicitHeight + 24
+    cardHeight: soundContent.implicitHeight + 28
 
     SoundPopupContent {
       id: soundContent
@@ -99,7 +99,7 @@ PanelWindow {
     host: root
     barPos: root.barPos
     cardWidth: 280
-    cardHeight: batteryContent.implicitHeight + 24
+    cardHeight: batteryContent.implicitHeight + 28
 
     BatteryPopupContent {
       id: batteryContent
@@ -113,7 +113,7 @@ PanelWindow {
     host: root
     barPos: root.barPos
     cardWidth: 320
-    cardHeight: Math.min(480, bluetoothContent.implicitHeight + 24)
+    cardHeight: Math.min(480, bluetoothContent.implicitHeight + 28)
 
     BluetoothPanelContent {
       id: bluetoothContent
@@ -128,7 +128,7 @@ PanelWindow {
     host: root
     barPos: root.barPos
     cardWidth: 360
-    cardHeight: Math.min(560, wifiContent.implicitHeight + 24)
+    cardHeight: Math.min(560, wifiContent.implicitHeight + 28)
 
     WifiPanelContent {
       id: wifiContent
@@ -143,7 +143,7 @@ PanelWindow {
     host: root
     barPos: root.barPos
     cardWidth: 300
-    cardHeight: Math.min(320, hueContent.implicitHeight + 24)
+    cardHeight: Math.min(320, hueContent.implicitHeight + 28)
 
     HuePanelContent {
       id: hueContent
@@ -157,7 +157,7 @@ PanelWindow {
     host: root
     barPos: root.barPos
     cardWidth: 300
-    cardHeight: microphoneContent.implicitHeight + 24
+    cardHeight: microphoneContent.implicitHeight + 28
 
     MicrophonePopupContent {
       id: microphoneContent
@@ -171,7 +171,7 @@ PanelWindow {
     host: root
     barPos: root.barPos
     cardWidth: 260
-    cardHeight: brightnessContent.implicitHeight + 24
+    cardHeight: brightnessContent.implicitHeight + 28
 
     BrightnessPopupContent {
       id: brightnessContent
@@ -185,7 +185,7 @@ PanelWindow {
     host: root
     barPos: root.barPos
     cardWidth: 340
-    cardHeight: Math.min(480, clipboardContent.implicitHeight + 24)
+    cardHeight: Math.min(480, clipboardContent.implicitHeight + 28)
 
     ClipboardPopupContent {
       id: clipboardContent
@@ -201,7 +201,7 @@ PanelWindow {
     host: root
     barPos: root.barPos
     cardWidth: 300
-    cardHeight: Math.min(400, claudeUsageContent.implicitHeight + 24)
+    cardHeight: Math.min(400, claudeUsageContent.implicitHeight + 28)
 
     ClaudeUsagePopupContent {
       id: claudeUsageContent
@@ -216,7 +216,7 @@ PanelWindow {
     host: root
     barPos: root.barPos
     cardWidth: 380
-    cardHeight: Math.min(520, notificationHistoryContent.implicitHeight + 24)
+    cardHeight: Math.min(520, notificationHistoryContent.implicitHeight + 28)
 
     NotificationHistoryPopupContent {
       id: notificationHistoryContent
