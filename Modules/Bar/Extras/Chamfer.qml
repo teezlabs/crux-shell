@@ -49,21 +49,37 @@ Shape {
   // that vertex a real second neighbor to join against; the overlap
   // redraws identical pixels, so it's invisible otherwise.
   readonly property var _strokePoints: {
+    var pts;
     switch (root.omitStrokeSide) {
     case "top":
-      return [].concat(root._tr, root._br, root._bl, root._tl);
+      pts = [].concat(root._tr, root._br, root._bl, root._tl);
+      break;
     case "right":
-      return [].concat(root._br, root._bl, root._tl, root._tr);
+      pts = [].concat(root._br, root._bl, root._tl, root._tr);
+      break;
     case "bottom":
-      return [].concat(root._bl, root._tl, root._tr, root._br);
+      pts = [].concat(root._bl, root._tl, root._tr, root._br);
+      break;
     case "left":
-      return [].concat(root._tl, root._tr, root._br, root._bl);
+      pts = [].concat(root._tl, root._tr, root._br, root._bl);
+      break;
     default:
-      var pts = [].concat(root._tl, root._tr, root._br, root._bl);
+      pts = [].concat(root._tl, root._tr, root._br, root._bl);
       pts.push(pts[0]);
       pts.push(pts[1]);
-      return pts;
     }
+    // Drop consecutive duplicate points (every uncut corner contributes
+    // one) — confirmed live: a degenerate zero-length segment sitting
+    // right at an open path's own end corrupted the stroker's rendering
+    // of the real segment just before it, leaving that whole edge
+    // invisible (a popup's near-the-bar-adjacent uncut corner made the
+    // *opposite* edge vanish, not just that corner itself).
+    var out = [pts[0]];
+    for (var i = 1; i < pts.length; i++) {
+      if (pts[i].x !== pts[i - 1].x || pts[i].y !== pts[i - 1].y)
+        out.push(pts[i]);
+    }
+    return out;
   }
 
   ShapePath {
