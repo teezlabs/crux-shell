@@ -22,8 +22,14 @@ Item {
   // Set by BarSection.qml — see crux skill's notes.md.
   property bool invertChamfer: false
 
-  // Widgets confirmed to fit a compact 2-3 line stack; Clock deliberately excluded (always single-line).
-  readonly property var _compactSafeIds: ["Sound", "Layout"]
+  // Widgets confirmed to fit a compact 2-3 line stack; Clock deliberately
+  // excluded (always single-line). Sound was here too, but stacking grows
+  // a widget *taller* — right for a real vertical bar (room along its own
+  // long axis), but wrong for a horizontal bar on a portrait screen (the
+  // bar's fixed thickness IS its cross-axis, so a taller module just
+  // overflows it) — confirmed making the whole horizontal bar look
+  // thicker than every other, correctly-sized module next to it.
+  readonly property var _compactSafeIds: ["Layout"]
   readonly property bool _effectiveVertical: _compactSafeIds.indexOf(widgetId) !== -1 ? contentVertical : vertical
 
   readonly property string _widgetsDir: Quickshell.shellDir + "/Modules/Bar/Widgets/"
