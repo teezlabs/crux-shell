@@ -212,12 +212,18 @@ PanelWindow {
             color: Color.surfaceText
             font.family: Tokens.fontFamily
             font.pixelSize: Tokens.bodyLgSize
-            // The Rectangle below is the spec caret (§6.2: 2px×17px) — don't
-            // also draw TextInput's own native cursor on top of it.
+            // The Rectangle below is the spec caret (§6.2: 2px×17px).
+            // cursorVisible: false alone didn't actually suppress
+            // TextInput's own native blinking cursor here (confirmed live:
+            // a second white cursor persisted even with cursorVisible
+            // false) — an empty cursorDelegate forces it to draw nothing
+            // instead, which does.
             cursorVisible: false
+            cursorDelegate: Item {}
 
             Text {
               visible: searchInput.text === ""
+              x: 6 // clears the caret Rectangle, which sits right at the edge when empty
               text: "search apps…"
               color: Color.labelText
               font.family: Tokens.fontFamily
