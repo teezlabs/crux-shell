@@ -229,6 +229,22 @@ Flickable {
         font.pixelSize: Tokens.captionSize
       }
     }
+
+    SettingRow {
+      label: "Hide unnamed devices"
+      NToggle {
+        checked: Settings.data.bluetooth.hideUnnamedDevices
+        onToggled: checked => Settings.data.bluetooth.hideUnnamedDevices = checked
+      }
+      Text {
+        text: "Off shows devices still using a raw address/UUID as their name (useful mid-pairing)"
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.captionSize
+        wrapMode: Text.WordWrap
+        Layout.fillWidth: true
+      }
+    }
   }
   }
 }

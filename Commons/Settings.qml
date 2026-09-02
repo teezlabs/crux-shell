@@ -270,6 +270,13 @@ Singleton {
       property string selectedGroupName: ""
     }
 
+    property JsonObject bluetooth: JsonObject {
+      // Was hardcoded true in BluetoothModel.js's deviceLists() -- a
+      // device that hasn't announced a real name yet (mid-pairing, some
+      // odd peripherals) is invisible while this is on.
+      property bool hideUnnamedDevices: true
+    }
+
     property JsonObject osd: JsonObject {
       property bool enabled: true
       property string position: "bottom" // "top" | "center" | "bottom"

@@ -99,15 +99,16 @@ function deviceRow(d) {
   }
 }
 
-function deviceLists(devices) {
+function deviceLists(devices, hideUnnamed) {
   var values = toArray(devices)
   var connected = []
   var known = []
   var discovered = []
+  var requireName = hideUnnamed !== false
 
   for (var i = 0; i < values.length; i++) {
     var d = values[i]
-    if (!d || !hasHumanName(d)) continue
+    if (!d || (requireName && !hasHumanName(d))) continue
     if (d.connected) connected.push(d)
     else if (d.paired || d.bonded || d.trusted) known.push(d)
     else discovered.push(d)

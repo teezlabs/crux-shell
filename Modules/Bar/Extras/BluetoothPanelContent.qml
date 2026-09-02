@@ -21,7 +21,7 @@ ColumnLayout {
 
   readonly property var adapter: Bluetooth.defaultAdapter
   readonly property var devices: Bluetooth.devices ? Bluetooth.devices.values : []
-  readonly property var deviceGroups: Model.deviceLists(devices)
+  readonly property var deviceGroups: Model.deviceLists(devices, Settings.data.bluetooth.hideUnnamedDevices)
   readonly property var connectedDevices: deviceGroups.connected || []
   readonly property var knownDevices: deviceGroups.known || []
   readonly property var discoveredDevices: deviceGroups.discovered || []
