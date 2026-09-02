@@ -647,6 +647,7 @@ PanelWindow {
           PluginsTab {
             anchors.fill: parent
             visible: root.activeTab === "plugins"
+            initialSubTab: root.activeTab === "plugins" ? root.jumpSubTab : ""
           }
 
           AboutTab {

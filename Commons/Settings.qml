@@ -235,6 +235,16 @@ Singleton {
       property int historyLimit: 50 // entries shown/kept in the popup, sliced client-side from cliphist's own list
     }
 
+    // Genuinely missing until now: Battery.qml (bar widget) and
+    // BatteryPopupContent.qml both read Settings.data.battery.* — always a
+    // TypeError on every boot, not something introduced by the popup
+    // rewrite, just never wired into the schema before.
+    property JsonObject battery: JsonObject {
+      property int lowThreshold: 20 // % — statusColor/low-state cutoff
+      property int criticalThreshold: 10 // % — statusColor/critical-state cutoff
+      property bool showPowerProfile: true // PowerProfiles switcher row in the battery popup
+    }
+
     property JsonObject audio: JsonObject {
       property real step: 0.05 // volume change per scroll notch / hardware key press
       // MPRIS player.identity to prefer as "active" over the default
@@ -411,6 +421,13 @@ Singleton {
       property bool showNumLock: true
       property bool showScrollLock: true
       property bool hideWhenOff: false // hide each indicator entirely instead of dimming it when its lock is off
+    }
+
+    // Marketplace sources for Commons/Plugins.qml -- each a git repo with
+    // a registry.json at its root listing {id, label, description, ...}
+    // per plugin. Local-folder plugins (no source) still work as before.
+    property JsonObject plugins: JsonObject {
+      property list<var> sources: [] // [{ "url": "...", "name": "...", "enabled": true }]
     }
   }
 
