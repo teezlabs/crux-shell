@@ -21,7 +21,8 @@ PanelWindow {
   readonly property bool _barLeft: root._barPos === "left"
   readonly property bool _barRight: root._barPos === "right"
   readonly property bool _barBottom: root._barPos === "bottom"
-  readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 20
+  readonly property bool _barTop: !root._barLeft && !root._barRight && !root._barBottom
+  readonly property real _barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin
 
   // Bar-icon trigger position, mapped into this popup's space; -1 = not set (IPC open). See SoundMenuWindow.qml.
   property point triggerPos: Qt.point(-1, -1)
@@ -153,8 +154,14 @@ PanelWindow {
     Chamfer {
       anchors.fill: parent
       chamferSize: Tokens.chamferPanel
-      cutTopRight: true
-      cutBottomLeft: true
+      // Flush against the bar, so cut only the two corners on the far
+      // side from it -- the near side reads as growing out of the bar
+      // instead of floating as a fully separate chamfered card.
+      cutTopLeft: root._barBottom || root._barRight
+      cutTopRight: root._barBottom || root._barLeft
+      cutBottomLeft: root._barTop || root._barRight
+      cutBottomRight: root._barTop || root._barLeft
+      omitStrokeSide: root._barBottom ? "bottom" : (root._barLeft ? "left" : (root._barRight ? "right" : "top"))
       fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
       strokeColor: Color.outline
       strokeWidth: Tokens.borderPanel

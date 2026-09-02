@@ -240,47 +240,18 @@ ShellRoot {
           strokeColor: "transparent"
         }
 
-        Rectangle {
-          // Plain x/y/width/height instead of anchors — anchors that
-          // conditionally switch a side between a real target and
-          // `undefined` (needed here since which edge this hugs depends on
-          // barIsVertical/barPosition) don't reliably re-resolve once
-          // Settings finishes loading: this binding first evaluates while
-          // Settings.isLoaded is still false (barPosition defaults to
-          // "top"/horizontal for every screen), and a screen whose real
-          // configured position is actually vertical never correctly
-          // flipped its anchors over afterward — confirmed via a debug
-          // console.log that fired with vertical=false/position=top on a
-          // screen configured as "left", and confirmed the line rendered
-          // fine on the "top" screen (no flip ever needed) but never on the
-          // "left" one (needed a flip that never took). Plain property
-          // bindings don't have that staleness — they fully re-evaluate.
+        // Solid outline framing all four edges of the bar, following the
+        // same chamfered shape as the background above it instead of a
+        // plain square-cornered Rectangle border.
+        Chamfer {
           visible: Settings.data.bar.showBorder
-          x: root.barIsVertical ? (root.barPosition === "left" ? parent.width - Settings.data.bar.borderWidth : 0) : 0
-          y: root.barIsVertical ? 0 : (root.barPosition === "top" ? parent.height - Settings.data.bar.borderWidth : 0)
-          width: root.barIsVertical ? Settings.data.bar.borderWidth : parent.width
-          height: root.barIsVertical ? parent.height : Settings.data.bar.borderWidth
-          color: "transparent"
-
-          gradient: Gradient {
-            orientation: root.barIsVertical ? Gradient.Vertical : Gradient.Horizontal
-            GradientStop {
-              position: 0
-              color: Color.alpha(Color.primary, 0)
-            }
-            GradientStop {
-              position: 0.3
-              color: Color.alpha(Color.primary, 0.32)
-            }
-            GradientStop {
-              position: 0.7
-              color: Color.alpha(Color.primary, 0.32)
-            }
-            GradientStop {
-              position: 1
-              color: Color.alpha(Color.primary, 0)
-            }
-          }
+          anchors.fill: parent
+          chamferSize: Settings.data.bar.floating ? Tokens.chamferPanel : 0
+          cutTopRight: Settings.data.bar.floating
+          cutBottomLeft: Settings.data.bar.floating
+          fillColor: "transparent"
+          strokeColor: Color.alpha(Color.primary, 0.32)
+          strokeWidth: Settings.data.bar.borderWidth
         }
 
         Bar {
