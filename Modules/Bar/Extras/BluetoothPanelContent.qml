@@ -8,7 +8,7 @@ import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 import "BluetoothModel.js" as Model
 
-// Bluetooth device list/pair UI, shared between BluetoothMenuWindow.qml and Control Center's inline expand. No window chrome of its own.
+// Bluetooth device list/pair UI, shared between the bluetooth popup (PopupHost.qml) and Control Center's inline expand. No window chrome of its own.
 ColumnLayout {
   id: root
 

@@ -1,9 +1,10 @@
 import QtQuick
+import Quickshell
 import Quickshell.Services.UPower
 import qs.Modules.Bar.Extras
 import qs.Commons
 
-// Battery %/charging state via UPower.displayDevice. Auto-hides if !isPresent. Click opens BatteryMenuWindow.
+// Battery %/charging state via UPower.displayDevice. Auto-hides if !isPresent. Click opens the battery popup via PopupHost's IPC target.
 Item {
   id: root
 
@@ -54,12 +55,6 @@ Item {
   implicitHeight: root.present ? module.implicitHeight : 0
   width: implicitWidth
   height: implicitHeight
-
-  BatteryMenuWindow {
-    id: menu
-    targetScreen: root.screen
-    controller: root
-  }
 
   BarModule {
     id: module
@@ -130,8 +125,8 @@ Item {
   TapHandler {
     onTapped: {
       TooltipService.hideImmediately();
-      menu.triggerPos = root.mapToItem(null, 0, 0);
-      menu.toggle();
+      var pos = root.mapToItem(null, 0, 0);
+      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "battery_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
     }
   }
 

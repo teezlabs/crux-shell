@@ -24,11 +24,6 @@ Item {
     objects: root.source ? [root.source] : []
   }
 
-  MicrophoneMenuWindow {
-    id: menu
-    targetScreen: root.screen
-  }
-
   function _setVolume(v) {
     if (!root.source || !root.source.audio)
       return;
@@ -94,8 +89,8 @@ Item {
   TapHandler {
     acceptedButtons: Qt.LeftButton
     onTapped: {
-      menu.triggerPos = root.mapToItem(null, 0, 0);
-      menu.toggle();
+      var pos = root.mapToItem(null, 0, 0);
+      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "microphone_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
     }
   }
   TapHandler {

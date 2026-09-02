@@ -1,9 +1,10 @@
 import QtQuick
+import Quickshell
 import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// CPU%/RAM% readout (delta-based /proc/stat, MemTotal-MemAvailable). Click opens SystemStatsWindow for full telemetry.
+// CPU%/RAM% readout (delta-based /proc/stat, MemTotal-MemAvailable). Click opens the systemStats popup hosted by PopupHost.qml.
 Item {
   id: root
 
@@ -11,11 +12,6 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false
-
-  SystemStatsWindow {
-    id: statsWindow
-    targetScreen: root.screen
-  }
 
   property real cpuPercent: 0
   property real memPercent: 0
@@ -205,8 +201,8 @@ Item {
   TapHandler {
     onTapped: {
       TooltipService.hideImmediately();
-      statsWindow.triggerPos = root.mapToItem(null, 0, 0);
-      statsWindow.toggle();
+      var pos = root.mapToItem(null, 0, 0);
+      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "systemStats_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
     }
   }
   onCpuPercentChanged: if (TooltipService.anchorItem === root)

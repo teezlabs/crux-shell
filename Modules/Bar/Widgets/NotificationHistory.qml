@@ -1,11 +1,12 @@
 import QtQuick
+import Quickshell
 import qs.Modules.Bar.Extras
 import qs.Commons
 
-// Bell icon on the bar; the persistent history list lives in the separate
-// NotificationHistoryWindow popup (distinct from the live toast stack in
-// NotificationsWindow.qml). Small dot badge when history has entries —
-// real count, not decorative.
+// Bell icon on the bar; the persistent history list lives in the
+// notificationHistory popup hosted by PopupHost.qml (distinct from the
+// live toast stack in NotificationsWindow.qml). Small dot badge when
+// history has entries — real count, not decorative.
 Item {
   id: root
 
@@ -20,16 +21,11 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  NotificationHistoryWindow {
-    id: menu
-    targetScreen: root.screen
-  }
-
   BarIconButton {
     id: btn
     onTapped: {
-      menu.triggerPos = root.mapToItem(null, 0, 0);
-      menu.toggle();
+      var pos = root.mapToItem(null, 0, 0);
+      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "notificationHistory_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
     }
 
     // Geometric bell glyph — body + clapper, no font/emoji dependency.

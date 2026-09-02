@@ -28,12 +28,6 @@ Item {
   visible: root.available
   opacity: root.available ? 1.0 : 0.0
 
-  BrightnessMenuWindow {
-    id: menu
-    targetScreen: root.screen
-    controller: root
-  }
-
   function _clamp(value) {
     var min = Settings.data.brightness.enforceMinimum ? 0.01 : 0;
     return Math.max(min, Math.min(1, value));
@@ -171,8 +165,8 @@ Item {
   TapHandler {
     onTapped: {
       TooltipService.hideImmediately();
-      menu.triggerPos = root.mapToItem(null, 0, 0);
-      menu.toggle();
+      var pos = root.mapToItem(null, 0, 0);
+      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "brightness_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
     }
   }
 

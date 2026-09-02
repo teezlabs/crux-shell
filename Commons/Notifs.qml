@@ -19,7 +19,7 @@ Singleton {
       list[i].dismiss();
   }
 
-  // Persistent history (backs NotificationHistoryWindow.qml) — Quickshell's
+  // Persistent history (backs NotificationHistoryPopupContent.qml) — Quickshell's
   // trackedNotifications is a live view only, so this snapshots each
   // arrival separately, capped at maxHistory. Session-only, not on disk.
   readonly property int maxHistory: Settings.data.notifications.historyLimit

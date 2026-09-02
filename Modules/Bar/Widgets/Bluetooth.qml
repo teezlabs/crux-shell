@@ -1,10 +1,11 @@
 import QtQuick
+import Quickshell
 import Quickshell.Bluetooth
 import qs.Modules.Bar.Extras
 import qs.Commons
 
 // Bluetooth status icon on the bar; the real device list/connect UI lives
-// in the separate BluetoothMenuWindow popup.
+// in the bluetooth popup hosted by PopupHost.qml.
 Item {
   id: root
 
@@ -27,16 +28,11 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  BluetoothMenuWindow {
-    id: menu
-    targetScreen: root.screen
-  }
-
   BarIconButton {
     id: btn
     onTapped: {
-      menu.triggerPos = root.mapToItem(null, 0, 0);
-      menu.toggle();
+      var pos = root.mapToItem(null, 0, 0);
+      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "bluetooth_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
     }
 
     // Geometric "B"-glyph stand-in (bowtie) — no font/emoji glyph dependency.

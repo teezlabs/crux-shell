@@ -1,10 +1,11 @@
 import QtQuick
+import Quickshell
 import Quickshell.Networking
 import qs.Modules.Bar.Extras
 import qs.Commons
 
 // Wi-Fi status icon on the bar; the real network list/connect UI lives in
-// the separate WifiMenuWindow popup (StatusGroup's NET segment is a
+// the wifi popup hosted by PopupHost.qml (StatusGroup's NET segment is a
 // summary-only readout, this owns the actual device list).
 Item {
   id: root
@@ -35,16 +36,11 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  WifiMenuWindow {
-    id: menu
-    targetScreen: root.screen
-  }
-
   BarIconButton {
     id: btn
     onTapped: {
-      menu.triggerPos = root.mapToItem(null, 0, 0);
-      menu.toggle();
+      var pos = root.mapToItem(null, 0, 0);
+      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "wifi_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
     }
 
     // Standard wifi-fan glyph (three concentric arcs + a dot) drawn on

@@ -1,9 +1,10 @@
 import QtQuick
+import Quickshell
 import qs.Commons
 import qs.Modules.Bar.Extras
 
 // Hue bulb status icon on the bar; brightness/color control lives in the
-// separate HueMenuWindow popup, pairing setup lives in Settings → Hue.
+// hue popup hosted by PopupHost.qml, pairing setup lives in Settings → Hue.
 Item {
   id: root
 
@@ -19,17 +20,12 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  HueMenuWindow {
-    id: menu
-    targetScreen: root.screen
-  }
-
   BarIconButton {
     id: btn
     attention: root.lit
     onTapped: {
-      menu.triggerPos = root.mapToItem(null, 0, 0);
-      menu.toggle();
+      var pos = root.mapToItem(null, 0, 0);
+      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "hue_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
     }
     onSecondaryTapped: {
       if (Hue.paired && root.group)

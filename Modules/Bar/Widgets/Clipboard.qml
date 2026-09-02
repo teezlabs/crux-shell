@@ -1,9 +1,10 @@
 import QtQuick
+import Quickshell
 import qs.Modules.Bar.Extras
 import qs.Commons
 
-// Clipboard icon on the bar; the history list lives in the separate
-// ClipboardMenuWindow popup.
+// Clipboard icon on the bar; the history list lives in the clipboard
+// popup hosted by PopupHost.qml.
 Item {
   id: root
 
@@ -16,16 +17,11 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  ClipboardMenuWindow {
-    id: menu
-    targetScreen: root.screen
-  }
-
   BarIconButton {
     id: btn
     onTapped: {
-      menu.triggerPos = root.mapToItem(null, 0, 0);
-      menu.toggle();
+      var pos = root.mapToItem(null, 0, 0);
+      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "clipboard_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
     }
 
     // Geometric clipboard glyph — a small rectangle with a clip notch.

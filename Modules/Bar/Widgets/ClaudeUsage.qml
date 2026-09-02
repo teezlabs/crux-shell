@@ -5,7 +5,8 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 
 // Compact session-usage readout on the bar; full detail (session + weekly,
-// reset times, today's tokens) lives in the ClaudeUsageMenuWindow popup.
+// reset times, today's tokens) lives in the claudeUsage popup hosted by
+// PopupHost.qml.
 Item {
   id: root
 
@@ -60,17 +61,12 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  ClaudeUsageMenuWindow {
-    id: menu
-    targetScreen: root.screen
-  }
-
   BarIconButton {
     id: btn
     attention: root.sessionPercent > 0.85
     onTapped: {
-      menu.triggerPos = root.mapToItem(null, 0, 0);
-      menu.toggle();
+      var pos = root.mapToItem(null, 0, 0);
+      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "claudeUsage_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
     }
 
     // Geometric robot glyph: rounded head outline + two eye dots + antenna —

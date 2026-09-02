@@ -8,7 +8,7 @@ import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 import "NetworkModel.js" as Model
 
-// Wi-Fi network list/connect UI, shared between WifiMenuWindow.qml and Control Center's inline expand. No window chrome of its own.
+// Wi-Fi network list/connect UI, shared between the wifi popup (PopupHost.qml) and Control Center's inline expand. No window chrome of its own.
 ColumnLayout {
   id: root
 
