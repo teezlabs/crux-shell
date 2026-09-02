@@ -36,8 +36,10 @@ PanelWindow {
 
   property bool opened: false
 
+  readonly property bool shownOnThisScreen: Settings.data.osd.monitors.length === 0 || (root.targetScreen && Settings.data.osd.monitors.includes(root.targetScreen.name))
+
   function show() {
-    if (!Settings.data.osd.enabled)
+    if (!Settings.data.osd.enabled || !root.shownOnThisScreen)
       return;
     opened = true;
     hideTimer.restart();
@@ -91,7 +93,7 @@ PanelWindow {
       cutTopRight: true
       cutBottomLeft: true
       cutBottomRight: false
-      fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
+      fillColor: Color.alpha(Color.surface, Settings.data.osd.backgroundOpacity)
       strokeColor: root.muted ? Color.alpha(Color.error, Tokens.destructiveBorderAlpha) : Color.outline
       strokeWidth: Tokens.borderPanel
     }
