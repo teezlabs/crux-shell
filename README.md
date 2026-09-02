@@ -16,7 +16,7 @@
 > This is my personal daily driver. It changes under me without warning, and every corner gets chamfered whether you like it or not.
 
 > [!TIP]
-> Everything's configurable from the settings panel — search box included, because 21 tabs is a lot to remember.
+> Everything's configurable from the settings panel - search box included, because 21 tabs is a lot to remember.
 
 ## What it does
 
