@@ -23,11 +23,6 @@ Item {
     objects: root.sink ? [root.sink] : []
   }
 
-  SoundMenuWindow {
-    id: menu
-    targetScreen: root.screen
-  }
-
   function _setVolume(v) {
     if (!root.sink || !root.sink.audio)
       return;
@@ -94,8 +89,8 @@ Item {
   TapHandler {
     acceptedButtons: Qt.LeftButton
     onTapped: {
-      menu.triggerPos = root.mapToItem(null, 0, 0);
-      menu.toggle();
+      var pos = root.mapToItem(null, 0, 0);
+      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "sound_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
     }
   }
   TapHandler {

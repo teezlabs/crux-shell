@@ -289,6 +289,13 @@ ShellRoot {
       ControlCenterWindow {
         targetScreen: root.screen
       }
+
+      // Always-mapped overlay hosting popups migrated to the
+      // slide-out-from-the-bar treatment (see crux skill's notes.md) —
+      // Sound so far, more to follow.
+      PopupHost {
+        targetScreen: root.screen
+      }
     }
   }
 }
