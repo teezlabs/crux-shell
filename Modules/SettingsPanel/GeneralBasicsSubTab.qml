@@ -106,6 +106,46 @@ Flickable {
     }
 
     SettingRow {
+      label: "Avatar image"
+
+      Item {
+        Layout.fillWidth: true
+        height: 28
+
+        Chamfer {
+          anchors.fill: parent
+          chamferSize: Tokens.chamferIcon
+          cutTopRight: true
+          cutBottomLeft: true
+          fillColor: Color.surface
+          strokeColor: avatarInput.activeFocus ? Color.primary : Color.outline
+          strokeWidth: Tokens.borderModule
+        }
+
+        TextInput {
+          id: avatarInput
+          anchors.fill: parent
+          anchors.leftMargin: 8
+          anchors.rightMargin: 8
+          verticalAlignment: Text.AlignVCenter
+          text: Settings.data.general.avatarImage
+          color: Color.surfaceText
+          font.family: Tokens.fontFamily
+          font.pixelSize: Tokens.bodySmSize
+          selectByMouse: true
+          onEditingFinished: Settings.data.general.avatarImage = text
+        }
+      }
+
+      Text {
+        text: "Empty = the Arch logo in Control Center's header"
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.captionSize
+      }
+    }
+
+    SettingRow {
       label: "UI scale"
 
       NSlider {

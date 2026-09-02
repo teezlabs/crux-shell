@@ -463,8 +463,18 @@ PanelWindow {
             color: Color.surfaceContainer
             border.color: Color.outline
             border.width: Tokens.borderModule
+            clip: true
+
+            Image {
+              anchors.fill: parent
+              visible: Settings.data.general.avatarImage !== ""
+              source: Settings.data.general.avatarImage !== "" ? "file://" + Settings.data.general.avatarImage : ""
+              fillMode: Image.PreserveAspectCrop
+              asynchronous: true
+            }
           }
           ArchLogo {
+            visible: Settings.data.general.avatarImage === ""
             anchors.centerIn: parent
             width: 22
             height: 22

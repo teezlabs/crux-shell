@@ -198,6 +198,7 @@ Singleton {
 
     property JsonObject general: JsonObject {
       property bool keepAwake: false // inhibit idle/screen-lock while true — Control Center toggle
+      property string avatarImage: "" // "" = fall back to the Arch logo, ControlCenterWindow's header avatar
       // Applied live via `hyprctl keyword input:natural_scroll` on toggle,
       // and re-applied on boot (see shell.qml) since Hyprland doesn't
       // persist this itself — it's a runtime keyword, not read from
