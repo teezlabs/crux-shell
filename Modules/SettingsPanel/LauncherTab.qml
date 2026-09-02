@@ -38,6 +38,20 @@ Flickable {
     }
 
     SettingRow {
+      label: "Sort by most used"
+      NToggle {
+        checked: Settings.data.launcher.sortByMostUsed
+        onToggled: checked => Settings.data.launcher.sortByMostUsed = checked
+      }
+      Text {
+        text: "Empty-query list only — a real search still sorts by match quality"
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.captionSize
+      }
+    }
+
+    SettingRow {
       label: "Result limit"
       NSlider {
         Layout.preferredWidth: 160

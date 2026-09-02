@@ -225,6 +225,8 @@ Singleton {
     property JsonObject launcher: JsonObject {
       property bool fuzzyMatch: false // false = the original plain substring filter
       property int resultLimit: 30
+      property bool sortByMostUsed: false // empty-query list only -- a real search always sorts by match quality
+      property string appUsageCounts: "{}" // JSON-encoded {appId: launchCount}, bumped in LauncherWindow.qml's launch()
       // Typing this at the start of the query switches to "run this exact
       // shell command" mode instead of searching apps — LauncherWindow.qml
       // had a comment saying it was "apps-only today (no run/windows/calc

@@ -61,12 +61,37 @@ PanelWindow {
           return aStarts ? -1 : 1;
         return an.localeCompare(bn);
       });
+    } else if (Settings.isLoaded && Settings.data.launcher.sortByMostUsed) {
+      var counts = root._usageCounts;
+      list = list.slice().sort(function (a, b) {
+        var ac = counts[a.id] || 0;
+        var bc = counts[b.id] || 0;
+        if (ac !== bc)
+          return bc - ac;
+        return (a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase());
+      });
     } else {
       list = list.slice().sort(function (a, b) {
         return (a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase());
       });
     }
     return list.slice(0, root._resultLimit);
+  }
+
+  readonly property var _usageCounts: {
+    try {
+      return JSON.parse(Settings.data.launcher.appUsageCounts);
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function _bumpUsageCount(appId) {
+    if (!appId)
+      return;
+    var counts = root._usageCounts;
+    counts[appId] = (counts[appId] || 0) + 1;
+    Settings.data.launcher.appUsageCounts = JSON.stringify(counts);
   }
 
   function runExecCommand() {
@@ -84,6 +109,7 @@ PanelWindow {
   function launch(app) {
     if (!app)
       return;
+    root._bumpUsageCount(app.id);
     root.visible = false;
     query = "";
     Qt.callLater(function () {
