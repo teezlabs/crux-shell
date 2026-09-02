@@ -396,6 +396,7 @@ Singleton {
       property bool showBattery: true
       property bool showVolume: true
       property bool showNotifications: true
+      property bool showMediaControls: true // read-only now-playing line, not interactive -- no new tappable surface on the lock screen
       property int gracePeriodSec: 0 // 0 = off, no delay before the lock actually engages
       property int maxFailedAttempts: 0 // 0 = unlimited
       property int lockoutDurationSec: 30

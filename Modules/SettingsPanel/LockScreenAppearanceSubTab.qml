@@ -214,6 +214,19 @@ Flickable {
         onToggled: checked => Settings.data.lockScreen.showNotifications = checked
       }
     }
+    SettingRow {
+      label: "Now playing"
+      NToggle {
+        checked: Settings.data.lockScreen.showMediaControls
+        onToggled: checked => Settings.data.lockScreen.showMediaControls = checked
+      }
+      Text {
+        text: "Read-only track info, no playback buttons on the lock screen"
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.captionSize
+      }
+    }
   }
 
     Item {

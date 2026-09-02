@@ -5,6 +5,7 @@ import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Networking
 import Quickshell.Services.Pipewire
+import Quickshell.Services.Mpris
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.LockScreen
@@ -130,6 +131,17 @@ Loader {
           readonly property var sink: Pipewire.ready ? Pipewire.defaultAudioSink : null
           readonly property real volume: sink && sink.audio ? sink.audio.volume : 0
           readonly property bool muted: sink && sink.audio ? sink.audio.muted : false
+
+          // Read-only "now playing" line, not interactive controls — the
+          // lock screen isn't the place to add a new tappable surface.
+          readonly property var mprisPlayers: Mpris.players ? Mpris.players.values : []
+          readonly property var activeMprisPlayer: {
+            for (var i = 0; i < mprisPlayers.length; i++) {
+              if (mprisPlayers[i] && mprisPlayers[i].playbackState === MprisPlaybackState.Playing)
+                return mprisPlayers[i];
+            }
+            return mprisPlayers.length > 0 ? mprisPlayers[0] : null;
+          }
 
           PwObjectTracker {
             objects: surface.sink ? [surface.sink] : []
@@ -263,6 +275,16 @@ Loader {
                 font.pixelSize: 14
                 font.letterSpacing: 14 * 0.26
               }
+            }
+
+            Text {
+              visible: Settings.data.lockScreen.showMediaControls && !!surface.activeMprisPlayer
+              text: surface.activeMprisPlayer ? ((surface.activeMprisPlayer.trackArtist ? surface.activeMprisPlayer.trackArtist + " — " : "") + (surface.activeMprisPlayer.trackTitle || "")) : ""
+              color: Color.labelText
+              font.family: Tokens.fontFamily
+              font.pixelSize: 14
+              elide: Text.ElideRight
+              width: 400
             }
           }
 
