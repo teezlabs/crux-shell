@@ -76,5 +76,28 @@ Flickable {
       }
     }
   }
+
+  SettingsSection {
+    title: "Confirm window"
+    description: "How long a \"confirm\" action stays armed after the first tap before it resets."
+
+    SettingRow {
+      label: "Duration"
+      NSlider {
+        Layout.preferredWidth: 160
+        from: 1000
+        to: 5000
+        stepSize: 250
+        value: Settings.data.sessionMenu.confirmWindowMs
+        onMoved: value => Settings.data.sessionMenu.confirmWindowMs = Math.round(value)
+      }
+      Text {
+        text: (Settings.data.sessionMenu.confirmWindowMs / 1000).toFixed(2) + "s"
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.bodySmSize
+      }
+    }
+  }
   }
 }

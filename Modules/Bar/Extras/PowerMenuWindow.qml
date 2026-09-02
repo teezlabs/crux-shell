@@ -63,7 +63,7 @@ PanelWindow {
 
   Timer {
     id: armTimer
-    interval: 2500
+    interval: Settings.data.sessionMenu.confirmWindowMs
     onTriggered: root.armedLabel = ""
   }
 
