@@ -388,6 +388,8 @@ Singleton {
       property int normalUrgencyDurationSec: 6
       property int criticalUrgencyDurationSec: 0 // 0 = never auto-expire
       property bool respectAppExpireTimeout: true
+      property real backgroundOpacity: 0.94
+      property list<string> monitors: [] // empty = show on all monitors
     }
 
     property JsonObject keyboard: JsonObject {

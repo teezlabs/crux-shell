@@ -20,7 +20,9 @@ PanelWindow {
   readonly property int earlierCount: Math.max(0, notifications.length - visibleCap)
   readonly property string pos: Settings.data.notifications.position
 
-  visible: Settings.data.notifications.enabled && !Settings.data.notifications.doNotDisturb && notifications.length > 0
+  readonly property bool shownOnThisScreen: Settings.data.notifications.monitors.length === 0 || (root.targetScreen && Settings.data.notifications.monitors.includes(root.targetScreen.name))
+
+  visible: Settings.data.notifications.enabled && !Settings.data.notifications.doNotDisturb && notifications.length > 0 && root.shownOnThisScreen
   color: "transparent"
 
   // Sized to content, not full-screen, corner-anchored per `pos` — a
@@ -78,7 +80,7 @@ PanelWindow {
           chamferSize: Tokens.chamferModule
           cutTopRight: true
           cutBottomLeft: true
-          fillColor: Color.alpha(Color.surfaceContainer, 0.94)
+          fillColor: Color.alpha(Color.surfaceContainer, Settings.data.notifications.backgroundOpacity)
           strokeColor: Color.outlineVariant
           strokeWidth: Tokens.borderModule
         }
