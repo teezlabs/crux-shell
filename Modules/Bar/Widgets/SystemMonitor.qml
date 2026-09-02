@@ -20,7 +20,8 @@ Item {
   property real cpuPercent: 0
   property real memPercent: 0
   property var prevCpuStats: null
-  readonly property bool warn: cpuPercent >= Settings.data.systemMonitor.warnThreshold || memPercent >= Settings.data.systemMonitor.warnThreshold
+  readonly property bool cpuWarn: cpuPercent >= Settings.data.systemMonitor.cpuWarningThreshold
+  readonly property bool memWarn: memPercent >= Settings.data.systemMonitor.memWarningThreshold
 
   function calculateLineUsage(line) {
     var parts = line.split(/\s+/);
@@ -120,7 +121,7 @@ Item {
       StatText {
         label: "CPU"
         value: root.cpuPercent + "%"
-        valueColor: root.warn ? Color.error : Color.surfaceText
+        valueColor: root.cpuWarn ? Color.error : Color.surfaceText
       }
 
       Rectangle {
@@ -132,7 +133,7 @@ Item {
       StatText {
         label: "RAM"
         value: root.memPercent + "%"
-        valueColor: root.warn ? Color.error : Color.surfaceText
+        valueColor: root.memWarn ? Color.error : Color.surfaceText
       }
     }
 
@@ -146,7 +147,7 @@ Item {
           width: 28
           horizontalAlignment: Text.AlignHCenter
           text: root.cpuPercent + "%"
-          color: root.warn ? Color.error : Color.surfaceText
+          color: root.cpuWarn ? Color.error : Color.surfaceText
           font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
@@ -174,7 +175,7 @@ Item {
           width: 28
           horizontalAlignment: Text.AlignHCenter
           text: root.memPercent + "%"
-          color: root.warn ? Color.error : Color.surfaceText
+          color: root.memWarn ? Color.error : Color.surfaceText
           font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
