@@ -11,7 +11,6 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false // true bar orientation (left/right bar)
-  property bool contentVertical: vertical // Sound's effective-stacked flag; see crux skill's notes.md
 
   implicitWidth: module.implicitWidth
   implicitHeight: module.implicitHeight
@@ -20,12 +19,16 @@ Item {
 
   BarModule {
     id: module
-    // Matches Sound's height exactly via the measuring Column below — see
-    // crux skill's notes.md for why.
-    vertical: root.contentVertical
+    // Standard-sized like every other module — no longer growing to match
+    // Sound's portrait-compact stacked height (was making the whole
+    // horizontal bar look thicker than intended on a portrait screen).
+    vertical: root.vertical
     topPadding: 8
     bottomPadding: 8
-    invertChamfer: !root.vertical
+    // Standard (non-inverted) chamfer, so this module's own bottom-left
+    // cut lines up with the floating outer bar strip's bottom-left cut
+    // instead of contradicting it.
+    invertChamfer: false
 
     Item {
       id: slot
