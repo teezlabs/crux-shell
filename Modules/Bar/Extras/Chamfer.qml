@@ -52,12 +52,20 @@ Item {
   // correct, verified-via-runtime-log geometry and color every time.
   // Rectangles sidestep whatever that Shape-specific bug is entirely.
 
+  // Sit fully inside the card rather than straddling the boundary line —
+  // a straddling rect relies on the parent's clip:true to cut it in half,
+  // and that clip-edge rounding turned out to behave inconsistently
+  // between the near edge (0) and far edge (width/height): confirmed
+  // live that a rect straddling y=height rendered nothing while the
+  // equivalent straddling y=0 rendered fine, same strokeWidth, same
+  // parent. Fully inside removes the dependency on that rounding.
+
   // top
   Rectangle {
     visible: root.omitStrokeSide !== "top"
     color: root.strokeColor
     x: root.cutTopLeft ? root.chamferSize : 0
-    y: -root.strokeWidth / 2
+    y: 0
     width: (root.cutTopRight ? root.width - root.chamferSize : root.width) - x
     height: root.strokeWidth
   }
@@ -65,7 +73,7 @@ Item {
   Rectangle {
     visible: root.omitStrokeSide !== "right"
     color: root.strokeColor
-    x: root.width - root.strokeWidth / 2
+    x: root.width - root.strokeWidth
     y: root.cutTopRight ? root.chamferSize : 0
     width: root.strokeWidth
     height: (root.cutBottomRight ? root.height - root.chamferSize : root.height) - y
@@ -75,7 +83,7 @@ Item {
     visible: root.omitStrokeSide !== "bottom"
     color: root.strokeColor
     x: root.cutBottomLeft ? root.chamferSize : 0
-    y: root.height - root.strokeWidth / 2
+    y: root.height - root.strokeWidth
     width: (root.cutBottomRight ? root.width - root.chamferSize : root.width) - x
     height: root.strokeWidth
   }
@@ -83,7 +91,7 @@ Item {
   Rectangle {
     visible: root.omitStrokeSide !== "left"
     color: root.strokeColor
-    x: -root.strokeWidth / 2
+    x: 0
     y: root.cutTopLeft ? root.chamferSize : 0
     width: root.strokeWidth
     height: (root.cutBottomLeft ? root.height - root.chamferSize : root.height) - y
