@@ -76,6 +76,22 @@ Flickable {
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
     }
+
+    SettingRow {
+      label: "Overdrive"
+      NToggle {
+        checked: Settings.data.audio.volumeOverdrive
+        onToggled: checked => Settings.data.audio.volumeOverdrive = checked
+      }
+      Text {
+        text: "Lets scroll/hardware keys push volume up to 150% — the Sound popup's own slider still caps at 100%."
+        color: Color.labelText
+        font.family: Tokens.fontFamily
+        font.pixelSize: Tokens.captionSize
+        wrapMode: Text.WordWrap
+        Layout.fillWidth: true
+      }
+    }
   }
 
   SettingsSection {

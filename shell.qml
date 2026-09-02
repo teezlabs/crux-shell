@@ -135,7 +135,7 @@ ShellRoot {
       if (!sink || !sink.audio)
         return;
       sink.audio.muted = false;
-      sink.audio.volume = Math.min(1, sink.audio.volume + Settings.data.audio.step);
+      sink.audio.volume = Math.min(Settings.data.audio.volumeOverdrive ? 1.5 : 1, sink.audio.volume + Settings.data.audio.step);
     }
     function decrease(): void {
       var sink = Pipewire.ready ? Pipewire.defaultAudioSink : null;

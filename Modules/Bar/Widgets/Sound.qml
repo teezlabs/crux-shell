@@ -26,7 +26,8 @@ Item {
   function _setVolume(v) {
     if (!root.sink || !root.sink.audio)
       return;
-    root.sink.audio.volume = Math.max(0, Math.min(1, v));
+    var maxVolume = Settings.data.audio.volumeOverdrive ? 1.5 : 1;
+    root.sink.audio.volume = Math.max(0, Math.min(maxVolume, v));
     if (root.sink.audio.muted && v > 0)
       root.sink.audio.muted = false;
   }
