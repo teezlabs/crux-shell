@@ -26,12 +26,13 @@ Item {
     anchors.centerIn: parent
     spacing: 6
 
-    IconImage {
+    NIcon {
       visible: root.icon !== ""
       anchors.verticalCenter: parent.verticalCenter
       width: 12
       height: 12
-      source: root.icon !== "" ? Quickshell.iconPath(root.icon, "") : ""
+      iconName: root.icon
+      color: Color.surfaceText
     }
 
     NText {

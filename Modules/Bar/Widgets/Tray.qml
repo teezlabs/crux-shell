@@ -4,6 +4,7 @@ import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Real systray protocol integration (Quickshell.Services.SystemTray), real
 // per-app icons (not spec §3's abstract rotated-square glyph — confirmed
@@ -67,12 +68,13 @@ Item {
             border.width: 1
           }
 
-          IconImage {
+          NIcon {
             anchors.centerIn: parent
             anchors.margins: 4
             width: 16
             height: 16
             asynchronous: true
+            colorize: false
             source: trayCell.modelData ? trayCell.modelData.icon : ""
           }
 

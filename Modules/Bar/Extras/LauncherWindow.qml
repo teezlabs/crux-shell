@@ -382,13 +382,15 @@ PanelWindow {
               }
 
               // DesktopEntry.icon is a bare icon-theme name, not a path — Quickshell.iconPath() resolves it via the icon theme.
-              IconImage {
+              NIcon {
                 anchors.centerIn: parent
                 anchors.margins: 2
                 width: 16
                 height: 16
                 asynchronous: true
-                source: rowItem.modelData.icon ? Quickshell.iconPath(rowItem.modelData.icon, "application-x-executable") : ""
+                colorize: false
+                iconName: rowItem.modelData.icon || ""
+                fallbackIconName: "application-x-executable"
               }
             }
 

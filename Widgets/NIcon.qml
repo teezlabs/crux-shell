@@ -20,15 +20,34 @@ Item {
   property string iconName: ""
   property string fallbackIconName: ""
   property color color: Color.surfaceText
+  // Off for real app icons — the tray and the launcher show full-colour
+  // logos, which are legible in either mode and would be flattened to a
+  // single tone by the shader.
   property bool colorize: true
+  // For callers that already hold a URL or path rather than a theme name.
+  property string source: ""
+  property alias asynchronous: img.asynchronous
 
   implicitWidth: 16
   implicitHeight: 16
 
   IconImage {
     id: img
-    anchors.fill: parent
-    source: root.fallbackIconName !== "" ? Quickshell.iconPath(root.iconName, root.fallbackIconName) : Quickshell.iconPath(root.iconName)
+    // Explicit size, not anchors.fill: an IconImage rasterises SVGs at the
+    // size it believes it is, and filling meant it asked for a buffer
+    // before geometry settled — 159 "requested buffer size is too big"
+    // warnings from the launcher's app list alone.
+    width: root.width
+    height: root.height
+    x: 0
+    y: 0
+    source: {
+      if (root.source !== "")
+        return root.source;
+      if (root.iconName === "")
+        return "";
+      return root.fallbackIconName !== "" ? Quickshell.iconPath(root.iconName, root.fallbackIconName) : Quickshell.iconPath(root.iconName);
+    }
     visible: source !== ""
 
     layer.enabled: root.colorize

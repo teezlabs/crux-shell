@@ -132,11 +132,12 @@ PanelWindow {
             font.pixelSize: Tokens.captionSize
           }
 
-          IconImage {
+          NIcon {
             visible: row.modelData.icon !== ""
             Layout.preferredWidth: 14
             Layout.preferredHeight: 14
             source: root.resolveIcon(row.modelData.icon)
+            color: Color.surfaceText
           }
 
           NText {
