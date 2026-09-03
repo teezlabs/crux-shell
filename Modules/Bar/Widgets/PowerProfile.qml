@@ -12,6 +12,7 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool invertChamfer: false
+  property bool vertical: false
 
   // A binding, not a snapshot — see Commons/PowerProfileService.qml.
   visible: PowerProfileService.available
@@ -21,10 +22,15 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  BarIconButton {
+  BarPill {
     id: btn
     invertChamfer: root.invertChamfer
     attention: PowerProfileService.degraded
+    vertical: root.vertical
+    // Name the profile while hovered, and stay out while it's a state the
+    // user chose rather than the default.
+    label: PowerProfileService.name()
+    forceOpen: PowerProfileService.profile !== PowerProfile.Balanced
     onTapped: PowerProfileService.cycle()
 
     // Leaf / gauge / bolt for power-saver / balanced / performance, drawn
