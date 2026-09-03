@@ -155,6 +155,22 @@ ShellRoot {
   // Screen-agnostic popup IPC targets, once for the whole shell.
   PopupAliases {}
 
+  // Power profile from a keybind, without going through the bar icon.
+  IpcHandler {
+    target: "powerProfile"
+    function current(): string {
+      return PowerProfileService.available ? PowerProfileService.key() : "unavailable";
+    }
+    function cycle(): string {
+      PowerProfileService.cycle();
+      return PowerProfileService.key();
+    }
+    function set(name: string): string {
+      PowerProfileService.setProfile(PowerProfileService.fromKey(name));
+      return PowerProfileService.key();
+    }
+  }
+
   // Theming from a keybind or script, without going through the panel.
   IpcHandler {
     target: "theme"
