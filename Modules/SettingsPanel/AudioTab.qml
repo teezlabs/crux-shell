@@ -51,18 +51,14 @@ NScrollView {
 
     SettingRow {
       label: "Scroll step"
-      NSlider {
-        Layout.preferredWidth: 200
+      NValueSlider {
         from: 0.01
         to: 0.2
         stepSize: 0.01
         value: Settings.data.audio.step
+        sliderWidth: 200
+        readoutText: Math.round(Settings.data.audio.step * 100) + "%"
         onMoved: value => Settings.data.audio.step = value
-      }
-      NText {
-        text: Math.round(Settings.data.audio.step * 100) + "%"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 

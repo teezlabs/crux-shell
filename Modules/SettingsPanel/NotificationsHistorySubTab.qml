@@ -20,18 +20,14 @@ NScrollView {
 
     SettingRow {
       label: "History limit"
-      NSlider {
-        Layout.preferredWidth: 200
+      NValueSlider {
         from: 5
         to: 200
         stepSize: 5
         value: Settings.data.notifications.historyLimit
+        sliderWidth: 200
+        readoutText: Settings.data.notifications.historyLimit + " entries"
         onMoved: value => Settings.data.notifications.historyLimit = value
-      }
-      NText {
-        text: Settings.data.notifications.historyLimit + " entries"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
   }

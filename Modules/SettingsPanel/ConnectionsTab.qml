@@ -152,19 +152,15 @@ NScrollView {
               size: NText.Size.LabelXs
             }
 
-            NSlider {
-              Layout.preferredWidth: 100
+            NValueSlider {
               from: -10
               to: 10
               stepSize: 1
               value: netRow.modelData.priority
+              sliderWidth: 100
+              readoutWidth: 26
+              readoutText: (netRow.modelData.priority > 0 ? "+" : "") + netRow.modelData.priority
               onMoved: value => root.setPriority(netRow.modelData.name, Math.round(value))
-            }
-            NText {
-              text: (netRow.modelData.priority > 0 ? "+" : "") + netRow.modelData.priority
-              color: Color.labelText
-              size: NText.Size.BodySm
-              Layout.preferredWidth: 26
             }
 
             Item {

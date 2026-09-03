@@ -19,18 +19,14 @@ NScrollView {
 
     SettingRow {
       label: "Grace period"
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 0
         to: 30
         stepSize: 1
         value: Settings.data.lockScreen.gracePeriodSec
+        sliderWidth: 160
+        readoutText: Settings.data.lockScreen.gracePeriodSec === 0 ? "off" : (Settings.data.lockScreen.gracePeriodSec + "s")
         onMoved: value => Settings.data.lockScreen.gracePeriodSec = value
-      }
-      NText {
-        text: Settings.data.lockScreen.gracePeriodSec === 0 ? "off" : (Settings.data.lockScreen.gracePeriodSec + "s")
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
   }
@@ -41,36 +37,28 @@ NScrollView {
 
     SettingRow {
       label: "Max attempts"
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 0
         to: 10
         stepSize: 1
         value: Settings.data.lockScreen.maxFailedAttempts
+        sliderWidth: 160
+        readoutText: Settings.data.lockScreen.maxFailedAttempts === 0 ? "unlimited" : Settings.data.lockScreen.maxFailedAttempts
         onMoved: value => Settings.data.lockScreen.maxFailedAttempts = value
-      }
-      NText {
-        text: Settings.data.lockScreen.maxFailedAttempts === 0 ? "unlimited" : Settings.data.lockScreen.maxFailedAttempts
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 
     SettingRow {
       visible: Settings.data.lockScreen.maxFailedAttempts > 0
       label: "Lockout duration"
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 5
         to: 300
         stepSize: 5
         value: Settings.data.lockScreen.lockoutDurationSec
+        sliderWidth: 160
+        readoutText: Settings.data.lockScreen.lockoutDurationSec + "s"
         onMoved: value => Settings.data.lockScreen.lockoutDurationSec = value
-      }
-      NText {
-        text: Settings.data.lockScreen.lockoutDurationSec + "s"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
   }

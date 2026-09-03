@@ -81,35 +81,27 @@ NScrollView {
 
     SettingRow {
       label: "Blur amount"
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 0
         to: 1
         stepSize: 0.05
         value: Settings.data.lockScreen.blurAmount
+        sliderWidth: 160
+        readoutText: Math.round(Settings.data.lockScreen.blurAmount * 100) + "%"
         onMoved: value => Settings.data.lockScreen.blurAmount = value
-      }
-      NText {
-        text: Math.round(Settings.data.lockScreen.blurAmount * 100) + "%"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 
     SettingRow {
       label: "Dim amount"
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 0
         to: 1
         stepSize: 0.05
         value: Settings.data.lockScreen.dimAmount
+        sliderWidth: 160
+        readoutText: Math.round(Settings.data.lockScreen.dimAmount * 100) + "%"
         onMoved: value => Settings.data.lockScreen.dimAmount = value
-      }
-      NText {
-        text: Math.round(Settings.data.lockScreen.dimAmount * 100) + "%"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
   }

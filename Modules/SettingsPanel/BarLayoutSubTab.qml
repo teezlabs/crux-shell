@@ -100,55 +100,43 @@ NScrollView {
 
       SettingRow {
         label: "Widget spacing"
-        NSlider {
-          Layout.preferredWidth: 200
+        NValueSlider {
           from: 0
           to: 24
           stepSize: 1
           value: Settings.data.bar.widgetSpacing
+          sliderWidth: 200
+          readoutWidth: 34
+          readoutText: Settings.data.bar.widgetSpacing + "px"
           onMoved: value => Settings.data.bar.widgetSpacing = Math.round(value)
-        }
-        NText {
-          text: Settings.data.bar.widgetSpacing + "px"
-          color: Color.labelText
-          size: NText.Size.BodySm
-          Layout.preferredWidth: 34
         }
       }
 
       SettingRow {
         label: "Content padding"
-        NSlider {
-          Layout.preferredWidth: 200
+        NValueSlider {
           from: 0
           to: 24
           stepSize: 1
           value: Settings.data.bar.contentPadding
+          sliderWidth: 200
+          readoutWidth: 34
+          readoutText: Settings.data.bar.contentPadding + "px"
           onMoved: value => Settings.data.bar.contentPadding = Math.round(value)
-        }
-        NText {
-          text: Settings.data.bar.contentPadding + "px"
-          color: Color.labelText
-          size: NText.Size.BodySm
-          Layout.preferredWidth: 34
         }
       }
 
       SettingRow {
         label: "Thickness"
-        NSlider {
-          Layout.preferredWidth: 200
+        NValueSlider {
           from: 24
           to: 80
           stepSize: 1
           value: Settings.data.bar.thickness
+          sliderWidth: 200
+          readoutWidth: 34
+          readoutText: Settings.data.bar.thickness + "px"
           onMoved: value => Settings.data.bar.thickness = Math.round(value)
-        }
-        NText {
-          text: Settings.data.bar.thickness + "px"
-          color: Color.labelText
-          size: NText.Size.BodySm
-          Layout.preferredWidth: 34
         }
       }
 
@@ -169,19 +157,15 @@ NScrollView {
         label: "Floating gap"
         enabled: Settings.data.bar.floating
         opacity: enabled ? 1 : 0.4
-        NSlider {
-          Layout.preferredWidth: 200
+        NValueSlider {
           from: 0
           to: 24
           stepSize: 1
           value: Settings.data.bar.floatMargin
+          sliderWidth: 200
+          readoutWidth: 34
+          readoutText: Settings.data.bar.floatMargin + "px"
           onMoved: value => Settings.data.bar.floatMargin = Math.round(value)
-        }
-        NText {
-          text: Settings.data.bar.floatMargin + "px"
-          color: Color.labelText
-          size: NText.Size.BodySm
-          Layout.preferredWidth: 34
         }
       }
     }

@@ -49,18 +49,14 @@ NScrollView {
 
     SettingRow {
       label: "Max visible"
-      NSlider {
-        Layout.preferredWidth: 140
+      NValueSlider {
         from: 1
         to: 8
         stepSize: 1
         value: Settings.data.notifications.maxVisible
+        sliderWidth: 140
+        readoutText: Settings.data.notifications.maxVisible + " at once"
         onMoved: value => Settings.data.notifications.maxVisible = value
-      }
-      NText {
-        text: Settings.data.notifications.maxVisible + " at once"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
   }
@@ -100,18 +96,14 @@ NScrollView {
 
       SettingRow {
         label: "Background opacity"
-        NSlider {
-          Layout.preferredWidth: 140
+        NValueSlider {
           from: 0.4
           to: 1
           stepSize: 0.02
           value: Settings.data.notifications.backgroundOpacity
+          sliderWidth: 140
+          readoutText: Math.round(Settings.data.notifications.backgroundOpacity * 100) + "%"
           onMoved: value => Settings.data.notifications.backgroundOpacity = value
-        }
-        NText {
-          text: Math.round(Settings.data.notifications.backgroundOpacity * 100) + "%"
-          color: Color.labelText
-          size: NText.Size.BodySm
         }
       }
     }

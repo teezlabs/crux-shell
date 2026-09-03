@@ -19,18 +19,14 @@ NScrollView {
 
     SettingRow {
       label: "Scroll step"
-      NSlider {
-        Layout.preferredWidth: 200
+      NValueSlider {
         from: 1
         to: 20
         stepSize: 1
         value: Settings.data.brightness.step
+        sliderWidth: 200
+        readoutText: Settings.data.brightness.step + "%"
         onMoved: value => Settings.data.brightness.step = Math.round(value)
-      }
-      NText {
-        text: Settings.data.brightness.step + "%"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 

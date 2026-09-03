@@ -54,19 +54,14 @@ NScrollView {
     SettingRow {
       label: "Refresh interval"
 
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 500
         to: 5000
         stepSize: 100
         value: Settings.data.controlCenter.statsRefreshInterval
+        sliderWidth: 160
+        readoutText: Settings.data.controlCenter.statsRefreshInterval + " ms"
         onMoved: value => Settings.data.controlCenter.statsRefreshInterval = Math.round(value)
-      }
-
-      NText {
-        text: Settings.data.controlCenter.statsRefreshInterval + " ms"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
   }

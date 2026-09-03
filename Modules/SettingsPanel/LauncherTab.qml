@@ -50,18 +50,14 @@ NScrollView {
 
     SettingRow {
       label: "Result limit"
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 5
         to: 60
         stepSize: 1
         value: Settings.data.launcher.resultLimit
+        sliderWidth: 160
+        readoutText: Settings.data.launcher.resultLimit
         onMoved: value => Settings.data.launcher.resultLimit = Math.round(value)
-      }
-      NText {
-        text: Settings.data.launcher.resultLimit
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 
@@ -92,18 +88,14 @@ NScrollView {
 
     SettingRow {
       label: "History size"
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 10
         to: 200
         stepSize: 10
         value: Settings.data.clipboard.historyLimit
+        sliderWidth: 160
+        readoutText: Settings.data.clipboard.historyLimit + " entries"
         onMoved: value => Settings.data.clipboard.historyLimit = Math.round(value)
-      }
-      NText {
-        text: Settings.data.clipboard.historyLimit + " entries"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 

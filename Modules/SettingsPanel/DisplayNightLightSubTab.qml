@@ -121,35 +121,27 @@ NScrollView {
 
       SettingRow {
         label: "Sunset"
-        NSlider {
-          Layout.preferredWidth: 200
+        NValueSlider {
           from: 0
           to: 1425
           stepSize: 15
           value: root.timeToMinutes(Settings.data.nightLight.manualSunset)
+          sliderWidth: 200
+          readoutText: Settings.data.nightLight.manualSunset
           onMoved: value => Settings.data.nightLight.manualSunset = root.minutesToLabel(Math.round(value))
-        }
-        NText {
-          text: Settings.data.nightLight.manualSunset
-          color: Color.labelText
-          size: NText.Size.BodySm
         }
       }
 
       SettingRow {
         label: "Sunrise"
-        NSlider {
-          Layout.preferredWidth: 200
+        NValueSlider {
           from: 0
           to: 1425
           stepSize: 15
           value: root.timeToMinutes(Settings.data.nightLight.manualSunrise)
+          sliderWidth: 200
+          readoutText: Settings.data.nightLight.manualSunrise
           onMoved: value => Settings.data.nightLight.manualSunrise = root.minutesToLabel(Math.round(value))
-        }
-        NText {
-          text: Settings.data.nightLight.manualSunrise
-          color: Color.labelText
-          size: NText.Size.BodySm
         }
       }
     }

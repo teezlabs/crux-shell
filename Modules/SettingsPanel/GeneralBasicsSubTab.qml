@@ -79,19 +79,14 @@ NScrollView {
     SettingRow {
       label: "UI scale"
 
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 0.8
         to: 1.4
         stepSize: 0.05
         value: Settings.data.ui.fontScale
+        sliderWidth: 160
+        readoutText: Math.round(Settings.data.ui.fontScale * 100) + "%"
         onMoved: value => Settings.data.ui.fontScale = value
-      }
-
-      NText {
-        text: Math.round(Settings.data.ui.fontScale * 100) + "%"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
   }

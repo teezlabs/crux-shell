@@ -80,18 +80,14 @@ NScrollView {
 
     SettingRow {
       label: "Duration"
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 1000
         to: 5000
         stepSize: 250
         value: Settings.data.sessionMenu.confirmWindowMs
+        sliderWidth: 160
+        readoutText: (Settings.data.sessionMenu.confirmWindowMs / 1000).toFixed(2) + "s"
         onMoved: value => Settings.data.sessionMenu.confirmWindowMs = Math.round(value)
-      }
-      NText {
-        text: (Settings.data.sessionMenu.confirmWindowMs / 1000).toFixed(2) + "s"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
   }

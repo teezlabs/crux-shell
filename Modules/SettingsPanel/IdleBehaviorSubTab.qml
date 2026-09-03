@@ -29,72 +29,56 @@ NScrollView {
     SettingRow {
       enabled: Settings.data.idle.enabled
       label: "Screen off"
-      NSlider {
-        Layout.preferredWidth: 200
+      NValueSlider {
         from: 0
         to: 3600
         stepSize: 30
         value: Settings.data.idle.screenOffTimeoutSec
+        sliderWidth: 200
+        readoutText: Settings.data.idle.screenOffTimeoutSec === 0 ? "off" : (Math.round(Settings.data.idle.screenOffTimeoutSec / 60) + " min")
         onMoved: value => Settings.data.idle.screenOffTimeoutSec = value
-      }
-      NText {
-        text: Settings.data.idle.screenOffTimeoutSec === 0 ? "off" : (Math.round(Settings.data.idle.screenOffTimeoutSec / 60) + " min")
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 
     SettingRow {
       enabled: Settings.data.idle.enabled
       label: "Lock"
-      NSlider {
-        Layout.preferredWidth: 200
+      NValueSlider {
         from: 0
         to: 3600
         stepSize: 30
         value: Settings.data.idle.lockTimeoutSec
+        sliderWidth: 200
+        readoutText: Settings.data.idle.lockTimeoutSec === 0 ? "off" : (Math.round(Settings.data.idle.lockTimeoutSec / 60) + " min")
         onMoved: value => Settings.data.idle.lockTimeoutSec = value
-      }
-      NText {
-        text: Settings.data.idle.lockTimeoutSec === 0 ? "off" : (Math.round(Settings.data.idle.lockTimeoutSec / 60) + " min")
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 
     SettingRow {
       enabled: Settings.data.idle.enabled
       label: "Suspend"
-      NSlider {
-        Layout.preferredWidth: 200
+      NValueSlider {
         from: 0
         to: 7200
         stepSize: 60
         value: Settings.data.idle.suspendTimeoutSec
+        sliderWidth: 200
+        readoutText: Settings.data.idle.suspendTimeoutSec === 0 ? "off" : (Math.round(Settings.data.idle.suspendTimeoutSec / 60) + " min")
         onMoved: value => Settings.data.idle.suspendTimeoutSec = value
-      }
-      NText {
-        text: Settings.data.idle.suspendTimeoutSec === 0 ? "off" : (Math.round(Settings.data.idle.suspendTimeoutSec / 60) + " min")
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 
     SettingRow {
       enabled: Settings.data.idle.enabled
       label: "Grace delay"
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 1
         to: 30
         stepSize: 1
         value: Settings.data.idle.fadeDurationSec
+        sliderWidth: 160
+        readoutText: Settings.data.idle.fadeDurationSec + "s"
         onMoved: value => Settings.data.idle.fadeDurationSec = value
-      }
-      NText {
-        text: Settings.data.idle.fadeDurationSec + "s"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 

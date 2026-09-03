@@ -155,19 +155,14 @@ NScrollView {
                 size: NText.Size.Caption
               }
 
-              NSlider {
-                Layout.preferredWidth: 160
+              NValueSlider {
                 from: 5
                 to: 3600
                 stepSize: 5
                 value: entryRow.modelData.timeout || 60
+                sliderWidth: 160
+                readoutText: (entryRow.modelData.timeout || 60) + "s"
                 onMoved: value => root._update(entryRow.index, "timeout", value)
-              }
-
-              NText {
-                text: (entryRow.modelData.timeout || 60) + "s"
-                color: Color.labelText
-                size: NText.Size.Caption
               }
             }
 

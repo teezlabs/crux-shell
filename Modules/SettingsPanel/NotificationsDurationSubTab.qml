@@ -19,52 +19,40 @@ NScrollView {
 
     SettingRow {
       label: "Low urgency"
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 1
         to: 30
         stepSize: 1
         value: Settings.data.notifications.lowUrgencyDurationSec
+        sliderWidth: 160
+        readoutText: Settings.data.notifications.lowUrgencyDurationSec + "s"
         onMoved: value => Settings.data.notifications.lowUrgencyDurationSec = value
-      }
-      NText {
-        text: Settings.data.notifications.lowUrgencyDurationSec + "s"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 
     SettingRow {
       label: "Normal urgency"
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 1
         to: 30
         stepSize: 1
         value: Settings.data.notifications.normalUrgencyDurationSec
+        sliderWidth: 160
+        readoutText: Settings.data.notifications.normalUrgencyDurationSec + "s"
         onMoved: value => Settings.data.notifications.normalUrgencyDurationSec = value
-      }
-      NText {
-        text: Settings.data.notifications.normalUrgencyDurationSec + "s"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 
     SettingRow {
       label: "Critical urgency"
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 1
         to: 60
         stepSize: 1
         value: Settings.data.notifications.criticalUrgencyDurationSec
+        sliderWidth: 160
+        readoutText: Settings.data.notifications.criticalUrgencyDurationSec + "s"
         onMoved: value => Settings.data.notifications.criticalUrgencyDurationSec = value
-      }
-      NText {
-        text: Settings.data.notifications.criticalUrgencyDurationSec + "s"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 

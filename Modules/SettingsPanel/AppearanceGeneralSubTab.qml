@@ -37,18 +37,14 @@ NScrollView {
 
     SettingRow {
       label: "Bar opacity"
-      NSlider {
-        Layout.preferredWidth: 200
+      NValueSlider {
         from: 0.2
         to: 1
         stepSize: 0.05
         value: Settings.data.theme.barOpacity
+        sliderWidth: 200
+        readoutText: Math.round(Settings.data.theme.barOpacity * 100) + "%"
         onMoved: value => Settings.data.theme.barOpacity = value
-      }
-      NText {
-        text: Math.round(Settings.data.theme.barOpacity * 100) + "%"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
   }

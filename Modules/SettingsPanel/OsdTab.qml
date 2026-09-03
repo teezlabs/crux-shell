@@ -44,36 +44,27 @@ NScrollView {
     SettingRow {
       label: "Duration"
 
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 500
         to: 3000
         stepSize: 100
         value: Settings.data.osd.durationMs
+        sliderWidth: 160
+        readoutText: Settings.data.osd.durationMs + " ms"
         onMoved: value => Settings.data.osd.durationMs = value
-      }
-
-      NText {
-        text: Settings.data.osd.durationMs + " ms"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
 
     SettingRow {
       label: "Background opacity"
-      NSlider {
-        Layout.preferredWidth: 160
+      NValueSlider {
         from: 0.4
         to: 1
         stepSize: 0.02
         value: Settings.data.osd.backgroundOpacity
+        sliderWidth: 160
+        readoutText: Math.round(Settings.data.osd.backgroundOpacity * 100) + "%"
         onMoved: value => Settings.data.osd.backgroundOpacity = value
-      }
-      NText {
-        text: Math.round(Settings.data.osd.backgroundOpacity * 100) + "%"
-        color: Color.labelText
-        size: NText.Size.BodySm
       }
     }
   }
