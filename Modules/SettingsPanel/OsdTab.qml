@@ -35,45 +35,11 @@ Flickable {
     SettingRow {
       label: "Position"
 
-      RowLayout {
-        spacing: 6
-
-        Repeater {
-          model: ["top", "center", "bottom"]
-          delegate: Item {
-            id: posTile
-            required property string modelData
-            readonly property bool active: Settings.data.osd.position === modelData
-            Layout.preferredWidth: 70
-            height: 28
-
-            Chamfer {
-              anchors.fill: parent
-              chamferSize: Tokens.chamferIcon
-              cutTopRight: true
-              cutBottomLeft: true
-              fillColor: posTile.active ? Color.primaryContainer : (posHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer)
-              strokeColor: posTile.active ? Color.primary : Color.outline
-              strokeWidth: Tokens.borderModule
-            }
-
-            NText {
-              tracking: true
-              anchors.centerIn: parent
-              text: posTile.modelData.toUpperCase()
-              color: posTile.active ? Color.primaryContainerText : Color.surfaceText
-              size: NText.Size.LabelXs
-            }
-
-            HoverHandler {
-              id: posHover
-              cursorShape: Qt.PointingHandCursor
-            }
-            TapHandler {
-              onTapped: Settings.data.osd.position = posTile.modelData
-            }
-          }
-        }
+      NSegmented {
+        model: ["top", "center", "bottom"]
+        currentKey: Settings.data.osd.position
+        tileWidth: 70
+        onSelected: key => Settings.data.osd.position = key
       }
     }
 

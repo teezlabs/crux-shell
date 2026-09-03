@@ -33,51 +33,18 @@ Flickable {
     SettingRow {
       label: "Temperature unit"
 
-      RowLayout {
-        spacing: 6
-
-        Repeater {
-          model: [{
-              "id": "fahrenheit",
-              "label": "°F"
-            }, {
-              "id": "celsius",
-              "label": "°C"
-            }]
-          delegate: Item {
-            id: unitTile
-            required property var modelData
-            readonly property bool active: Settings.data.controlCenter.tempUnit === modelData.id
-            Layout.preferredWidth: 56
-            height: 28
-
-            Chamfer {
-              anchors.fill: parent
-              chamferSize: Tokens.chamferIcon
-              cutTopRight: true
-              cutBottomLeft: true
-              fillColor: unitTile.active ? Color.primaryContainer : (unitHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer)
-              strokeColor: unitTile.active ? Color.primary : Color.outline
-              strokeWidth: Tokens.borderModule
-            }
-
-            NText {
-              tracking: true
-              anchors.centerIn: parent
-              text: unitTile.modelData.label
-              color: unitTile.active ? Color.primaryContainerText : Color.surfaceText
-              size: NText.Size.LabelXs
-            }
-
-            HoverHandler {
-              id: unitHover
-              cursorShape: Qt.PointingHandCursor
-            }
-            TapHandler {
-              onTapped: Settings.data.controlCenter.tempUnit = unitTile.modelData.id
-            }
-          }
-        }
+      NSegmented {
+        model: [{
+            "key": "fahrenheit",
+            "label": "°F"
+          }, {
+            "key": "celsius",
+            "label": "°C"
+          }]
+        currentKey: Settings.data.controlCenter.tempUnit
+        tileWidth: 56
+        uppercase: false
+        onSelected: key => Settings.data.controlCenter.tempUnit = key
       }
     }
   }

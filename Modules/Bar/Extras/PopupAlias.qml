@@ -32,5 +32,9 @@ QtObject {
     function close(): void {
       Popups.close(root.name, root.focusedScreen);
     }
+    // No-ops on a surface that has no tabs (see Popups.openTab).
+    function openTab(tab: string): void {
+      Popups.openTab(root.name, root.focusedScreen, tab);
+    }
   }
 }

@@ -71,62 +71,28 @@ Flickable {
     title: "Position"
     description: "Which corner of the screen new popups appear in."
 
-    RowLayout {
-      spacing: 6
-
-      Repeater {
-        model: [
-          {
-            "id": "top_left",
-            "label": "Top left"
-          },
-          {
-            "id": "top_right",
-            "label": "Top right"
-          },
-          {
-            "id": "bottom_left",
-            "label": "Bottom left"
-          },
-          {
-            "id": "bottom_right",
-            "label": "Bottom right"
-          }
-        ]
-        delegate: Item {
-          id: posTile
-          required property var modelData
-          readonly property bool active: Settings.data.notifications.position === modelData.id
-          Layout.preferredWidth: 96
-          height: 28
-
-          Chamfer {
-            anchors.fill: parent
-            chamferSize: Tokens.chamferIcon
-            cutTopRight: true
-            cutBottomLeft: true
-            fillColor: posTile.active ? Color.primaryContainer : (posHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer)
-            strokeColor: posTile.active ? Color.primary : Color.outline
-            strokeWidth: Tokens.borderModule
-          }
-
-          NText {
-            tracking: true
-            anchors.centerIn: parent
-            text: posTile.modelData.label.toUpperCase()
-            color: posTile.active ? Color.primaryContainerText : Color.surfaceText
-            size: NText.Size.LabelXs
-          }
-
-          HoverHandler {
-            id: posHover
-            cursorShape: Qt.PointingHandCursor
-          }
-          TapHandler {
-            onTapped: Settings.data.notifications.position = posTile.modelData.id
-          }
+    NSegmented {
+      model: [
+        {
+          "key": "top_left",
+          "label": "Top left"
+        },
+        {
+          "key": "top_right",
+          "label": "Top right"
+        },
+        {
+          "key": "bottom_left",
+          "label": "Bottom left"
+        },
+        {
+          "key": "bottom_right",
+          "label": "Bottom right"
         }
-      }
+      ]
+      currentKey: Settings.data.notifications.position
+      tileWidth: 96
+      onSelected: key => Settings.data.notifications.position = key
     }
   }
 

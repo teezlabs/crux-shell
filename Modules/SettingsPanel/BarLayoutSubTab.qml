@@ -23,45 +23,12 @@ Flickable {
       title: "Position"
       description: "Which screen edge the bar sits on."
 
-      RowLayout {
-        spacing: 6
-
-        Repeater {
-          model: ["top", "bottom", "left", "right"]
-          delegate: Item {
-            id: posTile
-            required property string modelData
-            readonly property bool active: Settings.data.bar.position === modelData
-            Layout.preferredWidth: 80
-            height: 30
-
-            Chamfer {
-              anchors.fill: parent
-              chamferSize: Tokens.chamferIcon
-              cutTopRight: true
-              cutBottomLeft: true
-              fillColor: posTile.active ? Color.primaryContainer : (posHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer)
-              strokeColor: posTile.active ? Color.primary : Color.outline
-              strokeWidth: Tokens.borderModule
-            }
-
-            NText {
-              tracking: true
-              anchors.centerIn: parent
-              text: posTile.modelData.toUpperCase()
-              color: posTile.active ? Color.primaryContainerText : Color.surfaceText
-              size: NText.Size.LabelXs
-            }
-
-            HoverHandler {
-              id: posHover
-              cursorShape: Qt.PointingHandCursor
-            }
-            TapHandler {
-              onTapped: Settings.data.bar.position = posTile.modelData
-            }
-          }
-        }
+      NSegmented {
+        model: ["top", "bottom", "left", "right"]
+        currentKey: Settings.data.bar.position
+        tileWidth: 80
+        tileHeight: 30
+        onSelected: key => Settings.data.bar.position = key
       }
     }
 
@@ -403,46 +370,14 @@ Flickable {
               }
             }
 
-            RowLayout {
-              spacing: 6
+            NSegmented {
               visible: overrideRow.isCustom
               Layout.leftMargin: 46
-
-              Repeater {
-                model: ["top", "bottom", "left", "right"]
-                delegate: Item {
-                  id: posBtn
-                  required property string modelData
-                  readonly property bool active: Settings.getBarPositionForScreen(overrideRow.screenName) === posBtn.modelData
-                  Layout.preferredWidth: 64
-                  height: 26
-
-                  Chamfer {
-                    anchors.fill: parent
-                    chamferSize: Tokens.chamferIcon
-                    cutTopRight: true
-                    cutBottomLeft: true
-                    fillColor: posBtn.active ? Color.primaryContainer : Color.surfaceContainer
-                    strokeColor: posBtn.active ? Color.primary : Color.outline
-                    strokeWidth: Tokens.borderModule
-                  }
-
-                  NText {
-                    tracking: true
-                    anchors.centerIn: parent
-                    text: posBtn.modelData.toUpperCase()
-                    color: posBtn.active ? Color.primaryContainerText : Color.surfaceText
-                    size: NText.Size.LabelXs
-                  }
-
-                  HoverHandler {
-                    cursorShape: Qt.PointingHandCursor
-                  }
-                  TapHandler {
-                    onTapped: Settings.setScreenOverride(overrideRow.screenName, "position", posBtn.modelData)
-                  }
-                }
-              }
+              model: ["top", "bottom", "left", "right"]
+              currentKey: Settings.getBarPositionForScreen(overrideRow.screenName)
+              tileWidth: 64
+              tileHeight: 26
+              onSelected: key => Settings.setScreenOverride(overrideRow.screenName, "position", key)
             }
           }
         }
