@@ -653,14 +653,10 @@ PanelWindow {
               elide: Text.ElideRight
               Layout.fillWidth: true
             }
-            SegMeter {
+            CcLevelSlider {
               Layout.fillWidth: true
-              cellCount: Tokens.meterControlCenterCells
-              cellHeight: Tokens.meterControlCenterCellHeight
               value: root.muted ? 0 : root.volume * 100
               interactive: true
-              filledColor: Color.primary
-              emptyColor: Color.surfaceContainerHigh
               onMoved: pct => {
                 if (root.sink && root.sink.audio) {
                   root.sink.audio.volume = pct / 100;
@@ -681,14 +677,10 @@ PanelWindow {
               elide: Text.ElideRight
               Layout.fillWidth: true
             }
-            SegMeter {
+            CcLevelSlider {
               Layout.fillWidth: true
-              cellCount: Tokens.meterControlCenterCells
-              cellHeight: Tokens.meterControlCenterCellHeight
               value: root.source && root.source.audio ? root.source.audio.volume * 100 : 0
               interactive: !!root.source
-              filledColor: Color.primary
-              emptyColor: Color.surfaceContainerHigh
               onMoved: pct => {
                 if (root.source && root.source.audio)
                   root.source.audio.volume = pct / 100;

@@ -3,8 +3,9 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
 
-// Control Center VOL/BRI slider row (§6.3): label gutter + 16-cell
-// interactive meter + value column.
+// Control Center VOL/BRI slider row: label gutter + continuous slider +
+// value column. The panel follows the reference look rather than the
+// spec's segmented meter — see CcLevelSlider.qml.
 RowLayout {
   id: root
 
@@ -24,15 +25,9 @@ RowLayout {
     font.weight: Font.DemiBold
   }
 
-  SegMeter {
+  CcLevelSlider {
     Layout.fillWidth: true
-    Layout.preferredHeight: Tokens.meterControlCenterCellHeight
-    cellCount: Tokens.meterControlCenterCells
-    cellHeight: Tokens.meterControlCenterCellHeight
     value: root.value
-    interactive: true
-    filledColor: Color.primary
-    emptyColor: Color.surfaceContainerHigh
     onMoved: pct => root.moved(pct)
   }
 
