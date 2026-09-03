@@ -67,6 +67,7 @@ ShellRoot {
     onTriggered: {
       Hooks.init();
       Idle.init();
+      NightLightService.init();
       applyReverseScroll();
     }
   }
@@ -154,6 +155,27 @@ ShellRoot {
 
   // Screen-agnostic popup IPC targets, once for the whole shell.
   PopupAliases {}
+
+  // Night light from a keybind; drives the same service the bar widget and
+  // the Control Center toggle use.
+  IpcHandler {
+    target: "nightLight"
+    function status(): string {
+      return NightLightService.forced ? "forced" : (NightLightService.enabled ? "on" : "off");
+    }
+    function cycle(): string {
+      NightLightService.cycle();
+      return status();
+    }
+    function on(): string {
+      NightLightService.setEnabled(true);
+      return status();
+    }
+    function off(): string {
+      NightLightService.setEnabled(false);
+      return status();
+    }
+  }
 
   // Keep-awake from a keybind; same state the bar widget and the Control
   // Center tile show.

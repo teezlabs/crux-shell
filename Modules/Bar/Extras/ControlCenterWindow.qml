@@ -603,10 +603,14 @@ PanelWindow {
             }
           }
 
+          // off -> on -> forced -> off, same as the NightLight bar widget.
+          // Both drive Commons/NightLightService.qml, which owns wlsunset.
           CcCircleToggle {
+            id: nightTile
             Layout.preferredWidth: 40
             Layout.preferredHeight: 40
-            available: false
+            active: NightLightService.enabled
+            onTapped: NightLightService.cycle()
             IconImage {
               anchors.centerIn: parent
               width: 16
