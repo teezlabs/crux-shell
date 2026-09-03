@@ -10,6 +10,8 @@ Item {
 
   property string label: ""
   property string icon: ""
+  // Non-symbolic twin, tried when the theme lacks the symbolic one.
+  property string iconFallback: ""
   property bool available: true
   property bool active: false
   signal tapped
@@ -32,6 +34,7 @@ Item {
       width: 12
       height: 12
       iconName: root.icon
+      fallbackIconName: root.iconFallback
       color: Color.surfaceText
     }
 

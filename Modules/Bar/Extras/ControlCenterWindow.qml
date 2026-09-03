@@ -514,7 +514,7 @@ PanelWindow {
               width: 16
               height: 16
               iconName: "preferences-system-symbolic"
-              fallbackIconName: "applications-system-symbolic"
+              fallbackIconName: "preferences-system"
               color: Color.surfaceText
             }
           }
@@ -531,6 +531,7 @@ PanelWindow {
               width: 16
               height: 16
               iconName: "system-shutdown-symbolic"
+              fallbackIconName: "system-shutdown"
               color: Color.surfaceText
             }
           }
@@ -544,6 +545,7 @@ PanelWindow {
               width: 14
               height: 14
               iconName: "window-close-symbolic"
+              fallbackIconName: "window-close"
               color: Color.surfaceText
             }
           }
@@ -879,6 +881,7 @@ PanelWindow {
             Layout.fillWidth: true
             label: "CAPTURE"
             icon: "camera-photo-symbolic"
+            iconFallback: "camera-photo"
             onTapped: {
               root.visible = false;
               Quickshell.execDetached(["sh", "-c", Settings.data.controlCenter.screenshotCommand]);
@@ -888,12 +891,14 @@ PanelWindow {
             Layout.fillWidth: true
             label: "RECORD"
             icon: "media-record-symbolic"
+            iconFallback: "media-record"
             available: root.hasRecorder
           }
           CcActionButton {
             Layout.fillWidth: true
             label: "COLOR"
             icon: "color-select-symbolic"
+            iconFallback: "color-select"
             available: root.hasColorPicker
           }
           CcActionButton {
@@ -915,6 +920,7 @@ PanelWindow {
             Layout.fillWidth: true
             label: "SETTINGS"
             icon: "preferences-system-symbolic"
+            iconFallback: "preferences-system"
             onTapped: {
               root.visible = false;
               Popups.open("settings", root.targetScreen);

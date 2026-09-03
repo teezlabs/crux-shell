@@ -20,6 +20,9 @@ CcCircleToggle {
     width: 18
     height: 18
     iconName: tile.active ? "network-wireless-symbolic" : "network-wireless-disconnected-symbolic"
+    // Non-symbolic name of the same icon: the convention every theme
+    // follows, so a theme without the symbolic variant still renders.
+    fallbackIconName: tile.active ? "network-wireless" : "network-wireless-disconnected"
     color: tile.active ? Color.primaryContainerText : Color.surfaceText
   }
 }
