@@ -12,6 +12,7 @@ Item {
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool vertical: false
 
   readonly property bool active: IdleInhibitorService.active
 
@@ -20,8 +21,11 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  BarIconButton {
+  BarPill {
     id: btn
+    vertical: root.vertical
+    label: "Awake"
+    forceOpen: root.active
     attention: root.active
     onTapped: IdleInhibitorService.toggle()
 

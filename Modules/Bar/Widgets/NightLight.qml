@@ -12,6 +12,7 @@ Item {
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool vertical: false
 
   readonly property bool active: NightLightService.enabled
   readonly property bool forced: NightLightService.forced
@@ -21,8 +22,11 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  BarIconButton {
+  BarPill {
     id: btn
+    vertical: root.vertical
+    label: root.forced ? "Forced" : "Night"
+    forceOpen: root.forced
     attention: root.forced
     onTapped: NightLightService.cycle()
 

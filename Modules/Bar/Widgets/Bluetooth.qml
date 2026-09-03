@@ -12,8 +12,19 @@ Item {
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool vertical: false
 
   readonly property var adapter: Bluetooth.defaultAdapter
+  // Name of the first connected device, for the pill label.
+  readonly property string connectedName: {
+    const devices = Bluetooth.devices ? Bluetooth.devices.values : [];
+    for (let i = 0; i < devices.length; i++) {
+      if (devices[i] && devices[i].connected)
+        return devices[i].name || devices[i].deviceName || "";
+    }
+    return "";
+  }
+
   readonly property bool anyConnected: {
     var devices = Bluetooth.devices ? Bluetooth.devices.values : [];
     for (var i = 0; i < devices.length; i++) {
@@ -28,8 +39,10 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  BarIconButton {
+  BarPill {
     id: btn
+    vertical: root.vertical
+    label: root.connectedName !== "" ? root.connectedName : (root.adapter && root.adapter.enabled ? "No device" : "Off")
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
       Popups.openAt("bluetooth", root.screen, pos.x, pos.y);
