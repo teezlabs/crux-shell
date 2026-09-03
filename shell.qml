@@ -155,6 +155,21 @@ ShellRoot {
   // Screen-agnostic popup IPC targets, once for the whole shell.
   PopupAliases {}
 
+  // Theming from a keybind or script, without going through the panel.
+  IpcHandler {
+    target: "theme"
+    function schemes(): string {
+      return ColorSchemes.schemes.map(s => s.name).join("\n");
+    }
+    function scheme(name: string): string {
+      ColorSchemes.apply(name);
+      return name;
+    }
+    function current(): string {
+      return Settings.data.theme.colorScheme || "(wallpaper colors)";
+    }
+  }
+
   Variants {
     model: Quickshell.screens
 

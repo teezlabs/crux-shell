@@ -351,6 +351,10 @@ Singleton {
       property string errorTone: "#F5A89F" // named errorTone, not error — JsonObject already has a built-in "error" signal
       property string surfaceText: "#DDE4E8"
       property string surfaceTextMuted: "#9AA5AC"
+
+      // Name of the applied Assets/ColorSchemes preset, "" when the colors
+      // came from a wallpaper via matugen instead.
+      property string colorScheme: ""
     }
 
     property JsonObject brightness: JsonObject {

@@ -241,6 +241,9 @@ Singleton {
         theme.surfaceText = c.on_surface.dark.color;
         theme.surfaceTextMuted = c.on_surface_variant.dark.color;
 
+        // Wallpaper colors replace whatever preset was applied.
+        theme.colorScheme = "";
+
         root._runPostHooks();
         Toast.show("Theme updated");
       } catch (e) {

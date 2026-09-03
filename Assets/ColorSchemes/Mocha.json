@@ -1,0 +1,18 @@
+{
+  "name": "Mocha",
+  "dark": {
+    "surface": "#1e1e2e",
+    "surfaceContainerLow": "#232334",
+    "surfaceContainer": "#313244",
+    "surfaceContainerHigh": "#3b3d52",
+    "outline": "#45475a",
+    "outlineVariant": "#33344a",
+    "primary": "#89b4fa",
+    "primaryContainer": "#2c3e5c",
+    "primaryContainerText": "#c8dcff",
+    "tertiary": "#f38ba8",
+    "errorTone": "#f38ba8",
+    "surfaceText": "#cdd6f4",
+    "surfaceTextMuted": "#a6adc8"
+  }
+}

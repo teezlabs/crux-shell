@@ -1,0 +1,18 @@
+{
+  "name": "Everforest",
+  "dark": {
+    "surface": "#2b3339",
+    "surfaceContainerLow": "#303a40",
+    "surfaceContainer": "#3a454a",
+    "surfaceContainerHigh": "#445055",
+    "outline": "#4a555b",
+    "outlineVariant": "#384247",
+    "primary": "#a7c080",
+    "primaryContainer": "#3d4a30",
+    "primaryContainerText": "#dbe9c8",
+    "tertiary": "#e67e80",
+    "errorTone": "#e67e80",
+    "surfaceText": "#d3c6aa",
+    "surfaceTextMuted": "#c6d1c1"
+  }
+}
