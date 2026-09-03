@@ -60,106 +60,6 @@ PanelWindow {
     }
   }
 
-  // Compact "LABEL: value ▾" dropdown, opens a Popup list on click — used
-  // for Wallhaven's quality/ratio filters, which have too many options for
-  // pills to stay readable in the rail's width.
-  component FilterDropdown: Item {
-    id: dd
-    property string label: ""
-    property var model: [] // [{key, label}]
-    property string value: ""
-    signal selected(string key)
-
-    implicitHeight: 24
-    readonly property var _current: {
-      for (var i = 0; i < model.length; i++)
-        if (model[i].key === value)
-          return model[i];
-      return model.length > 0 ? model[0] : ({
-          "label": ""
-        });
-    }
-
-    Chamfer {
-      anchors.fill: parent
-      chamferSize: Tokens.chamferIcon
-      cutTopRight: true
-      cutBottomLeft: true
-      fillColor: ddMouse.containsMouse ? Color.surfaceContainerHigh : Color.surfaceContainer
-      strokeColor: Color.outline
-      strokeWidth: Tokens.borderModule
-    }
-
-    RowLayout {
-      anchors.fill: parent
-      anchors.leftMargin: 8
-      anchors.rightMargin: 6
-      spacing: 4
-      NText {
-        Layout.fillWidth: true
-        text: dd.label + ": " + dd._current.label
-        color: Color.surfaceText
-        size: NText.Size.Caption
-        elide: Text.ElideRight
-      }
-      Text {
-        text: ddPopup.visible ? "▲" : "▼"
-        color: Color.labelText
-        font.pixelSize: 7
-      }
-    }
-
-    MouseArea {
-      id: ddMouse
-      anchors.fill: parent
-      hoverEnabled: true
-      cursorShape: Qt.PointingHandCursor
-      onClicked: ddPopup.visible = !ddPopup.visible
-    }
-
-    Popup {
-      id: ddPopup
-      y: dd.height + 2
-      width: dd.width
-      padding: 4
-      closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-      background: Rectangle {
-        color: Color.surface
-        border.width: 1
-        border.color: Color.outline
-      }
-      contentItem: Column {
-        spacing: 1
-        Repeater {
-          model: dd.model
-          delegate: Rectangle {
-            id: optRow
-            required property var modelData
-            width: ddPopup.width - 8
-            height: 22
-            color: modelData.key === dd.value ? Color.alpha(Color.primary, 0.2) : (optMouse.containsMouse ? Color.surfaceContainerHigh : "transparent")
-            NText {
-              anchors.centerIn: parent
-              text: optRow.modelData.label
-              color: Color.surfaceText
-              size: NText.Size.Caption
-            }
-            MouseArea {
-              id: optMouse
-              anchors.fill: parent
-              hoverEnabled: true
-              cursorShape: Qt.PointingHandCursor
-              onClicked: {
-                dd.selected(optRow.modelData.key);
-                ddPopup.visible = false;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
   // "local" | "wallhaven"
   property string sourceMode: "local"
 
@@ -774,10 +674,12 @@ PanelWindow {
             color: Color.labelText
             size: NText.Size.LabelXs
           }
-          FilterDropdown {
+          NComboBox {
             Layout.fillWidth: true
+            implicitHeight: 24
+            textSize: NText.Size.Caption
             label: "QUALITY"
-            value: Settings.data.wallpaper.wallhavenAtLeast
+            currentKey: Settings.data.wallpaper.wallhavenAtLeast
             model: [
               {
                 "key": "",
@@ -801,10 +703,12 @@ PanelWindow {
               root.whSearch(1, false);
             }
           }
-          FilterDropdown {
+          NComboBox {
             Layout.fillWidth: true
+            implicitHeight: 24
+            textSize: NText.Size.Caption
             label: "RATIO"
-            value: Settings.data.wallpaper.wallhavenRatio
+            currentKey: Settings.data.wallpaper.wallhavenRatio
             model: [
               {
                 "key": "",

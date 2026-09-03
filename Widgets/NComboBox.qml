@@ -12,9 +12,22 @@ Item {
   property var model: []
   property string currentKey: ""
   property string placeholder: ""
+  // Prefix shown before the value ("QUALITY: 1080p+"), for compact filter
+  // rails where a separate label column doesn't fit.
+  property string label: ""
+  property int textSize: NText.Size.BodySm
   property real popupMaxHeight: 220
 
   signal selected(string key)
+
+  readonly property bool opened: popup.opened
+
+  function openPopup(): void {
+    popup.open();
+  }
+  function closePopup(): void {
+    popup.close();
+  }
 
   readonly property var entries: {
     const out = [];
@@ -64,8 +77,8 @@ Item {
     anchors.right: caret.left
     anchors.rightMargin: 6
     anchors.verticalCenter: parent.verticalCenter
-    text: root.currentLabel
-    size: NText.Size.BodySm
+    text: root.label === "" ? root.currentLabel : (root.label + ": " + root.currentLabel)
+    size: root.textSize
     color: root.currentKey === "" ? Color.labelText : Color.surfaceText
   }
 
@@ -157,7 +170,7 @@ Item {
           anchors.rightMargin: 8
           anchors.verticalCenter: parent.verticalCenter
           text: row.modelData.label
-          size: NText.Size.BodySm
+          size: root.textSize
           color: row.current ? Color.primary : Color.surfaceText
         }
 
