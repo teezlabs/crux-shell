@@ -47,34 +47,11 @@ RowLayout {
     }
   }
 
-  Item {
-    width: 48
+  NButton {
     height: 26
-
-    Chamfer {
-      anchors.fill: parent
-      chamferSize: Tokens.chamferIcon
-      cutTopRight: true
-      cutBottomLeft: true
-      fillColor: editHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-      strokeColor: Color.outline
-      strokeWidth: Tokens.borderModule
-    }
-
-    NText {
-      tracking: true
-      anchors.centerIn: parent
-      text: root.value ? "EDIT" : "SET"
-      color: Color.surfaceText
-      size: NText.Size.LabelXs
-    }
-
-    HoverHandler {
-      id: editHover
-      cursorShape: Qt.PointingHandCursor
-    }
-    TapHandler {
-      onTapped: root.editClicked()
-    }
+    implicitWidth: 48
+    text: root.value ? "EDIT" : "SET"
+    textSize: NText.Size.LabelXs
+    onClicked: root.editClicked()
   }
 }

@@ -190,36 +190,9 @@ NScrollView {
     RowLayout {
       spacing: 10
 
-      Item {
-        width: restartLabel.implicitWidth + 24
-        height: 30
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: restartHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-          strokeColor: Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        NText {
-          id: restartLabel
-          anchors.centerIn: parent
-          text: "Restart crux"
-          color: Color.surfaceText
-          size: NText.Size.BodySm
-        }
-
-        HoverHandler {
-          id: restartHover
-          cursorShape: Qt.PointingHandCursor
-        }
-
-        TapHandler {
-          onTapped: Quickshell.execDetached(["bash", "-c", "pkill -f 'qs -c crux'; sleep 0.5; nohup qs -c crux >/dev/null 2>&1 & disown"])
-        }
+      NButton {
+        text: "Restart crux"
+        onClicked: Quickshell.execDetached(["bash", "-c", "pkill -f 'qs -c crux'; sleep 0.5; nohup qs -c crux >/dev/null 2>&1 & disown"])
       }
     }
   }

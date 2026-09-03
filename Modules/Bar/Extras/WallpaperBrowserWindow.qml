@@ -1217,33 +1217,11 @@ PanelWindow {
             }
           }
 
-          Item {
+          NButton {
             Layout.fillWidth: true
-            height: 30
             enabled: root.selectedFile !== null && !root.downloading
-            opacity: enabled ? 1 : 0.4
-            Chamfer {
-              anchors.fill: parent
-              chamferSize: Tokens.chamferIcon
-              cutTopRight: true
-              cutBottomLeft: true
-              fillColor: applyOnlyHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-              strokeColor: Color.outline
-              strokeWidth: Tokens.borderModule
-            }
-            NText {
-              anchors.centerIn: parent
-              text: root.downloading ? "DOWNLOADING…" : "WALLPAPER ONLY"
-              color: Color.surfaceText
-              size: NText.Size.BodySm
-            }
-            HoverHandler {
-              id: applyOnlyHover
-              cursorShape: Qt.PointingHandCursor
-            }
-            TapHandler {
-              onTapped: root.applyWallpaper(false)
-            }
+            text: root.downloading ? "DOWNLOADING…" : "WALLPAPER ONLY"
+            onClicked: root.applyWallpaper(false)
           }
 
           Item {

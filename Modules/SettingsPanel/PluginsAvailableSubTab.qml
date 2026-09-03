@@ -32,34 +32,10 @@ NScrollView {
           Layout.fillWidth: true
         }
 
-        Item {
-          width: refreshLabel.implicitWidth + 24
+        NButton {
           height: 28
-
-          Chamfer {
-            anchors.fill: parent
-            chamferSize: Tokens.chamferIcon
-            cutTopRight: true
-            cutBottomLeft: true
-            fillColor: refreshHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-            strokeColor: Color.outline
-            strokeWidth: Tokens.borderModule
-          }
-
-          NText {
-            id: refreshLabel
-            anchors.centerIn: parent
-            text: "Refresh"
-            color: Color.surfaceText
-            size: NText.Size.BodySm
-          }
-          HoverHandler {
-            id: refreshHover
-            cursorShape: Qt.PointingHandCursor
-          }
-          TapHandler {
-            onTapped: Plugins.refreshAvailable()
-          }
+          text: "Refresh"
+          onClicked: Plugins.refreshAvailable()
         }
       }
     }

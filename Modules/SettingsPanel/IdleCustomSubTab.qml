@@ -251,36 +251,11 @@ NScrollView {
         }
       }
 
-      Item {
-        width: addLabel.implicitWidth + 24
+      NButton {
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: addHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-          strokeColor: Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        NText {
-          tracking: true
-          id: addLabel
-          anchors.centerIn: parent
-          text: "+ ADD COMMAND"
-          color: Color.surfaceText
-          size: NText.Size.LabelXs
-        }
-
-        HoverHandler {
-          id: addHover
-          cursorShape: Qt.PointingHandCursor
-        }
-        TapHandler {
-          onTapped: root._add()
-        }
+        text: "+ ADD COMMAND"
+        textSize: NText.Size.LabelXs
+        onClicked: root._add()
       }
     }
   }

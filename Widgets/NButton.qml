@@ -1,8 +1,12 @@
 import QtQuick
 import qs.Commons
 
-// Chamfered text button. `outlined` swaps the filled treatment for a
-// bordered one; `destructive` recolors both variants off the error tone.
+// Chamfered button.
+//
+// `neutral` is the default because it's what crux's panels actually use —
+// a surface-toned cell with an outline and sentence-case body text.
+// `accent` is the primary-filled call to action, `destructive` recolors off
+// the error tone.
 //
 // Pointer handling is TapHandler/HoverHandler, never MouseArea — a
 // MouseArea anywhere under the bar's drag TapHandler kills widget
@@ -11,29 +15,40 @@ Item {
   id: root
 
   property string text: ""
-  property bool outlined: false
-  property bool destructive: false
+  // "neutral" | "accent" | "destructive"
+  property string variant: "neutral"
+  property bool uppercase: false
+  property int textSize: NText.Size.BodySm
   property bool invertChamfer: false
-  property real horizontalPadding: 14
-  // Content sits alongside the label when set — an icon, a swatch, a dot.
+  property real horizontalPadding: 12
+  // Extra content left of the label — an icon, a swatch, a status dot.
   default property alias content: leading.data
 
   signal clicked
   signal rightClicked
 
-  readonly property color accent: root.destructive ? Color.error : Color.primary
-  readonly property color fill: {
-    if (root.outlined)
-      return hover.hovered ? Color.surfaceContainerHigh : "transparent";
-    return hover.hovered ? Color.surfaceContainerHigh : Color.primaryContainer;
-  }
-  readonly property color labelColor: root.outlined ? root.accent : (root.destructive ? Color.error : Color.primaryContainerText)
+  readonly property bool accent: root.variant === "accent"
+  readonly property bool destructive: root.variant === "destructive"
 
-  implicitHeight: 28
+  readonly property color fill: {
+    if (hover.hovered)
+      return Color.surfaceContainerHigh;
+    return root.accent ? Color.primaryContainer : Color.surfaceContainer;
+  }
+  readonly property color stroke: {
+    if (root.destructive)
+      return Color.alpha(Color.error, Tokens.destructiveBorderAlpha);
+    return root.accent ? Color.primary : Color.outline;
+  }
+  readonly property color labelColor: {
+    if (root.destructive)
+      return Color.error;
+    return root.accent ? Color.primaryContainerText : Color.surfaceText;
+  }
+
+  implicitHeight: 30
   implicitWidth: leading.implicitWidth + (leading.implicitWidth > 0 && label.implicitWidth > 0 ? 6 : 0) + label.implicitWidth + root.horizontalPadding * 2
-  width: implicitWidth
-  height: implicitHeight
-  opacity: enabled ? 1.0 : 0.5
+  opacity: enabled ? 1 : 0.4
 
   Chamfer {
     anchors.fill: parent
@@ -43,7 +58,7 @@ Item {
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
     fillColor: root.fill
-    strokeColor: root.destructive ? Color.alpha(Color.error, Tokens.destructiveBorderAlpha) : (root.outlined ? Color.outline : root.accent)
+    strokeColor: root.stroke
     strokeWidth: Tokens.borderModule
   }
 
@@ -64,8 +79,9 @@ Item {
       id: label
       anchors.verticalCenter: parent.verticalCenter
       visible: root.text !== ""
-      text: root.text.toUpperCase()
-      size: NText.Size.LabelXs
+      text: root.uppercase ? root.text.toUpperCase() : root.text
+      size: root.textSize
+      tracking: root.uppercase
       color: root.labelColor
     }
   }
@@ -75,13 +91,11 @@ Item {
     enabled: root.enabled
     cursorShape: Qt.PointingHandCursor
   }
-
   TapHandler {
     enabled: root.enabled
     acceptedButtons: Qt.LeftButton
     onTapped: root.clicked()
   }
-
   TapHandler {
     enabled: root.enabled
     acceptedButtons: Qt.RightButton

@@ -34,34 +34,10 @@ NScrollView {
         Layout.fillWidth: true
       }
 
-      Item {
-        width: rescanLabel.implicitWidth + 24
+      NButton {
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: rescanHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-          strokeColor: Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        NText {
-          id: rescanLabel
-          anchors.centerIn: parent
-          text: "Rescan"
-          color: Color.surfaceText
-          size: NText.Size.BodySm
-        }
-        HoverHandler {
-          id: rescanHover
-          cursorShape: Qt.PointingHandCursor
-        }
-        TapHandler {
-          onTapped: Plugins.rescan()
-        }
+        text: "Rescan"
+        onClicked: Plugins.rescan()
       }
     }
   }

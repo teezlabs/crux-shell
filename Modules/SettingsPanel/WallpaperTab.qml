@@ -156,70 +156,16 @@ NScrollView {
       RowLayout {
         spacing: 10
 
-        Item {
-          Layout.preferredWidth: regenLabel.implicitWidth + 24
-          height: 30
+        NButton {
           enabled: Settings.data.wallpaper.path !== "" && !Matugen.running
-          opacity: enabled ? 1 : 0.4
-
-          Chamfer {
-            anchors.fill: parent
-            chamferSize: Tokens.chamferIcon
-            cutTopRight: true
-            cutBottomLeft: true
-            fillColor: regenHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-            strokeColor: Color.outline
-            strokeWidth: Tokens.borderModule
-          }
-
-          NText {
-            id: regenLabel
-            anchors.centerIn: parent
-            text: Matugen.running ? "Generating…" : "Regenerate colors now"
-            color: Color.surfaceText
-            size: NText.Size.BodySm
-          }
-
-          HoverHandler {
-            id: regenHover
-            cursorShape: Qt.PointingHandCursor
-          }
-          TapHandler {
-            onTapped: Matugen.generateFrom(Settings.data.wallpaper.path)
-          }
+          text: Matugen.running ? "Generating…" : "Regenerate colors now"
+          onClicked: Matugen.generateFrom(Settings.data.wallpaper.path)
         }
 
-        Item {
-          Layout.preferredWidth: cycleLabel.implicitWidth + 24
-          height: 30
+        NButton {
           enabled: Settings.data.wallpaper.path !== "" && !Matugen.running
-          opacity: enabled ? 1 : 0.4
-
-          Chamfer {
-            anchors.fill: parent
-            chamferSize: Tokens.chamferIcon
-            cutTopRight: true
-            cutBottomLeft: true
-            fillColor: cycleHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-            strokeColor: Color.outline
-            strokeWidth: Tokens.borderModule
-          }
-
-          NText {
-            id: cycleLabel
-            anchors.centerIn: parent
-            text: "Cycle color (" + Settings.data.wallpaper.matugenColorIndex + "/4)"
-            color: Color.surfaceText
-            size: NText.Size.BodySm
-          }
-
-          HoverHandler {
-            id: cycleHover
-            cursorShape: Qt.PointingHandCursor
-          }
-          TapHandler {
-            onTapped: Matugen.cycleColorIndex()
-          }
+          text: "Cycle color (" + Settings.data.wallpaper.matugenColorIndex + "/4)"
+          onClicked: Matugen.cycleColorIndex()
         }
 
         NText {
