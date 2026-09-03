@@ -4,6 +4,7 @@ import Quickshell.Services.Pipewire
 import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Microphone mute quick toggle.
 CcCircleToggle {
@@ -18,10 +19,11 @@ CcCircleToggle {
       tile.source.audio.muted = !tile.source.audio.muted;
   }
 
-  IconImage {
+  NIcon {
     anchors.centerIn: parent
     width: 16
     height: 16
-    source: Quickshell.iconPath(tile.active ? "audio-input-microphone-symbolic" : "microphone-sensitivity-muted-symbolic")
+    iconName: tile.active ? "audio-input-microphone-symbolic" : "microphone-sensitivity-muted-symbolic"
+    color: tile.active ? Color.primaryContainerText : Color.surfaceText
   }
 }

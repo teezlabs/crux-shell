@@ -13,7 +13,30 @@ Singleton {
   property bool running: false
   property string lastError: ""
 
-  // Dark-mode variant only — crux has no light/dark concept yet. --type is
+  readonly property bool darkMode: Settings.isLoaded ? Settings.data.theme.darkMode : true
+  readonly property string variant: root.darkMode ? "dark" : "light"
+
+  // Flips the mode and re-themes from the current wallpaper. Without a
+  // wallpaper there's nothing to regenerate from, so the flag alone would
+  // leave the old palette in place — say so rather than silently no-op.
+  function setDarkMode(on): void {
+    if (!Settings.isLoaded || Settings.data.theme.darkMode === on)
+      return;
+    Settings.data.theme.darkMode = on;
+    if (Settings.data.wallpaper.path !== "")
+      root.generateFrom(Settings.data.wallpaper.path);
+    else
+      Toast.show("Pick a wallpaper to regenerate colors");
+  }
+
+  function toggleDarkMode(): void {
+    root.setDarkMode(!root.darkMode);
+  }
+
+  // Light or dark per Settings.data.theme.darkMode. matugen's --json output
+  // carries both variants for every role regardless of --mode, so the mode
+  // flag is passed for the template files it writes while the shell's own
+  // roles are read from whichever half `variant` names. --type is
   // Settings.data.wallpaper.matugenScheme; --source-color-index picks which
   // dominant color to theme from (see cycleColorIndex) and also skips
   // matugen's interactive disambiguation prompt.
@@ -129,7 +152,7 @@ Singleton {
     if (t.sddmGreeter)
       cmds.push(Quickshell.shellDir + "/bin/crux-sync-greeter");
     if (t.gsettings)
-      cmds.push("gsettings set org.gnome.desktop.interface color-scheme prefer-dark");
+      cmds.push("gsettings set org.gnome.desktop.interface color-scheme prefer-" + root.variant);
     if (cmds.length === 0)
       return;
     postHookProc.command = ["sh", "-c", cmds.join(" ; ")];
@@ -163,7 +186,7 @@ Singleton {
   }
 
   function _runMatugen(imagePath, withTemplates) {
-    var args = ["matugen", "image", imagePath, "--type", Settings.data.wallpaper.matugenScheme, "--mode", "dark", "--json", "hex", "--source-color-index", String(Settings.data.wallpaper.matugenColorIndex)];
+    var args = ["matugen", "image", imagePath, "--type", Settings.data.wallpaper.matugenScheme, "--mode", root.variant, "--json", "hex", "--source-color-index", String(Settings.data.wallpaper.matugenColorIndex)];
     if (withTemplates)
       args = args.concat(["--config", Quickshell.env("HOME") + "/.cache/crux/matugen-templates.toml"]);
     else
@@ -213,33 +236,33 @@ Singleton {
         var data = JSON.parse(stdoutCollector.text);
         var c = data.colors;
         var theme = Settings.data.theme;
-        theme.mPrimary = c.primary.dark.color;
-        theme.mOnPrimary = c.on_primary.dark.color;
-        theme.mSecondary = c.secondary.dark.color;
-        theme.mOnSecondary = c.on_secondary.dark.color;
-        theme.mSurface = c.surface.dark.color;
-        theme.mOnSurface = c.on_surface.dark.color;
-        theme.mSurfaceVariant = c.surface_variant.dark.color;
-        theme.mOnSurfaceVariant = c.on_surface_variant.dark.color;
-        theme.mOutline = c.outline.dark.color;
-        theme.mError = c.error.dark.color;
-        theme.mOnError = c.on_error.dark.color;
+        theme.mPrimary = c.primary[root.variant].color;
+        theme.mOnPrimary = c.on_primary[root.variant].color;
+        theme.mSecondary = c.secondary[root.variant].color;
+        theme.mOnSecondary = c.on_secondary[root.variant].color;
+        theme.mSurface = c.surface[root.variant].color;
+        theme.mOnSurface = c.on_surface[root.variant].color;
+        theme.mSurfaceVariant = c.surface_variant[root.variant].color;
+        theme.mOnSurfaceVariant = c.on_surface_variant[root.variant].color;
+        theme.mOutline = c.outline[root.variant].color;
+        theme.mError = c.error[root.variant].color;
+        theme.mOnError = c.on_error[root.variant].color;
 
         // Tonal-spot roles for the v2 spec (§1) — same JSON response, just
         // more of its fields.
-        theme.surface = c.surface.dark.color;
-        theme.surfaceContainerLow = c.surface_container_low.dark.color;
-        theme.surfaceContainer = c.surface_container.dark.color;
-        theme.surfaceContainerHigh = c.surface_container_high.dark.color;
-        theme.outline = c.outline.dark.color;
-        theme.outlineVariant = c.outline_variant.dark.color;
-        theme.primary = c.primary.dark.color;
-        theme.primaryContainer = c.primary_container.dark.color;
-        theme.primaryContainerText = c.on_primary_container.dark.color;
-        theme.tertiary = c.tertiary.dark.color;
-        theme.errorTone = c.error.dark.color;
-        theme.surfaceText = c.on_surface.dark.color;
-        theme.surfaceTextMuted = c.on_surface_variant.dark.color;
+        theme.surface = c.surface[root.variant].color;
+        theme.surfaceContainerLow = c.surface_container_low[root.variant].color;
+        theme.surfaceContainer = c.surface_container[root.variant].color;
+        theme.surfaceContainerHigh = c.surface_container_high[root.variant].color;
+        theme.outline = c.outline[root.variant].color;
+        theme.outlineVariant = c.outline_variant[root.variant].color;
+        theme.primary = c.primary[root.variant].color;
+        theme.primaryContainer = c.primary_container[root.variant].color;
+        theme.primaryContainerText = c.on_primary_container[root.variant].color;
+        theme.tertiary = c.tertiary[root.variant].color;
+        theme.errorTone = c.error[root.variant].color;
+        theme.surfaceText = c.on_surface[root.variant].color;
+        theme.surfaceTextMuted = c.on_surface_variant[root.variant].color;
 
         // Wallpaper colors replace whatever preset was applied.
         theme.colorScheme = "";

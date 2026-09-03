@@ -4,6 +4,7 @@ import Quickshell.Networking
 import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Wi-Fi quick toggle. Tapping asks the Control Center to expand the network
 // list inline rather than opening a separate popup.
@@ -14,10 +15,11 @@ CcCircleToggle {
   active: Networking.wifiEnabled
   onTapped: tile.expandRequested("wifi")
 
-  IconImage {
+  NIcon {
     anchors.centerIn: parent
     width: 18
     height: 18
-    source: Quickshell.iconPath(tile.active ? "network-wireless-symbolic" : "network-wireless-disconnected-symbolic")
+    iconName: tile.active ? "network-wireless-symbolic" : "network-wireless-disconnected-symbolic"
+    color: tile.active ? Color.primaryContainerText : Color.surfaceText
   }
 }

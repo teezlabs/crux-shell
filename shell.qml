@@ -216,6 +216,21 @@ ShellRoot {
 
   // Theming from a keybind or script, without going through the panel.
   IpcHandler {
+    target: "darkMode"
+    function status(): string {
+      return Matugen.darkMode ? "dark" : "light";
+    }
+    function toggle(): string {
+      Matugen.toggleDarkMode();
+      return status();
+    }
+    function set(mode: string): string {
+      Matugen.setDarkMode(mode !== "light");
+      return status();
+    }
+  }
+
+  IpcHandler {
     target: "theme"
     function schemes(): string {
       return ColorSchemes.schemes.map(s => s.name).join("\n");

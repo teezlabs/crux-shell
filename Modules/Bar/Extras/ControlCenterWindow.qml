@@ -509,11 +509,13 @@ PanelWindow {
               root.visible = false;
               Popups.open("settings", root.targetScreen);
             }
-            IconImage {
+            NIcon {
               anchors.centerIn: parent
               width: 16
               height: 16
-              source: Quickshell.iconPath("preferences-system-symbolic", "applications-system-symbolic")
+              iconName: "preferences-system-symbolic"
+              fallbackIconName: "applications-system-symbolic"
+              color: Color.surfaceText
             }
           }
 
@@ -524,11 +526,12 @@ PanelWindow {
               root.visible = false;
               Popups.open("power", root.screen);
             }
-            IconImage {
+            NIcon {
               anchors.centerIn: parent
               width: 16
               height: 16
-              source: Quickshell.iconPath("system-shutdown-symbolic")
+              iconName: "system-shutdown-symbolic"
+              color: Color.surfaceText
             }
           }
 
@@ -536,11 +539,12 @@ PanelWindow {
             implicitWidth: 32
             implicitHeight: 32
             onTapped: root.visible = false
-            IconImage {
+            NIcon {
               anchors.centerIn: parent
               width: 14
               height: 14
-              source: Quickshell.iconPath("window-close-symbolic")
+              iconName: "window-close-symbolic"
+              color: Color.surfaceText
             }
           }
         }

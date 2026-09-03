@@ -358,6 +358,10 @@ Singleton {
       // Name of the applied Assets/ColorSchemes preset, "" when the colors
       // came from a wallpaper via matugen instead.
       property string colorScheme: ""
+
+      // Which half of matugen's output the shell reads, and what --mode it
+      // generates template files with.
+      property bool darkMode: true
     }
 
     property JsonObject brightness: JsonObject {

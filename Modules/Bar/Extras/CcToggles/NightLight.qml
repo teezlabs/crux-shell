@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Night light quick toggle: off -> on -> forced -> off.
 CcCircleToggle {
@@ -12,10 +13,11 @@ CcCircleToggle {
   active: NightLightService.enabled
   onTapped: NightLightService.cycle()
 
-  IconImage {
+  NIcon {
     anchors.centerIn: parent
     width: 16
     height: 16
-    source: Quickshell.iconPath("weather-clear-night-symbolic")
+    iconName: "weather-clear-night-symbolic"
+    color: tile.active ? Color.primaryContainerText : Color.surfaceText
   }
 }
