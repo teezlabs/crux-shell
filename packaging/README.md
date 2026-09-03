@@ -17,10 +17,31 @@ makepkg --printsrcinfo > .SRCINFO   # regenerate after any PKGBUILD edit
 makepkg -si                          # build + install locally, sanity check
 ```
 
-To actually submit: clone `ssh://aur@aur.archlinux.org/crux-shell-git.git`
-(empty repo, AUR creates it as soon as you push once you're an AUR
-account holder with your SSH key on file), copy `PKGBUILD` + `.SRCINFO`
-in, commit, push.
+## Publishing (automated)
+
+`PKGBUILD` here is the source of truth. `.github/workflows/aur-publish.yml`
+mirrors it to `ssh://aur@aur.archlinux.org/crux-shell-git.git` on every push
+to `main` that touches it, regenerating `.SRCINFO` with a real `makepkg` in
+an Arch container rather than trusting whatever was committed next to it.
+
+Setup, once:
+
+1. Add `~/.ssh/aur-ci-crux.pub` to the AUR account
+   (https://aur.archlinux.org/account/ -> SSH Public Key; keep any existing
+   key, the field takes several one per line).
+2. `gh secret set AUR_SSH_KEY --repo teezlabs/crux-shell < ~/.ssh/aur-ci-crux`
+
+It's a dedicated key, not the personal one used for normal AUR pushes, so
+revoking CI access doesn't cost you your own.
+
+Manual push, if CI is unavailable: clone the AUR repo, copy `PKGBUILD` +
+`.SRCINFO` in, commit, push.
+
+**Why this is automated:** the two copies drifted once already. The AUR held
+an older `package()` while `source=` still pulled current code, so an
+installed crux was assembled by a stale recipe and died at startup with
+`module "qs.Widgets" is not installed` — while reporting a version string
+from the commit that contained the fix.
 
 ## Not included here
 
