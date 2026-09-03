@@ -17,6 +17,87 @@ NScrollView {
     spacing: 20
 
   SettingsSection {
+    title: "Quick toggles"
+    description: "Buttons in the Control Center's top row, in order."
+
+    ColumnLayout {
+      Layout.fillWidth: true
+      spacing: 6
+
+      Repeater {
+        model: Settings.data.controlCenter.toggles
+
+        delegate: RowLayout {
+          id: row
+          required property string modelData
+          required property int index
+          Layout.fillWidth: true
+          spacing: 6
+
+          NText {
+            text: row.modelData
+            color: Color.surfaceText
+            size: NText.Size.BodySm
+            Layout.fillWidth: true
+          }
+
+          NButton {
+            text: "\u2191"
+            horizontalPadding: 8
+            enabled: row.index > 0
+            onClicked: Settings.moveCcToggle(row.index, -1)
+          }
+          NButton {
+            text: "\u2193"
+            horizontalPadding: 8
+            enabled: row.index < Settings.data.controlCenter.toggles.length - 1
+            onClicked: Settings.moveCcToggle(row.index, 1)
+          }
+          NButton {
+            text: "Remove"
+            variant: "destructive"
+            onClicked: Settings.removeCcToggle(row.index)
+          }
+        }
+      }
+
+      NText {
+        visible: Settings.data.controlCenter.toggles.length === 0
+        text: "No toggles — the row is hidden."
+        color: Color.labelText
+        size: NText.Size.Caption
+      }
+
+      NText {
+        tracking: true
+        text: "ADD"
+        color: Color.labelText
+        size: NText.Size.LabelXs
+        Layout.topMargin: 4
+      }
+
+      Flow {
+        Layout.fillWidth: true
+        spacing: 4
+
+        Repeater {
+          model: CcToggleRegistry.ids
+
+          delegate: NButton {
+            required property string modelData
+            text: modelData
+            textSize: NText.Size.LabelXs
+            horizontalPadding: 8
+            implicitHeight: 22
+            enabled: Settings.data.controlCenter.toggles.indexOf(modelData) === -1
+            onClicked: Settings.addCcToggle(modelData)
+          }
+        }
+      }
+    }
+  }
+
+  SettingsSection {
     title: "Weather"
     description: "The forecast card shown in the Control Center popup, when weather data is available."
 

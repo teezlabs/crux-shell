@@ -546,76 +546,39 @@ PanelWindow {
         }
       }
 
-      // ---- Toggle row: real radios only (Wifi/Bluetooth/Mic/Night Light) ----
+      // ---- Toggle row: configurable, from Settings.data.controlCenter.toggles
+      // (ids in CcToggleRegistry, files in CcToggles/) ----
       CcCard {
         RowLayout {
           Layout.fillWidth: true
           spacing: 10
 
-          CcCircleToggle {
-            id: wifiTile
-            Layout.preferredWidth: 40
-            Layout.preferredHeight: 40
-            active: Networking.wifiEnabled
-            onTapped: {
-              root.btExpanded = false;
-              root.wifiExpanded = !root.wifiExpanded;
-            }
-            IconImage {
-              anchors.centerIn: parent
-              width: 18
-              height: 18
-              source: Quickshell.iconPath(wifiTile.active ? "network-wireless-symbolic" : "network-wireless-disconnected-symbolic")
-            }
-          }
+          Repeater {
+            model: Settings.data.controlCenter.toggles
 
-          CcCircleToggle {
-            id: btTile
-            Layout.preferredWidth: 40
-            Layout.preferredHeight: 40
-            active: root.btAdapter && root.btAdapter.enabled
-            available: !!root.btAdapter
-            onTapped: {
-              root.wifiExpanded = false;
-              root.btExpanded = !root.btExpanded;
-            }
-            IconImage {
-              anchors.centerIn: parent
-              width: 16
-              height: 16
-              source: Quickshell.iconPath(btTile.active ? "preferences-system-bluetooth-activated-symbolic" : "preferences-system-bluetooth-inactive-symbolic")
-            }
-          }
+            delegate: Loader {
+              id: toggleLoader
+              required property string modelData
+              Layout.preferredWidth: 40
+              Layout.preferredHeight: 40
+              active: CcToggleRegistry.has(modelData)
+              source: active ? Qt.resolvedUrl("CcToggles/" + modelData + ".qml") : ""
 
-          CcCircleToggle {
-            id: micTile
-            active: root.source && !root.micMuted
-            available: !!root.source
-            Layout.preferredWidth: 40
-            Layout.preferredHeight: 40
-            onTapped: if (root.source && root.source.audio)
-              root.source.audio.muted = !root.source.audio.muted
-            IconImage {
-              anchors.centerIn: parent
-              width: 16
-              height: 16
-              source: Quickshell.iconPath(micTile.active ? "audio-input-microphone-symbolic" : "microphone-sensitivity-muted-symbolic")
-            }
-          }
-
-          // off -> on -> forced -> off, same as the NightLight bar widget.
-          // Both drive Commons/NightLightService.qml, which owns wlsunset.
-          CcCircleToggle {
-            id: nightTile
-            Layout.preferredWidth: 40
-            Layout.preferredHeight: 40
-            active: NightLightService.enabled
-            onTapped: NightLightService.cycle()
-            IconImage {
-              anchors.centerIn: parent
-              width: 16
-              height: 16
-              source: Quickshell.iconPath("weather-clear-night-symbolic")
+              Connections {
+                target: toggleLoader.item
+                ignoreUnknownSignals: true
+                function onExpandRequested(which) {
+                  // Only one list can be open at a time, and tapping the
+                  // same toggle again closes it.
+                  if (which === "wifi") {
+                    root.btExpanded = false;
+                    root.wifiExpanded = !root.wifiExpanded;
+                  } else if (which === "bluetooth") {
+                    root.wifiExpanded = false;
+                    root.btExpanded = !root.btExpanded;
+                  }
+                }
+              }
             }
           }
 

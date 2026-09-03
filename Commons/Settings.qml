@@ -315,6 +315,9 @@ Singleton {
       property string tempUnit: "fahrenheit" // "fahrenheit" | "celsius" — passed straight to open-meteo
       property int statsRefreshInterval: 2000 // ms between CPU/MEM/TEMP/DISK reads
       property string screenshotCommand: "rishot" // run (via sh -c) by the CAPTURE action tile
+      // Quick toggles shown in the top row, in order. Ids come from
+      // Modules/Bar/Extras/CcToggleRegistry.qml.
+      property list<string> toggles: ["Wifi", "Bluetooth", "Microphone", "NightLight"]
     }
 
     // Semantic color tokens ("m" prefix avoids QML reading "onPrimary" as
@@ -556,6 +559,39 @@ Singleton {
 
   // Appends a widget id to the end of one section — for the settings
   // panel's "add widget" control. Same effective-list resolution rule.
+  // Control Center quick toggles. A plain ordered list — no per-screen
+  // overrides, unlike the bar's widgets.
+  //
+  // Reassigning the whole list<string> property is what persists here;
+  // mutating the array in place does not (same trap reorderBarWidget hit).
+  // Unknown ids are the loader's problem to refuse (CcToggleRegistry lives
+  // in Modules, and Commons shouldn't reach up into it).
+  function addCcToggle(id) {
+    const list = data.controlCenter.toggles.slice();
+    if (list.indexOf(id) !== -1)
+      return;
+    list.push(id);
+    data.controlCenter.toggles = list;
+  }
+
+  function removeCcToggle(index) {
+    const list = data.controlCenter.toggles.slice();
+    if (index < 0 || index >= list.length)
+      return;
+    list.splice(index, 1);
+    data.controlCenter.toggles = list;
+  }
+
+  function moveCcToggle(index, delta) {
+    const list = data.controlCenter.toggles.slice();
+    const to = index + delta;
+    if (index < 0 || index >= list.length || to < 0 || to >= list.length)
+      return;
+    const item = list.splice(index, 1)[0];
+    list.splice(to, 0, item);
+    data.controlCenter.toggles = list;
+  }
+
   function addBarWidget(screenName, section, widgetId) {
     var override = _findScreenOverride(screenName);
     var usesOverride = !!(override && override.enabled !== false && override.widgets !== undefined);
