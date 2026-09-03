@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Widgets
 
 // Grouped-card section wrapper, v2 style: chamfered card (radius: 0, no
@@ -36,10 +35,8 @@ ColumnLayout {
       font.weight: Font.DemiBold
     }
 
-    Rectangle {
+    NDivider {
       Layout.fillWidth: true
-      Layout.preferredHeight: Tokens.borderDivider
-      color: Color.surfaceContainerHigh
     }
   }
 
@@ -54,24 +51,15 @@ ColumnLayout {
     Layout.bottomMargin: 4
   }
 
-  Item {
+  NBox {
     Layout.fillWidth: true
+    // 26 rather than the box's own 28px of padding: the card has always
+    // been 2px tighter than its margins, keep it that way.
     Layout.preferredHeight: inner.implicitHeight + 26
-
-    Chamfer {
-      anchors.fill: parent
-      chamferSize: Tokens.chamferModule
-      cutTopRight: true
-      cutBottomLeft: true
-      fillColor: Color.surfaceContainer
-      strokeColor: Color.outline
-      strokeWidth: Tokens.borderModule
-    }
 
     ColumnLayout {
       id: inner
       anchors.fill: parent
-      anchors.margins: 14
       spacing: 14
     }
   }
