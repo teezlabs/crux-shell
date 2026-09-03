@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import qs.Widgets
 
 // Top-level "Display" settings tab: Brightness and Night Light as
 // subtabs — mirrors noctalia's Display tab, minus the pages crux has
@@ -14,7 +15,7 @@ ColumnLayout {
   onInitialSubTabChanged: if (initialSubTab !== "")
                              root.subTab = initialSubTab
 
-  SubTabBar {
+  NTabBar {
     Layout.fillWidth: true
     model: [
       {

@@ -22,32 +22,13 @@ Flickable {
 
     SettingRow {
       label: "Font"
-      Item {
+      NTextInput {
+        id: fontInput
         Layout.preferredWidth: 200
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Color.surface
-          strokeColor: fontInput.activeFocus ? Color.primary : Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        TextInput {
-          id: fontInput
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          verticalAlignment: Text.AlignVCenter
-          text: Settings.data.ui.fontFamily
-          color: Color.surfaceText
-          font.family: Settings.data.ui.fontFamily
-          font.pixelSize: Tokens.bodySmSize
-          onEditingFinished: Settings.data.ui.fontFamily = text
-        }
+        fontFamily: Settings.data.ui.fontFamily
+        text: Settings.data.ui.fontFamily
+        onEditingFinished: Settings.data.ui.fontFamily = text
       }
     }
   }

@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import qs.Widgets
 
 // Top-level "General" settings tab: Basics (shell info, restart) and
 // Keybinds (read-only reference) as subtabs.
@@ -10,13 +11,13 @@ ColumnLayout {
   property string subTab: "basics"
 
   // Set by SettingsWindow's search jump — reacting to onChanged (not a
-  // binding) means the SubTabBar's own onActiveIdChanged can still drive
+  // binding) means the NTabBar's own onActiveIdChanged can still drive
   // subTab normally afterward, instead of a one-way lock to the search hit.
   property string initialSubTab: ""
   onInitialSubTabChanged: if (initialSubTab !== "")
                              root.subTab = initialSubTab
 
-  SubTabBar {
+  NTabBar {
     Layout.fillWidth: true
     model: [
       {

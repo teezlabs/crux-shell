@@ -23,33 +23,12 @@ Flickable {
     SettingRow {
       label: "Time format"
 
-      Item {
+      NTextInput {
+        id: clockInput
         Layout.preferredWidth: 160
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Color.surface
-          strokeColor: clockInput.activeFocus ? Color.primary : Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        TextInput {
-          id: clockInput
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          verticalAlignment: Text.AlignVCenter
-          text: Settings.data.lockScreen.clockFormat
-          color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
-          selectByMouse: true
-          onEditingFinished: Settings.data.lockScreen.clockFormat = text
-        }
+        text: Settings.data.lockScreen.clockFormat
+        onEditingFinished: Settings.data.lockScreen.clockFormat = text
       }
 
       NText {
@@ -62,33 +41,12 @@ Flickable {
     SettingRow {
       label: "Date format"
 
-      Item {
+      NTextInput {
+        id: dateInput
         Layout.preferredWidth: 220
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Color.surface
-          strokeColor: dateInput.activeFocus ? Color.primary : Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        TextInput {
-          id: dateInput
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          verticalAlignment: Text.AlignVCenter
-          text: Settings.data.lockScreen.dateFormat
-          color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
-          selectByMouse: true
-          onEditingFinished: Settings.data.lockScreen.dateFormat = text
-        }
+        text: Settings.data.lockScreen.dateFormat
+        onEditingFinished: Settings.data.lockScreen.dateFormat = text
       }
     }
   }
@@ -114,33 +72,12 @@ Flickable {
       visible: Settings.data.lockScreen.useCustomWallpaper
       label: "Image path"
 
-      Item {
+      NTextInput {
+        id: wpInput
         Layout.fillWidth: true
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Color.surface
-          strokeColor: wpInput.activeFocus ? Color.primary : Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        TextInput {
-          id: wpInput
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          verticalAlignment: Text.AlignVCenter
-          text: Settings.data.lockScreen.customWallpaperPath
-          color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
-          selectByMouse: true
-          onEditingFinished: Settings.data.lockScreen.customWallpaperPath = text
-        }
+        text: Settings.data.lockScreen.customWallpaperPath
+        onEditingFinished: Settings.data.lockScreen.customWallpaperPath = text
       }
     }
 

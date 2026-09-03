@@ -113,33 +113,12 @@ Flickable {
     SettingRow {
       label: "Screenshot command"
 
-      Item {
+      NTextInput {
+        id: captureInput
         Layout.preferredWidth: 220
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Color.surface
-          strokeColor: captureInput.activeFocus ? Color.primary : Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        TextInput {
-          id: captureInput
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          verticalAlignment: Text.AlignVCenter
-          text: Settings.data.controlCenter.screenshotCommand
-          color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
-          selectByMouse: true
-          onEditingFinished: Settings.data.controlCenter.screenshotCommand = text
-        }
+        text: Settings.data.controlCenter.screenshotCommand
+        onEditingFinished: Settings.data.controlCenter.screenshotCommand = text
       }
     }
 

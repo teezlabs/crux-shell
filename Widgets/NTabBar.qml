@@ -41,6 +41,7 @@ RowLayout {
         anchors.centerIn: parent
         text: pill.modelData.label.toUpperCase()
         size: NText.Size.LabelXs
+        tracking: true
         color: pill.active ? Color.primaryContainerText : Color.surfaceText
       }
 

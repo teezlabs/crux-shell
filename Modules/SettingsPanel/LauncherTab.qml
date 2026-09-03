@@ -70,33 +70,12 @@ Flickable {
     SettingRow {
       label: "Run-command prefix"
 
-      Item {
+      NTextInput {
+        id: prefixInput
         Layout.preferredWidth: 80
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Color.surface
-          strokeColor: prefixInput.activeFocus ? Color.primary : Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        TextInput {
-          id: prefixInput
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          verticalAlignment: Text.AlignVCenter
-          text: Settings.data.launcher.execPrefix
-          color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
-          selectByMouse: true
-          onEditingFinished: Settings.data.launcher.execPrefix = text
-        }
+        text: Settings.data.launcher.execPrefix
+        onEditingFinished: Settings.data.launcher.execPrefix = text
       }
 
       NText {

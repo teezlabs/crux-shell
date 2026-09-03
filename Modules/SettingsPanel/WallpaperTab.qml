@@ -653,35 +653,14 @@ Flickable {
           Layout.fillWidth: true
           spacing: 10
 
-          Item {
+          NTextInput {
+            id: dirInput
             Layout.fillWidth: true
             height: 28
-
-            Chamfer {
-              anchors.fill: parent
-              chamferSize: Tokens.chamferIcon
-              cutTopRight: true
-              cutBottomLeft: true
-              fillColor: Color.surface
-              strokeColor: dirInput.activeFocus ? Color.primary : Color.outline
-              strokeWidth: Tokens.borderModule
-            }
-
-            TextInput {
-              id: dirInput
-              anchors.fill: parent
-              anchors.leftMargin: 8
-              anchors.rightMargin: 8
-              verticalAlignment: Text.AlignVCenter
-              text: Settings.data.wallpaper.directory
-              color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
-              selectByMouse: true
-              onEditingFinished: {
-                Settings.data.wallpaper.directory = text;
-                root.rescan();
-              }
+            text: Settings.data.wallpaper.directory
+            onEditingFinished: {
+            Settings.data.wallpaper.directory = text;
+            root.rescan();
             }
           }
 

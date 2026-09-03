@@ -10,7 +10,7 @@ import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
 // Settings panel: top-level tabs in the sidebar, some split into subtabs
-// via SubTabBar.qml. New top-level tabs go in the `tabs` model below.
+// via NTabBar (Widgets/). New top-level tabs go in the `tabs` model below.
 PanelWindow {
   id: root
 
@@ -28,7 +28,7 @@ PanelWindow {
   property string activeTab: "general"
 
   // Fuzzy-search sidebar state. jumpSubTab is read once (onChanged, not a
-  // binding) so later manual SubTabBar clicks aren't fought by a stale hit.
+  // binding) so later manual NTabBar clicks aren't fought by a stale hit.
   property string searchQuery: ""
   property string jumpSubTab: ""
   readonly property var searchResults: {

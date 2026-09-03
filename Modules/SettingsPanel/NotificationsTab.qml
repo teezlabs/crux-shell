@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import qs.Widgets
 
 // Top-level Notifications tab: General/Duration/History subtabs.
 ColumnLayout {
@@ -12,7 +13,7 @@ ColumnLayout {
   onInitialSubTabChanged: if (initialSubTab !== "")
                              root.subTab = initialSubTab
 
-  SubTabBar {
+  NTabBar {
     Layout.fillWidth: true
     model: [
       {

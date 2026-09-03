@@ -27,33 +27,12 @@ Flickable {
       label: "Bridge IP"
       visible: !Hue.paired
 
-      Item {
+      NTextInput {
+        id: ipInput
         Layout.fillWidth: true
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Color.surface
-          strokeColor: ipInput.activeFocus ? Color.primary : Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        TextInput {
-          id: ipInput
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          verticalAlignment: Text.AlignVCenter
-          text: root.ipField
-          color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
-          selectByMouse: true
-          onTextChanged: root.ipField = text
-        }
+        text: root.ipField
+        onTextChanged: root.ipField = text
       }
 
       Rectangle {

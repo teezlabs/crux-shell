@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import qs.Widgets
 
 // Top-level "Appearance" settings tab: General (font/radius/opacity) and
 // Colors (the theme token grid) as subtabs.
@@ -13,7 +14,7 @@ ColumnLayout {
   onInitialSubTabChanged: if (initialSubTab !== "")
                              root.subTab = initialSubTab
 
-  SubTabBar {
+  NTabBar {
     Layout.fillWidth: true
     model: [
       {

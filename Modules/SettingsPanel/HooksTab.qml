@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import qs.Widgets
 
 // Top-level Hooks tab: General/Hooks subtabs. Backend is Commons/Hooks.qml.
 ColumnLayout {
@@ -13,7 +14,7 @@ ColumnLayout {
   onInitialSubTabChanged: if (initialSubTab !== "")
                              root.subTab = initialSubTab
 
-  SubTabBar {
+  NTabBar {
     Layout.fillWidth: true
     model: [
       {

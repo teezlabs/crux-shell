@@ -124,31 +124,11 @@ PanelWindow {
         Layout.fillWidth: true
       }
 
-      Item {
+      NTextInput {
+        id: commandInput
         Layout.fillWidth: true
         Layout.preferredHeight: 30
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Color.surface
-          strokeColor: commandInput.activeFocus ? Color.primary : Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        TextInput {
-          id: commandInput
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          verticalAlignment: Text.AlignVCenter
-          color: Color.surfaceText
-          font.family: Tokens.monoFontFamily
-          font.pixelSize: Tokens.bodySmSize
-          selectByMouse: true
-        }
+        mono: true
       }
 
       RowLayout {

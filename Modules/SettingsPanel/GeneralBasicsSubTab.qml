@@ -24,37 +24,13 @@ Flickable {
     SettingRow {
       label: "Font family"
 
-      Item {
+      NTextInput {
+        id: fontInput
         Layout.preferredWidth: 200
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Color.surface
-          strokeColor: fontInput.activeFocus ? Color.primary : Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        // Intentionally rendered in the font it names, as a live preview —
-        // the one place in the settings panel that doesn't use Tokens'
-        // fixed JetBrains Mono, since previewing the actual chosen font is
-        // the whole point of this field.
-        TextInput {
-          id: fontInput
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          verticalAlignment: Text.AlignVCenter
-          text: Settings.data.ui.fontFamily
-          color: Color.surfaceText
-          font.family: Settings.data.ui.fontFamily
-          font.pixelSize: Tokens.bodySmSize
-          selectByMouse: true
-          onEditingFinished: Settings.data.ui.fontFamily = text
-        }
+        fontFamily: Settings.data.ui.fontFamily
+        text: Settings.data.ui.fontFamily
+        onEditingFinished: Settings.data.ui.fontFamily = text
       }
 
       NText {
@@ -68,33 +44,13 @@ Flickable {
     SettingRow {
       label: "Monospaced font"
 
-      Item {
+      NTextInput {
+        id: monoFontInput
         Layout.preferredWidth: 200
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Color.surface
-          strokeColor: monoFontInput.activeFocus ? Color.primary : Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        TextInput {
-          id: monoFontInput
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          verticalAlignment: Text.AlignVCenter
-          text: Settings.data.ui.monoFontFamily
-          color: Color.surfaceText
-          font.family: Settings.data.ui.monoFontFamily
-          font.pixelSize: Tokens.bodySmSize
-          selectByMouse: true
-          onEditingFinished: Settings.data.ui.monoFontFamily = text
-        }
+        fontFamily: Settings.data.ui.monoFontFamily
+        text: Settings.data.ui.monoFontFamily
+        onEditingFinished: Settings.data.ui.monoFontFamily = text
       }
 
       NText {
@@ -107,33 +63,12 @@ Flickable {
     SettingRow {
       label: "Avatar image"
 
-      Item {
+      NTextInput {
+        id: avatarInput
         Layout.fillWidth: true
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Color.surface
-          strokeColor: avatarInput.activeFocus ? Color.primary : Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        TextInput {
-          id: avatarInput
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          verticalAlignment: Text.AlignVCenter
-          text: Settings.data.general.avatarImage
-          color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
-          selectByMouse: true
-          onEditingFinished: Settings.data.general.avatarImage = text
-        }
+        text: Settings.data.general.avatarImage
+        onEditingFinished: Settings.data.general.avatarImage = text
       }
 
       NText {
@@ -170,33 +105,12 @@ Flickable {
     SettingRow {
       label: "Time format"
 
-      Item {
+      NTextInput {
+        id: barClockInput
         Layout.preferredWidth: 160
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Color.surface
-          strokeColor: barClockInput.activeFocus ? Color.primary : Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        TextInput {
-          id: barClockInput
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          verticalAlignment: Text.AlignVCenter
-          text: Settings.data.ui.clockFormat
-          color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
-          selectByMouse: true
-          onEditingFinished: Settings.data.ui.clockFormat = text
-        }
+        text: Settings.data.ui.clockFormat
+        onEditingFinished: Settings.data.ui.clockFormat = text
       }
 
       NText {
@@ -209,33 +123,12 @@ Flickable {
     SettingRow {
       label: "Date format"
 
-      Item {
+      NTextInput {
+        id: barDateInput
         Layout.preferredWidth: 160
         height: 28
-
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Color.surface
-          strokeColor: barDateInput.activeFocus ? Color.primary : Color.outline
-          strokeWidth: Tokens.borderModule
-        }
-
-        TextInput {
-          id: barDateInput
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          verticalAlignment: Text.AlignVCenter
-          text: Settings.data.ui.dateFormat
-          color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
-          selectByMouse: true
-          onEditingFinished: Settings.data.ui.dateFormat = text
-        }
+        text: Settings.data.ui.dateFormat
+        onEditingFinished: Settings.data.ui.dateFormat = text
       }
 
       NText {
