@@ -21,36 +21,48 @@ jobs:
     # trusting whatever was committed alongside the PKGBUILD.
     container: archlinux:base-devel
 
+    env:
+      # Everything ssh needs, spelled out. Relying on ~/.ssh across steps is
+      # what broke the first run: HOME is not necessarily the same for the
+      # step that writes the config and the step that runs git.
+      SSH_DIR: /tmp/aur-ssh
+      GIT_SSH_COMMAND: >-
+        ssh -i /tmp/aur-ssh/key
+        -o IdentitiesOnly=yes
+        -o UserKnownHostsFile=/tmp/aur-ssh/known_hosts
+        -o StrictHostKeyChecking=yes
+
     steps:
       - name: Install tooling
         run: pacman -Sy --noconfirm --needed git openssh
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Configure SSH for the AUR
         env:
           AUR_SSH_KEY: ${{ secrets.AUR_SSH_KEY }}
         run: |
-          set -euo pipefail
+          set -eu
           if [ -z "${AUR_SSH_KEY:-}" ]; then
             echo "::error::AUR_SSH_KEY secret is not set" >&2
             exit 1
           fi
-          install -dm700 ~/.ssh
-          printf '%s\n' "$AUR_SSH_KEY" > ~/.ssh/aur
-          chmod 600 ~/.ssh/aur
-          ssh-keyscan -H aur.archlinux.org >> ~/.ssh/known_hosts 2>/dev/null
-          cat > ~/.ssh/config <<EOF
-          Host aur.archlinux.org
-            User aur
-            IdentityFile ~/.ssh/aur
-            IdentitiesOnly yes
-          EOF
-          chmod 600 ~/.ssh/config
+          install -dm700 "$SSH_DIR"
+          printf '%s\n' "$AUR_SSH_KEY" > "$SSH_DIR/key"
+          chmod 600 "$SSH_DIR/key"
+          ssh-keyscan aur.archlinux.org > "$SSH_DIR/known_hosts" 2>/dev/null
+          if [ ! -s "$SSH_DIR/known_hosts" ]; then
+            echo "::error::ssh-keyscan returned no host keys for aur.archlinux.org" >&2
+            exit 1
+          fi
+          echo "host keys: $(wc -l < "$SSH_DIR/known_hosts")"
+          ssh -o BatchMode=yes aur@aur.archlinux.org help >/dev/null 2>&1 \
+            && echo "AUR auth OK" \
+            || echo "note: AUR 'help' returned non-zero (expected; it has no interactive shell)"
 
       - name: Sync PKGBUILD and regenerate .SRCINFO
         run: |
-          set -euo pipefail
+          set -eu
           git clone ssh://aur@aur.archlinux.org/crux-shell-git.git /tmp/aur
           cp packaging/PKGBUILD /tmp/aur/PKGBUILD
 
@@ -64,7 +76,7 @@ jobs:
 
       - name: Commit and push
         run: |
-          set -euo pipefail
+          set -eu
           cd /tmp/aur
           if git diff --quiet -- PKGBUILD .SRCINFO; then
             echo "AUR already matches packaging/PKGBUILD — nothing to push."
