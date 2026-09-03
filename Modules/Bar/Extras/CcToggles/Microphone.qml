@@ -25,6 +25,6 @@ CcCircleToggle {
     height: 16
     iconName: tile.active ? "audio-input-microphone-symbolic" : "microphone-sensitivity-muted-symbolic"
     fallbackIconName: tile.active ? "audio-input-microphone" : "microphone-sensitivity-muted"
-    color: tile.active ? Color.primaryContainerText : Color.surfaceText
+    color: tile.active ? Color.primaryText : Color.surfaceText
   }
 }

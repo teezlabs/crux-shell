@@ -22,6 +22,6 @@ CcCircleToggle {
     height: 16
     iconName: tile.active ? "preferences-system-bluetooth-activated-symbolic" : "preferences-system-bluetooth-inactive-symbolic"
     fallbackIconName: "preferences-system-bluetooth"
-    color: tile.active ? Color.primaryContainerText : Color.surfaceText
+    color: tile.active ? Color.primaryText : Color.surfaceText
   }
 }

@@ -892,6 +892,7 @@ PanelWindow {
             label: "RECORD"
             icon: "media-record-symbolic"
             iconFallback: "media-record"
+            iconColor: Color.error
             available: root.hasRecorder
           }
           CcActionButton {
@@ -904,7 +905,8 @@ PanelWindow {
           CcActionButton {
             Layout.fillWidth: true
             label: "WALLPAPER"
-            icon: "preferences-desktop-wallpaper"
+            icon: "desktop-symbolic"
+            iconFallback: "preferences-desktop-wallpaper"
             onTapped: {
               root.visible = false;
               Popups.openTab("settings", root.targetScreen, "wallpaper");
@@ -913,6 +915,8 @@ PanelWindow {
           CcActionButton {
             Layout.fillWidth: true
             label: IdleInhibitorService.active ? "IDLE ON" : "IDLE OFF"
+            icon: IdleInhibitorService.active ? "view-visible-symbolic" : "view-visible-off-symbolic"
+            iconFallback: IdleInhibitorService.active ? "view-visible" : "view-visible-off"
             active: IdleInhibitorService.active
             onTapped: IdleInhibitorService.toggle()
           }

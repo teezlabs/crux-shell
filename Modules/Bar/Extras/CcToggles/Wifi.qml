@@ -23,6 +23,6 @@ CcCircleToggle {
     // Non-symbolic name of the same icon: the convention every theme
     // follows, so a theme without the symbolic variant still renders.
     fallbackIconName: tile.active ? "network-wireless" : "network-wireless-disconnected"
-    color: tile.active ? Color.primaryContainerText : Color.surfaceText
+    color: tile.active ? Color.primaryText : Color.surfaceText
   }
 }

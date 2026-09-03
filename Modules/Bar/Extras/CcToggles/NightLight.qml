@@ -19,6 +19,6 @@ CcCircleToggle {
     height: 16
     iconName: "weather-clear-night-symbolic"
     fallbackIconName: "weather-clear-night"
-    color: tile.active ? Color.primaryContainerText : Color.surfaceText
+    color: tile.active ? Color.primaryText : Color.surfaceText
   }
 }

@@ -19,7 +19,7 @@ CcCircleToggle {
     width: 18
     height: 12
     readonly property bool isOn: tile.active
-    readonly property color drawColor: tile.active ? Color.primaryContainerText : Color.surfaceText
+    readonly property color drawColor: tile.active ? Color.primaryText : Color.surfaceText
     onIsOnChanged: requestPaint()
     onDrawColorChanged: requestPaint()
     onPaint: {

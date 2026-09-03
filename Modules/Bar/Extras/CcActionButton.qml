@@ -12,6 +12,9 @@ Item {
   property string icon: ""
   // Non-symbolic twin, tried when the theme lacks the symbolic one.
   property string iconFallback: ""
+  // Most tiles want the normal text colour; RECORD wants the error tone, so
+  // the recolour shader doesn't flatten breeze's red dot to plain white.
+  property color iconColor: Color.surfaceText
   property bool available: true
   property bool active: false
   signal tapped
@@ -35,7 +38,7 @@ Item {
       height: 12
       iconName: root.icon
       fallbackIconName: root.iconFallback
-      color: Color.surfaceText
+      color: root.iconColor
     }
 
     NText {
