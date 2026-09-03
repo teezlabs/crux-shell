@@ -16,6 +16,13 @@ PanelWindow {
   property var targetScreen: null
   screen: targetScreen
 
+  // Direct in-process handle for callers on this screen (see Commons/Popups.qml).
+  PopupRegistration {
+    name: "launcher"
+    surface: root
+    screen: root.targetScreen
+  }
+
   property string query: ""
   property int selectedIndex: 0
 
@@ -132,22 +139,12 @@ PanelWindow {
       });
     }
   }
-
-  // Only the instance on the currently-focused monitor claims this target,
-  // so SUPER+A always opens on the right screen with no external routing.
-  IpcHandler {
-    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
-    target: "launcher"
-    function toggle() {
-      root.toggle();
-    }
-    function open() {
-      if (!root.visible)
-        root.toggle();
-    }
-    function close() {
-      root.visible = false;
-    }
+  function open() {
+    if (!visible)
+      toggle();
+  }
+  function close() {
+    visible = false;
   }
 
   visible: false

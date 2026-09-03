@@ -152,6 +152,9 @@ ShellRoot {
     }
   }
 
+  // Screen-agnostic popup IPC targets, once for the whole shell.
+  PopupAliases {}
+
   Variants {
     model: Quickshell.screens
 

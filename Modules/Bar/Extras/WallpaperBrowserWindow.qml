@@ -59,21 +59,6 @@ PanelWindow {
       root.close();
     }
   }
-  // Claimed only by the instance on the currently-focused monitor, for a
-  // keybind that doesn't know/care which screen it's on.
-  IpcHandler {
-    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
-    target: "wallpaperBrowser"
-    function toggle(): void {
-      root.toggle();
-    }
-    function open(): void {
-      root.open();
-    }
-    function close(): void {
-      root.close();
-    }
-  }
 
   // Compact "LABEL: value ▾" dropdown, opens a Popup list on click — used
   // for Wallhaven's quality/ratio filters, which have too many options for

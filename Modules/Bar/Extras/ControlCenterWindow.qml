@@ -384,24 +384,6 @@ PanelWindow {
     }
   }
 
-  // A plain "controlCenter" alias, claimed only by the instance on the
-  // currently-focused monitor, for a keybind that doesn't know/care which
-  // screen it's on (unlike a bar click, which always knows its own screen
-  // and uses the per-screen target above instead).
-  IpcHandler {
-    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
-    target: "controlCenter"
-    function toggle() {
-      root.toggle();
-    }
-    function open() {
-      root.visible = true;
-    }
-    function close() {
-      root.visible = false;
-    }
-  }
-
   // WIFI/BLUETOOTH tiles' right-click "expand" state; renders the shared panel content inline instead of a popup.
   property bool wifiExpanded: false
   property bool btExpanded: false

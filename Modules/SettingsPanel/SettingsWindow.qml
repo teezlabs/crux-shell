@@ -177,27 +177,6 @@ PanelWindow {
     }
   }
 
-  // A plain "settings" alias, claimed only by the instance on the
-  // currently-focused monitor, for a keybind that doesn't know/care which
-  // screen it's on.
-  IpcHandler {
-    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
-    target: "settings"
-    function toggle() {
-      root.toggle();
-    }
-    function open() {
-      root.visible = true;
-    }
-    function openTab(tab: string) {
-      root.activeTab = tab;
-      root.visible = true;
-    }
-    function close() {
-      root.visible = false;
-    }
-  }
-
   visible: false
   color: "transparent"
 

@@ -15,6 +15,13 @@ PanelWindow {
   property var targetScreen: null
   screen: targetScreen
 
+  // Direct in-process handle for callers on this screen (see Commons/Popups.qml).
+  PopupRegistration {
+    name: "calendar"
+    surface: root
+    screen: root.targetScreen
+  }
+
   property date viewDate: new Date()
   readonly property date today: new Date()
 
@@ -22,6 +29,13 @@ PanelWindow {
     visible = !visible;
     if (visible)
       viewDate = new Date();
+  }
+  function open() {
+    if (!visible)
+      toggle();
+  }
+  function close() {
+    visible = false;
   }
 
   function nextMonth() {
@@ -75,21 +89,6 @@ PanelWindow {
   WlrLayershell.namespace: "crux-calendar"
   WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
   exclusionMode: ExclusionMode.Ignore
-
-  IpcHandler {
-    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
-    target: "calendar"
-    function toggle() {
-      root.toggle();
-    }
-    function open() {
-      root.visible = true;
-      root.viewDate = new Date();
-    }
-    function close() {
-      root.visible = false;
-    }
-  }
 
   Shortcut {
     sequence: "Escape"

@@ -20,7 +20,10 @@ Item {
 
   required property var host // PopupHost's own PanelWindow — gives host.width/height to position against (not an Item, so untyped)
   property string barPos: "top" // "top" | "bottom" | "left" | "right"
-  property bool open: false
+  // Named `shown`, not `open`, so open()/close()/toggle() can be real
+  // functions — every surface in the Popups registry implements the same
+  // contract.
+  property bool shown: false
   // Identifies this card to PopupIpc, which derives its IPC target names
   // from it ("wifi" -> "wifi" and "wifi_<screen>").
   property string popupName: ""
@@ -44,27 +47,35 @@ Item {
   default property alias content: contentLayer.data
 
   function toggle() {
-    root.open = !root.open;
+    root.shown = !root.shown;
+  }
+
+  function open() {
+    root.shown = true;
+  }
+
+  function close() {
+    root.shown = false;
   }
 
   // Opens lined up with the bar icon at (x, y), clamped to stay on
   // screen. A second call while open closes instead, so one bar-icon tap
   // handler covers both directions.
   function openAt(x, y) {
-    if (root.open) {
-      root.open = false;
+    if (root.shown) {
+      root.shown = false;
       return;
     }
     const vertical = root.barLeft || root.barRight;
     root.crossPos = vertical ? Math.max(8, Math.min(y, root.host.height - root.cardHeight - 8)) : Math.max(8, Math.min(x, root.host.width - root.cardWidth - 8));
-    root.open = true;
+    root.shown = true;
   }
 
   // The axis of travel away from the bar collapses to 0 on close; the
   // cross axis (along the bar's own length) stays fixed at its full size
   // the whole time.
-  readonly property real _animWidth: (root.barLeft || root.barRight) ? (root.open ? root.cardWidth : 0) : root.cardWidth
-  readonly property real _animHeight: (root.barTop || root.barBottom) ? (root.open ? root.cardHeight : 0) : root.cardHeight
+  readonly property real _animWidth: (root.barLeft || root.barRight) ? (root.shown ? root.cardWidth : 0) : root.cardWidth
+  readonly property real _animHeight: (root.barTop || root.barBottom) ? (root.shown ? root.cardHeight : 0) : root.cardHeight
 
   width: _animWidth
   height: _animHeight

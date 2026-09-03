@@ -121,20 +121,6 @@ PanelWindow {
   WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
   exclusionMode: ExclusionMode.Ignore
 
-  IpcHandler {
-    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
-    target: "power"
-    function toggle() {
-      root.toggle();
-    }
-    function open() {
-      root.visible = true;
-    }
-    function close() {
-      root.visible = false;
-    }
-  }
-
   Shortcut {
     sequence: "Escape"
     enabled: root.visible

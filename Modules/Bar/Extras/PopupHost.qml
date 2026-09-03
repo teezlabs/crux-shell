@@ -27,11 +27,11 @@ PanelWindow {
   // drives the input mask, and a binding that reads each card through an
   // array indirection is exactly the shape QML's dependency tracker has
   // been unreliable about here (see the crux skill's Grid/itemAt gotcha).
-  readonly property bool anyOpen: soundCard.open || batteryCard.open || bluetoothCard.open || wifiCard.open || hueCard.open || microphoneCard.open || brightnessCard.open || clipboardCard.open || claudeUsageCard.open || notificationHistoryCard.open || systemStatsCard.open
+  readonly property bool anyOpen: soundCard.shown || batteryCard.shown || bluetoothCard.shown || wifiCard.shown || hueCard.shown || microphoneCard.shown || brightnessCard.shown || clipboardCard.shown || claudeUsageCard.shown || notificationHistoryCard.shown || systemStatsCard.shown
 
   function closeAll(): void {
     for (const card of root.cards)
-      card.open = false;
+      card.close();
   }
 
   // Lets a bar widget on this screen reach a card directly instead of
@@ -129,7 +129,7 @@ PanelWindow {
     BluetoothPanelContent {
       id: bluetoothContent
       anchors.fill: parent
-      panelActive: bluetoothCard.open
+      panelActive: bluetoothCard.shown
     }
   }
 
@@ -144,7 +144,7 @@ PanelWindow {
     WifiPanelContent {
       id: wifiContent
       anchors.fill: parent
-      panelActive: wifiCard.open
+      panelActive: wifiCard.shown
     }
   }
 
@@ -201,8 +201,8 @@ PanelWindow {
     ClipboardPopupContent {
       id: clipboardContent
       anchors.fill: parent
-      active: clipboardCard.open
-      onRequestClose: clipboardCard.open = false
+      active: clipboardCard.shown
+      onRequestClose: clipboardCard.shown = false
     }
   }
 
@@ -217,7 +217,7 @@ PanelWindow {
     ClaudeUsagePopupContent {
       id: claudeUsageContent
       anchors.fill: parent
-      active: claudeUsageCard.open
+      active: claudeUsageCard.shown
     }
   }
 
@@ -232,7 +232,7 @@ PanelWindow {
     NotificationHistoryPopupContent {
       id: notificationHistoryContent
       anchors.fill: parent
-      active: notificationHistoryCard.open
+      active: notificationHistoryCard.shown
     }
   }
 
@@ -247,8 +247,8 @@ PanelWindow {
     SystemStatsPopupContent {
       id: systemStatsContent
       anchors.fill: parent
-      active: systemStatsCard.open
-      onRequestClose: systemStatsCard.open = false
+      active: systemStatsCard.shown
+      onRequestClose: systemStatsCard.shown = false
     }
   }
 

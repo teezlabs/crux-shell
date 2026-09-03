@@ -16,6 +16,13 @@ PanelWindow {
   property var targetScreen: null
   screen: targetScreen
 
+  // Direct in-process handle for callers on this screen (see Commons/Popups.qml).
+  PopupRegistration {
+    name: "mediaPlayer"
+    surface: root
+    screen: root.targetScreen
+  }
+
   readonly property var players: Mpris.players ? Mpris.players.values : []
   readonly property var activePlayer: {
     var preferred = Settings.isLoaded ? Settings.data.audio.preferredMediaPlayer : "";
@@ -58,6 +65,13 @@ PanelWindow {
   function toggle() {
     visible = !visible;
   }
+  function open() {
+    if (!visible)
+      toggle();
+  }
+  function close() {
+    visible = false;
+  }
 
 
   visible: false
@@ -74,20 +88,6 @@ PanelWindow {
   WlrLayershell.namespace: "crux-media-player"
   WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
   exclusionMode: ExclusionMode.Ignore
-
-  IpcHandler {
-    enabled: root.targetScreen && Hyprland.focusedMonitor && root.targetScreen.name === Hyprland.focusedMonitor.name
-    target: "mediaPlayer"
-    function toggle() {
-      root.toggle();
-    }
-    function open() {
-      root.visible = true;
-    }
-    function close() {
-      root.visible = false;
-    }
-  }
 
   Shortcut {
     sequence: "Escape"
