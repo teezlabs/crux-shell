@@ -1,11 +1,11 @@
 import QtQuick
 import Quickshell
-import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Inhibits idle/sleep via its own systemd-inhibit subprocess (no shared idle-inhibitor singleton yet).
-// If multiple KeepAwake widgets are added, each manages its own inhibitor independently.
+// Toggles the shared idle inhibitor. State lives in
+// Commons/IdleInhibitorService.qml, so this and the Control Center's IDLE
+// tile always agree.
 Item {
   id: root
 
@@ -13,43 +13,17 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
 
-  property bool active: false
+  readonly property bool active: IdleInhibitorService.active
 
   implicitWidth: btn.implicitWidth
   implicitHeight: btn.implicitHeight
   width: implicitWidth
   height: implicitHeight
 
-  Process {
-    id: inhibitorProcess
-    running: false
-    command: ["systemd-inhibit", "--what=idle:sleep", "--why=Manually activated by user", "--mode=block", "sleep", "infinity"]
-    onExited: function (exitCode, exitStatus) {
-      if (root.active) {
-        root.active = false;
-      }
-    }
-  }
-
-  function toggle() {
-    if (root.active) {
-      inhibitorProcess.running = false;
-      root.active = false;
-    } else {
-      inhibitorProcess.running = true;
-      root.active = true;
-    }
-  }
-
-  Component.onDestruction: {
-    if (inhibitorProcess.running)
-      inhibitorProcess.running = false;
-  }
-
   BarIconButton {
     id: btn
     attention: root.active
-    onTapped: root.toggle()
+    onTapped: IdleInhibitorService.toggle()
 
     // Open eye (awake, active) / closed eye (asleep, inactive) glyph.
     Canvas {

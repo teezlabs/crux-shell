@@ -113,9 +113,11 @@ PanelWindow {
   }
 
   // ---- Idle inhibit ----
+  // Needs a window to attach to, so it lives here rather than in the
+  // service; the service still owns the state.
   IdleInhibitor {
     window: root
-    enabled: Settings.data.general.keepAwake
+    enabled: IdleInhibitorService.active
   }
 
   // ---- User@host + uptime ----
@@ -929,9 +931,9 @@ PanelWindow {
         }
         CcActionButton {
           Layout.fillWidth: true
-          label: Settings.data.general.keepAwake ? "IDLE ON" : "IDLE OFF"
-          active: Settings.data.general.keepAwake
-          onTapped: Settings.data.general.keepAwake = !Settings.data.general.keepAwake
+          label: IdleInhibitorService.active ? "IDLE ON" : "IDLE OFF"
+          active: IdleInhibitorService.active
+          onTapped: IdleInhibitorService.toggle()
         }
         CcActionButton {
           Layout.fillWidth: true

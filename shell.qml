@@ -155,6 +155,27 @@ ShellRoot {
   // Screen-agnostic popup IPC targets, once for the whole shell.
   PopupAliases {}
 
+  // Keep-awake from a keybind; same state the bar widget and the Control
+  // Center tile show.
+  IpcHandler {
+    target: "keepAwake"
+    function status(): string {
+      return IdleInhibitorService.active ? "on" : "off";
+    }
+    function toggle(): string {
+      IdleInhibitorService.toggle();
+      return IdleInhibitorService.active ? "on" : "off";
+    }
+    function on(): string {
+      IdleInhibitorService.setActive(true);
+      return "on";
+    }
+    function off(): string {
+      IdleInhibitorService.setActive(false);
+      return "off";
+    }
+  }
+
   // Power profile from a keybind, without going through the bar icon.
   IpcHandler {
     target: "powerProfile"

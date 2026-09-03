@@ -53,6 +53,10 @@ Singleton {
   function _onIdle(stage) {
     if (!_isValidStage(stage) || !_isStageEnabled(stage))
       return;
+    // Keep-awake should hold off crux's own stages too, not just the
+    // compositor's idle notification.
+    if (IdleInhibitorService.active)
+      return;
     root.pendingStage = stage;
     graceTimer.restart();
   }
