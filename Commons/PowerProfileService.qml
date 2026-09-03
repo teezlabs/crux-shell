@@ -57,10 +57,34 @@ Singleton {
     return PowerProfile.Balanced;
   }
 
+  // Writing the profile is a polkit-gated DBus property write, and a
+  // refusal surfaces only as a warning in the log — the property silently
+  // keeps its old value. Verify the write actually took and say so if it
+  // didn't, rather than leaving a bar icon that just doesn't respond.
+  //
+  // The usual cause is crux running outside the seated login session (a
+  // terminal that puts itself in its own systemd scope, for instance):
+  // power-profiles-daemon's switch-profile is allow_active, and polkit
+  // resolves the session from the caller's cgroup.
+  property int pendingProfile: -1
+
   function setProfile(p): void {
     if (!root.available)
       return;
+    root.pendingProfile = p;
     PowerProfiles.profile = p;
+    denialCheck.restart();
+  }
+
+  readonly property Timer denialCheck: Timer {
+    interval: 400
+    onTriggered: {
+      if (root.pendingProfile < 0)
+        return;
+      if (PowerProfiles.profile !== root.pendingProfile)
+        Toast.show("Not allowed to switch power profile");
+      root.pendingProfile = -1;
+    }
   }
 
   function cycle(): void {
