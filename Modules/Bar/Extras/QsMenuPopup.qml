@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
 import qs.Commons
+import qs.Widgets
 
 // Custom-rendered replacement for QsMenuAnchor's native platform QMenu, restyled as ordinary chamfered rows.
 // One level of real submenu support: hasChildren opens another instance of this component to the right, recursing if needed.
@@ -138,12 +139,11 @@ PanelWindow {
             source: root.resolveIcon(row.modelData.icon)
           }
 
-          Text {
+          NText {
             Layout.fillWidth: true
             text: row.modelData.text
             color: row.modelData.enabled ? Color.surfaceText : Color.disabledText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
             elide: Text.ElideRight
           }
 

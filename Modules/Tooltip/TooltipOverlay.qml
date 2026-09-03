@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // One per screen (shell.qml's Variants loop). Full-screen, transparent,
 // click-through (mask: Region {}), renders whatever TooltipService says.
@@ -104,13 +105,12 @@ PanelWindow {
       strokeWidth: Tokens.borderModule
     }
 
-    Text {
+    NText {
       id: label
       anchors.centerIn: parent
       text: TooltipService.text
       color: Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
       horizontalAlignment: Text.AlignHCenter
       wrapMode: Text.WordWrap
       width: bubble.textWidth

@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // One hook entry: label + command preview + EDIT/SET button (opens HookEditPopup).
 RowLayout {
@@ -20,30 +21,27 @@ RowLayout {
     Layout.fillWidth: true
     spacing: 2
 
-    Text {
+    NText {
       text: root.label
       color: root.value ? Color.surfaceText : Color.surfaceTextMuted
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
       font.weight: Font.DemiBold
     }
 
-    Text {
+    NText {
+      tracking: true
       text: root.description
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
-      font.letterSpacing: Tokens.captionSize * Tokens.captionTracking
+      size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
     }
 
-    Text {
+    NText {
       visible: root.value !== ""
       text: root.value
       color: Color.primary
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
       elide: Text.ElideMiddle
       Layout.fillWidth: true
     }
@@ -63,13 +61,12 @@ RowLayout {
       strokeWidth: Tokens.borderModule
     }
 
-    Text {
+    NText {
+      tracking: true
       anchors.centerIn: parent
       text: root.value ? "EDIT" : "SET"
       color: Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
     }
 
     HoverHandler {

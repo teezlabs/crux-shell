@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 Flickable {
   id: root
@@ -28,11 +29,10 @@ Flickable {
         value: Settings.data.systemMonitor.refreshInterval
         onMoved: value => Settings.data.systemMonitor.refreshInterval = Math.round(value)
       }
-      Text {
+      NText {
         text: (Settings.data.systemMonitor.refreshInterval / 1000).toFixed(1) + "s"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -46,12 +46,11 @@ Flickable {
       Layout.fillWidth: true
       spacing: 4
 
-      Text {
+      NText {
+        tracking: true
         text: "CPU"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
-        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        size: NText.Size.LabelXs
       }
       SettingRow {
         label: "Warning"
@@ -63,11 +62,10 @@ Flickable {
           value: Settings.data.systemMonitor.cpuWarningThreshold
           onMoved: value => Settings.data.systemMonitor.cpuWarningThreshold = Math.round(value)
         }
-        Text {
+        NText {
           text: Settings.data.systemMonitor.cpuWarningThreshold + "%"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
       SettingRow {
@@ -80,11 +78,10 @@ Flickable {
           value: Settings.data.systemMonitor.cpuCriticalThreshold
           onMoved: value => Settings.data.systemMonitor.cpuCriticalThreshold = Math.round(value)
         }
-        Text {
+        NText {
           text: Settings.data.systemMonitor.cpuCriticalThreshold + "%"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
     }
@@ -94,12 +91,11 @@ Flickable {
       Layout.topMargin: 10
       spacing: 4
 
-      Text {
+      NText {
+        tracking: true
         text: "RAM"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
-        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        size: NText.Size.LabelXs
       }
       SettingRow {
         label: "Warning"
@@ -111,11 +107,10 @@ Flickable {
           value: Settings.data.systemMonitor.memWarningThreshold
           onMoved: value => Settings.data.systemMonitor.memWarningThreshold = Math.round(value)
         }
-        Text {
+        NText {
           text: Settings.data.systemMonitor.memWarningThreshold + "%"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
       SettingRow {
@@ -128,11 +123,10 @@ Flickable {
           value: Settings.data.systemMonitor.memCriticalThreshold
           onMoved: value => Settings.data.systemMonitor.memCriticalThreshold = Math.round(value)
         }
-        Text {
+        NText {
           text: Settings.data.systemMonitor.memCriticalThreshold + "%"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
     }
@@ -142,12 +136,11 @@ Flickable {
       Layout.topMargin: 10
       spacing: 4
 
-      Text {
+      NText {
+        tracking: true
         text: "DISK"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
-        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        size: NText.Size.LabelXs
       }
       SettingRow {
         label: "Warning"
@@ -159,11 +152,10 @@ Flickable {
           value: Settings.data.systemMonitor.diskWarningThreshold
           onMoved: value => Settings.data.systemMonitor.diskWarningThreshold = Math.round(value)
         }
-        Text {
+        NText {
           text: Settings.data.systemMonitor.diskWarningThreshold + "%"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
       SettingRow {
@@ -176,11 +168,10 @@ Flickable {
           value: Settings.data.systemMonitor.diskCriticalThreshold
           onMoved: value => Settings.data.systemMonitor.diskCriticalThreshold = Math.round(value)
         }
-        Text {
+        NText {
           text: Settings.data.systemMonitor.diskCriticalThreshold + "%"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
     }
@@ -190,12 +181,11 @@ Flickable {
       Layout.topMargin: 10
       spacing: 4
 
-      Text {
+      NText {
+        tracking: true
         text: "TEMP"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
-        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        size: NText.Size.LabelXs
       }
       SettingRow {
         label: "Warning"
@@ -207,11 +197,10 @@ Flickable {
           value: Settings.data.systemMonitor.tempWarningThreshold
           onMoved: value => Settings.data.systemMonitor.tempWarningThreshold = Math.round(value)
         }
-        Text {
+        NText {
           text: Settings.data.systemMonitor.tempWarningThreshold + "%"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
       SettingRow {
@@ -224,11 +213,10 @@ Flickable {
           value: Settings.data.systemMonitor.tempCriticalThreshold
           onMoved: value => Settings.data.systemMonitor.tempCriticalThreshold = Math.round(value)
         }
-        Text {
+        NText {
           text: Settings.data.systemMonitor.tempCriticalThreshold + "%"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
     }

@@ -21,7 +21,7 @@ Item {
     id: btn
     onTapped: {
       TooltipService.hideImmediately();
-      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "wallpaperBrowser_" + (root.screen ? root.screen.name : "0"), "toggle"]);
+      Popups.toggle("wallpaperBrowser", root.screen);
     }
 
     HoverHandler {

@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Services.Mpris
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // v2 spec §6.1 Media module: 4-bar equaliser (2px wide, heights 5/11/7/9,
 // primary) + truncated "Title — Artist", max width 210. Click opens the
@@ -75,12 +76,10 @@ Item {
         }
       }
 
-      Text {
+      NText {
+        tracking: true
         text: root.displayText
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySize
-        font.letterSpacing: Tokens.bodySize * Tokens.bodyTracking
         elide: Text.ElideRight
         width: Math.min(implicitWidth, root.contentVertical && !root.vertical ? 70 : 210)
       }

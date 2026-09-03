@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 Flickable {
   id: root
@@ -28,11 +29,10 @@ Flickable {
         value: Settings.data.brightness.step
         onMoved: value => Settings.data.brightness.step = Math.round(value)
       }
-      Text {
+      NText {
         text: Settings.data.brightness.step + "%"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -44,11 +44,10 @@ Flickable {
       }
     }
 
-    Text {
+    NText {
       text: "Keeps brightnessctl from ever setting the backlight all the way to 0% — a scroll-down that overshoots can't leave the screen unrecoverably black."
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
     }

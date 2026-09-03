@@ -6,6 +6,7 @@ import Quickshell.Bluetooth
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Not a full network-manager UI — just autoconnect priority and Bluetooth
 // discoverability, the two things the Wifi/Bluetooth popups don't expose.
@@ -134,11 +135,10 @@ Flickable {
               font.pixelSize: Tokens.bodySmSize
             }
 
-            Text {
+            NText {
               text: netRow.modelData.name
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
               elide: Text.ElideRight
               Layout.preferredWidth: 160
             }
@@ -147,12 +147,11 @@ Flickable {
               checked: netRow.modelData.autoconnect
               onToggled: checked => root.setAutoconnect(netRow.modelData.name, checked)
             }
-            Text {
+            NText {
+              tracking: true
               text: "AUTO"
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
 
             NSlider {
@@ -163,11 +162,10 @@ Flickable {
               value: netRow.modelData.priority
               onMoved: value => root.setPriority(netRow.modelData.name, Math.round(value))
             }
-            Text {
+            NText {
               text: (netRow.modelData.priority > 0 ? "+" : "") + netRow.modelData.priority
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
               Layout.preferredWidth: 26
             }
 
@@ -198,12 +196,11 @@ Flickable {
         }
       }
 
-      Text {
+      NText {
         visible: root.savedNetworks.length === 0
         text: "No saved Wi-Fi networks (nmcli connection show)."
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }
@@ -222,11 +219,10 @@ Flickable {
             root.btAdapter.discoverable = checked;
         }
       }
-      Text {
+      NText {
         text: root.btAdapter ? "Other devices can see this machine while on" : "No adapter"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
 
@@ -236,11 +232,10 @@ Flickable {
         checked: Settings.data.bluetooth.hideUnnamedDevices
         onToggled: checked => Settings.data.bluetooth.hideUnnamedDevices = checked
       }
-      Text {
+      NText {
         text: "Off shows devices still using a raw address/UUID as their name (useful mid-pairing)"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
       }

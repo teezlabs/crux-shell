@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Local-folder plugin discovery status — no marketplace, no install flow:
 // a plugin is a directory you drop under Plugins.pluginsDir yourself (see
@@ -27,11 +28,10 @@ Flickable {
       Layout.fillWidth: true
       spacing: 10
 
-      Text {
+      NText {
         text: Plugins.pluginsDir
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
         elide: Text.ElideMiddle
         Layout.fillWidth: true
       }
@@ -50,13 +50,12 @@ Flickable {
           strokeWidth: Tokens.borderModule
         }
 
-        Text {
+        NText {
           id: rescanLabel
           anchors.centerIn: parent
           text: "Rescan"
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
         HoverHandler {
           id: rescanHover
@@ -109,20 +108,18 @@ Flickable {
               font.pixelSize: Tokens.bodySize
             }
 
-            Text {
+            NText {
               text: row.entry.label || row.modelData
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
               Layout.preferredWidth: 140
               elide: Text.ElideRight
             }
 
-            Text {
+            NText {
               text: row.entry.error ? row.entry.error : row.entry.dir
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.captionSize
+              size: NText.Size.Caption
               elide: Text.ElideMiddle
               Layout.fillWidth: true
             }
@@ -130,20 +127,18 @@ Flickable {
         }
       }
 
-      Text {
+      NText {
         visible: Object.keys(Plugins.entries).length === 0
         text: "No plugins found."
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
 
-      Text {
+      NText {
         visible: Plugins.lastScanError !== ""
         text: Plugins.lastScanError
         color: Color.error
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
       }

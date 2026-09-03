@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Arbitrary user-defined idle commands, each with its own timeout and an
 // optional resume command — noctalia's CustomSubTab.qml equivalent. Backed
@@ -83,12 +84,11 @@ Flickable {
       Layout.fillWidth: true
       spacing: 10
 
-      Text {
+      NText {
         visible: root.entries.length === 0
         text: "No custom commands yet."
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
 
       Repeater {
@@ -132,12 +132,11 @@ Flickable {
                 onEditingFinished: root._update(entryRow.index, "name", text)
               }
 
-              Text {
+              NText {
+                tracking: true
                 text: "REMOVE"
                 color: Color.error
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.labelXsSize
-                font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+                size: NText.Size.LabelXs
 
                 HoverHandler {
                   cursorShape: Qt.PointingHandCursor
@@ -152,11 +151,10 @@ Flickable {
               Layout.fillWidth: true
               spacing: 10
 
-              Text {
+              NText {
                 text: "Timeout"
                 color: Color.labelText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.captionSize
+                size: NText.Size.Caption
               }
 
               NSlider {
@@ -168,11 +166,10 @@ Flickable {
                 onMoved: value => root._update(entryRow.index, "timeout", value)
               }
 
-              Text {
+              NText {
                 text: (entryRow.modelData.timeout || 60) + "s"
                 color: Color.labelText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.captionSize
+                size: NText.Size.Caption
               }
             }
 
@@ -180,11 +177,10 @@ Flickable {
               Layout.fillWidth: true
               spacing: 8
 
-              Text {
+              NText {
                 text: "On idle"
                 color: Color.labelText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.captionSize
+                size: NText.Size.Caption
                 Layout.preferredWidth: 60
               }
 
@@ -222,11 +218,10 @@ Flickable {
               Layout.fillWidth: true
               spacing: 8
 
-              Text {
+              NText {
                 text: "On resume"
                 color: Color.labelText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.captionSize
+                size: NText.Size.Caption
                 Layout.preferredWidth: 60
               }
 
@@ -277,14 +272,13 @@ Flickable {
           strokeWidth: Tokens.borderModule
         }
 
-        Text {
+        NText {
+          tracking: true
           id: addLabel
           anchors.centerIn: parent
           text: "+ ADD COMMAND"
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
 
         HoverHandler {

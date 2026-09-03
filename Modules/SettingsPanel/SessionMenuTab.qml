@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Settings for the power-button's existing PowerMenuWindow.qml popup — no
 // new UI surface, just exposing what was previously hardcoded: which
@@ -51,11 +52,10 @@ Flickable {
               checked: Settings.data.sessionMenu.enabledActions.indexOf(modelData) !== -1
               onToggled: root.toggleInList("enabledActions", modelData)
             }
-            Text {
+            NText {
               text: "shown"
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.captionSize
+              size: NText.Size.Caption
             }
           }
 
@@ -65,11 +65,10 @@ Flickable {
               checked: Settings.data.sessionMenu.confirmActions.indexOf(modelData) !== -1
               onToggled: root.toggleInList("confirmActions", modelData)
             }
-            Text {
+            NText {
               text: "confirm"
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.captionSize
+              size: NText.Size.Caption
             }
           }
         }
@@ -91,11 +90,10 @@ Flickable {
         value: Settings.data.sessionMenu.confirmWindowMs
         onMoved: value => Settings.data.sessionMenu.confirmWindowMs = Math.round(value)
       }
-      Text {
+      NText {
         text: (Settings.data.sessionMenu.confirmWindowMs / 1000).toFixed(2) + "s"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }

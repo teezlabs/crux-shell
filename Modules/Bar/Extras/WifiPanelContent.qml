@@ -7,6 +7,7 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 import "NetworkModel.js" as Model
+import qs.Widgets
 
 // Wi-Fi network list/connect UI, shared between the wifi popup (PopupHost.qml) and Control Center's inline expand. No window chrome of its own.
 ColumnLayout {
@@ -295,13 +296,12 @@ ColumnLayout {
   RowLayout {
     Layout.fillWidth: true
 
-    Text {
+    NText {
+      tracking: true
       text: "WI-FI"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
+      size: NText.Size.LabelXs
       font.weight: Font.DemiBold
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
       Layout.fillWidth: true
     }
 
@@ -319,85 +319,73 @@ ColumnLayout {
     columnSpacing: 14
     rowSpacing: 4
 
-    Text {
+    NText {
+      tracking: true
       text: "PING"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
     }
-    Text {
+    NText {
       text: Model.formatPingLatency(root.internetPingLatency, root.internetPingSamples.length > 0)
       color: root.internetPingPacketLoss > 0 ? Color.error : Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
     }
-    Text {
+    NText {
+      tracking: true
       text: "LOSS"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
     }
-    Text {
+    NText {
       text: Model.formatPacketLoss(root.internetPingPacketLoss, root.internetPingSamples.length > 0)
       color: root.internetPingPacketLoss > 0 ? Color.error : Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
     }
 
-    Text {
+    NText {
+      tracking: true
       text: "DOWN"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
     }
-    Text {
+    NText {
       text: root.hasTransferStats ? Model.formatRate(root.downloadRate) : "--"
       color: Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
     }
-    Text {
+    NText {
+      tracking: true
       text: "UP"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
     }
-    Text {
+    NText {
       text: root.hasTransferStats ? Model.formatRate(root.uploadRate) : "--"
       color: Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
     }
 
-    Text {
+    NText {
+      tracking: true
       text: "IP"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
     }
-    Text {
+    NText {
       text: root.info.ip || "--"
       color: Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
     }
-    Text {
+    NText {
+      tracking: true
       text: "GATEWAY"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
     }
-    Text {
+    NText {
       text: root.info.gateway || "--"
       color: Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
     }
   }
 
@@ -406,12 +394,11 @@ ColumnLayout {
     Layout.fillWidth: true
     spacing: 4
 
-    Text {
+    NText {
+      tracking: true
       text: "DNS PROVIDER"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
     }
 
     RowLayout {
@@ -438,13 +425,12 @@ ColumnLayout {
             strokeWidth: Tokens.borderModule
           }
 
-          Text {
+          NText {
+            tracking: true
             anchors.centerIn: parent
             text: dnsPill.modelData.toUpperCase()
             color: dnsPill.selected ? Color.primaryContainerText : Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
 
           HoverHandler {
@@ -490,27 +476,23 @@ ColumnLayout {
             anchors.leftMargin: 4
             anchors.rightMargin: 4
 
-            Text {
+            NText {
               text: rowItem.modelData.connected ? "●" : (rowItem.modelData.known ? "○" : "·")
               color: rowItem.modelData.connected ? Color.primary : Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
             }
 
-            Text {
+            NText {
               text: rowItem.modelData.ssid
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySize
               elide: Text.ElideRight
               Layout.fillWidth: true
             }
 
-            Text {
+            NText {
               text: rowItem.modelData.signal + "%"
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.captionSize
+              size: NText.Size.Caption
             }
 
             // Forget a saved network; only shown for known, non-connected networks (avoids a confusing disconnect+forget).
@@ -531,13 +513,12 @@ ColumnLayout {
               }
             }
 
-            Text {
+            NText {
+              tracking: true
               visible: root.actionKind !== "" && root.actionSsid === rowItem.modelData.ssid
               text: (root.actionKind === "connect" ? "CONNECTING" : (root.actionKind === "disconnect" ? "DISCONNECTING" : "FORGETTING")) + "…"
               color: Color.primary
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
           }
 
@@ -587,12 +568,11 @@ ColumnLayout {
             }
           }
 
-          Text {
+          NText {
+            tracking: true
             text: "CONNECT"
             color: Color.primary
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
             MouseArea {
               anchors.fill: parent
               anchors.margins: -4

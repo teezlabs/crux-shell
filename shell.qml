@@ -22,6 +22,7 @@ import qs.Modules.Tooltip
 // crux skill's SKILL.md.
 import qs.Modules.SettingsPanel
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 ShellRoot {
   PolkitAgent {}
@@ -223,7 +224,7 @@ ShellRoot {
         opacity: root.barShown ? 1 : 0
         Behavior on opacity {
           NumberAnimation {
-            duration: Style.animationNormal
+            duration: Tokens.durationBarFade
           }
         }
 

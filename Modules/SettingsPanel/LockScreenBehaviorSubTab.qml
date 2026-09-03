@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 Flickable {
   id: root
@@ -28,11 +29,10 @@ Flickable {
         value: Settings.data.lockScreen.gracePeriodSec
         onMoved: value => Settings.data.lockScreen.gracePeriodSec = value
       }
-      Text {
+      NText {
         text: Settings.data.lockScreen.gracePeriodSec === 0 ? "off" : (Settings.data.lockScreen.gracePeriodSec + "s")
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }
@@ -51,11 +51,10 @@ Flickable {
         value: Settings.data.lockScreen.maxFailedAttempts
         onMoved: value => Settings.data.lockScreen.maxFailedAttempts = value
       }
-      Text {
+      NText {
         text: Settings.data.lockScreen.maxFailedAttempts === 0 ? "unlimited" : Settings.data.lockScreen.maxFailedAttempts
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -70,11 +69,10 @@ Flickable {
         value: Settings.data.lockScreen.lockoutDurationSec
         onMoved: value => Settings.data.lockScreen.lockoutDurationSec = value
       }
-      Text {
+      NText {
         text: Settings.data.lockScreen.lockoutDurationSec + "s"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }

@@ -11,6 +11,7 @@ import Quickshell.Services.Mpris
 import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Control Center. Only rows with real backing are wired up; unimplemented ones (night light, recording, color-picker) show disabled, not omitted.
 PanelWindow {
@@ -18,6 +19,13 @@ PanelWindow {
 
   property var targetScreen: null
   screen: targetScreen
+
+  // Direct in-process handle for callers on this screen (see Commons/Popups.qml).
+  PopupRegistration {
+    name: "controlCenter"
+    surface: root
+    screen: root.targetScreen
+  }
 
   readonly property string _barPos: Settings.isLoaded ? Settings.getBarPositionForScreen(root.targetScreen ? root.targetScreen.name : "") : "top"
   readonly property bool _barLeft: root._barPos === "left"
@@ -327,6 +335,22 @@ PanelWindow {
   function toggle() {
     visible = !visible;
   }
+  function open() {
+    visible = true;
+  }
+  function close() {
+    visible = false;
+  }
+  // Carries the triggering icon's own position (see triggerPos) so the
+  // popup can line up with it instead of a generic corner.
+  function openAt(x, y) {
+    if (visible) {
+      visible = false;
+      return;
+    }
+    triggerPos = Qt.point(x, y);
+    visible = true;
+  }
 
   visible: false
   color: "transparent"
@@ -350,20 +374,13 @@ PanelWindow {
       root.toggle();
     }
     function open() {
-      root.visible = true;
+      root.open();
     }
-    // Carries the triggering icon's own position (see triggerPos) so the
-    // popup can line up with it instead of a generic corner.
     function openAt(x: real, y: real) {
-      if (root.visible) {
-        root.visible = false;
-        return;
-      }
-      root.triggerPos = Qt.point(x, y);
-      root.visible = true;
+      root.openAt(x, y);
     }
     function close() {
-      root.visible = false;
+      root.close();
     }
   }
 
@@ -483,18 +500,16 @@ PanelWindow {
 
         ColumnLayout {
           spacing: 0
-          Text {
+          NText {
             text: root.whoHost
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodyLgSize
+            size: NText.Size.BodyLg
             font.weight: Font.DemiBold
           }
-          Text {
+          NText {
             text: "Uptime: " + root.uptimeText
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.captionSize
+            size: NText.Size.Caption
           }
         }
 
@@ -507,7 +522,7 @@ PanelWindow {
           implicitHeight: 32
           onTapped: {
             root.visible = false;
-            Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "settings_" + (root.targetScreen ? root.targetScreen.name : "0"), "open"]);
+            Popups.open("settings", root.targetScreen);
           }
           IconImage {
             anchors.centerIn: parent
@@ -522,7 +537,7 @@ PanelWindow {
           implicitHeight: 32
           onTapped: {
             root.visible = false;
-            Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "power", "open"]);
+            Popups.open("power", root.screen);
           }
           IconImage {
             anchors.centerIn: parent
@@ -642,11 +657,10 @@ PanelWindow {
         ColumnLayout {
           Layout.fillWidth: true
           spacing: 4
-          Text {
+          NText {
             text: root.sink ? (root.sink.description || root.sink.name || "Output") : "No output"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.captionSize
+            size: NText.Size.Caption
             elide: Text.ElideRight
             Layout.fillWidth: true
           }
@@ -671,11 +685,10 @@ PanelWindow {
         ColumnLayout {
           Layout.fillWidth: true
           spacing: 4
-          Text {
+          NText {
             text: root.source ? (root.source.description || root.source.name || "Input") : "No input"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.captionSize
+            size: NText.Size.Caption
             elide: Text.ElideRight
             Layout.fillWidth: true
           }
@@ -706,18 +719,16 @@ PanelWindow {
       RowLayout {
         Layout.fillWidth: true
         visible: !root.hasBacklight
-        Text {
+        NText {
           text: "Brightness"
           color: Color.disabledText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           Layout.fillWidth: true
         }
-        Text {
+        NText {
           text: "n/a"
           color: Color.disabledText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.captionSize
+          size: NText.Size.Caption
         }
       }
 
@@ -738,26 +749,22 @@ PanelWindow {
           }
           ColumnLayout {
             spacing: 0
-            Text {
+            NText {
               text: Weather.cityName
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySize
               font.weight: Font.DemiBold
             }
             RowLayout {
               spacing: 6
-              Text {
+              NText {
                 text: Math.round(Weather.currentTempF) + Weather.unitSuffix
                 color: Color.surfaceText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.bodySmSize
+                size: NText.Size.BodySm
               }
-              Text {
+              NText {
                 text: "(" + Weather.gmtOffsetLabel + ")"
                 color: Color.labelText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.captionSize
+                size: NText.Size.Caption
               }
             }
           }
@@ -775,11 +782,11 @@ PanelWindow {
               required property var modelData
               Layout.fillWidth: true
               spacing: 2
-              Text {
+              NText {
+                tracking: true
                 Layout.alignment: Qt.AlignHCenter
                 text: modelData.dayName.toUpperCase()
                 color: Color.labelText
-                font.family: Tokens.fontFamily
                 font.pixelSize: Tokens.labelXsSize - 1
                 font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
               }
@@ -789,11 +796,10 @@ PanelWindow {
                 Layout.preferredHeight: 22
                 category: Weather.iconCategory(modelData.weatherCode)
               }
-              Text {
+              NText {
                 Layout.alignment: Qt.AlignHCenter
                 text: modelData.tempMaxF + "°/" + modelData.tempMinF + "°"
                 color: Color.surfaceTextMuted
-                font.family: Tokens.fontFamily
                 font.pixelSize: Tokens.labelXsSize - 1
               }
             }
@@ -811,19 +817,17 @@ PanelWindow {
           visible: !!root.activePlayer
           spacing: 6
 
-          Text {
+          NText {
             text: root.activePlayer ? root.activePlayer.identity : ""
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.captionSize
+            size: NText.Size.Caption
             elide: Text.ElideRight
             Layout.fillWidth: true
           }
-          Text {
+          NText {
             text: root.activePlayer ? root.activePlayer.trackTitle : ""
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
             font.weight: Font.DemiBold
             elide: Text.ElideRight
             Layout.fillWidth: true
@@ -867,12 +871,11 @@ PanelWindow {
           }
         }
 
-        Text {
+        NText {
           visible: !root.activePlayer
           text: "No media playing"
           color: Color.disabledText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           Layout.fillWidth: true
         }
 
@@ -939,7 +942,7 @@ PanelWindow {
           icon: "preferences-desktop-wallpaper"
           onTapped: {
             root.visible = false;
-            Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "settings_" + (root.targetScreen ? root.targetScreen.name : "0"), "openTab", "wallpaper"]);
+            Popups.openTab("settings", root.targetScreen, "wallpaper");
           }
         }
         CcActionButton {
@@ -954,7 +957,7 @@ PanelWindow {
           icon: "preferences-system-symbolic"
           onTapped: {
             root.visible = false;
-            Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "settings_" + (root.targetScreen ? root.targetScreen.name : "0"), "open"]);
+            Popups.open("settings", root.targetScreen);
           }
         }
       }

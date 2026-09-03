@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Commons
+import qs.Widgets
 
 // "LABEL value" pair — §3: "Status is text, not glyphs." e.g. "NET WLAN",
 // "VOL 62", "BAT 87". Label in label-xs grey (uppercase), value in caption
@@ -12,22 +13,19 @@ Row {
   property color valueColor: Color.surfaceText
   spacing: 5
 
-  Text {
+  NText {
+    tracking: true
     text: root.label.toUpperCase()
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.labelXsSize
-    font.weight: Tokens.labelXsWeight
-    font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+    size: NText.Size.LabelXs
     anchors.verticalCenter: parent.verticalCenter
   }
 
-  Text {
+  NText {
+    tracking: true
     text: root.value
     color: root.valueColor
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.captionSize
-    font.letterSpacing: Tokens.captionSize * Tokens.captionTracking
+    size: NText.Size.Caption
     anchors.verticalCenter: parent.verticalCenter
   }
 }

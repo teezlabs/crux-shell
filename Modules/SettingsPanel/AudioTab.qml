@@ -5,6 +5,7 @@ import Quickshell.Services.Mpris
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 Flickable {
   id: root
@@ -60,19 +61,17 @@ Flickable {
         value: Settings.data.audio.step
         onMoved: value => Settings.data.audio.step = value
       }
-      Text {
+      NText {
         text: Math.round(Settings.data.audio.step * 100) + "%"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
-    Text {
+    NText {
       text: "Per scroll notch on the bar's Status module, and per hardware volume key press."
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
     }
@@ -83,11 +82,10 @@ Flickable {
         checked: Settings.data.audio.volumeOverdrive
         onToggled: checked => Settings.data.audio.volumeOverdrive = checked
       }
-      Text {
+      NText {
         text: "Lets scroll/hardware keys push volume up to 150% — the Sound popup's own slider still caps at 100%."
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
       }
@@ -124,21 +122,19 @@ Flickable {
               font.pixelSize: Tokens.bodySize
             }
 
-            Text {
+            NText {
               text: sinkRow.modelData.description || sinkRow.modelData.name || ""
               color: sinkRow.isDefault ? Color.primaryContainerText : Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
               elide: Text.ElideRight
               Layout.fillWidth: true
             }
 
-            Text {
+            NText {
               visible: sinkRow.modelData.audio
               text: sinkRow.modelData.audio ? Math.round(sinkRow.modelData.audio.volume * 100) + "%" : ""
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
             }
           }
 
@@ -153,12 +149,11 @@ Flickable {
         }
       }
 
-      Text {
+      NText {
         visible: root.allSinks.length === 0
         text: "No output devices found."
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }
@@ -193,21 +188,19 @@ Flickable {
               font.pixelSize: Tokens.bodySize
             }
 
-            Text {
+            NText {
               text: sourceRow.modelData.description || sourceRow.modelData.name || ""
               color: sourceRow.isDefault ? Color.primaryContainerText : Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
               elide: Text.ElideRight
               Layout.fillWidth: true
             }
 
-            Text {
+            NText {
               visible: sourceRow.modelData.audio
               text: sourceRow.modelData.audio ? Math.round(sourceRow.modelData.audio.volume * 100) + "%" : ""
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
             }
           }
 
@@ -222,12 +215,11 @@ Flickable {
         }
       }
 
-      Text {
+      NText {
         visible: root.allSources.length === 0
         text: "No input devices found."
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }
@@ -277,14 +269,13 @@ Flickable {
             strokeWidth: Tokens.borderModule
           }
 
-          Text {
+          NText {
+            tracking: true
             id: playerLabel
             anchors.centerIn: parent
             text: playerPill.modelData.label
             color: playerPill.selected ? Color.primaryContainerText : Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
 
           HoverHandler {
@@ -297,12 +288,11 @@ Flickable {
       }
     }
 
-    Text {
+    NText {
       visible: root.mprisPlayers.length === 0
       text: "No MPRIS players currently detected — open one to pick it here."
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
     }

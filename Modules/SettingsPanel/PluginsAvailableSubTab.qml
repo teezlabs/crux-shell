@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Plugins fetched from every enabled source's registry.json (see
 // Commons/Plugins.qml) -- install copies just that plugin's own
@@ -26,11 +27,10 @@ Flickable {
         Layout.fillWidth: true
         spacing: 10
 
-        Text {
+        NText {
           text: Plugins.fetching ? "Refreshing…" : (Settings.data.plugins.sources.length === 0 ? "No sources configured." : Plugins.availablePlugins.length + " plugin(s) found")
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           Layout.fillWidth: true
         }
 
@@ -48,13 +48,12 @@ Flickable {
             strokeWidth: Tokens.borderModule
           }
 
-          Text {
+          NText {
             id: refreshLabel
             anchors.centerIn: parent
             text: "Refresh"
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
           }
           HoverHandler {
             id: refreshHover
@@ -67,12 +66,11 @@ Flickable {
       }
     }
 
-    Text {
+    NText {
       visible: Plugins.lastInstallError !== ""
       text: Plugins.lastInstallError
       color: Color.error
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
     }
@@ -110,18 +108,16 @@ Flickable {
             ColumnLayout {
               Layout.fillWidth: true
               spacing: 1
-              Text {
+              NText {
                 text: row.modelData.label || row.modelData.id
                 color: Color.surfaceText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.bodySmSize
+                size: NText.Size.BodySm
                 elide: Text.ElideRight
               }
-              Text {
+              NText {
                 text: (row.modelData.description || "") + "  ·  " + (row.modelData.source ? row.modelData.source.name : "")
                 color: Color.labelText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.captionSize
+                size: NText.Size.Caption
                 elide: Text.ElideRight
                 Layout.fillWidth: true
               }
@@ -141,14 +137,13 @@ Flickable {
                 strokeColor: Color.primary
                 strokeWidth: Tokens.borderModule
               }
-              Text {
+              NText {
+                tracking: true
                 id: installLabel
                 anchors.centerIn: parent
                 text: row.busy ? "INSTALLING…" : "INSTALL"
                 color: Color.primary
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.labelXsSize
-                font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+                size: NText.Size.LabelXs
               }
               HoverHandler {
                 id: installHover
@@ -161,24 +156,22 @@ Flickable {
               }
             }
 
-            Text {
+            NText {
+              tracking: true
               visible: row.modelData.installed
               text: "INSTALLED"
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
           }
         }
       }
 
-      Text {
+      NText {
         visible: !Plugins.fetching && Plugins.availablePlugins.length === 0 && Settings.data.plugins.sources.length > 0
         text: "No plugins found from configured sources yet — try Refresh."
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
 
       Repeater {

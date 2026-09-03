@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Read-only reference view of the live keybinds.lua — not parsed/editable,
 // the Lua mixes too many call shapes to reliably summarize. Edit the file directly.
@@ -13,12 +14,11 @@ ColumnLayout {
 
   readonly property string _path: (Quickshell.env ? Quickshell.env("HOME") : "") + "/.config/hypr/keybinds.lua"
 
-  Text {
+  NText {
+    tracking: true
     text: "~/.config/hypr/keybinds.lua (read-only — edit the file directly, then `hyprctl reload`)"
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.captionSize
-    font.letterSpacing: Tokens.captionSize * Tokens.captionTracking
+    size: NText.Size.Caption
     wrapMode: Text.WordWrap
     Layout.fillWidth: true
   }
@@ -49,13 +49,13 @@ ColumnLayout {
       contentHeight: text.implicitHeight
       clip: true
 
-      Text {
+      NText {
+        mono: true
         id: text
         width: parent.width
         text: file.text()
         color: Color.surfaceText
-        font.family: Tokens.monoFontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
         wrapMode: Text.NoWrap
       }
     }

@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Notifications
 import qs.Commons
+import qs.Widgets
 
 // Notification history popup content: persistent log of past
 // notifications, distinct from NotificationsWindow.qml's live toast
@@ -50,23 +51,21 @@ ColumnLayout {
   RowLayout {
     Layout.fillWidth: true
 
-    Text {
+    NText {
+      tracking: true
       text: "NOTIFICATIONS"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
+      size: NText.Size.LabelXs
       font.weight: Font.DemiBold
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
       Layout.fillWidth: true
     }
 
-    Text {
+    NText {
+      tracking: true
       visible: root.history.length > 0
       text: "CLEAR ALL"
       color: Color.error
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
 
       HoverHandler {
         cursorShape: Qt.PointingHandCursor
@@ -77,12 +76,11 @@ ColumnLayout {
     }
   }
 
-  Text {
+  NText {
     visible: root.history.length === 0
     text: "No notifications yet"
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.bodySmSize
+    size: NText.Size.BodySm
   }
 
   ListView {
@@ -130,41 +128,37 @@ ColumnLayout {
           Layout.fillWidth: true
           spacing: 6
 
-          Text {
+          NText {
+            tracking: true
             text: (rowItem.modelData.appName || "").toUpperCase()
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
             Layout.fillWidth: true
             elide: Text.ElideRight
           }
 
-          Text {
+          NText {
             text: root.relativeTime(rowItem.modelData.timestamp)
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
+            size: NText.Size.LabelXs
           }
         }
 
-        Text {
+        NText {
           Layout.fillWidth: true
           text: rowItem.modelData.summary || ""
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           font.weight: Font.DemiBold
           elide: Text.ElideRight
         }
 
-        Text {
+        NText {
           Layout.fillWidth: true
           visible: (rowItem.modelData.body || "") !== ""
           text: rowItem.modelData.body || ""
           color: Color.surfaceTextMuted
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           wrapMode: Text.WordWrap
           maximumLineCount: 2
           elide: Text.ElideRight

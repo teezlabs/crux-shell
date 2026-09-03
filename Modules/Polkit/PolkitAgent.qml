@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Polkit
 import qs.Commons
+import qs.Widgets
 
 // Polkit authentication agent. This machine has none running (referenced
 // "hyprpolkitagent" systemd unit doesn't exist — pkexec fails silently
@@ -119,9 +120,9 @@ Item {
       anchors.centerIn: parent
       width: 320
       height: column.implicitHeight + 24
-      radius: Style.radiusXXS
-      color: Color.mSurface
-      border.color: root.failed ? Color.mError : Color.mOutline
+      radius: Tokens.radiusXXS
+      color: Color.surface
+      border.color: root.failed ? Color.error : Color.outline
       border.width: 1
 
       Item {
@@ -140,29 +141,26 @@ Item {
           anchors.margins: 12
           spacing: 8
 
-          Text {
+          NText {
             text: "Authentication required"
-            color: Color.mOnSurface
-            font.family: Settings.data.ui.fontFamily
+            color: Color.surfaceText
             font.pixelSize: 13
             font.bold: true
             Layout.fillWidth: true
           }
 
-          Text {
+          NText {
             text: root.message
-            color: Color.mOnSurfaceVariant
-            font.family: Settings.data.ui.fontFamily
+            color: Color.surfaceTextMuted
             font.pixelSize: 11
             wrapMode: Text.WordWrap
             Layout.fillWidth: true
           }
 
-          Text {
+          NText {
             visible: root.failed
             text: "Authentication failed — try again"
-            color: Color.mError
-            font.family: Settings.data.ui.fontFamily
+            color: Color.error
             font.pixelSize: 11
             Layout.fillWidth: true
           }
@@ -177,7 +175,7 @@ Item {
               anchors.margins: 6
               verticalAlignment: TextInput.AlignVCenter
               echoMode: TextInput.Password
-              color: Color.mOnSurface
+              color: Color.surfaceText
               font.family: Settings.data.ui.fontFamily
               font.pixelSize: 13
               enabled: root.dialogVisible && !root.submitted
@@ -187,8 +185,8 @@ Item {
                 z: -1
                 anchors.fill: parent
                 anchors.margins: -6
-                color: Color.mSurfaceVariant
-                radius: Style.radiusXXS
+                color: Color.surfaceContainer
+                radius: Tokens.radiusXXS
               }
             }
           }
@@ -201,10 +199,9 @@ Item {
               Layout.fillWidth: true
             }
 
-            Text {
+            NText {
               text: "Cancel"
-              color: Color.mOnSurfaceVariant
-              font.family: Settings.data.ui.fontFamily
+              color: Color.surfaceTextMuted
               font.pixelSize: 12
               MouseArea {
                 anchors.fill: parent
@@ -213,10 +210,9 @@ Item {
               }
             }
 
-            Text {
+            NText {
               text: root.submitted ? "Checking…" : "OK"
-              color: Color.mPrimary
-              font.family: Settings.data.ui.fontFamily
+              color: Color.primary
               font.pixelSize: 12
               MouseArea {
                 anchors.fill: parent

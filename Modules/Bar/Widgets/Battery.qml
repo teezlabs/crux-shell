@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Services.UPower
 import qs.Modules.Bar.Extras
 import qs.Commons
+import qs.Widgets
 
 // Battery %/charging state via UPower.displayDevice. Auto-hides if !isPresent. Click opens the battery popup via PopupHost's IPC target.
 Item {
@@ -90,21 +91,20 @@ Item {
 
       Column {
         width: 24
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: root.percent + "%"
           color: root.statusColor
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "BAT"
           color: Color.labelText
-          font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
@@ -126,7 +126,7 @@ Item {
     onTapped: {
       TooltipService.hideImmediately();
       var pos = root.mapToItem(null, 0, 0);
-      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "battery_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
+      Popups.openAt("battery", root.screen, pos.x, pos.y);
     }
   }
 

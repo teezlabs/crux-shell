@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 Flickable {
   id: root
@@ -54,21 +55,19 @@ Flickable {
             }
           }
 
-          Text {
+          NText {
             text: modelData.name
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
           }
         }
       }
 
-      Text {
+      NText {
         visible: Quickshell.screens.length === 0
         text: "No monitors detected."
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }

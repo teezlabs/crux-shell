@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Caps/Num/Scroll lock indicator. capsLock/numLock come from `hyprctl devices -j`; scroll lock has no
 // source on this hardware (not in Hyprland's JSON, no sysfs LED either) so it always shows "unknown", not a bug.
@@ -89,27 +90,24 @@ Item {
       visible: !root.vertical
       spacing: 6
 
-      Text {
+      NText {
         visible: root.showCaps && (!root.hideWhenOff || root.capsLockOn)
         text: "C"
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelSize
+        size: NText.Size.Label
         font.weight: Font.DemiBold
         color: root.capsLockOn ? Color.primary : Color.alpha(Color.surfaceTextMuted, 0.35)
       }
-      Text {
+      NText {
         visible: root.showNum && (!root.hideWhenOff || root.numLockOn)
         text: "N"
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelSize
+        size: NText.Size.Label
         font.weight: Font.DemiBold
         color: root.numLockOn ? Color.primary : Color.alpha(Color.surfaceTextMuted, 0.35)
       }
-      Text {
+      NText {
         visible: root.showScroll && !root.hideWhenOff
         text: "S"
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelSize
+        size: NText.Size.Label
         font.weight: Font.DemiBold
         color: Color.alpha(Color.surfaceTextMuted, 0.2)
       }
@@ -119,33 +117,30 @@ Item {
       visible: root.vertical
       spacing: 2
 
-      Text {
+      NText {
         visible: root.showCaps && (!root.hideWhenOff || root.capsLockOn)
         width: 24
         horizontalAlignment: Text.AlignHCenter
         text: "C"
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
+        size: NText.Size.LabelXs
         font.weight: Font.DemiBold
         color: root.capsLockOn ? Color.primary : Color.alpha(Color.surfaceTextMuted, 0.35)
       }
-      Text {
+      NText {
         visible: root.showNum && (!root.hideWhenOff || root.numLockOn)
         width: 24
         horizontalAlignment: Text.AlignHCenter
         text: "N"
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
+        size: NText.Size.LabelXs
         font.weight: Font.DemiBold
         color: root.numLockOn ? Color.primary : Color.alpha(Color.surfaceTextMuted, 0.35)
       }
-      Text {
+      NText {
         visible: root.showScroll && !root.hideWhenOff
         width: 24
         horizontalAlignment: Text.AlignHCenter
         text: "S"
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
+        size: NText.Size.LabelXs
         font.weight: Font.DemiBold
         color: Color.alpha(Color.surfaceTextMuted, 0.2)
       }

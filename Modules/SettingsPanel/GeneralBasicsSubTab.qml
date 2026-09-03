@@ -4,6 +4,7 @@ import Quickshell
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 Flickable {
   id: root
@@ -56,12 +57,11 @@ Flickable {
         }
       }
 
-      Text {
+      NText {
         readonly property bool installed: Qt.fontFamilies().indexOf(fontInput.text) !== -1
         text: installed ? "✓ installed" : "not installed — falls back"
         color: installed ? Color.primary : Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
 
@@ -97,11 +97,10 @@ Flickable {
         }
       }
 
-      Text {
+      NText {
         text: "Used by the keybinds viewer and hook command fields"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
 
@@ -137,11 +136,10 @@ Flickable {
         }
       }
 
-      Text {
+      NText {
         text: "Empty = the Arch logo in Control Center's header"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
 
@@ -157,11 +155,10 @@ Flickable {
         onMoved: value => Settings.data.ui.fontScale = value
       }
 
-      Text {
+      NText {
         text: Math.round(Settings.data.ui.fontScale * 100) + "%"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }
@@ -202,11 +199,10 @@ Flickable {
         }
       }
 
-      Text {
+      NText {
         text: "Qt date/time format, e.g. HH:mm or h:mm AP"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
 
@@ -242,11 +238,10 @@ Flickable {
         }
       }
 
-      Text {
+      NText {
         text: "Shown uppercased, e.g. WED 25 AUG"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
   }
@@ -261,11 +256,10 @@ Flickable {
         checked: Settings.data.general.reverseScroll
         onToggled: checked => Settings.data.general.reverseScroll = checked
       }
-      Text {
+      NText {
         text: "Natural scroll direction (input:natural_scroll)"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
   }
@@ -279,30 +273,26 @@ Flickable {
       rowSpacing: 8
       columnSpacing: 16
 
-      Text {
+      NText {
         text: "Config"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
-      Text {
+      NText {
         text: Quickshell.shellDir
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
 
-      Text {
+      NText {
         text: "Settings"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
-      Text {
+      NText {
         text: Settings.settingsFile
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }
@@ -328,13 +318,12 @@ Flickable {
           strokeWidth: Tokens.borderModule
         }
 
-        Text {
+        NText {
           id: restartLabel
           anchors.centerIn: parent
           text: "Restart crux"
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
 
         HoverHandler {

@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 Flickable {
   id: root
@@ -29,11 +30,10 @@ Flickable {
         value: Settings.data.notifications.historyLimit
         onMoved: value => Settings.data.notifications.historyLimit = value
       }
-      Text {
+      NText {
         text: Settings.data.notifications.historyLimit + " entries"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }
@@ -49,13 +49,12 @@ Flickable {
         Layout.fillWidth: true
       }
 
-      Text {
+      NText {
+        tracking: true
         visible: Notifs.history.length > 0
         text: "CLEAR ALL"
         color: Color.error
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
-        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        size: NText.Size.LabelXs
 
         HoverHandler {
           cursorShape: Qt.PointingHandCursor
@@ -70,12 +69,11 @@ Flickable {
       Layout.fillWidth: true
       spacing: 4
 
-      Text {
+      NText {
         visible: Notifs.history.length === 0
         text: "No notifications yet"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
 
       Repeater {
@@ -94,21 +92,19 @@ Flickable {
             anchors.rightMargin: 8
             spacing: 8
 
-            Text {
+            NText {
+              tracking: true
               text: (rowItem.modelData.appName || "").toUpperCase()
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
               Layout.preferredWidth: 110
               elide: Text.ElideRight
             }
 
-            Text {
+            NText {
               text: rowItem.modelData.summary || ""
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
               elide: Text.ElideRight
               Layout.fillWidth: true
             }
@@ -133,12 +129,11 @@ Flickable {
         }
       }
 
-      Text {
+      NText {
         visible: Notifs.history.length > 20
         text: "+ " + (Notifs.history.length - 20) + " more — open the bar's notification history icon to see all"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
   }

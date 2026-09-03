@@ -1,6 +1,7 @@
 import QtQuick
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Date · divider · time on a horizontal bar; stacked date/time on a vertical bar (doesn't fit one line at ~32px wide).
 Item {
@@ -46,12 +47,11 @@ Item {
       visible: !root.vertical
       spacing: 8
 
-      Text {
+      NText {
+        tracking: true
         text: Qt.formatDateTime(root.now, Settings.data.ui.dateFormat).toUpperCase()
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
-        font.letterSpacing: Tokens.captionSize * Tokens.captionTracking
+        size: NText.Size.Caption
       }
 
       Rectangle {
@@ -60,13 +60,11 @@ Item {
         color: Color.surfaceContainerHigh
       }
 
-      Text {
+      NText {
+        tracking: true
         text: Qt.formatDateTime(root.now, Settings.data.ui.clockFormat)
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySize
         font.weight: Font.DemiBold
-        font.letterSpacing: Tokens.bodySize * Tokens.bodyTracking
       }
     }
 
@@ -74,31 +72,26 @@ Item {
       visible: root.vertical
       spacing: 1
 
-      Text {
+      NText {
         width: 30
         horizontalAlignment: Text.AlignHCenter
         text: Qt.formatDateTime(root.now, "HH")
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySize
         font.weight: Font.DemiBold
       }
-      Text {
+      NText {
         width: 30
         horizontalAlignment: Text.AlignHCenter
         text: Qt.formatDateTime(root.now, "mm")
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySize
         font.weight: Font.DemiBold
       }
-      Text {
+      NText {
         width: 30
         horizontalAlignment: Text.AlignHCenter
         text: Qt.formatDateTime(root.now, "dd/MM")
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
+        size: NText.Size.LabelXs
       }
     }
   }

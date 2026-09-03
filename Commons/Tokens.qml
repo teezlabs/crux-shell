@@ -13,38 +13,42 @@ QtObject {
   readonly property string fontFamily: Settings.isLoaded ? Settings.data.ui.fontFamily : "JetBrains Mono"
   readonly property string monoFontFamily: Settings.isLoaded ? Settings.data.ui.monoFontFamily : "JetBrains Mono"
 
+  // Every *Size token below is multiplied by this, so the General ->
+  // Basics font-scale slider moves the whole type scale at once.
+  readonly property real fontScale: Settings.isLoaded ? Settings.data.ui.fontScale : 1.0
+
   // §2 Type — weight is the lighter of any spec pair; call sites bump to
   // the heavier variant themselves (e.g. font.weight: Font.DemiBold) for
   // selected/active states.
-  readonly property int displaySize: 132
+  readonly property int displaySize: Math.round(132 * fontScale)
   readonly property int displayWeight: Font.ExtraLight // 200
   readonly property real displayTracking: -0.04
 
-  readonly property int titleSize: 30
+  readonly property int titleSize: Math.round(30 * fontScale)
   readonly property int titleWeight: Font.Light // 300
   readonly property real titleTracking: -0.02
 
-  readonly property int bodyLgSize: 15
+  readonly property int bodyLgSize: Math.round(15 * fontScale)
   readonly property int bodyLgWeight: Font.Normal // 400 (600 at call sites that need it)
   readonly property real bodyLgTracking: 0
 
-  readonly property int bodySize: 13
+  readonly property int bodySize: Math.round(13 * fontScale)
   readonly property int bodyWeight: Font.Normal // 400 (500 at call sites that need it)
   readonly property real bodyTracking: 0
 
-  readonly property int bodySmSize: 12
+  readonly property int bodySmSize: Math.round(12 * fontScale)
   readonly property int bodySmWeight: Font.Normal // 400 (600 at call sites that need it)
   readonly property real bodySmTracking: 0
 
-  readonly property int captionSize: 11
+  readonly property int captionSize: Math.round(11 * fontScale)
   readonly property int captionWeight: Font.Normal // 400 (500 at call sites that need it)
   readonly property real captionTracking: 0.08 // spec range 0.05-0.12em
 
-  readonly property int labelSize: 10
+  readonly property int labelSize: Math.round(10 * fontScale)
   readonly property int labelWeight: Font.Medium // 500 (600 at call sites that need it)
   readonly property real labelTracking: 0.16 // spec range 0.14-0.18em
 
-  readonly property int labelXsSize: 9
+  readonly property int labelXsSize: Math.round(9 * fontScale)
   readonly property int labelXsWeight: Font.DemiBold // 600
   readonly property real labelXsTracking: 0.17 // spec range 0.16-0.18em
 
@@ -52,6 +56,10 @@ QtObject {
   readonly property int chamferPanel: 14 // launcher, control center, sidebar, media, calendar
   readonly property int chamferModule: 9 // bar module, OSD, power tile (spec range 8-10)
   readonly property int chamferIcon: 5 // icon / small tile
+
+  // Corner radius for the few surfaces that are rounded rather than
+  // chamfered (the polkit dialog) — crux's own language is chamfers.
+  readonly property int radiusXXS: 2
 
   // §4 Borders
   readonly property int borderPanel: 1
@@ -95,6 +103,7 @@ QtObject {
   readonly property int easingMeterFill: Easing.Linear
   readonly property int durationWorkspaceMarker: 110
   readonly property int easingWorkspaceMarker: Easing.OutCubic
+  readonly property int durationBarFade: 200
   readonly property int durationSidebarSlide: 200
   readonly property int easingSidebarSlide: Easing.OutCubic
 

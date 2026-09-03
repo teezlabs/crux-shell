@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.Commons
+import qs.Widgets
 
 // Label + control row with a fixed-width label column so every row's
 // control starts at the same x.
@@ -13,11 +14,10 @@ RowLayout {
   spacing: 10
   Layout.fillWidth: true
 
-  Text {
+  NText {
     text: root.label
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.bodySmSize
+    size: NText.Size.BodySm
     Layout.preferredWidth: 130
   }
 

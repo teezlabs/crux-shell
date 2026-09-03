@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Pipewire
 import qs.Commons
+import qs.Widgets
 
 // Volume popup content: default-output volume slider + mute toggle, and a
 // list of available output devices to switch the default sink. Hosted
@@ -35,13 +36,12 @@ ColumnLayout {
       root.sink.audio.muted = false;
   }
 
-  Text {
+  NText {
+    tracking: true
     text: "SOUND"
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.labelXsSize
+    size: NText.Size.LabelXs
     font.weight: Font.DemiBold
-    font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
   }
 
   RowLayout {
@@ -62,12 +62,11 @@ ColumnLayout {
         strokeWidth: Tokens.borderModule
       }
 
-      Text {
+      NText {
         anchors.centerIn: parent
         text: root.muted ? "×" : "))"
         color: root.muted ? Color.error : Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
 
       HoverHandler {
@@ -92,21 +91,19 @@ ColumnLayout {
       onMoved: pct => root.setVolume(pct)
     }
 
-    Text {
+    NText {
       text: root.muted ? "—" : Math.round(root.volume * 100) + "%"
       color: root.muted ? Color.error : Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
       Layout.preferredWidth: 34
     }
   }
 
-  Text {
+  NText {
+    tracking: true
     text: "OUTPUT"
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.labelXsSize
-    font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+    size: NText.Size.LabelXs
     Layout.topMargin: 4
   }
 
@@ -136,11 +133,10 @@ ColumnLayout {
             font.pixelSize: Tokens.bodySmSize
           }
 
-          Text {
+          NText {
             text: sinkRow.modelData.description || sinkRow.modelData.name || ""
             color: sinkRow.isDefault ? Color.primaryContainerText : Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
             elide: Text.ElideRight
             Layout.fillWidth: true
           }

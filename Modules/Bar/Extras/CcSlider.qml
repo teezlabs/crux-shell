@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.Commons
+import qs.Widgets
 
 // Control Center VOL/BRI slider row (§6.3): label gutter + 16-cell
 // interactive meter + value column.
@@ -14,14 +15,13 @@ RowLayout {
   spacing: 10
   Layout.preferredHeight: 28
 
-  Text {
+  NText {
+    tracking: true
     Layout.preferredWidth: 32
     text: root.label
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.labelSize
+    size: NText.Size.Label
     font.weight: Font.DemiBold
-    font.letterSpacing: Tokens.labelSize * Tokens.labelTracking
   }
 
   SegMeter {
@@ -36,12 +36,10 @@ RowLayout {
     onMoved: pct => root.moved(pct)
   }
 
-  Text {
+  NText {
     Layout.preferredWidth: 26
     horizontalAlignment: Text.AlignRight
     text: String(Math.round(root.value))
     color: Color.surfaceText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.bodySize
   }
 }

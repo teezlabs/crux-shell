@@ -7,6 +7,7 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 import "BluetoothModel.js" as Model
+import qs.Widgets
 
 // Bluetooth device list/pair UI, shared between the bluetooth popup (PopupHost.qml) and Control Center's inline expand. No window chrome of its own.
 ColumnLayout {
@@ -128,13 +129,12 @@ ColumnLayout {
   RowLayout {
     Layout.fillWidth: true
 
-    Text {
+    NText {
+      tracking: true
       text: "BLUETOOTH"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
+      size: NText.Size.LabelXs
       font.weight: Font.DemiBold
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
       Layout.fillWidth: true
     }
 
@@ -144,12 +144,11 @@ ColumnLayout {
     }
   }
 
-  Text {
+  NText {
     visible: !root.adapter || !root.adapter.enabled
     text: root.adapter ? "Bluetooth is off" : "No adapter"
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.bodySmSize
+    size: NText.Size.BodySm
   }
 
   ListView {
@@ -195,13 +194,12 @@ ColumnLayout {
       width: ListView.view.width
       height: modelData.header !== undefined ? 22 : 36
 
-      Text {
+      NText {
+        tracking: true
         visible: rowItem.modelData.header !== undefined
         text: (rowItem.modelData.header || "").toUpperCase()
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
-        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        size: NText.Size.LabelXs
         anchors.verticalCenter: parent.verticalCenter
       }
 
@@ -221,45 +219,39 @@ ColumnLayout {
         readonly property var device: rowItem.modelData.device
         readonly property string pending: device ? Model.pendingAction(root.pendingActions, device.address) : ""
 
-        Text {
+        NText {
           text: parent.device && parent.device.connected ? "●" : "○"
           color: parent.device && parent.device.connected ? Color.primary : Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
 
-        Text {
+        NText {
           text: parent.device ? Model.deviceLabel(parent.device) : ""
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySize
           elide: Text.ElideRight
           Layout.fillWidth: true
         }
 
-        Text {
+        NText {
           visible: !!(parent.device && parent.device.batteryAvailable)
           text: parent.device ? Math.round(parent.device.battery * 100) + "%" : ""
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.captionSize
+          size: NText.Size.Caption
         }
 
-        Text {
+        NText {
           visible: parent.pending !== ""
           text: parent.pending.toUpperCase() + "…"
           color: Color.primary
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.captionSize
+          size: NText.Size.Caption
         }
 
-        Text {
+        NText {
+          tracking: true
           visible: !!(parent.pending === "" && parent.device && (parent.device.paired || parent.device.bonded || parent.device.trusted))
           text: "FORGET"
           color: Color.error
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
           MouseArea {
             anchors.fill: parent
             anchors.margins: -4

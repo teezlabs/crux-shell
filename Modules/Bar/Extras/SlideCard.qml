@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Commons
+import qs.Widgets
 
 // Positions a popup's content flush against whichever edge the bar sits
 // on, and collapses it toward that edge on close instead of the window
@@ -20,6 +21,11 @@ Item {
   required property var host // PopupHost's own PanelWindow — gives host.width/height to position against (not an Item, so untyped)
   property string barPos: "top" // "top" | "bottom" | "left" | "right"
   property bool open: false
+  // Identifies this card to PopupIpc, which derives its IPC target names
+  // from it ("wifi" -> "wifi" and "wifi_<screen>").
+  property string popupName: ""
+  // Inset applied to the content layer on all four sides.
+  property real contentMargins: 14
   property real cardWidth: 300
   property real cardHeight: 200
   // Cross-axis position (along the bar's own length) — lines up with a
@@ -36,6 +42,23 @@ Item {
   readonly property real barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin
 
   default property alias content: contentLayer.data
+
+  function toggle() {
+    root.open = !root.open;
+  }
+
+  // Opens lined up with the bar icon at (x, y), clamped to stay on
+  // screen. A second call while open closes instead, so one bar-icon tap
+  // handler covers both directions.
+  function openAt(x, y) {
+    if (root.open) {
+      root.open = false;
+      return;
+    }
+    const vertical = root.barLeft || root.barRight;
+    root.crossPos = vertical ? Math.max(8, Math.min(y, root.host.height - root.cardHeight - 8)) : Math.max(8, Math.min(x, root.host.width - root.cardWidth - 8));
+    root.open = true;
+  }
 
   // The axis of travel away from the bar collapses to 0 on close; the
   // cross axis (along the bar's own length) stays fixed at its full size
@@ -103,9 +126,9 @@ Item {
 
   Item {
     id: contentLayer
-    width: root.cardWidth
-    height: root.cardHeight
-    x: root.barRight ? root.width - root.cardWidth : 0
-    y: root.barBottom ? root.height - root.cardHeight : 0
+    width: root.cardWidth - root.contentMargins * 2
+    height: root.cardHeight - root.contentMargins * 2
+    x: (root.barRight ? root.width - root.cardWidth : 0) + root.contentMargins
+    y: (root.barBottom ? root.height - root.cardHeight : 0) + root.contentMargins
   }
 }

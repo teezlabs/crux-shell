@@ -25,7 +25,7 @@ Item {
     attention: root.lit
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "hue_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
+      Popups.openAt("hue", root.screen, pos.x, pos.y);
     }
     onSecondaryTapped: {
       if (Hue.paired && root.group)

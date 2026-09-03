@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Night Light (wlsunset) settings: night/day color temperature, a real
 // geolocation-driven auto-schedule (reusing Commons/Weather.qml's own
@@ -60,11 +61,10 @@ Flickable {
         checked: Settings.data.nightLight.useLocation
         onToggled: checked => Settings.data.nightLight.useLocation = checked
       }
-      Text {
+      NText {
         text: Weather.hasLocation ? "Real sunrise/sunset for " + Weather.cityName : "Resolving location…"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
 
@@ -82,11 +82,10 @@ Flickable {
           Settings.data.nightLight.nightTemp = Math.round(Math.min(maxNight, Math.max(1000, value)));
         }
       }
-      Text {
+      NText {
         text: Settings.data.nightLight.nightTemp + "K"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -104,11 +103,10 @@ Flickable {
           Settings.data.nightLight.dayTemp = Math.round(Math.max(minDay, Math.min(6500, value)));
         }
       }
-      Text {
+      NText {
         text: Settings.data.nightLight.dayTemp + "K"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }
@@ -133,11 +131,10 @@ Flickable {
           value: root.timeToMinutes(Settings.data.nightLight.manualSunset)
           onMoved: value => Settings.data.nightLight.manualSunset = root.minutesToLabel(Math.round(value))
         }
-        Text {
+        NText {
           text: Settings.data.nightLight.manualSunset
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
 
@@ -151,11 +148,10 @@ Flickable {
           value: root.timeToMinutes(Settings.data.nightLight.manualSunrise)
           onMoved: value => Settings.data.nightLight.manualSunrise = root.minutesToLabel(Math.round(value))
         }
-        Text {
+        NText {
           text: Settings.data.nightLight.manualSunrise
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
     }

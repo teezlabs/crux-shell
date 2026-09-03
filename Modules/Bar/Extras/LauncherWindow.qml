@@ -7,6 +7,7 @@ import Quickshell.Hyprland
 import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // App launcher popup. Uses Quickshell's DesktopEntries singleton rather than scanning .desktop files by hand.
 PanelWindow {
@@ -216,11 +217,10 @@ PanelWindow {
         Layout.rightMargin: 18
         spacing: 10
 
-        Text {
+        NText {
           text: ">"
           color: Color.primary
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodyLgSize
+          size: NText.Size.BodyLg
           font.weight: Font.DemiBold
         }
 
@@ -247,13 +247,12 @@ PanelWindow {
             cursorVisible: false
             cursorDelegate: Item {}
 
-            Text {
+            NText {
               visible: searchInput.text === ""
               x: 6 // clears the caret Rectangle, which sits right at the edge when empty
               text: "search apps…"
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodyLgSize
+              size: NText.Size.BodyLg
             }
 
             Rectangle {
@@ -284,12 +283,11 @@ PanelWindow {
           }
         }
 
-        Text {
+        NText {
+          tracking: true
           text: root.execMode ? "RUN" : String(root.results.length).padStart(2, "0") + " MATCHES"
           color: root.execMode ? Color.primary : Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
       }
 
@@ -305,14 +303,12 @@ PanelWindow {
         Layout.fillHeight: true
         visible: root.execMode
 
-        Text {
+        NText {
           anchors.left: parent.left
           anchors.top: parent.top
           anchors.margins: 18
           text: root.execCommand.trim() === "" ? "Type a command to run…" : "⏎  sh -c \"" + root.execCommand + "\""
           color: root.execCommand.trim() === "" ? Color.labelText : Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySize
           wrapMode: Text.WordWrap
           width: parent.width - 36
         }
@@ -366,12 +362,11 @@ PanelWindow {
             anchors.rightMargin: 18
             spacing: 14
 
-            Text {
+            NText {
+              tracking: true
               text: String(rowItem.index + 1).padStart(2, "0")
               color: rowItem.selected ? Color.primaryContainerText : Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
 
             Item {
@@ -400,21 +395,18 @@ PanelWindow {
               }
             }
 
-            Text {
+            NText {
               text: rowItem.modelData.name || ""
               color: rowItem.selected ? Color.primaryContainerText : Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySize
               elide: Text.ElideRight
               Layout.fillWidth: true
             }
 
-            Text {
+            NText {
+              tracking: true
               text: rowItem.execPath
               color: rowItem.selected ? Color.primaryContainerText : Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.captionSize
-              font.letterSpacing: Tokens.captionSize * Tokens.captionTracking
+              size: NText.Size.Caption
               elide: Text.ElideLeft
               Layout.maximumWidth: 220
               horizontalAlignment: Text.AlignRight
@@ -441,26 +433,23 @@ PanelWindow {
           anchors.centerIn: parent
           spacing: 18
 
-          Text {
+          NText {
+            tracking: true
             text: "↑↓ MOVE"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
-          Text {
+          NText {
+            tracking: true
             text: "⏎ LAUNCH"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
-          Text {
+          NText {
+            tracking: true
             text: "ESC CLOSE"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
         }
       }

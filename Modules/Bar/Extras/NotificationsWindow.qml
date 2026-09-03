@@ -5,6 +5,7 @@ import Quickshell.Wayland
 import Quickshell.Services.Notifications
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Notifications: persistent top-right stack, appears whenever Commons/Notifs.qml has tracked notifications.
 // Auto-expiry via a real per-notification dismiss() timer (6s normal, 12s critical, never for resident), not a visual-only fade.
@@ -104,41 +105,37 @@ PanelWindow {
 
           RowLayout {
             Layout.fillWidth: true
-            Text {
+            NText {
+              tracking: true
               text: (card.modelData.appName || "").toUpperCase()
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
             Item {
               Layout.fillWidth: true
             }
-            Text {
+            NText {
               text: "NOW"
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
+              size: NText.Size.LabelXs
             }
           }
 
-          Text {
+          NText {
             Layout.fillWidth: true
             text: card.modelData.summary || ""
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
             font.weight: Font.DemiBold
             elide: Text.ElideRight
           }
 
-          Text {
+          NText {
             Layout.fillWidth: true
             visible: (card.modelData.body || "") !== ""
             text: card.modelData.body || ""
             color: Color.surfaceTextMuted
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
             wrapMode: Text.WordWrap
             maximumLineCount: 3
             elide: Text.ElideRight
@@ -193,13 +190,12 @@ PanelWindow {
                   color: actionCell.tint
                 }
 
-                Text {
+                NText {
+                  tracking: true
                   anchors.centerIn: parent
                   text: actionCell.modelData.text.toUpperCase()
                   color: actionCell.tint
-                  font.family: Tokens.fontFamily
-                  font.pixelSize: Tokens.labelXsSize
-                  font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+                  size: NText.Size.LabelXs
                 }
                 HoverHandler {
                   id: actHover
@@ -249,13 +245,12 @@ PanelWindow {
                 color: dismissCell.tint
               }
 
-              Text {
+              NText {
+                tracking: true
                 anchors.centerIn: parent
                 text: "DISMISS"
                 color: dismissCell.tint
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.labelXsSize
-                font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+                size: NText.Size.LabelXs
               }
               HoverHandler {
                 id: dismissHover
@@ -280,23 +275,21 @@ PanelWindow {
         anchors.fill: parent
         anchors.margins: 9
 
-        Text {
+        NText {
+          tracking: true
           visible: root.earlierCount > 0
           text: root.earlierCount + " EARLIER"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
         Item {
           Layout.fillWidth: true
         }
-        Text {
+        NText {
+          tracking: true
           text: "CLEAR ALL"
           color: Color.primary
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
 
           HoverHandler {
             cursorShape: Qt.PointingHandCursor

@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import qs.Commons
+import qs.Widgets
 
 // Brightness popup content — self-contained backlight detection/set,
 // duplicated from Brightness.qml's bar widget rather than shared, since
@@ -85,13 +86,12 @@ ColumnLayout {
 
   Component.onCompleted: detectProc.running = true
 
-  Text {
+  NText {
+    tracking: true
     text: "BRIGHTNESS"
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.labelXsSize
+    size: NText.Size.LabelXs
     font.weight: Font.DemiBold
-    font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
   }
 
   RowLayout {
@@ -109,21 +109,19 @@ ColumnLayout {
       onMoved: pct => root.setBrightness(pct / 100)
     }
 
-    Text {
+    NText {
       text: root.percent + "%"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
       Layout.preferredWidth: 34
     }
   }
 
-  Text {
+  NText {
     visible: !root.available
     text: "No internal backlight device detected."
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.captionSize
+    size: NText.Size.Caption
     wrapMode: Text.WordWrap
     Layout.fillWidth: true
   }

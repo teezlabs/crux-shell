@@ -4,6 +4,7 @@ import Quickshell.Wayland
 import Quickshell.Services.Pipewire
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Volume OSD: shows briefly on any default-sink volume/mute change, from
 // any source. Reacts to real Pipewire state (PwObjectTracker required —
@@ -103,14 +104,13 @@ PanelWindow {
       anchors.margins: 14
       spacing: 12
 
-      Text {
+      NText {
+        tracking: true
         width: 40
         text: root.muted ? "MUTE" : "VOL"
         color: root.muted ? Color.error : Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelSize
+        size: NText.Size.Label
         font.weight: Font.DemiBold
-        font.letterSpacing: Tokens.labelSize * Tokens.labelTracking
       }
 
       SegMeter {
@@ -122,11 +122,10 @@ PanelWindow {
         emptyColor: Color.surfaceContainerHigh
       }
 
-      Text {
+      NText {
         text: root.muted ? "—" : String(Math.round(root.volume * 100))
         color: root.muted ? Color.labelText : Color.primary
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodyLgSize
+        size: NText.Size.BodyLg
         font.weight: Font.DemiBold
       }
     }

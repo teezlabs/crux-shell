@@ -25,7 +25,7 @@ Item {
     id: btn
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "notificationHistory_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
+      Popups.openAt("notificationHistory", root.screen, pos.x, pos.y);
     }
 
     // Geometric bell glyph — body + clapper, no font/emoji dependency.

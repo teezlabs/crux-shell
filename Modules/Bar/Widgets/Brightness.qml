@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Modules.Bar.Extras
 import qs.Commons
+import qs.Widgets
 
 // Internal-backlight brightness readout + scroll-to-adjust via brightnessctl. No DDC/external-monitor support (not needed on this hardware).
 Item {
@@ -130,21 +131,20 @@ Item {
 
       Column {
         width: 24
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: root.percent + "%"
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "BRI"
           color: Color.labelText
-          font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
@@ -166,7 +166,7 @@ Item {
     onTapped: {
       TooltipService.hideImmediately();
       var pos = root.mapToItem(null, 0, 0);
-      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "brightness_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
+      Popups.openAt("brightness", root.screen, pos.x, pos.y);
     }
   }
 

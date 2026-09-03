@@ -7,6 +7,7 @@ import Quickshell.Hyprland
 import Quickshell.Services.Mpris
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Media player popover, all controls live MPRIS, gated on the player's own can*/Supported flags. No fabricated "year".
 PanelWindow {
@@ -181,15 +182,14 @@ PanelWindow {
             }
           }
 
-          Text {
+          NText {
+            tracking: true
             anchors.centerIn: parent
             visible: !root.activePlayer || root.activePlayer.trackArtUrl === ""
             text: "ALBUM\nART"
             horizontalAlignment: Text.AlignHCenter
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
         }
 
@@ -197,35 +197,30 @@ PanelWindow {
           Layout.fillWidth: true
           spacing: 3
 
-          Text {
+          NText {
+            tracking: true
             text: root.activePlayer ? root.activePlayer.identity.toUpperCase() : ""
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
-          Text {
+          NText {
             Layout.fillWidth: true
             text: root.activePlayer ? root.activePlayer.trackTitle : ""
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodyLgSize
+            size: NText.Size.BodyLg
             font.weight: Font.DemiBold
             elide: Text.ElideRight
           }
-          Text {
+          NText {
             text: root.activePlayer ? root.activePlayer.trackArtist : ""
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySize
           }
-          Text {
+          NText {
+            tracking: true
             visible: root.activePlayer && root.activePlayer.trackAlbum !== ""
             text: root.activePlayer ? root.activePlayer.trackAlbum : ""
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.captionSize
-            font.letterSpacing: Tokens.captionSize * Tokens.captionTracking
+            size: NText.Size.Caption
           }
         }
       }
@@ -247,20 +242,18 @@ PanelWindow {
       RowLayout {
         Layout.fillWidth: true
 
-        Text {
+        NText {
           text: root.fmtTime(root.position)
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.captionSize
+          size: NText.Size.Caption
         }
         Item {
           Layout.fillWidth: true
         }
-        Text {
+        NText {
           text: "-" + root.fmtTime(root.length - root.position)
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.captionSize
+          size: NText.Size.Caption
         }
       }
 

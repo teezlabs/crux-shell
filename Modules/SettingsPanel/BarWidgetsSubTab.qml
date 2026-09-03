@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Add/remove widgets per section as a list — complements the live
 // drag-and-drop reordering directly on the bar (BarSection.qml), which
@@ -44,13 +45,12 @@ RowLayout {
       Layout.fillHeight: true
       spacing: 6
 
-      Text {
+      NText {
+        tracking: true
         text: sectionColumn.section.toUpperCase()
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
+        size: NText.Size.LabelXs
         font.weight: Font.DemiBold
-        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
       }
 
       Item {
@@ -86,11 +86,10 @@ RowLayout {
               anchors.leftMargin: 4
               anchors.rightMargin: 4
 
-              Text {
+              NText {
                 text: rowItem.modelData.id || ""
                 color: Color.surfaceText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.bodySmSize
+                size: NText.Size.BodySm
                 Layout.fillWidth: true
               }
 
@@ -123,12 +122,11 @@ RowLayout {
         }
       }
 
-      Text {
+      NText {
+        tracking: true
         text: "ADD"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
-        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        size: NText.Size.LabelXs
         Layout.topMargin: 4
       }
 
@@ -155,13 +153,12 @@ RowLayout {
               strokeWidth: Tokens.borderModule
             }
 
-            Text {
+            NText {
               id: addLabel
               anchors.centerIn: parent
               text: addChip.modelData
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
+              size: NText.Size.LabelXs
             }
 
             HoverHandler {

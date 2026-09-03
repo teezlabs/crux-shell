@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Active keyboard layout, polled via `hyprctl devices -j` every 2s; click cycles via switchxkblayout.
 // Settings.data.keyboard.deviceName lets the user pin a device — `devices -j` can list many fake "keyboards" (mice, power buttons, virtual devices) so auto-picking the first isn't reliable.
@@ -112,21 +113,20 @@ Item {
 
       Column {
         width: 24
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: root.currentLayout
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "KBD"
           color: Color.labelText
-          font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }

@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Settings for the app Launcher (SUPER+A) and Clipboard history (SUPER+V)
 // popups — both already work with hardcoded behavior; this exposes what
@@ -29,11 +30,10 @@ Flickable {
         checked: Settings.data.launcher.fuzzyMatch
         onToggled: checked => Settings.data.launcher.fuzzyMatch = checked
       }
-      Text {
+      NText {
         text: "Off = plain substring search"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
 
@@ -43,11 +43,10 @@ Flickable {
         checked: Settings.data.launcher.sortByMostUsed
         onToggled: checked => Settings.data.launcher.sortByMostUsed = checked
       }
-      Text {
+      NText {
         text: "Empty-query list only — a real search still sorts by match quality"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
 
@@ -61,11 +60,10 @@ Flickable {
         value: Settings.data.launcher.resultLimit
         onMoved: value => Settings.data.launcher.resultLimit = Math.round(value)
       }
-      Text {
+      NText {
         text: Settings.data.launcher.resultLimit
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -101,11 +99,10 @@ Flickable {
         }
       }
 
-      Text {
+      NText {
         text: "Typing this first runs the rest as a shell command (sh -c) instead of searching apps. Empty disables it."
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
       }
@@ -126,19 +123,17 @@ Flickable {
         value: Settings.data.clipboard.historyLimit
         onMoved: value => Settings.data.clipboard.historyLimit = Math.round(value)
       }
-      Text {
+      NText {
         text: Settings.data.clipboard.historyLimit + " entries"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
-    Text {
+    NText {
       text: "Trims how many of cliphist's own entries are shown/kept in the popup — doesn't touch cliphist's own database or run a wipe."
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
     }

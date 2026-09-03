@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Reusable horizontal pill-tab row for a top-level settings tab that has
 // more than one logical page (e.g. Bar's "Layout"/"Widgets"). v2 style:
@@ -36,15 +37,14 @@ RowLayout {
         strokeColor: pillWrap.active ? Color.primary : Color.outline
         strokeWidth: Tokens.borderModule
 
-        Text {
+        NText {
+          tracking: true
           id: label
           anchors.centerIn: parent
           text: pillWrap.modelData.label.toUpperCase()
           color: pillWrap.active ? Color.primaryContainerText : Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
+          size: NText.Size.LabelXs
           font.weight: Font.DemiBold
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
       }
 

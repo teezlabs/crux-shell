@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Controls for Modules/Background/DesktopWidgets.qml's two desktop-layer
 // cards (weather, now-playing media): master on/off, per-card on/off, and a
@@ -60,13 +61,12 @@ Flickable {
           strokeWidth: Tokens.borderModule
         }
 
-        Text {
+        NText {
           id: resetWeatherLabel
           anchors.centerIn: parent
           text: "Reset position"
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
 
         HoverHandler {
@@ -111,13 +111,12 @@ Flickable {
           strokeWidth: Tokens.borderModule
         }
 
-        Text {
+        NText {
           id: resetMediaLabel
           anchors.centerIn: parent
           text: "Reset position"
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
 
         HoverHandler {

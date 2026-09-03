@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Control Center settings: only the rows that are real hardcoded
 // constants, not live system state (Wifi/Bluetooth/audio/brightness).
@@ -60,13 +61,12 @@ Flickable {
               strokeWidth: Tokens.borderModule
             }
 
-            Text {
+            NText {
+              tracking: true
               anchors.centerIn: parent
               text: unitTile.modelData.label
               color: unitTile.active ? Color.primaryContainerText : Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
 
             HoverHandler {
@@ -98,11 +98,10 @@ Flickable {
         onMoved: value => Settings.data.controlCenter.statsRefreshInterval = Math.round(value)
       }
 
-      Text {
+      NText {
         text: Settings.data.controlCenter.statsRefreshInterval + " ms"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }
@@ -144,11 +143,10 @@ Flickable {
       }
     }
 
-    Text {
+    NText {
       text: "Run through sh -c, so flags/arguments work (e.g. \"rishot -c\")."
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
     }

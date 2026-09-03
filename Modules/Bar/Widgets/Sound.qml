@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Services.Pipewire
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Volume control: click opens the volume popup, scroll adjusts, right-click toggles mute.
 // Styled as "LABEL value" (StatText) per spec §3's "status is text, not glyphs".
@@ -61,21 +62,20 @@ Item {
 
       Column {
         width: 24
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: root.muted ? "—" : String(Math.round(root.volume * 100))
           color: root.muted ? Color.error : Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "VOL"
           color: Color.labelText
-          font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
@@ -91,7 +91,7 @@ Item {
     acceptedButtons: Qt.LeftButton
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "sound_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
+      Popups.openAt("sound", root.screen, pos.x, pos.y);
     }
   }
   TapHandler {

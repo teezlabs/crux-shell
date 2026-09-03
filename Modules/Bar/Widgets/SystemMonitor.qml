@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // CPU%/RAM% readout (delta-based /proc/stat, MemTotal-MemAvailable). Click opens the systemStats popup hosted by PopupHost.qml.
 Item {
@@ -139,21 +140,20 @@ Item {
 
       Column {
         width: 28
-        Text {
+        NText {
+          tracking: true
           width: 28
           horizontalAlignment: Text.AlignHCenter
           text: root.cpuPercent + "%"
           color: root.cpuWarn ? Color.error : Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
-        Text {
+        NText {
+          tracking: true
           width: 28
           horizontalAlignment: Text.AlignHCenter
           text: "CPU"
           color: Color.labelText
-          font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
@@ -167,21 +167,20 @@ Item {
 
       Column {
         width: 28
-        Text {
+        NText {
+          tracking: true
           width: 28
           horizontalAlignment: Text.AlignHCenter
           text: root.memPercent + "%"
           color: root.memWarn ? Color.error : Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
-        Text {
+        NText {
+          tracking: true
           width: 28
           horizontalAlignment: Text.AlignHCenter
           text: "RAM"
           color: Color.labelText
-          font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
@@ -202,7 +201,7 @@ Item {
     onTapped: {
       TooltipService.hideImmediately();
       var pos = root.mapToItem(null, 0, 0);
-      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "systemStats_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
+      Popups.openAt("systemStats", root.screen, pos.x, pos.y);
     }
   }
   onCpuPercentChanged: if (TooltipService.anchorItem === root)

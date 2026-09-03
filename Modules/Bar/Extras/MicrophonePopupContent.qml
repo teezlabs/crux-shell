@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Pipewire
 import qs.Commons
+import qs.Widgets
 
 // Microphone popup content: default-input volume slider + mute toggle, and
 // a list of available input devices to switch the default source. Exact
@@ -37,13 +38,12 @@ ColumnLayout {
       root.source.audio.muted = false;
   }
 
-  Text {
+  NText {
+    tracking: true
     text: "MICROPHONE"
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.labelXsSize
+    size: NText.Size.LabelXs
     font.weight: Font.DemiBold
-    font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
   }
 
   RowLayout {
@@ -64,12 +64,11 @@ ColumnLayout {
         strokeWidth: Tokens.borderModule
       }
 
-      Text {
+      NText {
         anchors.centerIn: parent
         text: root.muted ? "×" : "))"
         color: root.muted ? Color.error : Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
 
       HoverHandler {
@@ -94,21 +93,19 @@ ColumnLayout {
       onMoved: pct => root.setVolume(pct)
     }
 
-    Text {
+    NText {
       text: root.muted ? "—" : Math.round(root.volume * 100) + "%"
       color: root.muted ? Color.error : Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
       Layout.preferredWidth: 34
     }
   }
 
-  Text {
+  NText {
+    tracking: true
     text: "INPUT"
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.labelXsSize
-    font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+    size: NText.Size.LabelXs
     Layout.topMargin: 4
   }
 
@@ -138,11 +135,10 @@ ColumnLayout {
             font.pixelSize: Tokens.bodySmSize
           }
 
-          Text {
+          NText {
             text: sourceRow.modelData.description || sourceRow.modelData.name || ""
             color: sourceRow.isDefault ? Color.primaryContainerText : Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
             elide: Text.ElideRight
             Layout.fillWidth: true
           }
@@ -159,12 +155,11 @@ ColumnLayout {
       }
     }
 
-    Text {
+    NText {
       visible: root.allSources.length === 0
       text: "No input devices found."
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
     }
   }
 }

@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Edits the v2 tonal-spot roles (theme.primary/.surface/...) directly —
 // editing the legacy mPrimary/mSurface roles here was silently inert.
@@ -209,11 +210,10 @@ Flickable {
               }
             }
 
-            Text {
+            NText {
               text: swatch.modelData.name
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
             }
           }
 
@@ -254,11 +254,10 @@ Flickable {
             border.width: 1
           }
 
-          Text {
+          NText {
             text: fieldRow.modelData.label
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
             Layout.preferredWidth: 110
           }
 

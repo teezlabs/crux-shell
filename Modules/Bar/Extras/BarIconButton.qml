@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Commons
+import qs.Widgets
 
 // Shared chamfered-cell chrome for single-icon bar modules; glyph content is the default property.
 Item {

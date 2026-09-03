@@ -21,7 +21,7 @@ Item {
     id: btn
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "clipboard_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
+      Popups.openAt("clipboard", root.screen, pos.x, pos.y);
     }
 
     // Geometric clipboard glyph — a small rectangle with a clip notch.

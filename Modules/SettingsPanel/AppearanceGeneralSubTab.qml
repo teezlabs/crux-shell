@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 Flickable {
   id: root
@@ -65,11 +66,10 @@ Flickable {
         value: Settings.data.theme.barOpacity
         onMoved: value => Settings.data.theme.barOpacity = value
       }
-      Text {
+      NText {
         text: Math.round(Settings.data.theme.barOpacity * 100) + "%"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }

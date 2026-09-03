@@ -4,6 +4,7 @@ import Quickshell
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Flickable, not ColumnLayout — content is taller than the settings card.
 Flickable {
@@ -44,13 +45,12 @@ Flickable {
               strokeWidth: Tokens.borderModule
             }
 
-            Text {
+            NText {
+              tracking: true
               anchors.centerIn: parent
               text: posTile.modelData.toUpperCase()
               color: posTile.active ? Color.primaryContainerText : Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
 
             HoverHandler {
@@ -72,11 +72,10 @@ Flickable {
       RowLayout {
         spacing: 10
 
-        Text {
+        NText {
           text: "Density presets:"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.captionSize
+          size: NText.Size.Caption
         }
 
         Repeater {
@@ -110,14 +109,13 @@ Flickable {
               strokeWidth: Tokens.borderModule
             }
 
-            Text {
+            NText {
+              tracking: true
               id: densityLabel
               anchors.centerIn: parent
               text: densityTile.modelData.label
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
 
             HoverHandler {
@@ -145,11 +143,10 @@ Flickable {
           value: Settings.data.bar.widgetSpacing
           onMoved: value => Settings.data.bar.widgetSpacing = Math.round(value)
         }
-        Text {
+        NText {
           text: Settings.data.bar.widgetSpacing + "px"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           Layout.preferredWidth: 34
         }
       }
@@ -164,11 +161,10 @@ Flickable {
           value: Settings.data.bar.contentPadding
           onMoved: value => Settings.data.bar.contentPadding = Math.round(value)
         }
-        Text {
+        NText {
           text: Settings.data.bar.contentPadding + "px"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           Layout.preferredWidth: 34
         }
       }
@@ -183,11 +179,10 @@ Flickable {
           value: Settings.data.bar.thickness
           onMoved: value => Settings.data.bar.thickness = Math.round(value)
         }
-        Text {
+        NText {
           text: Settings.data.bar.thickness + "px"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           Layout.preferredWidth: 34
         }
       }
@@ -198,11 +193,10 @@ Flickable {
           checked: Settings.data.bar.floating
           onToggled: checked => Settings.data.bar.floating = checked
         }
-        Text {
+        NText {
           text: "Off = a real bar flush with the screen edge, ignoring the gap below"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.captionSize
+          size: NText.Size.Caption
         }
       }
 
@@ -218,11 +212,10 @@ Flickable {
           value: Settings.data.bar.floatMargin
           onMoved: value => Settings.data.bar.floatMargin = Math.round(value)
         }
-        Text {
+        NText {
           text: Settings.data.bar.floatMargin + "px"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           Layout.preferredWidth: 34
         }
       }
@@ -249,11 +242,10 @@ Flickable {
           value: Settings.data.bar.borderWidth
           onMoved: value => Settings.data.bar.borderWidth = value
         }
-        Text {
+        NText {
           text: Settings.data.bar.borderWidth + "px"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           opacity: Settings.data.bar.showBorder ? 1 : 0.4
         }
       }
@@ -264,11 +256,10 @@ Flickable {
           checked: Settings.data.bar.autoHide
           onToggled: checked => Settings.data.bar.autoHide = checked
         }
-        Text {
+        NText {
           text: "Show only when the pointer touches the bar's edge"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.captionSize
+          size: NText.Size.Caption
         }
       }
 
@@ -289,11 +280,10 @@ Flickable {
           value: Settings.data.bar.barBackgroundOpacity
           onMoved: value => Settings.data.bar.barBackgroundOpacity = value
         }
-        Text {
+        NText {
           text: Math.round(Settings.data.bar.barBackgroundOpacity * 100) + "%"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           opacity: Settings.data.bar.showBackground ? 1 : 0.4
         }
       }
@@ -315,11 +305,10 @@ Flickable {
           value: Settings.data.bar.backgroundOpacity
           onMoved: value => Settings.data.bar.backgroundOpacity = value
         }
-        Text {
+        NText {
           text: Math.round(Settings.data.bar.backgroundOpacity * 100) + "%"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           opacity: Settings.data.bar.useSeparateOpacity ? 1 : 0.4
         }
       }
@@ -365,11 +354,10 @@ Flickable {
               }
             }
 
-            Text {
+            NText {
               text: modelData.name
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
             }
           }
         }
@@ -408,11 +396,10 @@ Flickable {
                 }
               }
 
-              Text {
+              NText {
                 text: overrideRow.screenName + " — custom position"
                 color: Color.surfaceText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.bodySmSize
+                size: NText.Size.BodySm
               }
             }
 
@@ -440,13 +427,12 @@ Flickable {
                     strokeWidth: Tokens.borderModule
                   }
 
-                  Text {
+                  NText {
+                    tracking: true
                     anchors.centerIn: parent
                     text: posBtn.modelData.toUpperCase()
                     color: posBtn.active ? Color.primaryContainerText : Color.surfaceText
-                    font.family: Tokens.fontFamily
-                    font.pixelSize: Tokens.labelXsSize
-                    font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+                    size: NText.Size.LabelXs
                   }
 
                   HoverHandler {

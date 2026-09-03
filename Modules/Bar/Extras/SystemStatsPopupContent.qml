@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
 import qs.Commons
+import qs.Widgets
 
 // Full system-telemetry panel content, fuller than the bar's CPU%/RAM%
 // readout. Metric collection ported 1:1 from ControlCenterWindow.qml,
@@ -245,24 +246,21 @@ ColumnLayout {
     Layout.fillWidth: true
     spacing: 10
 
-    Text {
+    NText {
+      tracking: true
       text: "SYSTEM STATS"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.weight: Tokens.labelXsWeight
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
     }
 
     Item {
       Layout.fillWidth: true
     }
 
-    Text {
+    NText {
       text: "Uptime " + root.uptimeText
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
     }
 
     Text {
@@ -305,17 +303,15 @@ ColumnLayout {
     ColumnLayout {
       Layout.fillWidth: true
       spacing: 2
-      Text {
+      NText {
         text: "MEM " + root.memUsedGb.toFixed(1) + " / " + root.memTotalGb.toFixed(1) + " GB"
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
-      Text {
+      NText {
         text: "LOAD " + root.loadAvg1.toFixed(2) + " • " + root.loadAvg5.toFixed(2) + " • " + root.loadAvg15.toFixed(2)
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
   }
@@ -326,12 +322,11 @@ ColumnLayout {
     spacing: 4
     visible: root.coresUsage.length > 0
 
-    Text {
+    NText {
+      tracking: true
       text: "CORES (" + root.coresUsage.length + ")"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
     }
 
     Item {
@@ -376,12 +371,11 @@ ColumnLayout {
     spacing: 8
     visible: root.disks.length > 0
 
-    Text {
+    NText {
+      tracking: true
       text: "DISK"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
     }
 
     Repeater {
@@ -394,19 +388,17 @@ ColumnLayout {
 
         RowLayout {
           Layout.fillWidth: true
-          Text {
+          NText {
             text: modelData.target
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
             elide: Text.ElideMiddle
             Layout.fillWidth: true
           }
-          Text {
+          NText {
             text: modelData.usedGb.toFixed(1) + " / " + modelData.sizeGb.toFixed(1) + " GB (" + modelData.percent + "%)"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.captionSize
+            size: NText.Size.Caption
           }
         }
 

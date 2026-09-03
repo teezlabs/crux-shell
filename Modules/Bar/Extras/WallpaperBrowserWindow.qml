@@ -8,6 +8,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Wallpaper browser: centered floating card (not the spec's fullscreen mockup). Local library only. See crux skill's notes.md.
 PanelWindow {
@@ -15,6 +16,13 @@ PanelWindow {
 
   property var targetScreen: null
   screen: targetScreen
+
+  // Direct in-process handle for callers on this screen (see Commons/Popups.qml).
+  PopupRegistration {
+    name: "wallpaperBrowser"
+    surface: root
+    screen: root.targetScreen
+  }
 
   function toggle() {
     visible = !visible;
@@ -102,12 +110,11 @@ PanelWindow {
       anchors.leftMargin: 8
       anchors.rightMargin: 6
       spacing: 4
-      Text {
+      NText {
         Layout.fillWidth: true
         text: dd.label + ": " + dd._current.label
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
         elide: Text.ElideRight
       }
       Text {
@@ -146,12 +153,11 @@ PanelWindow {
             width: ddPopup.width - 8
             height: 22
             color: modelData.key === dd.value ? Color.alpha(Color.primary, 0.2) : (optMouse.containsMouse ? Color.surfaceContainerHigh : "transparent")
-            Text {
+            NText {
               anchors.centerIn: parent
               text: optRow.modelData.label
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.captionSize
+              size: NText.Size.Caption
             }
             MouseArea {
               id: optMouse
@@ -507,22 +513,21 @@ PanelWindow {
         height: 20
         color: Color.primary
       }
-      Text {
+      NText {
+        tracking: true
         text: "WALLPAPER BROWSER"
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodyLgSize
+        size: NText.Size.BodyLg
         font.weight: Font.DemiBold
         font.letterSpacing: 1
       }
       Item {
         Layout.fillWidth: true
       }
-      Text {
+      NText {
         text: root.sourceMode === "wallhaven" ? (root.whLoading ? "SEARCHING…" : root.whResults.length + " RESULTS" + (root.whError ? " · " + root.whError : "")) : root.filteredFiles.length + " OF " + root.files.length
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
 
@@ -568,11 +573,10 @@ PanelWindow {
                 strokeColor: srcPill.selected ? Color.primary : Color.outline
                 strokeWidth: Tokens.borderModule
               }
-              Text {
+              NText {
                 anchors.centerIn: parent
                 text: srcPill.modelData.label
                 color: srcPill.selected ? Color.primaryContainerText : Color.surfaceText
-                font.family: Tokens.fontFamily
                 font.pixelSize: 8
                 font.weight: Font.DemiBold
               }
@@ -623,13 +627,12 @@ PanelWindow {
             onAccepted: if (root.sourceMode === "wallhaven")
               root.whSearch(1, false)
 
-            Text {
+            NText {
               anchors.centerIn: parent
               visible: parent.text === "" && !parent.activeFocus
               text: root.sourceMode === "wallhaven" ? "/ SEARCH WALLHAVEN ⏎" : "/ SEARCH"
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
             }
           }
         }
@@ -637,12 +640,11 @@ PanelWindow {
         ColumnLayout {
           Layout.fillWidth: true
           spacing: 4
-          Text {
+          NText {
+            tracking: true
             text: "SORT"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
           RowLayout {
             spacing: 4
@@ -689,13 +691,12 @@ PanelWindow {
                   strokeColor: sortPill.selected ? Color.primary : Color.outline
                   strokeWidth: Tokens.borderModule
                 }
-                Text {
+                NText {
                   id: sortLabel
                   anchors.centerIn: parent
                   text: sortPill.modelData.label
                   color: sortPill.selected ? Color.primaryContainerText : Color.surfaceText
-                  font.family: Tokens.fontFamily
-                  font.pixelSize: Tokens.labelXsSize
+                  size: NText.Size.LabelXs
                 }
                 HoverHandler {
                   cursorShape: Qt.PointingHandCursor
@@ -719,12 +720,11 @@ PanelWindow {
           Layout.fillWidth: true
           spacing: 4
           visible: root.sourceMode === "wallhaven"
-          Text {
+          NText {
+            tracking: true
             text: "PURITY"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
           RowLayout {
             spacing: 4
@@ -758,13 +758,12 @@ PanelWindow {
                   strokeColor: purityPill.selected ? Color.primary : Color.outline
                   strokeWidth: Tokens.borderModule
                 }
-                Text {
+                NText {
                   id: purityLabel
                   anchors.centerIn: parent
                   text: purityPill.modelData.label
                   color: purityPill.selected ? Color.primaryContainerText : Color.surfaceText
-                  font.family: Tokens.fontFamily
-                  font.pixelSize: Tokens.labelXsSize
+                  size: NText.Size.LabelXs
                 }
                 HoverHandler {
                   cursorShape: Qt.PointingHandCursor
@@ -784,12 +783,11 @@ PanelWindow {
           Layout.fillWidth: true
           spacing: 4
           visible: root.sourceMode === "wallhaven"
-          Text {
+          NText {
+            tracking: true
             text: "QUALITY / RATIO"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
           FilterDropdown {
             Layout.fillWidth: true
@@ -850,12 +848,11 @@ PanelWindow {
         ColumnLayout {
           Layout.fillWidth: true
           spacing: 4
-          Text {
+          NText {
+            tracking: true
             text: "DIRECTORY"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
           Item {
             Layout.fillWidth: true
@@ -892,11 +889,10 @@ PanelWindow {
           Layout.fillHeight: true
         }
 
-        Text {
+        NText {
           text: "← → ↑ ↓ MOVE\n⏎ APPLY + THEME\n⇧⏎ WALLPAPER ONLY\n/ SEARCH  R RANDOM\nESC CLOSE"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
+          size: NText.Size.LabelXs
           lineHeight: 1.6
         }
       }
@@ -989,12 +985,11 @@ PanelWindow {
                   anchors.fill: parent
                   color: thumb.isVideo ? Color.alpha(Color.tertiary, 0.85) : thumb.isRemote ? Color.alpha(Color.primary, 0.85) : Color.alpha(Color.surface, 0.75)
                 }
-                Text {
+                NText {
                   id: badgeLabel
                   anchors.centerIn: parent
                   text: thumb.isVideo ? "VID" : thumb.isRemote ? "WEB" : "IMG"
-                  color: (thumb.isVideo || thumb.isRemote) ? Color.mOnPrimary : Color.labelText
-                  font.family: Tokens.fontFamily
+                  color: (thumb.isVideo || thumb.isRemote) ? Color.primaryText : Color.labelText
                   font.pixelSize: 8
                   font.weight: Font.DemiBold
                 }
@@ -1026,12 +1021,11 @@ PanelWindow {
               strokeColor: Color.outline
               strokeWidth: Tokens.borderModule
             }
-            Text {
+            NText {
               anchors.centerIn: parent
               text: root.whLoading ? "LOADING…" : "LOAD MORE"
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
+              size: NText.Size.LabelXs
             }
             HoverHandler {
               id: loadMoreHover
@@ -1105,13 +1099,12 @@ PanelWindow {
             maskSpreadAtMin: 1.0
           }
 
-          Text {
+          NText {
             visible: !root.selectedFile
             anchors.centerIn: parent
             text: "NO SELECTION"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
+            size: NText.Size.LabelXs
           }
         }
 
@@ -1119,19 +1112,17 @@ PanelWindow {
           Layout.fillWidth: true
           spacing: 2
           visible: root.selectedFile !== null
-          Text {
+          NText {
             text: root.selectedFile ? root.selectedFile.name : ""
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
             elide: Text.ElideMiddle
             Layout.fillWidth: true
           }
-          Text {
+          NText {
             text: Settings.data.wallpaper.directory
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.captionSize
+            size: NText.Size.Caption
             elide: Text.ElideMiddle
             Layout.fillWidth: true
           }
@@ -1147,12 +1138,11 @@ PanelWindow {
         ColumnLayout {
           Layout.fillWidth: true
           spacing: 4
-          Text {
+          NText {
+            tracking: true
             text: "TARGET"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
           Flow {
             Layout.fillWidth: true
@@ -1172,13 +1162,12 @@ PanelWindow {
                 strokeColor: allPill.selected ? Color.primary : Color.outline
                 strokeWidth: Tokens.borderModule
               }
-              Text {
+              NText {
                 id: allLabel
                 anchors.centerIn: parent
                 text: "ALL"
                 color: allPill.selected ? Color.primaryContainerText : Color.surfaceText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.labelXsSize
+                size: NText.Size.LabelXs
               }
               HoverHandler {
                 cursorShape: Qt.PointingHandCursor
@@ -1205,13 +1194,12 @@ PanelWindow {
                   strokeColor: monPill.selected ? Color.primary : Color.outline
                   strokeWidth: Tokens.borderModule
                 }
-                Text {
+                NText {
                   id: monLabel
                   anchors.centerIn: parent
                   text: monPill.modelData.name + (monPill.modelData === Quickshell.screens[0] ? " ★" : "")
                   color: monPill.selected ? Color.primaryContainerText : Color.surfaceText
-                  font.family: Tokens.fontFamily
-                  font.pixelSize: Tokens.labelXsSize
+                  size: NText.Size.LabelXs
                 }
                 HoverHandler {
                   cursorShape: Qt.PointingHandCursor
@@ -1234,12 +1222,11 @@ PanelWindow {
         ColumnLayout {
           Layout.fillWidth: true
           spacing: 4
-          Text {
+          NText {
+            tracking: true
             text: "SCHEME"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
           Flow {
             Layout.fillWidth: true
@@ -1262,12 +1249,11 @@ PanelWindow {
                   strokeColor: schemePill.selected ? Color.primary : Color.outline
                   strokeWidth: Tokens.borderModule
                 }
-                Text {
+                NText {
                   id: schemeLabel
                   anchors.centerIn: parent
                   text: schemePill.label
                   color: schemePill.selected ? Color.primaryContainerText : Color.surfaceText
-                  font.family: Tokens.fontFamily
                   font.pixelSize: 8
                 }
                 HoverHandler {
@@ -1286,7 +1272,7 @@ PanelWindow {
               }
             }
           }
-          Text {
+          NText {
             readonly property int _enabledCount: {
               var t = Settings.data.wallpaper.templates;
               var keys = Object.keys(t);
@@ -1298,8 +1284,7 @@ PanelWindow {
             }
             text: "WRITES " + _enabledCount + " TEMPLATES"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
+            size: NText.Size.LabelXs
             Layout.topMargin: 4
           }
         }
@@ -1327,12 +1312,11 @@ PanelWindow {
               strokeColor: Color.primary
               strokeWidth: Tokens.borderModule
             }
-            Text {
+            NText {
               anchors.centerIn: parent
               text: root.downloading ? "DOWNLOADING…" : "APPLY + THEME"
-              color: applyThemeHover.hovered ? Color.mOnPrimary : Color.primaryContainerText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              color: applyThemeHover.hovered ? Color.primaryText : Color.primaryContainerText
+              size: NText.Size.BodySm
               font.weight: Font.DemiBold
             }
             HoverHandler {
@@ -1358,12 +1342,11 @@ PanelWindow {
               strokeColor: Color.outline
               strokeWidth: Tokens.borderModule
             }
-            Text {
+            NText {
               anchors.centerIn: parent
               text: root.downloading ? "DOWNLOADING…" : "WALLPAPER ONLY"
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
             }
             HoverHandler {
               id: applyOnlyHover
@@ -1388,12 +1371,11 @@ PanelWindow {
               strokeColor: Color.alpha(Color.error, parent.armed ? 1 : 0.6)
               strokeWidth: Tokens.borderModule
             }
-            Text {
+            NText {
               anchors.centerIn: parent
               text: parent.armed ? "CONFIRM DELETE?" : "DELETE"
-              color: parent.armed ? Color.mOnError : Color.error
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.captionSize
+              color: parent.armed ? Color.errorText : Color.error
+              size: NText.Size.Caption
             }
             HoverHandler {
               id: deleteHover

@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // About tab: shell/path/commit info. Git metadata read live, not hardcoded.
 Flickable {
@@ -64,67 +65,59 @@ Flickable {
       columnSpacing: 16
       rowSpacing: 8
 
-      Text {
+      NText {
         Layout.alignment: Qt.AlignTop
         text: "Commit"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
-      Text {
+      NText {
         Layout.fillWidth: true
         text: root.commitHash + " (" + root.commitDate + ")"
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
         wrapMode: Text.WrapAnywhere
       }
 
-      Text {
+      NText {
         Layout.alignment: Qt.AlignTop
         text: "Config dir"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
-      Text {
+      NText {
         Layout.fillWidth: true
         text: Quickshell.shellDir
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
         wrapMode: Text.WrapAnywhere
       }
 
-      Text {
+      NText {
         Layout.alignment: Qt.AlignTop
         text: "Settings file"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
-      Text {
+      NText {
         Layout.fillWidth: true
         text: Settings.settingsFile
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
         wrapMode: Text.WrapAnywhere
       }
 
-      Text {
+      NText {
         Layout.alignment: Qt.AlignTop
         text: "Quickshell"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
-      Text {
+      NText {
         Layout.fillWidth: true
         text: root.qsVersion
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
         wrapMode: Text.WrapAnywhere
       }
     }

@@ -6,6 +6,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Calendar popover: Monday-start month grid under the bar clock. No agenda list — no real event data source to bind to yet.
 PanelWindow {
@@ -137,11 +138,10 @@ PanelWindow {
       RowLayout {
         Layout.fillWidth: true
 
-        Text {
+        NText {
           text: Qt.formatDateTime(root.viewDate, "MMMM yyyy").toUpperCase()
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodyLgSize
+          size: NText.Size.BodyLg
           font.weight: Font.DemiBold
         }
         Item {
@@ -149,11 +149,10 @@ PanelWindow {
         }
         Row {
           spacing: 12
-          Text {
+          NText {
             text: "‹"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodyLgSize
+            size: NText.Size.BodyLg
             HoverHandler {
               cursorShape: Qt.PointingHandCursor
             }
@@ -161,11 +160,10 @@ PanelWindow {
               onTapped: root.prevMonth()
             }
           }
-          Text {
+          NText {
             text: "›"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodyLgSize
+            size: NText.Size.BodyLg
             HoverHandler {
               cursorShape: Qt.PointingHandCursor
             }
@@ -218,12 +216,10 @@ PanelWindow {
               height: 2
               color: Color.primary
             }
-            Text {
+            NText {
               anchors.centerIn: parent
               text: String(cell.modelData.day)
               color: cell.modelData.isToday ? Color.primaryContainerText : (cell.modelData.inMonth ? Color.surfaceText : Color.calendarOutOfMonth)
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySize
             }
           }
         }

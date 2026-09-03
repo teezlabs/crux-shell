@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Running-apps strip via ToplevelManager (same source as ActiveWindow.qml), filtered to the current monitor.
 Item {
@@ -107,12 +108,11 @@ Item {
             strokeWidth: Tokens.borderModule
           }
 
-          Text {
+          NText {
             anchors.centerIn: parent
             text: taskDelegate.initial
             color: taskDelegate.active ? Color.primaryContainerText : Color.surfaceTextMuted
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
+            size: NText.Size.LabelXs
             font.weight: taskDelegate.active ? Font.DemiBold : Font.Normal
           }
 

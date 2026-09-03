@@ -5,6 +5,7 @@ import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Wallpaper picker + matugen-driven theme generation, native to crux.
 Flickable {
@@ -50,11 +51,10 @@ Flickable {
           checked: Settings.data.wallpaper.autoTheme
           onToggled: checked => Settings.data.wallpaper.autoTheme = checked
         }
-        Text {
+        NText {
           text: "Regenerate colors on every pick"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.captionSize
+          size: NText.Size.Caption
         }
       }
 
@@ -63,12 +63,11 @@ Flickable {
         Layout.fillWidth: true
         spacing: 4
 
-        Text {
+        NText {
+          tracking: true
           text: "SCHEME"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
 
         Flow {
@@ -132,14 +131,13 @@ Flickable {
                 strokeWidth: Tokens.borderModule
               }
 
-              Text {
+              NText {
+                tracking: true
                 id: schemeLabel
                 anchors.centerIn: parent
                 text: schemePill.modelData.label
                 color: schemePill.selected ? Color.primaryContainerText : Color.surfaceText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.labelXsSize
-                font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+                size: NText.Size.LabelXs
               }
 
               HoverHandler {
@@ -176,13 +174,12 @@ Flickable {
             strokeWidth: Tokens.borderModule
           }
 
-          Text {
+          NText {
             id: regenLabel
             anchors.centerIn: parent
             text: Matugen.running ? "Generating…" : "Regenerate colors now"
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
           }
 
           HoverHandler {
@@ -210,13 +207,12 @@ Flickable {
             strokeWidth: Tokens.borderModule
           }
 
-          Text {
+          NText {
             id: cycleLabel
             anchors.centerIn: parent
             text: "Cycle color (" + Settings.data.wallpaper.matugenColorIndex + "/4)"
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
           }
 
           HoverHandler {
@@ -228,12 +224,11 @@ Flickable {
           }
         }
 
-        Text {
+        NText {
           visible: Matugen.lastError !== ""
           text: Matugen.lastError
           color: Color.error
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.captionSize
+          size: NText.Size.Caption
           wrapMode: Text.WordWrap
           Layout.fillWidth: true
         }
@@ -293,14 +288,13 @@ Flickable {
               strokeWidth: Tokens.borderModule
             }
 
-            Text {
+            NText {
+              tracking: true
               id: transLabel
               anchors.centerIn: parent
               text: transPill.modelData.label
               color: transPill.selected ? Color.primaryContainerText : Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
 
             HoverHandler {
@@ -329,19 +323,17 @@ Flickable {
 
         RowLayout {
           Layout.fillWidth: true
-          Text {
+          NText {
+            tracking: true
             text: "DURATION"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
             Layout.fillWidth: true
           }
-          Text {
+          NText {
             text: Settings.data.wallpaper.transitionDuration + " ms"
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
           }
         }
 
@@ -361,19 +353,17 @@ Flickable {
 
         RowLayout {
           Layout.fillWidth: true
-          Text {
+          NText {
+            tracking: true
             text: "EDGE SMOOTHNESS"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
             Layout.fillWidth: true
           }
-          Text {
+          NText {
             text: Settings.data.wallpaper.transitionEdgeSmoothness.toFixed(2)
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
           }
         }
 
@@ -398,11 +388,10 @@ Flickable {
           checked: Settings.data.wallpaper.autoCycle
           onToggled: checked => Settings.data.wallpaper.autoCycle = checked
         }
-        Text {
+        NText {
           text: "Pick a new wallpaper automatically"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.captionSize
+          size: NText.Size.Caption
         }
       }
 
@@ -414,19 +403,17 @@ Flickable {
 
         RowLayout {
           Layout.fillWidth: true
-          Text {
+          NText {
+            tracking: true
             text: "CYCLE INTERVAL"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
             Layout.fillWidth: true
           }
-          Text {
+          NText {
             text: Settings.data.wallpaper.autoCycleMinutes + " min"
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
           }
         }
 
@@ -446,12 +433,11 @@ Flickable {
         opacity: Settings.data.wallpaper.autoCycle ? 1 : 0.4
         enabled: Settings.data.wallpaper.autoCycle
 
-        Text {
+        NText {
+          tracking: true
           text: "ORDER"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
 
         Item {
@@ -487,14 +473,13 @@ Flickable {
               strokeWidth: Tokens.borderModule
             }
 
-            Text {
+            NText {
+              tracking: true
               id: orderLabel
               anchors.centerIn: parent
               text: orderPill.modelData.label
               color: orderPill.selected ? Color.primaryContainerText : Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
 
             HoverHandler {
@@ -515,12 +500,11 @@ Flickable {
       ColumnLayout {
         Layout.fillWidth: true
         spacing: 4
-        Text {
+        NText {
+          tracking: true
           text: "API KEY"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
         Item {
           Layout.fillWidth: true
@@ -548,13 +532,12 @@ Flickable {
             selectByMouse: true
             onEditingFinished: Settings.data.wallpaper.wallhavenApiKey = text
 
-            Text {
+            NText {
               anchors.verticalCenter: parent.verticalCenter
               visible: parent.text === "" && !parent.activeFocus
               text: "wallhaven.cc/settings/account"
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
             }
           }
         }
@@ -634,14 +617,13 @@ Flickable {
               strokeWidth: Tokens.borderModule
             }
 
-            Text {
+            NText {
+              tracking: true
               id: tplLabel
               anchors.centerIn: parent
               text: tplPill.modelData.label
               color: tplPill.selected ? Color.primaryContainerText : Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
 
             HoverHandler {
@@ -703,11 +685,10 @@ Flickable {
             }
           }
 
-          Text {
+          NText {
             text: root.files.length + " found"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.captionSize
+            size: NText.Size.Caption
           }
         }
 
@@ -761,12 +742,11 @@ Flickable {
           }
         }
 
-        Text {
+        NText {
           visible: root.files.length === 0
           text: "No images found in this directory."
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
     }

@@ -6,6 +6,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Power menu: fullscreen scrim, row of 5 chamfered tiles. Keys L/S/E/R/P select; ←→ move selection; ⏎ confirms.
 // All paths go through a confirm step (SessionMenuTab.qml's confirmActions) — no bare single-keypress trigger for destructive actions.
@@ -14,6 +15,13 @@ PanelWindow {
 
   property var targetScreen: null
   screen: targetScreen
+
+  // Direct in-process handle for callers on this screen (see Commons/Popups.qml).
+  PopupRegistration {
+    name: "power"
+    surface: root
+    screen: root.targetScreen
+  }
 
   readonly property var actions: [
     {
@@ -90,6 +98,12 @@ PanelWindow {
 
   function toggle() {
     visible = !visible;
+  }
+  function open() {
+    visible = true;
+  }
+  function close() {
+    visible = false;
   }
 
   visible: false
@@ -211,22 +225,20 @@ PanelWindow {
               border.width: 2
             }
 
-            Text {
+            NText {
+              tracking: true
               anchors.horizontalCenter: parent.horizontalCenter
               text: tile.armed ? "CONFIRM?" : tile.modelData.display
               color: tile.armed ? Color.error : (tile.modelData.tint === "error" ? Color.error : (tile.selected ? Color.primary : Color.surfaceText))
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelSize
+              size: NText.Size.Label
               font.weight: Font.DemiBold
-              font.letterSpacing: Tokens.labelSize * Tokens.labelTracking
             }
 
-            Text {
+            NText {
               anchors.horizontalCenter: parent.horizontalCenter
               text: tile.modelData.key
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
+              size: NText.Size.LabelXs
             }
           }
 
@@ -242,13 +254,12 @@ PanelWindow {
       }
     }
 
-    Text {
+    NText {
+      tracking: true
       Layout.alignment: Qt.AlignHCenter
       text: "←→ SELECT · ⏎ CONFIRM · ESC CANCEL"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
     }
   }
 }

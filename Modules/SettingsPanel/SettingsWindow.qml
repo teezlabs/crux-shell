@@ -7,6 +7,7 @@ import Quickshell.Hyprland
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Settings panel: top-level tabs in the sidebar, some split into subtabs
 // via SubTabBar.qml. New top-level tabs go in the `tabs` model below.
@@ -15,6 +16,13 @@ PanelWindow {
 
   property var targetScreen: null
   screen: targetScreen
+
+  // Direct in-process handle for callers on this screen (see Commons/Popups.qml).
+  PopupRegistration {
+    name: "settings"
+    surface: root
+    screen: root.targetScreen
+  }
 
   readonly property string screenName: screen ? screen.name : ""
   property string activeTab: "general"
@@ -137,6 +145,16 @@ PanelWindow {
 
   function toggle() {
     visible = !visible;
+  }
+  function open() {
+    visible = true;
+  }
+  function close() {
+    visible = false;
+  }
+  function openTab(tab) {
+    activeTab = tab;
+    visible = true;
   }
 
   // Screen-specific target for callers (e.g. ControlCenterWindow's gear
@@ -283,12 +301,11 @@ PanelWindow {
                 text: root.searchQuery
                 onTextChanged: root.searchQuery = text
 
-                Text {
+                NText {
                   visible: searchInput.text === "" && !searchInput.activeFocus
                   text: "Search settings…"
                   color: Color.labelText
-                  font.family: Tokens.fontFamily
-                  font.pixelSize: Tokens.bodySmSize
+                  size: NText.Size.BodySm
                   verticalAlignment: Text.AlignVCenter
                   anchors.fill: parent
                 }
@@ -308,13 +325,12 @@ PanelWindow {
                 spacing: 4
                 visible: root.searchQuery.trim() === ""
 
-                Text {
+                NText {
+                  tracking: true
                   text: "SETTINGS"
                   color: Color.labelText
-                  font.family: Tokens.fontFamily
-                  font.pixelSize: Tokens.labelXsSize
+                  size: NText.Size.LabelXs
                   font.weight: Font.DemiBold
-                  font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
                   Layout.bottomMargin: 10
                   Layout.topMargin: 2
                   Layout.leftMargin: 4
@@ -343,7 +359,7 @@ PanelWindow {
                       color: Color.primary
                     }
 
-                    Text {
+                    NText {
                       anchors.left: parent.left
                       anchors.leftMargin: 10
                       anchors.right: parent.right
@@ -351,8 +367,7 @@ PanelWindow {
                       anchors.verticalCenter: parent.verticalCenter
                       text: sidebarItem.modelData.label
                       color: sidebarItem.active ? Color.primaryContainerText : Color.surfaceText
-                      font.family: Tokens.fontFamily
-                      font.pixelSize: Tokens.bodySmSize
+                      size: NText.Size.BodySm
                       font.weight: sidebarItem.active ? Font.DemiBold : Font.Normal
                       elide: Text.ElideRight
                     }
@@ -374,12 +389,11 @@ PanelWindow {
                 spacing: 2
                 visible: root.searchQuery.trim() !== ""
 
-                Text {
+                NText {
+                  tracking: true
                   text: root.searchResults.length === 0 ? "No matches" : root.searchResults.length + " match" + (root.searchResults.length === 1 ? "" : "es")
                   color: Color.labelText
-                  font.family: Tokens.fontFamily
-                  font.pixelSize: Tokens.labelXsSize
-                  font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+                  size: NText.Size.LabelXs
                   Layout.bottomMargin: 10
                   Layout.topMargin: 2
                   Layout.leftMargin: 4
@@ -407,19 +421,17 @@ PanelWindow {
                       anchors.verticalCenter: parent.verticalCenter
                       spacing: 1
 
-                      Text {
+                      NText {
                         text: resultItem.modelData.label
                         color: Color.surfaceText
-                        font.family: Tokens.fontFamily
-                        font.pixelSize: Tokens.bodySmSize
+                        size: NText.Size.BodySm
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                       }
-                      Text {
+                      NText {
                         text: resultItem.modelData.description
                         color: Color.labelText
-                        font.family: Tokens.fontFamily
-                        font.pixelSize: Tokens.captionSize
+                        size: NText.Size.Caption
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                       }
@@ -462,7 +474,7 @@ PanelWindow {
               color: Color.primary
             }
 
-            Text {
+            NText {
               text: {
                 for (var i = 0; i < root.tabs.length; i++)
                   if (root.tabs[i].id === root.activeTab)
@@ -470,8 +482,7 @@ PanelWindow {
                 return "";
               }
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodyLgSize
+              size: NText.Size.BodyLg
               font.weight: Font.DemiBold
               Layout.fillWidth: true
             }

@@ -9,6 +9,7 @@ import Quickshell.Services.Mpris
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.LockScreen
+import qs.Widgets
 
 // Spec §6.10: fullscreen blurred wallpaper, clock top-left, password field
 // bottom-left, NET/BAT/VOL top-right, notification summaries bottom-right.
@@ -248,13 +249,11 @@ Loader {
             spacing: 14
             visible: surface.shownHere
 
-            Text {
+            NText {
+              tracking: true
               text: Qt.formatDateTime(surface.now, Settings.data.lockScreen.clockFormat)
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.displaySize
-              font.weight: Tokens.displayWeight
-              font.letterSpacing: Tokens.displaySize * Tokens.displayTracking
+              size: NText.Size.Display
             }
 
             Row {
@@ -267,21 +266,20 @@ Loader {
                 color: Color.primary
               }
 
-              Text {
+              NText {
+                tracking: true
                 anchors.verticalCenter: parent.verticalCenter
                 text: Qt.formatDateTime(surface.now, Settings.data.lockScreen.dateFormat).toUpperCase()
                 color: Color.labelText
-                font.family: Tokens.fontFamily
                 font.pixelSize: 14
                 font.letterSpacing: 14 * 0.26
               }
             }
 
-            Text {
+            NText {
               visible: Settings.data.lockScreen.showMediaControls && !!surface.activeMprisPlayer
               text: surface.activeMprisPlayer ? ((surface.activeMprisPlayer.trackArtist ? surface.activeMprisPlayer.trackArtist + " — " : "") + (surface.activeMprisPlayer.trackTitle || "")) : ""
               color: Color.labelText
-              font.family: Tokens.fontFamily
               font.pixelSize: 14
               elide: Text.ElideRight
               width: 400
@@ -300,57 +298,51 @@ Loader {
             Row {
               spacing: 6
               visible: Settings.data.lockScreen.showNetwork
-              Text {
+              NText {
+                tracking: true
                 text: "NET"
                 color: Color.labelText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.labelSize
+                size: NText.Size.Label
                 font.weight: Font.Medium
-                font.letterSpacing: Tokens.labelSize * Tokens.labelTracking
               }
-              Text {
+              NText {
                 text: surface.netLabel
                 color: Networking.wifiEnabled ? Color.surfaceText : Color.disabledText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.captionSize
+                size: NText.Size.Caption
               }
             }
 
             Row {
               visible: Settings.data.lockScreen.showBattery && surface.hasBattery
               spacing: 6
-              Text {
+              NText {
+                tracking: true
                 text: "BAT"
                 color: Color.labelText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.labelSize
+                size: NText.Size.Label
                 font.weight: Font.Medium
-                font.letterSpacing: Tokens.labelSize * Tokens.labelTracking
               }
-              Text {
+              NText {
                 text: surface.batteryPercent
                 color: Color.surfaceText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.captionSize
+                size: NText.Size.Caption
               }
             }
 
             Row {
               spacing: 6
               visible: Settings.data.lockScreen.showVolume
-              Text {
+              NText {
+                tracking: true
                 text: "VOL"
                 color: Color.labelText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.labelSize
+                size: NText.Size.Label
                 font.weight: Font.Medium
-                font.letterSpacing: Tokens.labelSize * Tokens.labelTracking
               }
-              Text {
+              NText {
                 text: surface.muted ? "—" : String(Math.round(surface.volume * 100))
                 color: surface.muted ? Color.error : Color.surfaceText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.captionSize
+                size: NText.Size.Caption
               }
             }
           }
@@ -485,11 +477,11 @@ Loader {
                   }
                 }
 
-                Text {
+                NText {
+                  tracking: true
                   anchors.horizontalCenter: parent.horizontalCenter
                   text: powerBtn.armed ? "CONFIRM?" : powerBtn.modelData.label
                   color: Color.labelText
-                  font.family: Tokens.fontFamily
                   font.pixelSize: Tokens.labelXsSize - 2
                   font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
                 }
@@ -524,11 +516,10 @@ Loader {
               anchors.rightMargin: 10
               spacing: 10
 
-              Text {
+              NText {
                 text: ">"
                 color: Color.primary
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.bodyLgSize
+                size: NText.Size.BodyLg
                 font.weight: Font.DemiBold
                 anchors.verticalCenter: parent.verticalCenter
               }
@@ -564,16 +555,15 @@ Loader {
               }
             }
 
-            Text {
+            NText {
+              tracking: true
               id: hint
               anchors.right: parent.right
               anchors.rightMargin: 16
               anchors.verticalCenter: parent.verticalCenter
               text: "⏎ UNLOCK"
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
           }
 
@@ -584,40 +574,36 @@ Loader {
             anchors.topMargin: 8
             spacing: 16
 
-            Text {
+            NText {
+              tracking: true
               visible: surface.capsLockOn
               text: "CAPS LOCK ON"
               color: Color.error
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
 
-            Text {
+            NText {
+              tracking: true
               visible: lockContext.showFailure
               text: lockContext.errorMessage || "AUTHENTICATION FAILED"
               color: Color.error
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
 
-            Text {
+            NText {
+              tracking: true
               visible: root.lockedOut
               text: "LOCKED OUT — TRY AGAIN IN " + root.lockoutRemaining + "s"
               color: Color.error
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
 
-            Text {
+            NText {
+              tracking: true
               visible: !root.lockedOut && root.failedAttempts > 0
               text: "ATTEMPTS " + root.failedAttempts
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
           }
 
@@ -666,19 +652,17 @@ Loader {
                   anchors.rightMargin: 14
                   spacing: 2
 
-                  Text {
+                  NText {
+                    tracking: true
                     text: (card.modelData.appName || "").toUpperCase()
                     color: Color.labelText
-                    font.family: Tokens.fontFamily
-                    font.pixelSize: Tokens.labelXsSize
-                    font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+                    size: NText.Size.LabelXs
                   }
-                  Text {
+                  NText {
                     width: parent.width
                     text: card.modelData.summary || ""
                     color: Color.surfaceText
-                    font.family: Tokens.fontFamily
-                    font.pixelSize: Tokens.bodySmSize
+                    size: NText.Size.BodySm
                     font.weight: Font.DemiBold
                     elide: Text.ElideRight
                   }

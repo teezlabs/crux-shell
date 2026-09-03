@@ -66,7 +66,7 @@ Item {
     attention: root.sessionPercent > 0.85
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "claudeUsage_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
+      Popups.openAt("claudeUsage", root.screen, pos.x, pos.y);
     }
 
     // Geometric robot glyph: rounded head outline + two eye dots + antenna —

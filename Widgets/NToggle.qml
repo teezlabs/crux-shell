@@ -1,6 +1,5 @@
 import QtQuick
 import qs.Commons
-import qs.Modules.Bar.Extras
 
 // v2-styled toggle switch: chamfered track (radius: 0 per hard rule 1,
 // same two-opposite-corner convention as every other chamfered element),

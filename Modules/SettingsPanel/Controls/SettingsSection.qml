@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Grouped-card section wrapper, v2 style: chamfered card (radius: 0, no
 // gradient/glow per hard rules 1/4), accent tick + uppercase label-tier
@@ -27,13 +28,12 @@ ColumnLayout {
       color: Color.primary
     }
 
-    Text {
+    NText {
+      tracking: true
       text: root.title.toUpperCase()
       color: Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelSize
+      size: NText.Size.Label
       font.weight: Font.DemiBold
-      font.letterSpacing: Tokens.labelSize * Tokens.labelTracking
     }
 
     Rectangle {
@@ -43,13 +43,12 @@ ColumnLayout {
     }
   }
 
-  Text {
+  NText {
+    tracking: true
     visible: root.description !== ""
     text: root.description
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.captionSize
-    font.letterSpacing: Tokens.captionSize * Tokens.captionTracking
+    size: NText.Size.Caption
     wrapMode: Text.WordWrap
     Layout.fillWidth: true
     Layout.bottomMargin: 4

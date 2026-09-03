@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Widgets
 import qs.Commons
+import qs.Widgets
 
 // Control Center action-grid button. `enabled: false` dims and blocks taps when a backing tool is missing; `active` highlights toggle-style actions.
 Item {
@@ -33,14 +34,13 @@ Item {
       source: root.icon !== "" ? Quickshell.iconPath(root.icon, "") : ""
     }
 
-    Text {
+    NText {
+      tracking: true
       anchors.verticalCenter: parent.verticalCenter
       text: root.label
       color: root.active ? Color.primary : Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
+      size: NText.Size.LabelXs
       font.weight: Font.DemiBold
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
     }
   }
 

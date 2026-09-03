@@ -4,26 +4,15 @@ import QtQuick
 import Quickshell
 import qs.Commons
 
-// Semantic color tokens, sourced live from Settings.data.theme. "m" prefix
-// avoids QML misreading e.g. "onPrimary" as a signal handler name.
+// Semantic color tokens, sourced live from Settings.data.theme, named per
+// the Material-3 tonal-spot roles in the "Quickshell Hyprland Shell v2"
+// spec (§1). A *Text role is the readable foreground on the matching fill;
+// it can't be named onPrimary/onError because QML reads a leading "on" as
+// a signal handler. The Settings.data.theme.* keys keep their older names
+// so an existing settings.json still loads.
 Singleton {
   id: root
 
-  readonly property color mPrimary: Settings.data.theme.mPrimary
-  readonly property color mOnPrimary: Settings.data.theme.mOnPrimary
-  readonly property color mSecondary: Settings.data.theme.mSecondary
-  readonly property color mOnSecondary: Settings.data.theme.mOnSecondary
-  readonly property color mSurface: Settings.data.theme.mSurface
-  readonly property color mOnSurface: Settings.data.theme.mOnSurface
-  readonly property color mSurfaceVariant: Settings.data.theme.mSurfaceVariant
-  readonly property color mOnSurfaceVariant: Settings.data.theme.mOnSurfaceVariant
-  readonly property color mOutline: Settings.data.theme.mOutline
-  readonly property color mError: Settings.data.theme.mError
-  readonly property color mOnError: Settings.data.theme.mOnError
-
-  // Material-3 tonal-spot roles — the "Quickshell Hyprland Shell v2" spec's
-  // own naming (§1). New/rewritten widgets read these directly instead of
-  // the m-prefixed roles above.
   readonly property color surface: Settings.data.theme.surface
   readonly property color surfaceContainerLow: Settings.data.theme.surfaceContainerLow
   readonly property color surfaceContainer: Settings.data.theme.surfaceContainer
@@ -37,6 +26,8 @@ Singleton {
   readonly property color error: Settings.data.theme.errorTone
   readonly property color surfaceText: Settings.data.theme.surfaceText
   readonly property color surfaceTextMuted: Settings.data.theme.surfaceTextMuted
+  readonly property color primaryText: Settings.data.theme.mOnPrimary
+  readonly property color errorText: Settings.data.theme.mOnError
 
   // Derived, per spec §1 ("Tertiary/label text" and "Disabled/empty" rows) —
   // alpha-composited rather than a flat pre-blended hex, so it reads

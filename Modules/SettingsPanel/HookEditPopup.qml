@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Modal command-editor popup for a single hook (PanelWindow scrim + card,
 // like PowerMenuWindow). Caller (HooksListSubTab) drives it via openFor().
@@ -91,21 +92,19 @@ PanelWindow {
         Layout.fillWidth: true
         spacing: 8
 
-        Text {
+        NText {
           text: root.hookLabel
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodyLgSize
+          size: NText.Size.BodyLg
           font.weight: Font.DemiBold
           Layout.fillWidth: true
           elide: Text.ElideRight
         }
 
-        Text {
+        NText {
           text: "×"
           color: Color.surfaceTextMuted
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
 
           HoverHandler {
             cursorShape: Qt.PointingHandCursor
@@ -116,12 +115,11 @@ PanelWindow {
         }
       }
 
-      Text {
+      NText {
+        tracking: true
         text: root.hookDescription
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
-        font.letterSpacing: Tokens.captionSize * Tokens.captionTracking
+        size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
       }
@@ -173,14 +171,13 @@ PanelWindow {
             strokeWidth: Tokens.borderModule
           }
 
-          Text {
+          NText {
+            tracking: true
             id: testLabel
             anchors.centerIn: parent
             text: "TEST"
             color: root.onTest && commandInput.text !== "" ? Color.surfaceText : Color.surfaceTextMuted
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
 
           HoverHandler {
@@ -211,14 +208,13 @@ PanelWindow {
             strokeWidth: Tokens.borderModule
           }
 
-          Text {
+          NText {
+            tracking: true
             id: cancelLabel
             anchors.centerIn: parent
             text: "CANCEL"
             color: Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
 
           HoverHandler {
@@ -243,14 +239,13 @@ PanelWindow {
             strokeWidth: Tokens.borderModule
           }
 
-          Text {
+          NText {
+            tracking: true
             id: saveLabel
             anchors.centerIn: parent
             text: "SAVE"
             color: Color.primaryContainerText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
 
           HoverHandler {

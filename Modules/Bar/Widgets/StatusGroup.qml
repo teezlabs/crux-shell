@@ -5,6 +5,7 @@ import Quickshell.Networking
 import Quickshell.Services.Pipewire
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Merged NET/VOL/BAT status module (spec §6.1), split by 1px dividers. Click opens Control Center.
 // BAT segment only shows if a power_supply device is present — no fake 100% on battery-less desktops.
@@ -128,21 +129,20 @@ Item {
 
       Column {
         width: 24
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: root.netLabel
           color: Networking.wifiEnabled ? Color.surfaceText : Color.disabledText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "NET"
           color: Color.labelText
-          font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
@@ -156,21 +156,20 @@ Item {
 
       Column {
         width: 24
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: root.muted ? "—" : String(Math.round(root.volume * 100))
           color: root.muted ? Color.error : Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "VOL"
           color: Color.labelText
-          font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
@@ -186,21 +185,20 @@ Item {
       Column {
         visible: root.hasBattery
         width: 24
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: String(root.batteryPercent)
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "BAT"
           color: Color.labelText
-          font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
@@ -215,7 +213,7 @@ Item {
   TapHandler {
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "controlCenter_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
+      Popups.openAt("controlCenter", root.screen, pos.x, pos.y);
     }
   }
 

@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Git repos to pull plugin registries from -- each needs a registry.json
 // at its root ({"plugins": [{"id","label","description",...}]}). Adding
@@ -44,15 +45,14 @@ Flickable {
             strokeWidth: Tokens.borderModule
           }
 
-          Text {
+          NText {
             visible: urlInput.text === ""
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
             anchors.leftMargin: 8
             text: "https://github.com/user/crux-plugins"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
           }
 
           TextInput {
@@ -85,15 +85,14 @@ Flickable {
               strokeWidth: Tokens.borderModule
             }
 
-            Text {
+            NText {
               visible: nameInput.text === ""
               anchors.left: parent.left
               anchors.verticalCenter: parent.verticalCenter
               anchors.leftMargin: 8
               text: "Display name (optional)"
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
             }
 
             TextInput {
@@ -122,13 +121,12 @@ Flickable {
               strokeColor: Color.primary
               strokeWidth: Tokens.borderModule
             }
-            Text {
+            NText {
               id: addLabel
               anchors.centerIn: parent
               text: "Add"
               color: Color.primary
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
             }
             HoverHandler {
               id: addHover
@@ -193,19 +191,17 @@ Flickable {
               ColumnLayout {
                 Layout.fillWidth: true
                 spacing: 0
-                Text {
+                NText {
                   text: srcRow.modelData.name || srcRow.modelData.url
                   color: Color.surfaceText
-                  font.family: Tokens.fontFamily
-                  font.pixelSize: Tokens.bodySmSize
+                  size: NText.Size.BodySm
                   elide: Text.ElideMiddle
                   Layout.fillWidth: true
                 }
-                Text {
+                NText {
                   text: srcRow.modelData.url
                   color: Color.labelText
-                  font.family: Tokens.fontFamily
-                  font.pixelSize: Tokens.captionSize
+                  size: NText.Size.Caption
                   elide: Text.ElideMiddle
                   Layout.fillWidth: true
                 }
@@ -222,12 +218,11 @@ Flickable {
                 }
               }
 
-              Text {
+              NText {
+                tracking: true
                 text: "REMOVE"
                 color: Color.error
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.labelXsSize
-                font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+                size: NText.Size.LabelXs
                 HoverHandler {
                   cursorShape: Qt.PointingHandCursor
                 }
@@ -243,12 +238,11 @@ Flickable {
           }
         }
 
-        Text {
+        NText {
           visible: Settings.data.plugins.sources.length === 0
           text: "No sources yet."
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
     }

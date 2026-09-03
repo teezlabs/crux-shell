@@ -219,7 +219,7 @@ Singleton {
       // shared fontFamily above. Not a general-purpose second font system;
       // crux has no per-role size scale to go with it, just the family.
       property string monoFontFamily: "Departure Mono"
-      property real fontScale: 1.0 // multiplies every Style.fontSize* token
+      property real fontScale: 1.0 // multiplies every Tokens.*Size token
     }
 
     property JsonObject launcher: JsonObject {
@@ -333,7 +333,6 @@ Singleton {
       property string mError: "#f38ba8"
       property string mOnError: "#1e1e2e"
 
-      property real radiusRatio: 1.0 // multiplies every Style.radius* token
       property real barOpacity: 1.0 // 0..1, bar + popup background alpha
 
       // v2 spec's tonal-spot role set — additive alongside the m-prefixed

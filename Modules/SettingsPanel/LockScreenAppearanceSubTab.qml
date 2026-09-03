@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 Flickable {
   id: root
@@ -51,11 +52,10 @@ Flickable {
         }
       }
 
-      Text {
+      NText {
         text: "Qt date/time format, e.g. HH:mm or h:mm AP"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
 
@@ -103,11 +103,10 @@ Flickable {
         checked: Settings.data.lockScreen.useCustomWallpaper
         onToggled: checked => Settings.data.lockScreen.useCustomWallpaper = checked
       }
-      Text {
+      NText {
         text: "Off = mirror the live desktop wallpaper"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
 
@@ -155,11 +154,10 @@ Flickable {
         value: Settings.data.lockScreen.blurAmount
         onMoved: value => Settings.data.lockScreen.blurAmount = value
       }
-      Text {
+      NText {
         text: Math.round(Settings.data.lockScreen.blurAmount * 100) + "%"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -173,11 +171,10 @@ Flickable {
         value: Settings.data.lockScreen.dimAmount
         onMoved: value => Settings.data.lockScreen.dimAmount = value
       }
-      Text {
+      NText {
         text: Math.round(Settings.data.lockScreen.dimAmount * 100) + "%"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }
@@ -220,11 +217,10 @@ Flickable {
         checked: Settings.data.lockScreen.showMediaControls
         onToggled: checked => Settings.data.lockScreen.showMediaControls = checked
       }
-      Text {
+      NText {
         text: "Read-only track info, no playback buttons on the lock screen"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
   }

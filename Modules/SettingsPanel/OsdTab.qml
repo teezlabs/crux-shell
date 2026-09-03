@@ -4,6 +4,7 @@ import Quickshell
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // On-screen-display settings: crux's VolumeOsd.qml already runs reacting to
 // live Pipewire state with no settings tab at all (position/duration were
@@ -56,13 +57,12 @@ Flickable {
               strokeWidth: Tokens.borderModule
             }
 
-            Text {
+            NText {
+              tracking: true
               anchors.centerIn: parent
               text: posTile.modelData.toUpperCase()
               color: posTile.active ? Color.primaryContainerText : Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
 
             HoverHandler {
@@ -89,11 +89,10 @@ Flickable {
         onMoved: value => Settings.data.osd.durationMs = value
       }
 
-      Text {
+      NText {
         text: Settings.data.osd.durationMs + " ms"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -107,11 +106,10 @@ Flickable {
         value: Settings.data.osd.backgroundOpacity
         onMoved: value => Settings.data.osd.backgroundOpacity = value
       }
-      Text {
+      NText {
         text: Math.round(Settings.data.osd.backgroundOpacity * 100) + "%"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }
@@ -143,14 +141,13 @@ Flickable {
             strokeWidth: Tokens.borderModule
           }
 
-          Text {
+          NText {
+            tracking: true
             id: monLabel
             anchors.centerIn: parent
             text: monTile.modelData.name
             color: monTile.active ? Color.primaryContainerText : Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
 
           HoverHandler {

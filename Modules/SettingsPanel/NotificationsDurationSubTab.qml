@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 Flickable {
   id: root
@@ -28,11 +29,10 @@ Flickable {
         value: Settings.data.notifications.lowUrgencyDurationSec
         onMoved: value => Settings.data.notifications.lowUrgencyDurationSec = value
       }
-      Text {
+      NText {
         text: Settings.data.notifications.lowUrgencyDurationSec + "s"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -46,11 +46,10 @@ Flickable {
         value: Settings.data.notifications.normalUrgencyDurationSec
         onMoved: value => Settings.data.notifications.normalUrgencyDurationSec = value
       }
-      Text {
+      NText {
         text: Settings.data.notifications.normalUrgencyDurationSec + "s"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -64,11 +63,10 @@ Flickable {
         value: Settings.data.notifications.criticalUrgencyDurationSec
         onMoved: value => Settings.data.notifications.criticalUrgencyDurationSec = value
       }
-      Text {
+      NText {
         text: Settings.data.notifications.criticalUrgencyDurationSec + "s"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -78,11 +76,10 @@ Flickable {
         checked: Settings.data.notifications.respectAppExpireTimeout
         onToggled: checked => Settings.data.notifications.respectAppExpireTimeout = checked
       }
-      Text {
+      NText {
         text: "When an app requests its own expiry, honor it instead of the durations above."
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
       }

@@ -19,7 +19,7 @@ Item {
 
   BarIconButton {
     id: btn
-    onTapped: Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "sidebar", "toggle"])
+    onTapped: Popups.toggle("sidebar", root.screen);
 
     // Three stacked bars, left one accented — a "sidebar" glyph.
     Canvas {

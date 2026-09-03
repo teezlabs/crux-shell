@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
 import qs.Commons
+import qs.Widgets
 
 // Clipboard history popup content. Backend is cliphist (same as
 // noctalia-shell), not Omarchy's own capture.sh. Hosted inside a
@@ -125,22 +126,20 @@ ColumnLayout {
   RowLayout {
     Layout.fillWidth: true
 
-    Text {
+    NText {
+      tracking: true
       text: "CLIPBOARD"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
+      size: NText.Size.LabelXs
       font.weight: Font.DemiBold
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
       Layout.fillWidth: true
     }
 
-    Text {
+    NText {
+      tracking: true
       text: "CLEAR ALL"
       color: Color.error
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
       MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
@@ -149,12 +148,11 @@ ColumnLayout {
     }
   }
 
-  Text {
+  NText {
     visible: !root.cliphistAvailable
     text: "cliphist not found"
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.bodySmSize
+    size: NText.Size.BodySm
   }
 
   ListView {
@@ -181,11 +179,10 @@ ColumnLayout {
         anchors.leftMargin: 8
         anchors.rightMargin: 8
 
-        Text {
+        NText {
           text: rowItem.modelData.isImage ? "[image]" : rowItem.modelData.preview
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           elide: Text.ElideRight
           Layout.fillWidth: true
         }

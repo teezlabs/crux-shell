@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 Flickable {
   id: root
@@ -38,11 +39,10 @@ Flickable {
         value: Settings.data.idle.screenOffTimeoutSec
         onMoved: value => Settings.data.idle.screenOffTimeoutSec = value
       }
-      Text {
+      NText {
         text: Settings.data.idle.screenOffTimeoutSec === 0 ? "off" : (Math.round(Settings.data.idle.screenOffTimeoutSec / 60) + " min")
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -57,11 +57,10 @@ Flickable {
         value: Settings.data.idle.lockTimeoutSec
         onMoved: value => Settings.data.idle.lockTimeoutSec = value
       }
-      Text {
+      NText {
         text: Settings.data.idle.lockTimeoutSec === 0 ? "off" : (Math.round(Settings.data.idle.lockTimeoutSec / 60) + " min")
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -76,11 +75,10 @@ Flickable {
         value: Settings.data.idle.suspendTimeoutSec
         onMoved: value => Settings.data.idle.suspendTimeoutSec = value
       }
-      Text {
+      NText {
         text: Settings.data.idle.suspendTimeoutSec === 0 ? "off" : (Math.round(Settings.data.idle.suspendTimeoutSec / 60) + " min")
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -95,19 +93,17 @@ Flickable {
         value: Settings.data.idle.fadeDurationSec
         onMoved: value => Settings.data.idle.fadeDurationSec = value
       }
-      Text {
+      NText {
         text: Settings.data.idle.fadeDurationSec + "s"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
-    Text {
+    NText {
       text: "Grace delay: how long a stage waits after going idle before it actually fires — any activity in that window cancels it."
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
     }
@@ -124,11 +120,10 @@ Flickable {
       rowSpacing: 10
       Layout.fillWidth: true
 
-      Text {
+      NText {
         text: "Screen off"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
       CommandField {
         Layout.fillWidth: true
@@ -137,11 +132,10 @@ Flickable {
         onCommitted: v => Settings.data.idle.screenOffCommand = v
       }
 
-      Text {
+      NText {
         text: "Resume screen off"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
       CommandField {
         Layout.fillWidth: true
@@ -150,11 +144,10 @@ Flickable {
         onCommitted: v => Settings.data.idle.resumeScreenOffCommand = v
       }
 
-      Text {
+      NText {
         text: "Lock"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
       CommandField {
         Layout.fillWidth: true
@@ -163,11 +156,10 @@ Flickable {
         onCommitted: v => Settings.data.idle.lockCommand = v
       }
 
-      Text {
+      NText {
         text: "Suspend"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
       CommandField {
         Layout.fillWidth: true
@@ -176,11 +168,10 @@ Flickable {
         onCommitted: v => Settings.data.idle.suspendCommand = v
       }
 
-      Text {
+      NText {
         text: "Resume suspend"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
       CommandField {
         Layout.fillWidth: true
@@ -226,12 +217,11 @@ Flickable {
       selectByMouse: true
       onEditingFinished: field.committed(text)
 
-      Text {
+      NText {
         visible: input.text === "" && !input.activeFocus
         text: field.placeholder
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }

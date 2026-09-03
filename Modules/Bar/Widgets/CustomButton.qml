@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // User-configurable button: icon, label, left/right click commands, optional refreshed text command.
 // Multi-instance: each button reads its own widgetData entry, not a shared Settings singleton (see BarWidgetRegistry.multiInstanceIds).
@@ -72,32 +73,27 @@ Item {
       visible: !root.vertical
       spacing: root.icon !== "" && root.displayText !== "" ? 6 : 0
 
-      Text {
+      NText {
         visible: root.icon !== ""
         text: root.icon
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySize
         anchors.verticalCenter: parent.verticalCenter
       }
 
-      Text {
+      NText {
         visible: root.displayText !== ""
         text: root.displayText
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
         anchors.verticalCenter: parent.verticalCenter
       }
 
       // Placeholder so an unconfigured button is still visible/clickable
       // — plain ASCII, no font/emoji glyph dependency.
-      Text {
+      NText {
         visible: root.icon === "" && root.displayText === ""
         text: "+"
         color: Color.surfaceTextMuted
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySize
         anchors.verticalCenter: parent.verticalCenter
       }
     }
@@ -105,13 +101,12 @@ Item {
     Column {
       visible: root.vertical
       spacing: 4
-      Text {
+      NText {
         width: 24
         horizontalAlignment: Text.AlignHCenter
         text: root.icon !== "" ? root.icon : (root.displayText !== "" ? root.displayText.charAt(0) : "+")
         color: Color.surfaceText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
+        size: NText.Size.LabelXs
       }
     }
   }

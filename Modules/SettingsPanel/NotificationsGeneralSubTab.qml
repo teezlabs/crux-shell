@@ -4,6 +4,7 @@ import Quickshell
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 Flickable {
   id: root
@@ -26,11 +27,10 @@ Flickable {
         checked: Settings.data.notifications.enabled
         onToggled: checked => Settings.data.notifications.enabled = checked
       }
-      Text {
+      NText {
         text: "Off disables the live popup stack only — history still logs every real notification."
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
       }
@@ -42,11 +42,10 @@ Flickable {
         checked: Settings.data.notifications.doNotDisturb
         onToggled: checked => Settings.data.notifications.doNotDisturb = checked
       }
-      Text {
+      NText {
         text: "Temporary — suppresses popups without turning them off entirely."
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
 
@@ -60,11 +59,10 @@ Flickable {
         value: Settings.data.notifications.maxVisible
         onMoved: value => Settings.data.notifications.maxVisible = value
       }
-      Text {
+      NText {
         text: Settings.data.notifications.maxVisible + " at once"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
   }
@@ -112,13 +110,12 @@ Flickable {
             strokeWidth: Tokens.borderModule
           }
 
-          Text {
+          NText {
+            tracking: true
             anchors.centerIn: parent
             text: posTile.modelData.label.toUpperCase()
             color: posTile.active ? Color.primaryContainerText : Color.surfaceText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
 
           HoverHandler {
@@ -147,11 +144,10 @@ Flickable {
           value: Settings.data.notifications.backgroundOpacity
           onMoved: value => Settings.data.notifications.backgroundOpacity = value
         }
-        Text {
+        NText {
           text: Math.round(Settings.data.notifications.backgroundOpacity * 100) + "%"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
     }
@@ -183,14 +179,13 @@ Flickable {
               strokeWidth: Tokens.borderModule
             }
 
-            Text {
+            NText {
+              tracking: true
               id: monLabel
               anchors.centerIn: parent
               text: monTile.modelData.name
               color: monTile.active ? Color.primaryContainerText : Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.labelXsSize
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              size: NText.Size.LabelXs
             }
 
             HoverHandler {

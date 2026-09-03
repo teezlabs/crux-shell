@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Commons
+import qs.Widgets
 
 // Shared chamfered container for a detached bar module. Chamfers two opposite corners; no hover transition.
 Item {

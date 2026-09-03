@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.UPower
 import qs.Commons
+import qs.Widgets
 
 // Battery detail popup content: percent/status, health, and a
 // power-profile switcher via PowerProfiles (no-op if the daemon isn't
@@ -59,32 +60,29 @@ ColumnLayout {
     }
   ]
 
-  Text {
+  NText {
+    tracking: true
     text: "BATTERY"
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.labelXsSize
+    size: NText.Size.LabelXs
     font.weight: Font.DemiBold
-    font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
   }
 
   RowLayout {
     Layout.fillWidth: true
     spacing: 10
 
-    Text {
+    NText {
       text: root.percent + "%"
       color: root.statusColor
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.titleSize
+      size: NText.Size.Title
       font.weight: Font.Light
     }
 
-    Text {
+    NText {
       text: root.statusText
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
       Layout.fillWidth: true
       wrapMode: Text.WordWrap
     }
@@ -104,31 +102,28 @@ ColumnLayout {
     visible: root.healthKnown
     spacing: 6
 
-    Text {
+    NText {
+      tracking: true
       text: "HEALTH"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
     }
     Item {
       Layout.fillWidth: true
     }
-    Text {
+    NText {
       text: root.healthKnown ? Math.round(root.device.healthPercentage) + "%" : ""
       color: Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
     }
   }
 
-  Text {
+  NText {
+    tracking: true
     text: "POWER PROFILE"
     visible: Settings.data.battery.showPowerProfile
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.labelXsSize
-    font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+    size: NText.Size.LabelXs
     Layout.topMargin: 4
   }
 
@@ -157,13 +152,12 @@ ColumnLayout {
           strokeWidth: Tokens.borderModule
         }
 
-        Text {
+        NText {
+          tracking: true
           anchors.centerIn: parent
           text: profileTile.modelData.label
           color: profileTile.active ? Color.primaryContainerText : Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
 
         HoverHandler {

@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Commons
+import qs.Widgets
 
 // Circular arc gauge for Control Center telemetry — explicitly requested
 // to match a specific reference look (rounded dial meters), a deliberate
@@ -56,19 +57,18 @@ Item {
     anchors.centerIn: parent
     spacing: 0
 
-    Text {
+    NText {
       anchors.horizontalCenter: parent.horizontalCenter
       text: root.value
       color: Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
       font.weight: Font.DemiBold
     }
-    Text {
+    NText {
+      tracking: true
       anchors.horizontalCenter: parent.horizontalCenter
       text: root.label
       color: Color.labelText
-      font.family: Tokens.fontFamily
       font.pixelSize: Tokens.labelXsSize - 1
       font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
     }

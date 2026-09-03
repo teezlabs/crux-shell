@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 Flickable {
   id: root
@@ -62,13 +63,12 @@ Flickable {
         border.width: Tokens.borderModule
         border.color: Color.outline
 
-        Text {
+        NText {
           id: discoverLabel
           anchors.centerIn: parent
           text: Hue.discovering ? "…" : "Discover"
           color: (Hue.discovering || Hue.pairing) ? Color.disabledText : Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
 
         HoverHandler {
@@ -82,13 +82,12 @@ Flickable {
       }
     }
 
-    Text {
+    NText {
       Layout.fillWidth: true
       visible: Hue.discoveryError !== ""
       text: Hue.discoveryError
       color: Color.error
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
       wrapMode: Text.WordWrap
     }
 
@@ -108,13 +107,12 @@ Flickable {
         border.width: Tokens.borderModule
         border.color: root.ipField.trim() !== "" ? Color.primary : Color.outline
 
-        Text {
+        NText {
           id: pairLabel
           anchors.centerIn: parent
           text: "Pair"
           color: root.ipField.trim() !== "" ? Color.primaryContainerText : Color.disabledText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
 
         HoverHandler {
@@ -133,21 +131,19 @@ Flickable {
       spacing: 10
       visible: Hue.pairing
 
-      Text {
+      NText {
         Layout.fillWidth: true
         text: "Press the bridge's link button… (" + Hue.pairingSecondsLeft + "s)"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
         wrapMode: Text.WordWrap
       }
 
-      Text {
+      NText {
+        tracking: true
         text: "Cancel"
         color: Color.error
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
-        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        size: NText.Size.LabelXs
 
         HoverHandler {
           cursorShape: Qt.PointingHandCursor
@@ -158,13 +154,12 @@ Flickable {
       }
     }
 
-    Text {
+    NText {
       Layout.fillWidth: true
       visible: Hue.pairingError !== ""
       text: Hue.pairingError
       color: Color.error
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
       wrapMode: Text.WordWrap
     }
 
@@ -177,12 +172,11 @@ Flickable {
         Layout.fillWidth: true
       }
 
-      Text {
+      NText {
+        tracking: true
         text: "Forget"
         color: Color.error
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
-        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        size: NText.Size.LabelXs
 
         HoverHandler {
           cursorShape: Qt.PointingHandCursor
@@ -225,11 +219,10 @@ Flickable {
               font.pixelSize: Tokens.bodySize
             }
 
-            Text {
+            NText {
               text: groupRow.modelData.name
               color: groupRow.isSelected ? Color.primaryContainerText : Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
               elide: Text.ElideRight
               Layout.fillWidth: true
             }
@@ -245,12 +238,11 @@ Flickable {
         }
       }
 
-      Text {
+      NText {
         visible: Hue.groups.length === 0
         text: "No rooms/zones found."
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.bodySmSize
+        size: NText.Size.BodySm
       }
     }
 
@@ -261,12 +253,11 @@ Flickable {
         Layout.fillWidth: true
       }
 
-      Text {
+      NText {
+        tracking: true
         text: Hue.fetchingGroups ? "Refreshing…" : "Refresh"
         color: Hue.fetchingGroups ? Color.disabledText : Color.primary
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
-        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        size: NText.Size.LabelXs
 
         HoverHandler {
           enabled: !Hue.fetchingGroups
@@ -279,13 +270,12 @@ Flickable {
       }
     }
 
-    Text {
+    NText {
       Layout.fillWidth: true
       visible: Hue.groupsError !== ""
       text: Hue.groupsError
       color: Color.error
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
       wrapMode: Text.WordWrap
     }
   }

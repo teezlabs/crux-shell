@@ -3,6 +3,7 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // "TILE · MASTER": left is focused window's tiled/floating state, right is the active layout engine — both real Hyprland state.
 Item {
@@ -79,25 +80,22 @@ Item {
       visible: !root.vertical
       spacing: 6
 
-      Text {
+      NText {
+        tracking: true
         text: root.floating ? "FLOAT" : "TILE"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelSize
-        font.letterSpacing: Tokens.labelSize * Tokens.labelTracking
+        size: NText.Size.Label
       }
-      Text {
+      NText {
         text: "·"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelSize
+        size: NText.Size.Label
       }
-      Text {
+      NText {
+        tracking: true
         text: root.layoutName
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelSize
-        font.letterSpacing: Tokens.labelSize * Tokens.labelTracking
+        size: NText.Size.Label
       }
     }
 
@@ -105,23 +103,21 @@ Item {
       visible: root.vertical
       spacing: 2
 
-      Text {
+      NText {
+        tracking: true
         width: 24
         horizontalAlignment: Text.AlignHCenter
         text: root.floating ? "FLT" : "TILE"
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
-        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        size: NText.Size.LabelXs
       }
-      Text {
+      NText {
+        tracking: true
         width: 24
         horizontalAlignment: Text.AlignHCenter
         text: root.layoutName
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
-        font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+        size: NText.Size.LabelXs
       }
     }
   }

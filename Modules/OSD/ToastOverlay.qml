@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Toast overlay: renders Commons/Toast.qml's queue as a chamfered pill,
 // bottom-center. One global instance (not per-screen like VolumeOsd), plus
@@ -112,13 +113,12 @@ PanelWindow {
       strokeWidth: Tokens.borderModule
     }
 
-    Text {
+    NText {
       id: label
       anchors.centerIn: parent
       text: root.message
       color: Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
       font.weight: Font.DemiBold
     }
   }

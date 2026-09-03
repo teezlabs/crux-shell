@@ -5,6 +5,7 @@ import Quickshell.Wayland
 import Quickshell.Services.Mpris
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Desktop info cards (weather, media), pinned to the wallpaper layer,
 // draggable, individually toggleable. See crux skill's notes.md.
@@ -166,19 +167,17 @@ Variants {
             Layout.fillWidth: true
             spacing: 1
 
-            Text {
+            NText {
               text: isNaN(Weather.currentTempF) ? "--°" : Math.round(Weather.currentTempF) + "°"
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodyLgSize
+              size: NText.Size.BodyLg
               font.weight: Font.DemiBold
             }
-            Text {
+            NText {
               Layout.fillWidth: true
               text: Weather.cityName
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.captionSize
+              size: NText.Size.Caption
               elide: Text.ElideRight
             }
           }
@@ -199,13 +198,12 @@ Variants {
               Layout.fillWidth: true
               spacing: 2
 
-              Text {
+              NText {
+                tracking: true
                 Layout.alignment: Qt.AlignHCenter
                 text: _day ? _day.dayName : ""
                 color: Color.labelText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.labelXsSize
-                font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+                size: NText.Size.LabelXs
               }
               WeatherIcon {
                 Layout.alignment: Qt.AlignHCenter
@@ -215,12 +213,11 @@ Variants {
                 strokeColor: Color.surfaceTextMuted
                 accentColor: Color.tertiary
               }
-              Text {
+              NText {
                 Layout.alignment: Qt.AlignHCenter
                 text: _day ? _day.tempMaxF + "°" : ""
                 color: Color.surfaceTextMuted
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.labelXsSize
+                size: NText.Size.LabelXs
               }
             }
           }
@@ -328,22 +325,19 @@ Variants {
             Layout.fillWidth: true
             spacing: 1
 
-            Text {
+            NText {
               Layout.fillWidth: true
               text: window.activePlayer ? window.activePlayer.trackTitle : ""
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySize
               font.weight: Font.DemiBold
               elide: Text.ElideRight
               maximumLineCount: 1
             }
-            Text {
+            NText {
               Layout.fillWidth: true
               text: window.activePlayer ? window.activePlayer.trackArtist : ""
               color: Color.labelText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.captionSize
+              size: NText.Size.Caption
               elide: Text.ElideRight
               maximumLineCount: 1
             }

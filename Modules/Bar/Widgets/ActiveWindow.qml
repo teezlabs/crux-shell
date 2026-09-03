@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Focused window's app name + title, via ToplevelManager.activeToplevel (Hyprland-only, no hyprctl needed).
 Item {
@@ -37,14 +38,13 @@ Item {
     topPadding: 8
     bottomPadding: 8
 
-    Text {
+    NText {
       visible: !root.vertical
       width: Math.min(200, implicitWidth)
       elide: Text.ElideRight
       text: root.hasWindow ? (root.appName !== "" ? root.appName + " — " + root.windowTitle : root.windowTitle) : "Desktop"
       color: root.hasWindow ? Color.surfaceText : Color.surfaceTextMuted
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
     }
 
     // Vertical bar: no room for a scrolling title — just the app's
@@ -53,13 +53,12 @@ Item {
     Column {
       visible: root.vertical
       spacing: 8
-      Text {
+      NText {
         width: 24
         horizontalAlignment: Text.AlignHCenter
         text: root.hasWindow ? (root.appName !== "" ? root.appName.charAt(0) : "•") : "—"
         color: root.hasWindow ? Color.surfaceText : Color.surfaceTextMuted
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.labelXsSize
+        size: NText.Size.LabelXs
         font.weight: Font.DemiBold
       }
     }

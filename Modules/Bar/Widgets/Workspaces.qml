@@ -4,6 +4,7 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Workspaces module (spec §6.1): fixed 28px cells, active/occupied/empty color states.
 // Per-monitor workspace IDs read from `hyprctl workspacerules -j`, not hardcoded 1-5; falls back to 1-5 if no rule.
@@ -172,13 +173,11 @@ Item {
             color: Color.primary
           }
 
-          Text {
+          NText {
+            tracking: true
             anchors.centerIn: parent
             text: String(cell.wsId)
             color: cell.active ? Color.primaryContainerText : (cell.occupied ? Color.surfaceText : Color.disabledText)
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.bodySize
-            font.letterSpacing: Tokens.bodySize * Tokens.bodyTracking
           }
 
           HoverHandler {

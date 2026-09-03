@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import qs.Commons
+import qs.Widgets
 
 // Claude usage popup content. Data from crux-agent-usage-claude. Hosted
 // inside a SlideCard by PopupHost.qml — no window/positioning of its own.
@@ -77,31 +78,28 @@ ColumnLayout {
   RowLayout {
     Layout.fillWidth: true
 
-    Text {
+    NText {
+      tracking: true
       text: "CLAUDE CODE"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
+      size: NText.Size.LabelXs
       font.weight: Font.DemiBold
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
       Layout.fillWidth: true
     }
 
-    Text {
+    NText {
       visible: root.tierLabel !== ""
       text: root.tierLabel
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
     }
   }
 
-  Text {
+  NText {
     visible: root.usageStatusText !== ""
     text: root.usageStatusText
     color: Color.error
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.captionSize
+    size: NText.Size.Caption
     wrapMode: Text.WordWrap
     Layout.fillWidth: true
   }
@@ -116,18 +114,16 @@ ColumnLayout {
 
       RowLayout {
         Layout.fillWidth: true
-        Text {
+        NText {
           text: modelData.label || ""
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
           Layout.fillWidth: true
         }
-        Text {
+        NText {
           text: Math.round((modelData.percent || 0) * 100) + "%"
           color: (modelData.percent || 0) > 0.85 ? Color.error : Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
 
@@ -141,11 +137,10 @@ ColumnLayout {
         emptyColor: Color.surfaceContainerHigh
       }
 
-      Text {
+      NText {
         text: root.formatResetsAt(modelData.resetsAt)
         color: Color.labelText
-        font.family: Tokens.fontFamily
-        font.pixelSize: Tokens.captionSize
+        size: NText.Size.Caption
       }
     }
   }
@@ -158,19 +153,17 @@ ColumnLayout {
 
   RowLayout {
     Layout.fillWidth: true
-    Text {
+    NText {
+      tracking: true
       text: "TODAY"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+      size: NText.Size.LabelXs
       Layout.fillWidth: true
     }
-    Text {
+    NText {
       text: root.todayPrompts + " prompts · " + root.formatTokens(root.todayTotalTokens) + " tokens"
       color: Color.surfaceText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
     }
   }
 }

@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Settings for the KeyboardLayout, LockKeys, and VPN bar widgets — grouped
 // here rather than three near-empty tabs, matching how Audio already
@@ -150,11 +151,10 @@ Flickable {
                 color: kbRow.isSelected ? Color.primary : Color.labelText
                 font.pixelSize: Tokens.bodySmSize
               }
-              Text {
+              NText {
                 text: kbRow.modelData.label
                 color: kbRow.isSelected ? Color.primaryContainerText : Color.surfaceText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.bodySmSize
+                size: NText.Size.BodySm
                 elide: Text.ElideRight
                 Layout.fillWidth: true
               }
@@ -170,12 +170,11 @@ Flickable {
           }
         }
 
-        Text {
+        NText {
           visible: root.keyboards.length === 0
           text: "hyprctl reported no keyboard devices."
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
     }
@@ -247,19 +246,17 @@ Flickable {
                 color: vpnRow.modelData.active ? Color.primary : Color.labelText
                 font.pixelSize: Tokens.bodySmSize
               }
-              Text {
+              NText {
                 text: vpnRow.modelData.name
                 color: vpnRow.modelData.active ? Color.primaryContainerText : Color.surfaceText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.bodySmSize
+                size: NText.Size.BodySm
                 elide: Text.ElideRight
                 Layout.fillWidth: true
               }
-              Text {
+              NText {
                 text: vpnRow.modelData.active ? "connected" : "disconnected"
                 color: Color.labelText
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.captionSize
+                size: NText.Size.Caption
               }
             }
 
@@ -277,12 +274,11 @@ Flickable {
           }
         }
 
-        Text {
+        NText {
           visible: root.vpnList.length === 0
           text: "No VPN/WireGuard connection profiles found (nmcli connection show)."
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
       }
     }

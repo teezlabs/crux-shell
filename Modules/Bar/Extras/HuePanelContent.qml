@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // Real Hue brightness/color control UI, hosted in the hue popup PopupHost.qml manages.
 // Pairing (bridge IP / link-button flow) lives in HueTab.qml under
@@ -18,41 +19,37 @@ ColumnLayout {
   RowLayout {
     Layout.fillWidth: true
 
-    Text {
+    NText {
+      tracking: true
       text: "HUE"
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.labelXsSize
+      size: NText.Size.LabelXs
       font.weight: Font.DemiBold
-      font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
       Layout.fillWidth: true
     }
 
-    Text {
+    NText {
       visible: root.group !== null
       text: root.group ? root.group.name : ""
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.captionSize
+      size: NText.Size.Caption
     }
   }
 
-  Text {
+  NText {
     visible: !Hue.paired
     text: "Not paired — configure in Settings → Hue."
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.bodySmSize
+    size: NText.Size.BodySm
     wrapMode: Text.WordWrap
     Layout.fillWidth: true
   }
 
-  Text {
+  NText {
     visible: Hue.paired && !root.group
     text: "No room/zone selected — pick one in Settings → Hue."
     color: Color.labelText
-    font.family: Tokens.fontFamily
-    font.pixelSize: Tokens.bodySmSize
+    size: NText.Size.BodySm
     wrapMode: Text.WordWrap
     Layout.fillWidth: true
   }
@@ -82,11 +79,10 @@ ColumnLayout {
                }
     }
 
-    Text {
+    NText {
       text: root.group ? Math.round(root.brightness01 * 100) + "%" : ""
       color: Color.labelText
-      font.family: Tokens.fontFamily
-      font.pixelSize: Tokens.bodySmSize
+      size: NText.Size.BodySm
       Layout.preferredWidth: 34
     }
   }

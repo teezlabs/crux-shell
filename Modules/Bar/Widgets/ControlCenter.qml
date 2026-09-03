@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Opens the Control Center popup via IPC — StatusGroup owns the one ControlCenterWindow instance per screen.
 Item {
@@ -40,21 +41,20 @@ Item {
         id: measureCol
         visible: module.vertical
         width: 24
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "00"
           opacity: 0
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
-        Text {
+        NText {
+          tracking: true
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "VOL"
           opacity: 0
-          font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
@@ -75,7 +75,7 @@ Item {
     acceptedButtons: Qt.LeftButton
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "controlCenter_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
+      Popups.openAt("controlCenter", root.screen, pos.x, pos.y);
     }
   }
 }

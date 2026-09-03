@@ -8,6 +8,7 @@ import Quickshell.Services.Mpris
 import Quickshell.Services.Notifications
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Widgets
 
 // Sidebar Dashboard: Clock/Now Playing/Notifications/Workspaces, all real data. Workspace "previews" are occupied/active chips, not thumbnails (no live screenshot source).
 PanelWindow {
@@ -15,6 +16,13 @@ PanelWindow {
 
   property var targetScreen: null
   screen: targetScreen
+
+  // Direct in-process handle for callers on this screen (see Commons/Popups.qml).
+  PopupRegistration {
+    name: "sidebar"
+    surface: root
+    screen: root.targetScreen
+  }
 
   readonly property var players: Mpris.players ? Mpris.players.values : []
   readonly property var activePlayer: {
@@ -124,6 +132,12 @@ PanelWindow {
   function toggle() {
     visible = !visible;
   }
+  function open() {
+    visible = true;
+  }
+  function close() {
+    visible = false;
+  }
 
   visible: false
   color: "transparent"
@@ -193,20 +207,18 @@ PanelWindow {
       ColumnLayout {
         Layout.fillWidth: true
         spacing: 2
-        Text {
+        NText {
+          tracking: true
           text: root._clockNow
           color: Color.surfaceText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.titleSize
+          size: NText.Size.Title
           font.weight: Font.ExtraLight
-          font.letterSpacing: Tokens.titleSize * Tokens.titleTracking
         }
-        Text {
+        NText {
+          tracking: true
           text: root._clockDate.toUpperCase()
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
       }
 
@@ -222,12 +234,11 @@ PanelWindow {
         spacing: 8
         visible: !!root.activePlayer
 
-        Text {
+        NText {
+          tracking: true
           text: "NOW PLAYING"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
 
         RowLayout {
@@ -279,21 +290,18 @@ PanelWindow {
           ColumnLayout {
             Layout.fillWidth: true
             spacing: 2
-            Text {
+            NText {
               Layout.fillWidth: true
               text: root.activePlayer ? root.activePlayer.trackTitle : ""
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySize
               font.weight: Font.DemiBold
               elide: Text.ElideRight
             }
-            Text {
+            NText {
               Layout.fillWidth: true
               text: root.activePlayer ? root.activePlayer.trackArtist : ""
               color: Color.surfaceTextMuted
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
               elide: Text.ElideRight
             }
           }
@@ -352,23 +360,21 @@ PanelWindow {
 
         RowLayout {
           Layout.fillWidth: true
-          Text {
+          NText {
+            tracking: true
             text: "NOTIFICATIONS"
             color: Color.labelText
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
           }
           Item {
             Layout.fillWidth: true
           }
-          Text {
+          NText {
+            tracking: true
             visible: root.notifications.length > 0
             text: "CLEAR"
             color: Color.primary
-            font.family: Tokens.fontFamily
-            font.pixelSize: Tokens.labelXsSize
-            font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+            size: NText.Size.LabelXs
 
             HoverHandler {
               cursorShape: Qt.PointingHandCursor
@@ -379,12 +385,11 @@ PanelWindow {
           }
         }
 
-        Text {
+        NText {
           visible: root.notifications.length === 0
           text: "NO NOTIFICATIONS"
           color: Color.disabledText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.bodySmSize
+          size: NText.Size.BodySm
         }
 
         Repeater {
@@ -413,15 +418,14 @@ PanelWindow {
               width: 2
               color: card.urgencyColor
             }
-            Text {
+            NText {
               anchors.fill: parent
               anchors.margins: 6
               anchors.leftMargin: 12
               verticalAlignment: Text.AlignVCenter
               text: card.modelData.summary || ""
               color: Color.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.bodySmSize
+              size: NText.Size.BodySm
               elide: Text.ElideRight
             }
           }
@@ -441,12 +445,11 @@ PanelWindow {
         Layout.fillWidth: true
         spacing: 8
 
-        Text {
+        NText {
+          tracking: true
           text: "WORKSPACES"
           color: Color.labelText
-          font.family: Tokens.fontFamily
-          font.pixelSize: Tokens.labelXsSize
-          font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+          size: NText.Size.LabelXs
         }
 
         RowLayout {
@@ -483,12 +486,10 @@ PanelWindow {
                 color: Color.primary
               }
 
-              Text {
+              NText {
                 anchors.centerIn: parent
                 text: String(cell.modelData.wsId)
                 color: cell.modelData.active ? Color.primaryContainerText : (cell.modelData.occupied ? Color.surfaceText : Color.disabledText)
-                font.family: Tokens.fontFamily
-                font.pixelSize: Tokens.bodySize
               }
 
               HoverHandler {

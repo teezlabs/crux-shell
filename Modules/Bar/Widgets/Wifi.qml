@@ -40,7 +40,7 @@ Item {
     id: btn
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "wifi_" + (root.screen ? root.screen.name : "0"), "openAt", String(pos.x), String(pos.y)]);
+      Popups.openAt("wifi", root.screen, pos.x, pos.y);
     }
 
     // Standard wifi-fan glyph (three concentric arcs + a dot) drawn on
