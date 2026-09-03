@@ -7,11 +7,9 @@ import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
 // Flickable, not ColumnLayout — content is taller than the settings card.
-Flickable {
+NScrollView {
   id: root
   property string screenName: ""
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   ColumnLayout {

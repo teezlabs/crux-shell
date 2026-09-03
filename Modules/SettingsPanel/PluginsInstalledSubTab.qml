@@ -9,10 +9,8 @@ import qs.Widgets
 // a plugin is a directory you drop under Plugins.pluginsDir yourself (see
 // Commons/Plugins.qml). This tab just shows what got found, so a bad
 // manifest or a missing Widget.qml doesn't fail silently.
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   ColumnLayout {

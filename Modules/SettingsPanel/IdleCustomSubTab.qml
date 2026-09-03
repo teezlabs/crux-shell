@@ -9,11 +9,9 @@ import qs.Widgets
 // optional resume command — noctalia's CustomSubTab.qml equivalent. Backed
 // by Settings.data.idle.customCommands (a JSON-encoded array), applied live
 // by Commons/Idle.qml's own dynamically-created IdleMonitor per entry.
-Flickable {
+NScrollView {
   id: root
   enabled: Settings.data.idle.enabled
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   property var entries: []

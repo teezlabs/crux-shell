@@ -9,10 +9,8 @@ import qs.Widgets
 // cards (weather, now-playing media): master on/off, per-card on/off, and a
 // per-card "reset position" action (clears the saved drag position back to
 // -1, which makes the card fall back to its built-in default corner).
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   ColumnLayout {

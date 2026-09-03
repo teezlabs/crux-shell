@@ -7,10 +7,8 @@ import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
 // About tab: shell/path/commit info. Git metadata read live, not hardcoded.
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   property string commitHash: "…"

@@ -8,10 +8,8 @@ import qs.Widgets
 // geolocation-driven auto-schedule (reusing Commons/Weather.qml's own
 // IP-geolocated lat/lon — see NightLight.qml), and a manual sunset/sunrise
 // fallback for when that's off or hasn't resolved yet.
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   function minutesToLabel(min) {

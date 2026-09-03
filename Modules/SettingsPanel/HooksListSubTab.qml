@@ -4,12 +4,13 @@ import Quickshell
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
+import qs.Widgets
 
 // The hook list — one HookRow per Settings.data.hooks.* field, each with an
 // EDIT button opening the shared HookEditPopup. TEST in the popup runs the
 // currently-edited command with sample placeholder values (same semantics
 // as noctalia's HooksListSubTab test handlers).
-Flickable {
+NScrollView {
   id: root
 
   property var targetScreen: null

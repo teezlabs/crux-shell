@@ -9,10 +9,8 @@ import qs.Widgets
 // On-screen-display settings: crux's VolumeOsd.qml already runs reacting to
 // live Pipewire state with no settings tab at all (position/duration were
 // hardcoded). This is purely exposing what already exists.
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   ColumnLayout {

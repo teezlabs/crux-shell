@@ -5,10 +5,8 @@ import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   ColumnLayout {

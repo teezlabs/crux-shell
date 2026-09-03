@@ -8,10 +8,8 @@ import qs.Widgets
 // Plugins fetched from every enabled source's registry.json (see
 // Commons/Plugins.qml) -- install copies just that plugin's own
 // subdirectory out of its source repo into pluginsDir.
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   ColumnLayout {

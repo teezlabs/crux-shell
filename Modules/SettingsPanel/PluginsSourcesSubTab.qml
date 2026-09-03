@@ -9,10 +9,8 @@ import qs.Widgets
 // at its root ({"plugins": [{"id","label","description",...}]}). Adding
 // or enabling a source doesn't fetch anything by itself; the Available
 // tab's own Refresh does that.
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   property string newUrl: ""

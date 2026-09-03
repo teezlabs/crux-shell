@@ -7,10 +7,8 @@ import qs.Widgets
 
 // Control Center settings: only the rows that are real hardcoded
 // constants, not live system state (Wifi/Bluetooth/audio/brightness).
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   ColumnLayout {

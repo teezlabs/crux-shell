@@ -8,10 +8,8 @@ import qs.Widgets
 // new UI surface, just exposing what was previously hardcoded: which
 // actions show, and which need a second tap ("arm-then-confirm") before
 // they actually run.
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   readonly property var allActions: ["Lock", "Suspend", "Logout", "Reboot", "Shutdown"]

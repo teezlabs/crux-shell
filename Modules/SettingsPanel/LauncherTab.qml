@@ -9,10 +9,8 @@ import qs.Widgets
 // popups — both already work with hardcoded behavior; this exposes what
 // was actually constant before (result count, match style, run-command
 // prefix, history size).
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   ColumnLayout {

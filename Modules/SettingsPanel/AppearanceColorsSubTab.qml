@@ -7,10 +7,8 @@ import qs.Widgets
 
 // Edits the v2 tonal-spot roles (theme.primary/.surface/...) directly —
 // editing the legacy mPrimary/mSurface roles here was silently inert.
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   readonly property var colorFields: [

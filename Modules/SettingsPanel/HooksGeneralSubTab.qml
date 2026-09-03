@@ -6,10 +6,8 @@ import qs.Widgets
 
 // General subtab: the master enable switch + documentation of the
 // placeholder scheme. Ported from noctalia's Hooks GeneralSubTab.
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   ColumnLayout {

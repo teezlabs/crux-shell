@@ -10,10 +10,8 @@ import qs.Widgets
 
 // Not a full network-manager UI — just autoconnect priority and Bluetooth
 // discoverability, the two things the Wifi/Bluetooth popups don't expose.
-Flickable {
+NScrollView {
   id: root
-  clip: true
-  contentWidth: width
   contentHeight: col.implicitHeight
 
   property var savedNetworks: []
