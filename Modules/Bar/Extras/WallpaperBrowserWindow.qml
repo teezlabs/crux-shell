@@ -837,6 +837,11 @@ PanelWindow {
                 fillMode: Image.PreserveAspectCrop
                 asynchronous: true
                 cache: true
+                // Decode at the size actually drawn. Without this a 4K
+                // wallpaper is decoded whole to fill a ~220px cell; the
+                // library here is 141 MPix across 26 files.
+                sourceSize.width: Math.max(1, Math.round(width))
+                sourceSize.height: Math.max(1, Math.round(height))
                 visible: false
               }
 
