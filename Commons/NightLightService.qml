@@ -4,15 +4,9 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Blue-light filter, backed by wlsunset. off -> on -> forced -> off.
-//
-// This used to live entirely inside the NightLight bar widget, gated on
-// "am I the instance on Quickshell.screens[0]" because bar widgets exist
-// once per monitor. That meant night light only worked when the widget
-// happened to be on the bar — the Control Center's own toggle couldn't do
-// anything, and a user without the widget had the setting but no effect.
-// A singleton is single by construction, so the primary-instance handling
-// is gone with it.
+// Blue-light filter via wlsunset: off -> on -> forced -> off. Owns the
+// process so night light works whether or not the bar widget is present —
+// see the crux skill's notes.md.
 Singleton {
   id: root
 

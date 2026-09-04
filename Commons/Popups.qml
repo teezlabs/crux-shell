@@ -3,18 +3,10 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// In-process handle on every named popup surface, keyed by name + screen.
-//
-// Bar widgets used to open a popup by shelling out to
-// `qs ipc -c crux call <target> openAt ...` — forking a process to send a
-// message back into the process that sent it, once per click. The widget
-// and the popup are objects in the same engine, so they can just call each
-// other. The IpcHandlers stay exactly as they were: they're the entry
-// point for genuinely external callers (keybinds, scripts), which is what
-// IPC is for.
-//
-// A surface registers itself and must expose open()/close()/toggle();
-// openAt(x, y) is optional and falls back to open().
+// In-process handle on every named popup surface, keyed by name + screen —
+// bar widgets call popups directly instead of forking `qs ipc` back into
+// this same process. A surface exposes open()/close()/toggle(), optionally
+// openAt(x, y). See the crux skill's notes.md.
 Singleton {
   id: root
 

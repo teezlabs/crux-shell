@@ -4,13 +4,9 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.UPower
 
-// power-profiles-daemon, via Quickshell's own UPower binding rather than
-// shelling out to powerprofilesctl.
-//
-// `available` must stay a binding, never a snapshot: PowerProfiles reads
-// its properties over DBus after construction, so hasPerformanceProfile is
-// false for the first second or two of a session and then flips true.
-// Anything gating visibility on a one-shot read of it stays hidden forever.
+// power-profiles-daemon via Quickshell's UPower binding. `available` must
+// stay a binding, and a profile write can be refused by polkit — see the
+// crux skill's notes.md.
 Singleton {
   id: root
 

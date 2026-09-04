@@ -3,17 +3,9 @@ import Quickshell
 import Quickshell.Widgets
 import qs.Commons
 
-// A themed icon: an icon-theme glyph recolored to `color`.
-//
-// Symbolic icon themes ship one fixed colour, usually light because they
-// assume a dark shell. That works until the shell goes light, at which
-// point white glyphs sit on a white surface and vanish. The shader takes
-// the glyph's intensity and paints it in whatever colour the theme calls
-// for, so an icon follows light/dark like everything else.
-//
-// Ported from noctalia's appicon_colorize.frag. colorizeMode 1.0 is its
-// "tray" path: max-channel intensity with a smoothstep, which normalises
-// symbolic glyphs of differing weights.
+// An icon-theme glyph recoloured to `color`, so symbolic icons follow
+// light/dark. `colorize: false` for real app icons. See the crux skill's
+// notes.md.
 Item {
   id: root
 

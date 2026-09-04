@@ -1,14 +1,8 @@
 import QtQuick
 
-// Keeps a popup surface registered in Popups under whatever screen it is
-// currently on.
-//
-// Registering from Component.onCompleted alone is not enough for a surface
-// created inside a bar widget (SettingsWindow, PowerMenuWindow): the widget
-// receives its own `screen` from BarWidgetLoader after construction, so at
-// completion targetScreen is still null and the surface registers under an
-// empty screen key — where the other monitor's instance then overwrites it,
-// and a click on one monitor opens the other monitor's window.
+// Keeps a popup surface registered in Popups under its current screen.
+// Registering at Component.onCompleted alone is too early for a surface
+// created inside a bar widget — see the crux skill's notes.md.
 QtObject {
   id: root
 

@@ -4,21 +4,10 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Color-scheme presets, read from Assets/ColorSchemes/*.json rather than
-// hardcoded in the settings panel — adding a scheme is dropping in a file.
-//
-// A scheme file is {"name": ..., "dark": {<tonal-spot role>: "#rrggbb"}},
-// using the same role names Settings.data.theme exposes, so applying one is
-// a straight copy. Crux is dark-only (see Matugen.qml), hence the single
-// "dark" block.
-//
-// All palettes load up front, in one pass, because the picker draws a
-// swatch of each one — lazily reading a file per scheme would mean the
-// list renders colorless until every read lands.
-//
-// Applying a scheme and generating from a wallpaper write the same theme
-// keys, so whichever ran last wins; Matugen.generateFrom() clears the
-// stored scheme name for exactly that reason.
+// Colour-scheme presets read from Assets/ColorSchemes/*.json — adding a
+// scheme is dropping in a file. {"name", "dark": {<tonal-spot role>}}; all
+// load up front because the picker draws a swatch of each. See the crux
+// skill's notes.md.
 Singleton {
   id: root
 

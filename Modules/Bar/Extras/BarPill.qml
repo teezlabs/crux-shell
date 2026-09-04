@@ -2,16 +2,8 @@ import QtQuick
 import qs.Commons
 import qs.Widgets
 
-// Icon cell that expands to reveal a label, the way noctalia's bar pills
-// do. Collapsed it's the same 32px chamfered cell BarIconButton draws;
-// revealed it grows along the bar to show `label`.
-//
-// `forceOpen` keeps it out regardless of hover — for a widget that wants to
-// stay expanded while whatever it reports is active.
-//
-// Animating implicitWidth/implicitHeight is what drives BarSection's
-// resize: it sums each item's width/height and re-reads on their change
-// signals, so a plain Behavior here is enough to make the section follow.
+// Icon cell that expands to reveal a label. `forceOpen` keeps it out
+// regardless of hover — use sparingly, see the crux skill's notes.md.
 Item {
   id: root
 

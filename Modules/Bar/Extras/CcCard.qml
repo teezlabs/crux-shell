@@ -3,16 +3,9 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
 
-// One Control Center section, as its own chamfered card.
-//
-// The panel used to be a single slab with hairline rules between sections;
-// this gives each section its own surface with gaps between them, which is
-// the grouping noctalia's control center uses. Corners stay chamfered —
-// only the layout is borrowed.
-//
-// Height is driven off the inner ColumnLayout rather than the wrapper,
-// because an Item doesn't take implicitHeight from its children and would
-// collapse to nothing inside a ColumnLayout.
+// One Control Center section as its own chamfered card. Height comes from
+// the inner ColumnLayout, not the wrapper — an Item doesn't inherit
+// implicitHeight from its children.
 Item {
   id: root
 
