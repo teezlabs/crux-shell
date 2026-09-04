@@ -20,6 +20,9 @@ Item {
   property bool attention: false
   property bool vertical: false
   property bool invertChamfer: false
+  // A pill grows the bar, so its label can't be unbounded — an SSID or a
+  // Bluetooth device name is arbitrary text. Past this it elides.
+  property real maxLabelWidth: 110
   // Glyph content, same contract as BarIconButton.
   default property alias content: iconSlot.data
 
@@ -29,8 +32,9 @@ Item {
   readonly property bool revealed: root.label !== "" && (root.forceOpen || hover.hovered)
   readonly property int cell: 32
   readonly property int gap: 6
+  readonly property real labelWidth: Math.min(labelText.implicitWidth, root.maxLabelWidth)
 
-  implicitWidth: root.vertical ? root.cell : root.cell + (root.revealed ? labelText.implicitWidth + root.gap + 4 : 0)
+  implicitWidth: root.vertical ? root.cell : root.cell + (root.revealed ? root.labelWidth + root.gap + 4 : 0)
   implicitHeight: root.vertical ? root.cell + (root.revealed ? labelText.implicitHeight + root.gap : 0) : root.cell
   width: implicitWidth
   height: implicitHeight
@@ -74,6 +78,8 @@ Item {
   NText {
     id: labelText
     text: root.label
+    width: root.labelWidth
+    elide: Text.ElideRight
     size: NText.Size.LabelXs
     tracking: true
     color: Color.surfaceTextMuted

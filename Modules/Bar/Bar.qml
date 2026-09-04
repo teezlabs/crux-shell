@@ -49,10 +49,27 @@ Item {
 
   // Centers on visible content only, trailingSize applied on main axis
   // only — see crux skill's notes.md.
+  //
+  // The three sections are positioned independently, so a section that
+  // grows at runtime (an expanding BarPill) used to slide straight over
+  // this one. Centre yields instead: it stays centred while there's room
+  // and is pushed aside once a neighbour would overlap it.
+  readonly property int sectionGap: Settings.data.bar.contentPadding
+
+  function clampCenter(ideal, size, leadEnd, trailStart) {
+    const lo = leadEnd + root.sectionGap;
+    const hi = trailStart - size - root.sectionGap;
+    // Not enough room for all three: keep clear of the leading section and
+    // let the trailing one win, rather than centring under both.
+    if (hi < lo)
+      return lo;
+    return Math.max(lo, Math.min(ideal, hi));
+  }
+
   BarSection {
     id: centerSection
-    x: root.vertical ? (root.width - width) / 2 : (root.width - width + centerSection.trailingSize) / 2
-    y: root.vertical ? (root.height - height + centerSection.trailingSize) / 2 : (root.height - height) / 2
+    x: root.vertical ? (root.width - width) / 2 : root.clampCenter((root.width - width + centerSection.trailingSize) / 2, width, leftSection.x + leftSection.width, rightSection.x)
+    y: root.vertical ? root.clampCenter((root.height - height + centerSection.trailingSize) / 2, height, leftSection.y + leftSection.height, rightSection.y) : (root.height - height) / 2
     section: "center"
     screen: root.screen
     vertical: root.vertical
