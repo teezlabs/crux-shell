@@ -24,7 +24,13 @@ pattern = re.compile(
 )
 
 if pattern.search(text):
+    # Replace the first block and drop any others. Both crux and noctalia
+    # append when they find no marker pair, so a file can end up with two;
+    # leaving the extra one behind gives starship a duplicate-key parse
+    # error and no prompt colours at all.
     text = pattern.sub(new_block, text, count=1)
+    text = pattern.sub("", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
 else:
     sep = "\n\n" if not text.endswith("\n\n") else ""
     text = text.rstrip("\n") + "\n" + sep + new_block + "\n"
