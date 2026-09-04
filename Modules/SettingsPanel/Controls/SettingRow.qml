@@ -14,10 +14,10 @@ RowLayout {
   spacing: 10
   Layout.fillWidth: true
 
-  NText {
-    text: root.label
-    color: Color.labelText
-    size: NText.Size.BodySm
+  NLabel {
+    label: root.label
+    labelColor: Color.labelText
+    wrap: false
     Layout.preferredWidth: 130
   }
 

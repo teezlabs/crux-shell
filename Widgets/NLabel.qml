@@ -11,6 +11,9 @@ ColumnLayout {
   property string description: ""
   property color labelColor: Color.surfaceText
   property color descriptionColor: Color.labelText
+  // Off for a fixed-width label column, where wrapping would change the
+  // row height instead of eliding.
+  property bool wrap: true
 
   opacity: enabled ? 1.0 : 0.6
   spacing: 2
@@ -21,7 +24,7 @@ ColumnLayout {
     text: root.label
     size: NText.Size.BodySm
     color: root.labelColor
-    wrapMode: Text.WordWrap
+    wrapMode: root.wrap ? Text.WordWrap : Text.NoWrap
     Layout.fillWidth: true
   }
 

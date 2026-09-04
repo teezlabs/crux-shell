@@ -76,62 +76,11 @@ NScrollView {
     RowLayout {
       spacing: 6
 
-      Repeater {
-        model: Quickshell.screens
-
-        delegate: Item {
-          id: monTile
-          required property var modelData
-          readonly property bool active: Settings.data.osd.monitors.length === 0 || Settings.data.osd.monitors.includes(modelData.name)
-          Layout.preferredWidth: monLabel.implicitWidth + 20
-          height: 28
-
-          Chamfer {
-            anchors.fill: parent
-            chamferSize: Tokens.chamferIcon
-            cutTopRight: true
-            cutBottomLeft: true
-            fillColor: monTile.active ? Color.primaryContainer : (monHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer)
-            strokeColor: monTile.active ? Color.primary : Color.outline
-            strokeWidth: Tokens.borderModule
-          }
-
-          NText {
-            tracking: true
-            id: monLabel
-            anchors.centerIn: parent
-            text: monTile.modelData.name
-            color: monTile.active ? Color.primaryContainerText : Color.surfaceText
-            size: NText.Size.LabelXs
-          }
-
-          HoverHandler {
-            id: monHover
-            cursorShape: Qt.PointingHandCursor
-          }
-          TapHandler {
-            onTapped: {
-              var list = Settings.data.osd.monitors.slice();
-              var name = monTile.modelData.name;
-              if (list.length === 0) {
-                var all = [];
-                for (var i = 0; i < Quickshell.screens.length; i++)
-                  if (Quickshell.screens[i].name !== name)
-                    all.push(Quickshell.screens[i].name);
-                Settings.data.osd.monitors = all;
-              } else {
-                var idx = list.indexOf(name);
-                if (idx === -1)
-                  list.push(name);
-                else
-                  list.splice(idx, 1);
-                if (list.length === Quickshell.screens.length)
-                  list = [];
-                Settings.data.osd.monitors = list;
-              }
-            }
-          }
-        }
+      NMultiSelect {
+        model: Quickshell.screens.map(s => s.name)
+        selected: Settings.data.osd.monitors
+        emptyMeansAll: true
+        onChanged: selection => Settings.data.osd.monitors = selection
       }
     }
   }

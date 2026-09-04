@@ -187,7 +187,7 @@ NScrollView {
         Layout.fillWidth: true
         spacing: 4
 
-        Repeater {
+        NMultiSelect {
           model: [
             {
               "key": "fade",
@@ -214,50 +214,10 @@ NScrollView {
               "label": "Honeycomb"
             }
           ]
-
-          delegate: Item {
-            id: transPill
-            required property var modelData
-            readonly property bool selected: Settings.data.wallpaper.transitionType.indexOf(modelData.key) !== -1
-            width: transLabel.implicitWidth + 20
-            height: 26
-
-            Chamfer {
-              anchors.fill: parent
-              chamferSize: Tokens.chamferIcon
-              cutTopRight: true
-              cutBottomLeft: true
-              fillColor: transPill.selected ? Color.primaryContainer : Color.surfaceContainer
-              strokeColor: transPill.selected ? Color.primary : Color.outline
-              strokeWidth: Tokens.borderModule
-            }
-
-            NText {
-              tracking: true
-              id: transLabel
-              anchors.centerIn: parent
-              text: transPill.modelData.label
-              color: transPill.selected ? Color.primaryContainerText : Color.surfaceText
-              size: NText.Size.LabelXs
-            }
-
-            HoverHandler {
-              cursorShape: Qt.PointingHandCursor
-            }
-            TapHandler {
-              onTapped: {
-                var list = Settings.data.wallpaper.transitionType.slice();
-                var idx = list.indexOf(transPill.modelData.key);
-                if (idx !== -1) {
-                  if (list.length > 1)
-                    list.splice(idx, 1);
-                } else {
-                  list.push(transPill.modelData.key);
-                }
-                Settings.data.wallpaper.transitionType = list;
-              }
-            }
-          }
+          selected: Settings.data.wallpaper.transitionType
+          minSelected: 1
+          uppercase: false
+          onChanged: selection => Settings.data.wallpaper.transitionType = selection
         }
       }
 
