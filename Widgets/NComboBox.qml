@@ -17,12 +17,16 @@ Item {
   property string label: ""
   property int textSize: NText.Size.BodySm
   property real popupMaxHeight: 220
+  // A long list (font families run to ~600) needs filtering to be usable.
+  property bool searchable: false
+  property string query: ""
 
   signal selected(string key)
 
   readonly property bool opened: popup.opened
 
   function openPopup(): void {
+    root.query = "";
     popup.open();
   }
   function closePopup(): void {
@@ -48,12 +52,21 @@ Item {
     return out;
   }
 
+  readonly property var visibleEntries: {
+    if (!root.searchable || root.query === "")
+      return root.entries;
+    const q = root.query.toLowerCase();
+    return root.entries.filter(e => String(e.label).toLowerCase().indexOf(q) !== -1);
+  }
+
   readonly property string currentLabel: {
     for (const e of root.entries) {
       if (e.key === root.currentKey)
         return e.label;
     }
-    return root.placeholder;
+    // A key the model doesn't carry yet — a lazily-built list, or a value
+    // set elsewhere — still reads better than the placeholder.
+    return root.currentKey !== "" ? root.currentKey : root.placeholder;
   }
 
   implicitWidth: 180
@@ -115,14 +128,14 @@ Item {
 
   TapHandler {
     enabled: root.enabled
-    onTapped: popup.opened ? popup.close() : popup.open()
+    onTapped: popup.opened ? popup.close() : root.openPopup()
   }
 
   Popup {
     id: popup
     y: root.height + 2
     width: root.width
-    implicitHeight: Math.min(root.popupMaxHeight, list.contentHeight + 8)
+    implicitHeight: Math.min(root.popupMaxHeight, list.contentHeight + 8 + (root.searchable ? 30 : 0))
     padding: 4
 
     background: Chamfer {
@@ -134,11 +147,27 @@ Item {
       strokeWidth: Tokens.borderModule
     }
 
+    NTextInput {
+      id: search
+      visible: root.searchable
+      height: visible ? 26 : 0
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      placeholderText: "Filter…"
+      fillColor: Color.surfaceContainer
+      onTextEdited: text => root.query = text
+    }
+
     ListView {
       id: list
-      anchors.fill: parent
+      anchors.top: root.searchable ? search.bottom : parent.top
+      anchors.topMargin: root.searchable ? 4 : 0
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
       clip: true
-      model: root.entries
+      model: root.visibleEntries
       currentIndex: -1
       boundsBehavior: Flickable.StopAtBounds
 

@@ -22,17 +22,19 @@ NScrollView {
     SettingRow {
       label: "Font family"
 
-      NTextInput {
-        id: fontInput
+      NComboBox {
         Layout.preferredWidth: 200
         height: 28
-        fontFamily: Settings.data.ui.fontFamily
-        text: Settings.data.ui.fontFamily
-        onEditingFinished: Settings.data.ui.fontFamily = text
+        searchable: true
+        popupMaxHeight: 260
+        model: FontService.families
+        currentKey: Settings.data.ui.fontFamily
+        placeholder: "Pick a font"
+        onSelected: key => Settings.data.ui.fontFamily = key
       }
 
       NText {
-        readonly property bool installed: Qt.fontFamilies().indexOf(fontInput.text) !== -1
+        readonly property bool installed: FontService.families.indexOf(Settings.data.ui.fontFamily) !== -1
         text: installed ? "✓ installed" : "not installed — falls back"
         color: installed ? Color.primary : Color.labelText
         size: NText.Size.Caption
@@ -42,13 +44,18 @@ NScrollView {
     SettingRow {
       label: "Monospaced font"
 
-      NTextInput {
-        id: monoFontInput
+      NComboBox {
         Layout.preferredWidth: 200
         height: 28
-        fontFamily: Settings.data.ui.monoFontFamily
-        text: Settings.data.ui.monoFontFamily
-        onEditingFinished: Settings.data.ui.monoFontFamily = text
+        searchable: true
+        popupMaxHeight: 260
+        // Only fixed-pitch faces — the list is built on first open, since
+        // detecting them walks every installed family.
+        model: FontService.monoFamilies
+        currentKey: Settings.data.ui.monoFontFamily
+        placeholder: "Pick a font"
+        onOpenedChanged: if (opened) FontService.ensureMono()
+        onSelected: key => Settings.data.ui.monoFontFamily = key
       }
 
       NText {
