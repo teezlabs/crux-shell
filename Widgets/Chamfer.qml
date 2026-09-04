@@ -25,6 +25,12 @@ Item {
   // touching it, so it reads as growing out of the bar instead of a fully
   // separate bordered card). The fill still covers the full shape.
   property string omitStrokeSide: ""
+  // Pulls both free ends of an open stroke back along their own edges.
+  // Used where a ConcaveCorner fillet completes the corner instead: the
+  // fillet's arc leaves the card's side exactly this far from the omitted
+  // edge, so without the trim the side stroke runs past the arc's tangent
+  // point and the junction reads as a Y.
+  property real strokeTrim: 0
 
   // Outline as a clockwise ring, offset inward by `inset`. A 45° chamfer
   // offset by d moves its endpoints along the edge by d*(sqrt(2)-1), so
@@ -94,6 +100,18 @@ Item {
     return -1;
   }
 
+  // `a` moved `dist` of the way toward `b`, never past its midpoint — a
+  // trim longer than the edge would fold the stroke back on itself.
+  function towards(a: var, b: var, dist: real): var {
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    if (len <= 0.001)
+      return a;
+    const t = Math.min(dist, len / 2) / len;
+    return Qt.point(a.x + dx * t, a.y + dy * t);
+  }
+
   Shape {
     anchors.fill: parent
     preferredRendererType: Shape.CurveRenderer
@@ -130,6 +148,10 @@ Item {
           const run = [];
           for (let i = 0; i < n; i++)
             run.push(pts[(start + i) % n]);
+          if (root.strokeTrim > 0 && run.length >= 2) {
+            run[0] = root.towards(run[0], run[1], root.strokeTrim);
+            run[run.length - 1] = root.towards(run[run.length - 1], run[run.length - 2], root.strokeTrim);
+          }
           return run;
         }
       }

@@ -79,7 +79,12 @@ Item {
 
   width: _animWidth
   height: _animHeight
-  clip: true
+  // Not clipped here: the corner fillets deliberately paint outside these
+  // bounds. The clip that hides the collapsing content lives on `body`.
+  clip: false
+
+  // How far the fillet reaches along the bar from the card's edge.
+  property real cornerSize: Tokens.chamferPanel
 
   Behavior on width {
     NumberAnimation {
@@ -99,6 +104,11 @@ Item {
   // back into) the bar's own edge rather than growing from its center.
   x: root.barLeft ? root.barOffset : (root.barRight ? root.host.width - root.barOffset - root.width : root.crossPos)
   y: root.barBottom ? root.host.height - root.barOffset - root.height : (root.barLeft || root.barRight ? root.crossPos : root.barOffset)
+
+  Item {
+    id: body
+    anchors.fill: parent
+    clip: true
 
   Chamfer {
     width: root.cardWidth
@@ -120,6 +130,9 @@ Item {
     cutBottomLeft: root.barTop || root.barRight
     cutBottomRight: root.barTop || root.barLeft
     omitStrokeSide: root.barBottom ? "bottom" : (root.barLeft ? "left" : (root.barRight ? "right" : "top"))
+    // The fillets complete these two corners; the stroke stops where their
+    // arcs pick it up.
+    strokeTrim: root.cornerSize
     fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
     strokeColor: Color.outline
     strokeWidth: Tokens.borderPanel
@@ -141,5 +154,44 @@ Item {
     height: root.cardHeight - root.contentMargins * 2
     x: (root.barRight ? root.width - root.cardWidth : 0) + root.contentMargins
     y: (root.barBottom ? root.height - root.cardHeight : 0) + root.contentMargins
+  }
+
+  }
+
+  // The two fillets that blend the card into the bar it grew from, one at
+  // each end of the bar-facing edge. They only make sense once the card
+  // has actually come out, so they fade with it.
+  readonly property color _cornerFill: Color.alpha(Color.surface, Tokens.panelOpacity)
+
+  ConcaveCorner {
+    id: cornerA
+    size: root.cornerSize
+    fillColor: root._cornerFill
+    strokeColor: Color.outline
+    strokeWidth: Tokens.borderPanel
+    opacity: root.shown ? 1 : 0
+    visible: opacity > 0
+    corner: root.barTop ? ConcaveCorner.Corner.TopRight : (root.barBottom ? ConcaveCorner.Corner.BottomRight : (root.barLeft ? ConcaveCorner.Corner.BottomLeft : ConcaveCorner.Corner.BottomRight))
+    x: root.barLeft ? 0 : (root.barRight ? root.width - size : -size)
+    y: (root.barTop || root.barBottom) ? (root.barBottom ? root.height - size : 0) : -size
+    Behavior on opacity {
+      NumberAnimation {
+        duration: Tokens.durationSidebarSlide
+        easing.type: Tokens.easingSidebarSlide
+      }
+    }
+  }
+
+  ConcaveCorner {
+    id: cornerB
+    size: root.cornerSize
+    fillColor: root._cornerFill
+    strokeColor: Color.outline
+    strokeWidth: Tokens.borderPanel
+    opacity: cornerA.opacity
+    visible: opacity > 0
+    corner: root.barTop ? ConcaveCorner.Corner.TopLeft : (root.barBottom ? ConcaveCorner.Corner.BottomLeft : (root.barLeft ? ConcaveCorner.Corner.TopLeft : ConcaveCorner.Corner.TopRight))
+    x: root.barLeft ? 0 : (root.barRight ? root.width - size : root.width)
+    y: (root.barTop || root.barBottom) ? (root.barBottom ? root.height - size : 0) : root.height
   }
 }
