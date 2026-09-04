@@ -9,7 +9,7 @@ import QtQuick
 // into settings.json.
 
 QtObject {
-  readonly property var ids: ["ActiveWindow", "Battery", "Bluetooth", "Brightness", "ClaudeUsage", "Clipboard", "Clock", "ControlCenter", "CustomButton", "DarkMode", "Hue", "KeepAwake", "KeyboardLayout", "Launcher", "Layout", "LockKeys", "Media", "Microphone", "Network", "NightLight", "NotificationHistory", "PowerButton", "PowerProfile", "Settings", "Sidebar", "Sound", "Spacer", "StatusGroup", "SystemMonitor", "Taskbar", "Tray", "VPN", "Wallpaper", "Wifi", "Workspaces"]
+  readonly property var ids: ["ActiveWindow", "AudioVisualizer", "Battery", "Bluetooth", "Brightness", "ClaudeUsage", "Clipboard", "Clock", "ControlCenter", "CustomButton", "DarkMode", "Hue", "KeepAwake", "KeyboardLayout", "Launcher", "Layout", "LockKeys", "Media", "Microphone", "Network", "NightLight", "NotificationHistory", "PowerButton", "PowerProfile", "Settings", "Sidebar", "Sound", "Spacer", "StatusGroup", "SystemMonitor", "Taskbar", "Tray", "VPN", "Wallpaper", "Wifi", "Workspaces"]
 
   function hasWidget(id) {
     return ids.indexOf(id) !== -1;
