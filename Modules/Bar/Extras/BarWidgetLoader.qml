@@ -11,6 +11,9 @@ Item {
   id: root
 
   required property string widgetId
+  // The widget's own settings entry from bar.widgets — its `id` plus any
+  // per-instance keys. Forwarded to widgets that declare `widgetData`.
+  property var widgetData: ({})
   required property var widgetScreen
   required property string section
   required property int sectionWidgetIndex
@@ -63,6 +66,10 @@ Item {
       if (item.contentVertical !== undefined)
         item.contentVertical = Qt.binding(function () {
           return root.contentVertical;
+        });
+      if (item.widgetData !== undefined)
+        item.widgetData = Qt.binding(function () {
+          return root.widgetData;
         });
       if (item.invertChamfer !== undefined)
         item.invertChamfer = Qt.binding(function () {

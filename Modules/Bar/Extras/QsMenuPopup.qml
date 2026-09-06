@@ -22,6 +22,13 @@ PanelWindow {
   // e.g. via mapToItem(null, x, y) from the triggering row) to anchor the
   // menu's top-left near.
   property point anchorPos: Qt.point(0, 0)
+  // Optional footer row appended below the DBusMenu's own entries. Empty
+  // label hides it. Used by the tray to offer pin/unpin without inventing a
+  // second menu surface.
+  property string pinLabel: ""
+  property var trayItem: null
+
+  signal pinToggled
 
   QsMenuOpener {
     id: opener
@@ -68,7 +75,7 @@ PanelWindow {
     x: Math.max(4, Math.min(root.anchorPos.x, root.width - width - 4))
     y: Math.max(4, Math.min(root.anchorPos.y, root.height - height - 4))
     width: 220
-    height: Math.min(480, list.contentHeight + 8)
+    height: Math.min(480, list.contentHeight + 8) + (pinRow.visible ? pinRow.height + 5 : 0)
 
     Chamfer {
       anchors.fill: parent
@@ -87,8 +94,12 @@ PanelWindow {
 
     ListView {
       id: list
-      anchors.fill: parent
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: pinRow.visible ? pinRow.top : parent.bottom
       anchors.margins: 4
+      anchors.bottomMargin: pinRow.visible ? 1 : 4
       clip: true
       interactive: contentHeight > height
       model: opener.children
@@ -175,6 +186,67 @@ PanelWindow {
               root.menuHandle = null;
             }
           }
+        }
+      }
+    }
+
+    // Pin/unpin, appended below the item's own DBusMenu entries. Divided
+    // off because it's crux's row, not the application's.
+    Item {
+      id: pinRow
+      visible: root.pinLabel !== ""
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      anchors.margins: 4
+      height: 30
+
+      Rectangle {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.leftMargin: 6
+        anchors.rightMargin: 6
+        height: 1
+        color: Color.outlineVariant
+      }
+
+      Rectangle {
+        anchors.fill: parent
+        anchors.topMargin: 1
+        color: pinHover.hovered ? Color.surfaceContainerHigh : "transparent"
+      }
+
+      RowLayout {
+        anchors.fill: parent
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+        spacing: 8
+
+        NIcon {
+          Layout.preferredWidth: 14
+          Layout.preferredHeight: 14
+          source: Quickshell.iconPath("pin-symbolic", "")
+          color: Color.primary
+        }
+
+        NText {
+          Layout.fillWidth: true
+          text: root.pinLabel
+          color: Color.primary
+          size: NText.Size.BodySm
+          elide: Text.ElideRight
+        }
+      }
+
+      HoverHandler {
+        id: pinHover
+        cursorShape: Qt.PointingHandCursor
+      }
+      TapHandler {
+        onTapped: {
+          root.pinToggled();
+          root.menuHandle = null;
         }
       }
     }

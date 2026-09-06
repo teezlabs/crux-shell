@@ -632,6 +632,28 @@ Singleton {
     }
   }
 
+  // Merges `patch`'s keys into one widget's own settings entry — the
+  // per-instance store behind widgetData (Tray's pinned list, a
+  // CustomButton's command). Same effective-list resolution rule as the
+  // reorder/add/remove functions above.
+  function updateBarWidget(screenName, section, index, patch) {
+    var override = _findScreenOverride(screenName);
+    var usesOverride = !!(override && override.enabled !== false && override.widgets !== undefined);
+    var widgets = JSON.parse(JSON.stringify(usesOverride ? override.widgets : data.bar.widgets));
+    var list = widgets[section];
+    if (!list || index < 0 || index >= list.length)
+      return;
+    for (var key in patch)
+      list[index][key] = patch[key];
+
+    if (usesOverride) {
+      setScreenOverride(screenName, "widgets", widgets);
+    } else {
+      data.bar.widgets[section] = list;
+    }
+    root.saveImmediate();
+  }
+
   // Sets one property on a screen's override entry, creating the entry if needed.
   function setScreenOverride(screenName, property, value) {
     if (!screenName)

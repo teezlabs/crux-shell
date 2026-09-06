@@ -197,6 +197,7 @@ Item {
           BarWidgetLoader {
             id: loader
             widgetId: wrapper.modelData.id || ""
+            widgetData: wrapper.modelData || ({})
             widgetScreen: sectionRoot.screen
             section: sectionRoot.section
             sectionWidgetIndex: wrapper.index

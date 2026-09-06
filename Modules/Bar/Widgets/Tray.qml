@@ -12,6 +12,10 @@ import qs.Widgets
 // applets) are "onlyMenu" — real functionality lives behind their DBusMenu,
 // rendered here via QsMenuPopup (crux-styled, not the native QMenu),
 // not a bare activate().
+//
+// Pinned items stay in the bar; the rest live in a drawer that slides open
+// along the bar itself rather than into a popup. See the crux skill's
+// notes.md.
 Item {
   id: root
 
@@ -20,18 +24,59 @@ Item {
   property int sectionWidgetIndex: -1
   property bool vertical: false
   property bool invertChamfer: false
+  property var widgetData: ({})
 
-  readonly property var trayItems: SystemTray.items && SystemTray.items.values ? SystemTray.items.values : []
+  readonly property string screenName: root.screen ? root.screen.name : ""
+  readonly property bool drawerEnabled: root.widgetData.drawer !== undefined ? root.widgetData.drawer : true
+  readonly property bool hidePassive: root.widgetData.hidePassive !== undefined ? root.widgetData.hidePassive : false
+  readonly property var pinned: root.widgetData.pinned || []
+
+  readonly property var rawItems: SystemTray.items && SystemTray.items.values ? SystemTray.items.values : []
+  readonly property var allItems: {
+    const hide = root.hidePassive;
+    return root.rawItems.filter(i => i && !(hide && i.status === SystemTray.Passive));
+  }
+  // Split inline rather than through TrayModel: a binding whose body is a
+  // call into a singleton doesn't reliably re-run when its arguments change
+  // (confirmed live — the filtered lists stayed empty while a direct call
+  // with the same inputs returned the right answer). Every dependency here
+  // is a plain property read, which QML always tracks.
+  readonly property var inlineItems: {
+    if (!root.drawerEnabled)
+      return root.allItems;
+    const pins = root.pinned;
+    return root.allItems.filter(i => pins.indexOf(TrayModel.key(i)) !== -1);
+  }
+  readonly property var drawerItems: {
+    if (!root.drawerEnabled)
+      return [];
+    const pins = root.pinned;
+    return root.allItems.filter(i => pins.indexOf(TrayModel.key(i)) === -1);
+  }
+
+  readonly property bool hasDrawer: root.drawerEnabled && root.drawerItems.length > 0
+
+  property bool expanded: false
+
+  readonly property int cell: 24
+
+  // Nothing to reveal means nothing to toggle — collapse rather than leave
+  // an open drawer that can't be closed once its last item goes away.
+  onDrawerItemsChanged: {
+    if (root.drawerItems.length === 0)
+      root.expanded = false;
+  }
 
   implicitWidth: module.implicitWidth
   implicitHeight: module.implicitHeight
   width: implicitWidth
   height: implicitHeight
-  visible: trayItems.length > 0
+  visible: root.inlineItems.length > 0 || root.hasDrawer
 
   QsMenuPopup {
     id: trayMenu
     targetScreen: root.screen
+    onPinToggled: TrayModel.togglePin(root.screenName, root.section, root.sectionWidgetIndex, trayMenu.trayItem)
   }
 
   BarModule {
@@ -50,62 +95,102 @@ Item {
       spacing: 2
 
       Repeater {
-        model: root.trayItems
+        model: root.inlineItems
 
-        delegate: Item {
-          id: trayCell
+        delegate: TrayCell {
           required property var modelData
-          readonly property bool attention: modelData && modelData.status === SystemTray.NeedsAttention
-          width: 24
-          height: 24
+          item: modelData
+          menu: trayMenu
+          cell: root.cell
+          pinned: true
+          widgetScreenName: root.screenName
+          widgetSection: root.section
+          widgetIndex: root.sectionWidgetIndex
+          pinnable: root.drawerEnabled
+        }
+      }
 
-          Rectangle {
-            visible: trayCell.attention
-            anchors.fill: parent
-            anchors.margins: 1
-            color: "transparent"
-            border.color: Color.tertiary
-            border.width: 1
+      // The drawer: collapses along the bar's own axis, so the widget
+      // shrinks back into itself instead of the icons just disappearing.
+      Item {
+        id: drawer
+        clip: true
+        visible: width > 0 && height > 0
+
+        readonly property real openWidth: root.vertical ? root.cell : drawerGrid.implicitWidth + 2
+        readonly property real openHeight: root.vertical ? drawerGrid.implicitHeight + 2 : root.cell
+
+        width: root.expanded ? openWidth : 0
+        height: root.expanded ? openHeight : (root.vertical ? 0 : root.cell)
+
+        Behavior on width {
+          NumberAnimation {
+            duration: Tokens.durationPanel
+            easing.type: Tokens.easingPanel
           }
-
-          NIcon {
-            anchors.centerIn: parent
-            anchors.margins: 4
-            width: 16
-            height: 16
-            asynchronous: true
-            colorize: false
-            source: trayCell.modelData ? trayCell.modelData.icon : ""
+        }
+        Behavior on height {
+          NumberAnimation {
+            duration: Tokens.durationPanel
+            easing.type: Tokens.easingPanel
           }
+        }
 
-          function openMenu() {
-            var pos = trayCell.mapToItem(null, 0, trayCell.height);
-            trayMenu.anchorPos = Qt.point(pos.x + Settings.data.bar.floatMargin, pos.y + Settings.data.bar.floatMargin);
-            trayMenu.menuHandle = trayCell.modelData.menu;
-          }
+        Grid {
+          id: drawerGrid
+          // Pinned against the chevron end so the icons are revealed from
+          // under it, not pushed out from behind the pinned ones.
+          x: root.vertical ? 0 : drawer.width - width
+          y: root.vertical ? drawer.height - height : 0
+          flow: root.vertical ? Grid.TopToBottom : Grid.LeftToRight
+          rows: root.vertical ? 1000 : 1
+          columns: root.vertical ? 1 : 1000
+          spacing: 2
+          leftPadding: root.vertical ? 0 : 2
+          topPadding: root.vertical ? 2 : 0
 
-          HoverHandler {
-            cursorShape: Qt.PointingHandCursor
-          }
+          Repeater {
+            model: root.drawerItems
 
-          TapHandler {
-            acceptedButtons: Qt.LeftButton
-            onTapped: {
-              if (trayCell.modelData.onlyMenu && trayCell.modelData.hasMenu)
-                trayCell.openMenu();
-              else
-                trayCell.modelData.activate();
+            delegate: TrayCell {
+              required property var modelData
+              item: modelData
+              menu: trayMenu
+              cell: root.cell
+              pinned: false
+              widgetScreenName: root.screenName
+              widgetSection: root.section
+              widgetIndex: root.sectionWidgetIndex
+              pinnable: root.drawerEnabled
+              // Acting on a drawer item is the end of what the drawer was
+              // open for.
+              onActioned: root.expanded = false
             }
           }
-          TapHandler {
-            acceptedButtons: Qt.RightButton
-            onTapped: {
-              if (trayCell.modelData.hasMenu)
-                trayCell.openMenu();
-              else if (trayCell.modelData.secondaryActivate)
-                trayCell.modelData.secondaryActivate();
-            }
-          }
+        }
+      }
+
+      // Points along the drawer's travel: outward to open, back toward the
+      // pinned icons to close.
+      Item {
+        id: chevron
+        width: root.cell
+        height: root.cell
+        visible: root.hasDrawer
+
+        NIcon {
+          anchors.centerIn: parent
+          width: 14
+          height: 14
+          source: Quickshell.iconPath(root.expanded ? TrayModel.collapseIcon(root.vertical) : TrayModel.expandIcon(root.vertical), "")
+          color: root.expanded ? Color.primary : Color.surfaceTextMuted
+        }
+
+        HoverHandler {
+          cursorShape: Qt.PointingHandCursor
+        }
+        TapHandler {
+          onTapped: root.expanded = !root.expanded
         }
       }
     }
