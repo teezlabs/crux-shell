@@ -86,6 +86,10 @@ PanelWindow {
       "label": "System Monitor"
     },
     {
+      "id": "updates",
+      "label": "Updates"
+    },
+    {
       "id": "wallpaper",
       "label": "Wallpaper"
     },
@@ -567,6 +571,10 @@ PanelWindow {
           SystemMonitorTab {
             anchors.fill: parent
             visible: root.activeTab === "systemMonitor"
+          }
+          UpdatesTab {
+            anchors.fill: parent
+            visible: root.activeTab === "updates"
           }
 
           WallpaperTab {

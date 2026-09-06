@@ -310,6 +310,16 @@ Singleton {
       property int tempCriticalThreshold: 90
     }
 
+    property JsonObject updates: JsonObject {
+      property bool hideOnZero: true
+      property int intervalMinutes: 20
+      // "{}" is replaced with the command to run; with no "{}" the command
+      // is appended instead.
+      property string terminalCommand: "kitty -- sh -c \"{}\""
+      property string customCountCmd: ""
+      property string customUpdateCmd: ""
+    }
+
     property JsonObject controlCenter: JsonObject {
       property bool showWeather: true
       property string tempUnit: "fahrenheit" // "fahrenheit" | "celsius" — passed straight to open-meteo

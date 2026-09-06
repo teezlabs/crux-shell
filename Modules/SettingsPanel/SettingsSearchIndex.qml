@@ -62,6 +62,11 @@ Item {
     { "label": "Battery thresholds", "description": "Low and critical percent for battery color states", "tab": "systemMonitor", "subTab": "", "keywords": "low critical" },
     { "label": "Power profile", "description": "PowerSaver/Balanced/Performance switcher in the battery popup", "tab": "systemMonitor", "subTab": "", "keywords": "powerprofilesctl performance" },
 
+    // ---- Updates ----
+    { "label": "Update check interval", "description": "How often the pending package count is refreshed", "tab": "updates", "subTab": "", "keywords": "pacman yay checkupdates aur refresh" },
+    { "label": "Hide updates widget at zero", "description": "Drop the bar widget while nothing is pending", "tab": "updates", "subTab": "", "keywords": "hide empty zero" },
+    { "label": "Update commands", "description": "Terminal wrapper and custom count/upgrade command overrides", "tab": "updates", "subTab": "", "keywords": "terminal kitty pacman yay command" },
+
     // ---- Peripherals ----
     { "label": "Keyboard device", "description": "Physical keyboard selection for layout and lock-key widgets", "tab": "peripherals", "subTab": "", "keywords": "device name input" },
     { "label": "Lock key indicators", "description": "Show Caps/Num/Scroll Lock indicators, hide when off", "tab": "peripherals", "subTab": "", "keywords": "capslock numlock scrolllock" },
