@@ -11,6 +11,7 @@ Item {
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool invertChamfer: false
 
   readonly property var group: Hue.selectedGroup
   readonly property bool lit: Hue.paired && group && group.on
@@ -22,6 +23,7 @@ Item {
 
   BarIconButton {
     id: btn
+    invertChamfer: root.invertChamfer
     attention: root.lit
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);

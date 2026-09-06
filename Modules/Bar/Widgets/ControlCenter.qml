@@ -12,6 +12,7 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false // true bar orientation (left/right bar)
+  property bool invertChamfer: false
 
   implicitWidth: module.implicitWidth
   implicitHeight: module.implicitHeight
@@ -26,10 +27,7 @@ Item {
     vertical: root.vertical
     topPadding: 8
     bottomPadding: 8
-    // Standard (non-inverted) chamfer, so this module's own bottom-left
-    // cut lines up with the floating outer bar strip's bottom-left cut
-    // instead of contradicting it.
-    invertChamfer: false
+    invertChamfer: root.invertChamfer
 
     Item {
       id: slot

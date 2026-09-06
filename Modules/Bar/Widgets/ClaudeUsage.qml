@@ -13,6 +13,7 @@ Item {
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool invertChamfer: false
 
   readonly property string _binDir: Quickshell.env("HOME") + "/.config/quickshell/crux/bin/"
   property var record: ({})
@@ -63,6 +64,7 @@ Item {
 
   BarIconButton {
     id: btn
+    invertChamfer: root.invertChamfer
     attention: root.sessionPercent > 0.85
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);

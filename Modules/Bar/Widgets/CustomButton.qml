@@ -14,6 +14,7 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false
+  property bool invertChamfer: false
   property var widgetData: ({})
 
   // Icon is a plain user-typed glyph, not one of crux's own icon-theme
@@ -65,6 +66,7 @@ Item {
 
   BarModule {
     id: module
+    invertChamfer: root.invertChamfer
     vertical: root.vertical
     topPadding: 8
     bottomPadding: 8

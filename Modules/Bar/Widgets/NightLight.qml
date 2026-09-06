@@ -13,6 +13,7 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false
+  property bool invertChamfer: false
 
   readonly property bool active: NightLightService.enabled
   readonly property bool forced: NightLightService.forced
@@ -24,6 +25,7 @@ Item {
 
   BarPill {
     id: btn
+    invertChamfer: root.invertChamfer
     vertical: root.vertical
     label: root.forced ? "Forced" : "Night"
     forceOpen: root.forced

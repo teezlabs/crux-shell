@@ -13,6 +13,7 @@ Item {
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool invertChamfer: false
 
   readonly property int historyCount: Notifs.history.length
 
@@ -23,6 +24,7 @@ Item {
 
   BarIconButton {
     id: btn
+    invertChamfer: root.invertChamfer
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
       Popups.openAt("notificationHistory", root.screen, pos.x, pos.y);

@@ -15,6 +15,7 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false
+  property bool invertChamfer: false
 
   readonly property string screenName: screen ? screen.name : ""
   property ListModel wsModel: ListModel {}
@@ -107,6 +108,7 @@ Item {
 
   BarModule {
     id: module
+    invertChamfer: root.invertChamfer
     vertical: root.vertical
     leftPadding: 4
     rightPadding: 4

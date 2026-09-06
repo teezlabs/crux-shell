@@ -13,6 +13,7 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false
+  property bool invertChamfer: false
 
   // Only show windows actually present on this widget's monitor — a
   // taskbar showing every window on every screen would duplicate entries
@@ -69,6 +70,7 @@ Item {
 
   BarModule {
     id: module
+    invertChamfer: root.invertChamfer
     vertical: root.vertical
     leftPadding: 4
     rightPadding: 4

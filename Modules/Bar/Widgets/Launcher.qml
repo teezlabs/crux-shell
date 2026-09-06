@@ -10,6 +10,7 @@ Item {
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool invertChamfer: false
 
   implicitWidth: btn.implicitWidth
   implicitHeight: btn.implicitHeight
@@ -23,6 +24,7 @@ Item {
 
   BarIconButton {
     id: btn
+    invertChamfer: root.invertChamfer
     onTapped: menu.toggle()
 
     // Geometric grid-of-dots glyph — no font/emoji glyph dependency.

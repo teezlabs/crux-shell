@@ -14,6 +14,7 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false
+  property bool invertChamfer: false
 
   property bool capsLockOn: false
   property bool numLockOn: false
@@ -82,6 +83,7 @@ Item {
 
   BarModule {
     id: module
+    invertChamfer: root.invertChamfer
     vertical: root.vertical
     topPadding: 8
     bottomPadding: 8

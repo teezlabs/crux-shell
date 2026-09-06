@@ -13,6 +13,7 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false
+  property bool invertChamfer: false
 
   readonly property var activeToplevel: ToplevelManager.activeToplevel
   readonly property string appId: activeToplevel ? (activeToplevel.appId || "") : ""
@@ -34,6 +35,7 @@ Item {
 
   BarModule {
     id: module
+    invertChamfer: root.invertChamfer
     vertical: root.vertical
     topPadding: 8
     bottomPadding: 8

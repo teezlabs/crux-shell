@@ -16,6 +16,7 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false
+  property bool invertChamfer: false
 
   readonly property var source: Pipewire.ready ? Pipewire.defaultAudioSource : null
   readonly property real volume: source && source.audio ? source.audio.volume : 0
@@ -40,6 +41,7 @@ Item {
 
   BarModule {
     id: module
+    invertChamfer: root.invertChamfer
     vertical: root.vertical
     topPadding: 8
     bottomPadding: 8

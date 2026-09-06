@@ -11,6 +11,7 @@ Item {
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool invertChamfer: false
 
   property bool ethernetPresent: false
   property bool ethernetConnected: false
@@ -62,6 +63,7 @@ Item {
 
   BarIconButton {
     id: btn
+    invertChamfer: root.invertChamfer
     attention: root.ethernetConnected
 
     HoverHandler {

@@ -12,6 +12,7 @@ Item {
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool invertChamfer: false
 
   // uuid -> {uuid, name, device, active}
   property var connections: ({})
@@ -126,6 +127,7 @@ Item {
 
   BarIconButton {
     id: btn
+    invertChamfer: root.invertChamfer
     attention: root.connected
     onTapped: root.toggle()
 

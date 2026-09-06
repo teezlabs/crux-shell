@@ -14,6 +14,7 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false
+  property bool invertChamfer: false
 
   readonly property var wifiDevice: {
     var devices = Networking.devices ? Networking.devices.values : [];
@@ -39,6 +40,7 @@ Item {
 
   BarPill {
     id: btn
+    invertChamfer: root.invertChamfer
     vertical: root.vertical
     label: root.connectedNetwork ? (root.connectedNetwork.ssid || "") : (Networking.wifiEnabled ? "Not connected" : "Off")
     onTapped: {

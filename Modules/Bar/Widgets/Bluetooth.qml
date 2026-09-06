@@ -13,6 +13,7 @@ Item {
   property string section: ""
   property int sectionWidgetIndex: -1
   property bool vertical: false
+  property bool invertChamfer: false
 
   readonly property var adapter: Bluetooth.defaultAdapter
   // Name of the first connected device, for the pill label.
@@ -41,6 +42,7 @@ Item {
 
   BarPill {
     id: btn
+    invertChamfer: root.invertChamfer
     vertical: root.vertical
     label: root.connectedName !== "" ? root.connectedName : (root.adapter && root.adapter.enabled ? "No device" : "Off")
     onTapped: {

@@ -9,6 +9,7 @@ Item {
   property var screen: null
   property string section: ""
   property int sectionWidgetIndex: -1
+  property bool invertChamfer: false
 
   readonly property bool dark: Settings.data.theme.darkMode
 
@@ -19,6 +20,7 @@ Item {
 
   BarIconButton {
     id: btn
+    invertChamfer: root.invertChamfer
     onTapped: Matugen.setDarkMode(!root.dark)
 
     // Sun (light) / moon (dark) glyph, geometric — no font/emoji dependency.
