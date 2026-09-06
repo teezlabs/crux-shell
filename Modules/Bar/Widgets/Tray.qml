@@ -57,8 +57,24 @@ Item {
   readonly property bool hasDrawer: root.drawerEnabled && root.drawerItems.length > 0
 
   property bool expanded: false
+  property int autoCollapseMs: 5000
 
   readonly property int cell: 24
+
+  // Hover anywhere on the widget holds the drawer open; the countdown
+  // restarts from full when the pointer leaves, because `running` going
+  // false and back true resets a Timer.
+  HoverHandler {
+    id: hover
+  }
+
+  Timer {
+    interval: root.autoCollapseMs
+    // An open DBusMenu belongs to a drawer icon — collapsing out from
+    // under it would leave the menu anchored to nothing.
+    running: root.expanded && !hover.hovered && trayMenu.menuHandle === null
+    onTriggered: root.expanded = false
+  }
 
   // Nothing to reveal means nothing to toggle — collapse rather than leave
   // an open drawer that can't be closed once its last item goes away.
