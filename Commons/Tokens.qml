@@ -149,15 +149,15 @@ QtObject {
 
   // Panels and popups: the launcher, settings, slide cards, the Control
   // Center. These float clear of everything.
-  readonly property real shadowBlurPanel: 48
-  readonly property real shadowOpacityPanel: 0.45
-  readonly property real shadowOffsetPanel: 8
+  readonly property real shadowBlurPanel: 64
+  readonly property real shadowOpacityPanel: 0.8
+  readonly property real shadowOffsetPanel: 10
 
   // Cards inside a panel, and notification toasts: lifted off their own
   // background, not off the desktop, so much tighter.
-  readonly property real shadowBlurCard: 20
-  readonly property real shadowOpacityCard: 0.28
-  readonly property real shadowOffsetCard: 3
+  readonly property real shadowBlurCard: 28
+  readonly property real shadowOpacityCard: 0.55
+  readonly property real shadowOffsetCard: 5
 
   // Bar modules and tiles: barely there. Enough to separate the module
   // from the wallpaper without turning the bar into a row of buttons.
@@ -171,8 +171,8 @@ QtObject {
   // the top edge is what actually makes a surface read as lifted, because
   // it implies a light source above rather than relying on the background
   // having somewhere darker to go.
-  readonly property real rimOpacityPanel: 0.10
-  readonly property real rimOpacityCard: 0.07
+  readonly property real rimOpacityPanel: 0.30
+  readonly property real rimOpacityCard: 0.22
 
   // §6.1 Bar geometry
   readonly property int barHeight: 42

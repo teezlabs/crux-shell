@@ -129,8 +129,11 @@ Item {
   // starts, so it never overhangs a chamfer.
   Rectangle {
     visible: root.rimLight
-    height: 1
-    y: root.strokeWidth
+    // Sits on the top stroke rather than below it, so the top edge simply
+    // reads brighter than the other three. A separate line underneath the
+    // stroke read as a doubled border instead of light catching an edge.
+    height: Math.max(1, root.strokeWidth)
+    y: 0
     x: (root.cutTopLeft ? root.chamferSize : 0) + root.strokeWidth
     width: Math.max(0, root.width - x - (root.cutTopRight ? root.chamferSize : 0) - root.strokeWidth)
     color: Color.alpha(Color.surfaceText, root.rimOpacity)
