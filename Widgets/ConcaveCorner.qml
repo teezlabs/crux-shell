@@ -3,11 +3,15 @@ import QtQuick.Shapes
 import qs.Commons
 
 // The fillet that joins a panel to the bar it grew out of: a square of
-// panel colour with a quarter-disc bitten out of the far corner, so the
-// junction reads as one continuous surface instead of a box sitting next
-// to a strip.
+// panel colour with its far corner cut off at 45°, so the junction reads
+// as one continuous surface instead of a box sitting next to a strip.
 //
-// `corner` names which way it curves, as a compass point for the sharp
+// Straight, not an arc. Crux's whole language is chamfers with an explicit
+// no-radius rule, and this was the last curve left in the shell — a
+// quarter-disc here read as a different material from the chamfered card
+// it was flaring out of.
+//
+// `corner` names which way it faces, as a compass point for the sharp
 // corner — the one that touches the junction.
 Item {
   id: root
@@ -21,7 +25,7 @@ Item {
 
   property int corner: ConcaveCorner.Corner.TopLeft
   property color fillColor: Color.surface
-  // Optional outline along the arc only — the two straight legs sit flush
+  // Optional outline along the diagonal only — the two legs sit flush
   // against the panel and the bar, so stroking them would draw a seam
   // through the very junction this shape exists to hide.
   property color strokeColor: "transparent"
@@ -58,19 +62,16 @@ Item {
       strokeColor: "transparent"
       strokeWidth: 0
 
-      // Sharp corner at the origin, arc bulging toward it.
+      // Sharp corner at the origin, far corner chamfered off.
       startX: 0
       startY: 0
       PathLine {
         x: root.size
         y: 0
       }
-      PathArc {
+      PathLine {
         x: 0
         y: root.size
-        radiusX: root.size
-        radiusY: root.size
-        direction: PathArc.Counterclockwise
       }
       PathLine {
         x: 0
@@ -86,12 +87,9 @@ Item {
 
       startX: root.size
       startY: 0
-      PathArc {
+      PathLine {
         x: 0
         y: root.size
-        radiusX: root.size
-        radiusY: root.size
-        direction: PathArc.Counterclockwise
       }
     }
   }
