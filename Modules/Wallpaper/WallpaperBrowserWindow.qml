@@ -11,54 +11,13 @@ import qs.Widgets
 import qs.Services
 
 // Wallpaper browser: centered floating card (not the spec's fullscreen mockup). Local library only. See crux skill's notes.md.
-PanelWindow {
+NPanelWindow {
   id: root
 
-  property var targetScreen: null
-  screen: targetScreen
-
-  // Direct in-process handle for callers on this screen (see Commons/Popups.qml).
-  PopupRegistration {
-    name: "wallpaperBrowser"
-    surface: root
-    screen: root.targetScreen
-  }
-
-  function toggle() {
-    visible = !visible;
-  }
-  function open() {
-    visible = true;
-  }
-  function close() {
-    visible = false;
-  }
-
-  visible: false
-  color: "transparent"
-  anchors {
-    top: true
-    left: true
-    right: true
-    bottom: true
-  }
-  WlrLayershell.layer: WlrLayer.Overlay
-  WlrLayershell.namespace: "crux-wallpaper-browser"
-  WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
-  exclusionMode: ExclusionMode.Ignore
-
-  IpcHandler {
-    target: "wallpaperBrowser_" + (root.targetScreen ? root.targetScreen.name : "0")
-    function toggle(): void {
-      root.toggle();
-    }
-    function open(): void {
-      root.open();
-    }
-    function close(): void {
-      root.close();
-    }
-  }
+  popupName: "wallpaperBrowser"
+  // Not derived from popupName: Hyprland's blur rule matches this exact
+  // string (see windowrules.lua).
+  surfaceNamespace: "crux-wallpaper-browser"
 
   // "local" | "wallhaven"
   property string sourceMode: "local"
@@ -303,11 +262,6 @@ PanelWindow {
   }
 
   Shortcut {
-    sequence: "Escape"
-    enabled: root.visible
-    onActivated: root.close()
-  }
-  Shortcut {
     sequence: "Left"
     enabled: root.visible && !searchInput.activeFocus
     onActivated: root._moveSelection(-1, 0)
@@ -352,11 +306,6 @@ PanelWindow {
     sequence: "Delete"
     enabled: root.visible && !searchInput.activeFocus
     onActivated: root.requestDelete()
-  }
-
-  MouseArea {
-    anchors.fill: parent
-    onClicked: root.close()
   }
 
   Item {

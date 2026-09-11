@@ -11,18 +11,10 @@ import qs.Widgets
 
 // Settings panel: top-level tabs in the sidebar, some split into subtabs
 // via NTabBar (Widgets/). New top-level tabs go in the `tabs` model below.
-PanelWindow {
+NPanelWindow {
   id: root
 
-  property var targetScreen: null
-  screen: targetScreen
-
-  // Direct in-process handle for callers on this screen (see Commons/Popups.qml).
-  PopupRegistration {
-    name: "settings"
-    surface: root
-    screen: root.targetScreen
-  }
+  popupName: "settings"
 
   readonly property string screenName: screen ? screen.name : ""
   property string activeTab: "general"
@@ -147,64 +139,11 @@ PanelWindow {
     }
   ]
 
-  function toggle() {
-    visible = !visible;
-  }
-  function open() {
-    visible = true;
-  }
-  function close() {
-    visible = false;
-  }
+  // The one entry point deeper than open() — NPanelWindow's per-screen IPC
+  // target forwards to it, and so does Popups.openTab.
   function openTab(tab) {
     activeTab = tab;
     visible = true;
-  }
-
-  // Screen-specific target for callers (e.g. ControlCenterWindow's gear
-  // icon) that already know their own screen and want Settings to open
-  // there specifically, regardless of OS focus.
-  IpcHandler {
-    target: "settings_" + (root.targetScreen ? root.targetScreen.name : "0")
-    function toggle() {
-      root.toggle();
-    }
-    function open() {
-      root.visible = true;
-    }
-    function openTab(tab: string) {
-      root.activeTab = tab;
-      root.visible = true;
-    }
-    function close() {
-      root.visible = false;
-    }
-  }
-
-  visible: false
-  color: "transparent"
-
-  anchors {
-    top: true
-    left: true
-    right: true
-    bottom: true
-  }
-
-  WlrLayershell.layer: WlrLayer.Overlay
-  WlrLayershell.namespace: "crux-settings"
-  WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
-  exclusionMode: ExclusionMode.Ignore
-
-  Shortcut {
-    sequence: "Escape"
-    enabled: root.visible
-    onActivated: root.visible = false
-  }
-
-  MouseArea {
-    anchors.fill: parent
-    onClicked: root.visible = false
   }
 
   Item {

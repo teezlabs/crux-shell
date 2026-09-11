@@ -9,17 +9,21 @@ import qs.Commons
 import qs.Widgets
 
 // App launcher popup. Uses Quickshell's DesktopEntries singleton rather than scanning .desktop files by hand.
-PanelWindow {
+NPanelWindow {
   id: root
 
-  property var targetScreen: null
-  screen: targetScreen
+  popupName: "launcher"
 
-  // Direct in-process handle for callers on this screen (see Commons/Popups.qml).
-  PopupRegistration {
-    name: "launcher"
-    surface: root
-    screen: root.targetScreen
+  // Resets on every open, however it was opened — IPC, the Popups registry
+  // or the bar icon — rather than only through toggle().
+  onVisibleChanged: {
+    if (!visible)
+      return;
+    query = "";
+    selectedIndex = 0;
+    Qt.callLater(function () {
+      searchInput.forceActiveFocus();
+    });
   }
 
   property string query: ""
@@ -126,50 +130,6 @@ PanelWindow {
         Quickshell.execDetached(app.command);
       }
     });
-  }
-
-  function toggle() {
-    visible = !visible;
-    if (visible) {
-      query = "";
-      selectedIndex = 0;
-      Qt.callLater(function () {
-        searchInput.forceActiveFocus();
-      });
-    }
-  }
-  function open() {
-    if (!visible)
-      toggle();
-  }
-  function close() {
-    visible = false;
-  }
-
-  visible: false
-  color: "transparent"
-
-  anchors {
-    top: true
-    left: true
-    right: true
-    bottom: true
-  }
-
-  WlrLayershell.layer: WlrLayer.Overlay
-  WlrLayershell.namespace: "crux-launcher"
-  WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
-  exclusionMode: ExclusionMode.Ignore
-
-  Shortcut {
-    sequence: "Escape"
-    enabled: root.visible
-    onActivated: root.visible = false
-  }
-
-  MouseArea {
-    anchors.fill: parent
-    onClicked: root.visible = false
   }
 
   // 660 wide, centred; apps-only launcher today (no run/windows/calc modes, so no EXEC/FOCUS distinction).
