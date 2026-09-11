@@ -61,6 +61,31 @@ PanelWindow {
         Layout.fillWidth: true
         Layout.preferredHeight: cardColumn.implicitHeight + 24
 
+        // Cards fade and settle in rather than appearing outright. Scale
+        // rather than position, because a ColumnLayout owns x and y here
+        // and animating those would fight it.
+        opacity: 0
+        scale: 0.96
+        Component.onCompleted: enterAnim.start()
+
+        ParallelAnimation {
+          id: enterAnim
+          NumberAnimation {
+            target: card
+            property: "opacity"
+            to: 1
+            duration: Tokens.durationNotifEnter
+            easing.type: Tokens.easingNotifEnter
+          }
+          NumberAnimation {
+            target: card
+            property: "scale"
+            to: 1
+            duration: Tokens.durationNotifEnter
+            easing.type: Tokens.easingNotifEnter
+          }
+        }
+
         readonly property int urgencyLevel: modelData.urgency
         readonly property color urgencyColor: urgencyLevel === NotificationUrgency.Critical ? Color.primary : (urgencyLevel === NotificationUrgency.Low ? Color.outline : Color.tertiary)
 

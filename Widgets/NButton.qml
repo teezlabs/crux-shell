@@ -86,6 +86,13 @@ Item {
     }
   }
 
+  NPressFeedback {
+    id: press
+    scaleTarget: root
+    chamferSize: Tokens.chamferIcon
+    invertChamfer: root.invertChamfer
+  }
+
   HoverHandler {
     id: hover
     enabled: root.enabled
@@ -94,7 +101,10 @@ Item {
   TapHandler {
     enabled: root.enabled
     acceptedButtons: Qt.LeftButton
-    onTapped: root.clicked()
+    onTapped: {
+      press.trigger();
+      root.clicked();
+    }
   }
   TapHandler {
     enabled: root.enabled

@@ -90,8 +90,28 @@ Text {
     return Tokens.bodyTracking;
   }
 
+  // Labels ease between colors for the same reason surfaces do: a hover or
+  // a retheme should settle, not cut. Set animateColor false where a label
+  // has to track a value instantly.
+  property bool animateColor: true
+
   opacity: enabled ? 1.0 : 0.6
   color: Color.surfaceText
+
+  Behavior on color {
+    enabled: root.animateColor
+    ColorAnimation {
+      duration: Tokens.durationColor
+      easing.type: Tokens.easingColor
+    }
+  }
+
+  Behavior on opacity {
+    NumberAnimation {
+      duration: Tokens.durationColor
+      easing.type: Tokens.easingColor
+    }
+  }
   font.family: root.mono ? Tokens.monoFontFamily : Tokens.fontFamily
   font.pixelSize: root.tierSize
   font.weight: root.tierWeight

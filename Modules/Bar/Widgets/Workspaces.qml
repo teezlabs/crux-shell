@@ -143,18 +143,38 @@ Item {
 
           // Only first/last cells chamfer, matching the module's outer corners. Which corner goes with
           // "first" flips with orientation (requested after the un-flipped version looked wrong on a vertical bar).
+          // Faded rather than toggled, so switching workspace cross-fades
+          // the highlight from the old cell to the new one instead of
+          // cutting. visible follows opacity so a fully faded cell still
+          // costs nothing to draw.
           Chamfer {
             anchors.fill: parent
-            visible: cell.active && (cell.isFirst || cell.isLast)
+            opacity: cell.active && (cell.isFirst || cell.isLast) ? 1 : 0
+            visible: opacity > 0
             chamferSize: Tokens.chamferIcon
             cutBottomLeft: root.vertical ? cell.isLast : cell.isFirst
             cutTopRight: root.vertical ? cell.isFirst : cell.isLast
             fillColor: Color.primaryContainer
+
+            Behavior on opacity {
+              NumberAnimation {
+                duration: Tokens.durationWorkspaceMarker
+                easing.type: Tokens.easingWorkspaceMarker
+              }
+            }
           }
           Rectangle {
             anchors.fill: parent
-            visible: cell.active && !cell.isFirst && !cell.isLast
+            opacity: cell.active && !cell.isFirst && !cell.isLast ? 1 : 0
+            visible: opacity > 0
             color: Color.primaryContainer
+
+            Behavior on opacity {
+              NumberAnimation {
+                duration: Tokens.durationWorkspaceMarker
+                easing.type: Tokens.easingWorkspaceMarker
+              }
+            }
           }
 
           // Active marker: bottom edge inset for a horizontal bar, side
@@ -169,10 +189,18 @@ Item {
             anchors.bottomMargin: root.vertical ? 6 : 0
             anchors.leftMargin: !root.vertical ? 6 : 0
             anchors.rightMargin: !root.vertical ? 6 : 0
-            width: root.vertical ? 2 : undefined
-            height: root.vertical ? undefined : 2
-            visible: cell.active
+            width: root.vertical ? Tokens.borderMarker : undefined
+            height: root.vertical ? undefined : Tokens.borderMarker
+            opacity: cell.active ? 1 : 0
+            visible: opacity > 0
             color: Color.primary
+
+            Behavior on opacity {
+              NumberAnimation {
+                duration: Tokens.durationWorkspaceMarker
+                easing.type: Tokens.easingWorkspaceMarker
+              }
+            }
           }
 
           NText {

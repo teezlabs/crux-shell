@@ -12,6 +12,10 @@ Item {
   property string iconName: ""
   property string fallbackIconName: ""
   property color color: Color.surfaceText
+  // Matches NText and Chamfer: icons settle into a new color rather than
+  // cutting, which matters most on a matugen retheme, when every symbolic
+  // glyph in the shell changes at once.
+  property bool animateColor: true
   // Off for real app icons — the tray and the launcher show full-colour
   // logos, which are legible in either mode and would be flattened to a
   // single tone by the shader.
@@ -22,6 +26,17 @@ Item {
 
   implicitWidth: 16
   implicitHeight: 16
+
+  // The shader reads _animatedColor, not color, so the tween happens on a
+  // plain property here rather than inside the effect.
+  property color _animatedColor: root.color
+  Behavior on _animatedColor {
+    enabled: root.animateColor
+    ColorAnimation {
+      duration: Tokens.durationColor
+      easing.type: Tokens.easingColor
+    }
+  }
 
   IconImage {
     id: img
@@ -44,7 +59,7 @@ Item {
 
     layer.enabled: root.colorize
     layer.effect: ShaderEffect {
-      property color targetColor: root.color
+      property color targetColor: root._animatedColor
       property real colorizeMode: 1.0
       fragmentShader: Qt.resolvedUrl(Quickshell.shellDir + "/Assets/Shaders/appicon_colorize.frag.qsb")
     }

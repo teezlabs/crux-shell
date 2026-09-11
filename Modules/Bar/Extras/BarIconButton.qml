@@ -40,13 +40,23 @@ Item {
     anchors.fill: parent
   }
 
+  NPressFeedback {
+    id: press
+    scaleTarget: root
+    chamferSize: Tokens.chamferModule
+    invertChamfer: root.invertChamfer
+  }
+
   HoverHandler {
     id: hoverHandler
     cursorShape: Qt.PointingHandCursor
   }
   TapHandler {
     acceptedButtons: Qt.LeftButton
-    onTapped: root.tapped()
+    onTapped: {
+      press.trigger();
+      root.tapped();
+    }
   }
   TapHandler {
     acceptedButtons: Qt.RightButton

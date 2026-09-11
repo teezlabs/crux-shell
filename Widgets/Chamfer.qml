@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Shapes
+import qs.Commons
 
 // Chamfered-rectangle background, no rounded corners. Per-corner cut flags.
 //
@@ -19,6 +20,11 @@ Item {
   property bool cutBottomRight: false
   property color fillColor: "transparent"
   property color strokeColor: "transparent"
+  // Every chamfered surface in the shell eases between colors rather than
+  // cutting, so hover states settle and a matugen retheme cross-fades the
+  // whole desktop instead of snapping. Set false for anything that has to
+  // track a color instantly.
+  property bool animateColor: true
   property real strokeWidth: 0
   // "top"/"right"/"bottom"/"left"/"" — skips drawing the stroke on that one
   // edge (e.g. a popup flush against the bar shouldn't outline the edge
@@ -120,6 +126,14 @@ Item {
     ShapePath {
       fillColor: root.fillColor
       strokeColor: "transparent"
+
+      Behavior on fillColor {
+        enabled: root.animateColor
+        ColorAnimation {
+          duration: Tokens.durationColor
+          easing.type: Tokens.easingColor
+        }
+      }
       strokeWidth: 0
       PathPolyline {
         path: {
@@ -133,6 +147,14 @@ Item {
     ShapePath {
       fillColor: "transparent"
       strokeColor: root.strokeColor
+
+      Behavior on strokeColor {
+        enabled: root.animateColor
+        ColorAnimation {
+          duration: Tokens.durationColor
+          easing.type: Tokens.easingColor
+        }
+      }
       strokeWidth: root.strokeWidth
       joinStyle: ShapePath.MiterJoin
       capStyle: ShapePath.FlatCap

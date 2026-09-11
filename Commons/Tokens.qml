@@ -107,6 +107,36 @@ QtObject {
   readonly property int durationSidebarSlide: 200
   readonly property int easingSidebarSlide: Easing.OutCubic
 
+  // Color transitions. Every surface, label and icon that changes color on
+  // hover, on state, or when matugen regenerates the palette eases through
+  // it rather than cutting. Deliberately short: this should read as the
+  // color settling, not as an animation playing.
+  readonly property int durationColor: 180
+  readonly property int easingColor: Easing.OutCubic
+  // Slower, for a whole-palette change — a retheme is a real event and
+  // reads better as a cross-fade than as 180ms of flicker.
+  readonly property int durationRetheme: 420
+
+  // Press feedback: the control swells slightly on the way down and
+  // settles back more slowly, so the release reads as a release.
+  readonly property real pressScale: 1.04
+  readonly property int durationPressIn: 100
+  readonly property int easingPressIn: Easing.OutQuad
+  readonly property int durationPressOut: 350
+  readonly property int easingPressOut: Easing.OutQuint
+
+  // A brief light wash over a control as it activates, fading to nothing.
+  readonly property real flashOpacity: 0.18
+  readonly property int durationFlash: 350
+  readonly property int easingFlash: Easing.OutExpo
+
+  // A sliding highlight moves its leading edge faster than its trailing
+  // edge, so it stretches in the direction of travel and snaps back to
+  // shape on arrival. Used by the tab bars and the workspace marker.
+  readonly property int durationHighlightLead: 200
+  readonly property int durationHighlightTrail: 350
+  readonly property int easingHighlight: Easing.OutExpo
+
   // §6.1 Bar geometry
   readonly property int barHeight: 42
   readonly property int barModuleHeight: 30
