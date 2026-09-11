@@ -137,6 +137,43 @@ QtObject {
   readonly property int durationHighlightTrail: 350
   readonly property int easingHighlight: Easing.OutExpo
 
+  // §8 Elevation. Shadows are cast by the surface's own chamfered shape,
+  // never a rectangle behind it, so a cut corner still reads as cut in the
+  // shadow. Three tiers only: the shell is flat by design and depth is
+  // meant to say "this floats above that", not to decorate.
+  //
+  // Colour is a hard black rather than a tinted one. On the dark themes
+  // crux actually runs, a tinted shadow over a near-black desktop reads as
+  // a glow, not a shadow.
+  readonly property color shadowColor: "#000000"
+
+  // Panels and popups: the launcher, settings, slide cards, the Control
+  // Center. These float clear of everything.
+  readonly property real shadowBlurPanel: 48
+  readonly property real shadowOpacityPanel: 0.45
+  readonly property real shadowOffsetPanel: 8
+
+  // Cards inside a panel, and notification toasts: lifted off their own
+  // background, not off the desktop, so much tighter.
+  readonly property real shadowBlurCard: 20
+  readonly property real shadowOpacityCard: 0.28
+  readonly property real shadowOffsetCard: 3
+
+  // Bar modules and tiles: barely there. Enough to separate the module
+  // from the wallpaper without turning the bar into a row of buttons.
+  readonly property real shadowBlurModule: 12
+  readonly property real shadowOpacityModule: 0.22
+  readonly property real shadowOffsetModule: 2
+
+  // A lit top edge. On the dark themes crux runs, a black shadow over a
+  // near-black desktop moves the luminance by about three levels out of
+  // 255 — measurably there, visually nothing. A one-pixel highlight along
+  // the top edge is what actually makes a surface read as lifted, because
+  // it implies a light source above rather than relying on the background
+  // having somewhere darker to go.
+  readonly property real rimOpacityPanel: 0.10
+  readonly property real rimOpacityCard: 0.07
+
   // §6.1 Bar geometry
   readonly property int barHeight: 42
   readonly property int barModuleHeight: 30

@@ -109,6 +109,12 @@ PanelWindow {
           fillColor: Color.alpha(Color.surfaceContainer, Settings.data.notifications.backgroundOpacity)
           strokeColor: Color.outlineVariant
           strokeWidth: Tokens.borderModule
+          shadow: true
+          shadowBlur: Tokens.shadowBlurCard
+          shadowOpacity: Tokens.shadowOpacityCard
+          shadowOffset: Tokens.shadowOffsetCard
+          rimLight: true
+          rimOpacity: Tokens.rimOpacityCard
         }
 
         Rectangle {

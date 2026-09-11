@@ -33,6 +33,10 @@ Item {
     fillColor: Color.alpha(hoverHandler.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer, root.effectiveOpacity)
     strokeColor: root.attention ? Color.tertiary : Color.outlineVariant
     strokeWidth: Tokens.borderModule
+    // Rim only: the bar window is exactly the bar's thickness, so a
+    // shadow has nowhere to fall.
+    rimLight: true
+    rimOpacity: Tokens.rimOpacityCard
   }
 
   Item {

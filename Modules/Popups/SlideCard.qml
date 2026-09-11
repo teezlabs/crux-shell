@@ -136,6 +136,9 @@ Item {
     fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
     strokeColor: Color.outline
     strokeWidth: Tokens.borderPanel
+    // Rim only, no shadow: `body` clips for the collapse animation, so a
+    // shadow would be cut off flush at the card's own edge.
+    rimLight: root.barTop || root.barLeft || root.barRight
   }
 
   // Swallow clicks on the card itself so they don't fall through to the

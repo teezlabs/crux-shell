@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Shapes
 import qs.Commons
 
@@ -25,6 +26,24 @@ Item {
   // whole desktop instead of snapping. Set false for anything that has to
   // track a color instantly.
   property bool animateColor: true
+
+  // Opt-in drop shadow, cast by this exact chamfered outline rather than a
+  // rectangle behind it, so a cut corner stays cut in the shadow too.
+  // Off by default: most chamfers in the shell are flush chrome with
+  // nothing to float above, and every shadow costs a layer.
+  //
+  // The shadow is masked out anywhere the shape itself covers. Panels here
+  // are translucent on purpose, and an unmasked shadow would show through
+  // the fill and darken the panel instead of sitting under it.
+  property bool shadow: false
+  property real shadowBlur: Tokens.shadowBlurPanel
+  property real shadowOpacity: Tokens.shadowOpacityPanel
+  property real shadowOffset: Tokens.shadowOffsetPanel
+
+  // Lit top edge, the other half of elevation. See Tokens §8 for why a
+  // shadow alone doesn't carry depth on a dark theme.
+  property bool rimLight: false
+  property real rimOpacity: Tokens.rimOpacityPanel
   property real strokeWidth: 0
   // "top"/"right"/"bottom"/"left"/"" — skips drawing the stroke on that one
   // edge (e.g. a popup flush against the bar shouldn't outline the edge
@@ -106,6 +125,18 @@ Item {
     return -1;
   }
 
+  // Spans the flat part of the top edge only, stopping where a cut corner
+  // starts, so it never overhangs a chamfer.
+  Rectangle {
+    visible: root.rimLight
+    height: 1
+    y: root.strokeWidth
+    x: (root.cutTopLeft ? root.chamferSize : 0) + root.strokeWidth
+    width: Math.max(0, root.width - x - (root.cutTopRight ? root.chamferSize : 0) - root.strokeWidth)
+    color: Color.alpha(Color.surfaceText, root.rimOpacity)
+    z: 1
+  }
+
   // `a` moved `dist` of the way toward `b`, never past its midpoint — a
   // trim longer than the edge would fold the stroke back on itself.
   function towards(a: var, b: var, dist: real): var {
@@ -116,6 +147,44 @@ Item {
       return a;
     const t = Math.min(dist, len / 2) / len;
     return Qt.point(a.x + dx * t, a.y + dy * t);
+  }
+
+  // Silhouette of the same outline, used only as the shadow's caster and
+  // its own cut-out mask. Never drawn directly.
+  Shape {
+    id: silhouette
+    anchors.fill: parent
+    visible: false
+    layer.enabled: root.shadow
+    preferredRendererType: Shape.CurveRenderer
+
+    ShapePath {
+      fillColor: "black"
+      strokeColor: "transparent"
+      strokeWidth: 0
+      PathPolyline {
+        path: {
+          const pts = root.outline(0);
+          return pts.concat([pts[0]]);
+        }
+      }
+    }
+  }
+
+  MultiEffect {
+    anchors.fill: parent
+    source: silhouette
+    visible: root.shadow
+    shadowEnabled: root.shadow
+    blurMax: root.shadowBlur
+    shadowColor: Tokens.shadowColor
+    shadowOpacity: root.shadowOpacity
+    shadowVerticalOffset: root.shadowOffset
+    shadowHorizontalOffset: 0
+    // Cuts the caster back out, leaving only what falls outside the shape.
+    maskEnabled: true
+    maskSource: silhouette
+    maskInverted: true
   }
 
   Shape {

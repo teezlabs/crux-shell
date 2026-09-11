@@ -260,6 +260,8 @@ NPanelWindow {
       fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
       strokeColor: Color.outline
       strokeWidth: Tokens.borderPanel
+      shadow: true
+      rimLight: true
     }
 
     MouseArea {

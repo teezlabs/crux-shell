@@ -24,6 +24,12 @@ Item {
     fillColor: Color.surfaceContainer
     strokeColor: Color.outline
     strokeWidth: Tokens.borderModule
+    shadow: true
+    shadowBlur: Tokens.shadowBlurCard
+    shadowOpacity: Tokens.shadowOpacityCard
+    shadowOffset: Tokens.shadowOffsetCard
+    rimLight: true
+    rimOpacity: Tokens.rimOpacityCard
   }
 
   ColumnLayout {
