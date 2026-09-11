@@ -4,7 +4,6 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Mpris
 import qs.Commons
-import qs.Modules.Media
 import qs.Widgets
 import qs.Modules.Bar.Extras
 import qs.Services

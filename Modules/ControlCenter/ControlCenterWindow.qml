@@ -10,7 +10,6 @@ import Quickshell.Services.Pipewire
 import Quickshell.Services.Mpris
 import Quickshell.Widgets
 import qs.Commons
-import qs.Modules.Media
 import qs.Modules.Popups.Contents
 import qs.Widgets
 import qs.Modules.Bar.Extras

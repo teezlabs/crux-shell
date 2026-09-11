@@ -22,13 +22,13 @@ PanelWindow {
 
   readonly property string barPos: Settings.isLoaded ? Settings.getBarPositionForScreen(root.targetScreen ? root.targetScreen.name : "") : "top"
 
-  readonly property var cards: [soundCard, batteryCard, bluetoothCard, wifiCard, hueCard, microphoneCard, brightnessCard, clipboardCard, claudeUsageCard, notificationHistoryCard, systemStatsCard]
+  readonly property var cards: [soundCard, batteryCard, bluetoothCard, wifiCard, hueCard, microphoneCard, brightnessCard, clipboardCard, claudeUsageCard, notificationHistoryCard, systemStatsCard, calendarCard, mediaPlayerCard]
 
   // Deliberately an explicit OR chain rather than cards.some(...): this
   // drives the input mask, and a binding that reads each card through an
   // array indirection is exactly the shape QML's dependency tracker has
   // been unreliable about here (see the crux skill's Grid/itemAt gotcha).
-  readonly property bool anyOpen: soundCard.shown || batteryCard.shown || bluetoothCard.shown || wifiCard.shown || hueCard.shown || microphoneCard.shown || brightnessCard.shown || clipboardCard.shown || claudeUsageCard.shown || notificationHistoryCard.shown || systemStatsCard.shown
+  readonly property bool anyOpen: soundCard.shown || batteryCard.shown || bluetoothCard.shown || wifiCard.shown || hueCard.shown || microphoneCard.shown || brightnessCard.shown || clipboardCard.shown || claudeUsageCard.shown || notificationHistoryCard.shown || systemStatsCard.shown || calendarCard.shown || mediaPlayerCard.shown
 
   function closeAll(): void {
     for (const card of root.cards)
@@ -253,6 +253,38 @@ PanelWindow {
     }
   }
 
+  SlideCard {
+    id: calendarCard
+    host: root
+    barPos: root.barPos
+    popupName: "calendar"
+    cardWidth: 308
+    cardHeight: calendarContent.implicitHeight + contentMargins * 2
+    // Reopening lands on the current month, not wherever paging left off.
+    onShownChanged: if (shown)
+      calendarContent.reset()
+
+    CalendarPopupContent {
+      id: calendarContent
+      anchors.fill: parent
+    }
+  }
+
+  SlideCard {
+    id: mediaPlayerCard
+    host: root
+    barPos: root.barPos
+    popupName: "mediaPlayer"
+    cardWidth: 396
+    cardHeight: mediaPlayerContent.implicitHeight + contentMargins * 2
+
+    MediaPlayerPopupContent {
+      id: mediaPlayerContent
+      anchors.fill: parent
+      active: mediaPlayerCard.shown
+    }
+  }
+
   PopupIpc {
     host: root
     card: soundCard
@@ -296,5 +328,13 @@ PanelWindow {
   PopupIpc {
     host: root
     card: systemStatsCard
+  }
+  PopupIpc {
+    host: root
+    card: calendarCard
+  }
+  PopupIpc {
+    host: root
+    card: mediaPlayerCard
   }
 }

@@ -7,7 +7,6 @@ import Quickshell.Hyprland
 import Quickshell.Services.Mpris
 import Quickshell.Services.Notifications
 import qs.Commons
-import qs.Modules.Media
 import qs.Modules.Notifications
 import qs.Widgets
 import qs.Services

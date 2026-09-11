@@ -9,18 +9,14 @@ import qs.Widgets
 
 // Power menu: fullscreen scrim, row of 5 chamfered tiles. Keys L/S/E/R/P select; ←→ move selection; ⏎ confirms.
 // All paths go through a confirm step (SessionMenuTab.qml's confirmActions) — no bare single-keypress trigger for destructive actions.
-PanelWindow {
+NPanelWindow {
   id: root
 
-  property var targetScreen: null
-  screen: targetScreen
-
-  // Direct in-process handle for callers on this screen (see Commons/Popups.qml).
-  PopupRegistration {
-    name: "power"
-    surface: root
-    screen: root.targetScreen
-  }
+  popupName: "power"
+  surfaceNamespace: "crux-power-menu"
+  // Opaque scrim rather than the usual transparent full-screen surface —
+  // the tiles sit on it, there's nothing to see through.
+  color: Color.alpha(Color.surface, 0.9)
 
   readonly property var actions: [
     {
@@ -95,36 +91,6 @@ PanelWindow {
     }
   }
 
-  function toggle() {
-    visible = !visible;
-  }
-  function open() {
-    visible = true;
-  }
-  function close() {
-    visible = false;
-  }
-
-  visible: false
-  color: Color.alpha(Color.surface, 0.9)
-
-  anchors {
-    top: true
-    left: true
-    right: true
-    bottom: true
-  }
-
-  WlrLayershell.layer: WlrLayer.Overlay
-  WlrLayershell.namespace: "crux-power-menu"
-  WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
-  exclusionMode: ExclusionMode.Ignore
-
-  Shortcut {
-    sequence: "Escape"
-    enabled: root.visible
-    onActivated: root.visible = false
-  }
   Shortcut {
     sequence: "Left"
     enabled: root.visible
@@ -152,11 +118,6 @@ PanelWindow {
         root.activate(modelData);
       }
     }
-  }
-
-  MouseArea {
-    anchors.fill: parent
-    onClicked: root.visible = false
   }
 
   ColumnLayout {

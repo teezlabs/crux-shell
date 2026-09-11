@@ -2,13 +2,12 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Mpris
 import qs.Commons
-import qs.Modules.Media
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
 // v2 spec §6.1 Media module: 4-bar equaliser (2px wide, heights 5/11/7/9,
 // primary) + truncated "Title — Artist", max width 210. Click opens the
-// media popover (MediaPlayerWindow.qml, §6.6).
+// media popover (MediaPlayerPopupContent.qml, §6.6).
 Item {
   id: root
 
@@ -106,16 +105,14 @@ Item {
     }
   }
 
-  MediaPlayerWindow {
-    id: popover
-    targetScreen: root.screen
-  }
-
   HoverHandler {
     cursorShape: Qt.PointingHandCursor
   }
 
   TapHandler {
-    onTapped: popover.toggle()
+    onTapped: {
+      var pos = root.mapToItem(null, 0, 0);
+      Popups.openAt("mediaPlayer", root.screen, pos.x, pos.y);
+    }
   }
 }

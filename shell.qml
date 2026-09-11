@@ -25,9 +25,7 @@ import qs.Modules.Tooltip
 // dynamically Loader-loaded bar widget has to be statically imported once
 // from shell.qml or its qs.* namespace never gets registered with the
 // engine. See crux skill's SKILL.md.
-import qs.Modules.Calendar
 import qs.Modules.Launcher
-import qs.Modules.Media
 import qs.Modules.Popups.Contents
 import qs.Modules.SessionMenu
 import qs.Modules.SettingsPanel

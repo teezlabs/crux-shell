@@ -1,6 +1,5 @@
 import QtQuick
 import qs.Commons
-import qs.Modules.Calendar
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
@@ -29,16 +28,14 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  CalendarWindow {
-    id: calendar
-    targetScreen: root.screen
-  }
-
   HoverHandler {
     cursorShape: Qt.PointingHandCursor
   }
   TapHandler {
-    onTapped: calendar.toggle()
+    onTapped: {
+      var pos = root.mapToItem(null, 0, 0);
+      Popups.openAt("calendar", root.screen, pos.x, pos.y);
+    }
   }
 
   BarModule {
