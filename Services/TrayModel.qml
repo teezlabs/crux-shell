@@ -2,6 +2,7 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
+import qs.Commons
 
 // Pure helpers shared by the Tray bar widget and its drawer: both need the
 // same pinned/unpinned split off the same live SystemTray list, and neither

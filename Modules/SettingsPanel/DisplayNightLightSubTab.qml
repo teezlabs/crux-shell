@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
+import qs.Services
 
 // Night Light (wlsunset) settings: night/day color temperature, a real
 // geolocation-driven auto-schedule (reusing Commons/Weather.qml's own

@@ -2,6 +2,7 @@ import QtQuick
 import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
+import qs.Services
 
 // Live FFT bars for whatever the default sink is playing. Capture is
 // ref-counted in SpectrumService, so it only runs while this is on screen.

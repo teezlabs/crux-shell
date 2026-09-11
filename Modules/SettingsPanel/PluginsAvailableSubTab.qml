@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
+import qs.Services
 
 // Plugins fetched from every enabled source's registry.json (see
 // Commons/Plugins.qml) -- install copies just that plugin's own

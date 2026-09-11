@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Commons
+import qs.Services
 
 // Geometric weather glyph drawn on Canvas — same "no icon font" rule every
 // other icon in crux follows (see the crux skill's font gotchas). Six

@@ -9,6 +9,7 @@ import qs.Modules.Media
 import qs.Modules.Popups.Contents
 import qs.Modules.SessionMenu
 import qs.Widgets
+import qs.Services
 
 // Lean JSON-backed settings store. Grows as crux needs more, not before.
 Singleton {

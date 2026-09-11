@@ -5,6 +5,7 @@ import Quickshell.Wayland
 import Quickshell.Services.Notifications
 import qs.Commons
 import qs.Widgets
+import qs.Services
 
 // Notifications: persistent top-right stack, appears whenever Commons/Notifs.qml has tracked notifications.
 // Auto-expiry via a real per-notification dismiss() timer (6s normal, 12s critical, never for resident), not a visual-only fade.

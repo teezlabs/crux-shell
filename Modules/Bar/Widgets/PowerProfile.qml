@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell.Services.UPower
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Services
 
 // Current power profile; click cycles power-saver -> balanced ->
 // performance. Hidden entirely on a machine with no power-profiles-daemon.

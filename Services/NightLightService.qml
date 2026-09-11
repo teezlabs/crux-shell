@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.Commons
 
 // Blue-light filter via wlsunset: off -> on -> forced -> off. Owns the
 // process so night light works whether or not the bar widget is present —

@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
+import qs.Services
 
 NScrollView {
   id: root

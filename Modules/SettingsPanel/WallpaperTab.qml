@@ -5,6 +5,7 @@ import Quickshell.Io
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
+import qs.Services
 
 // Wallpaper picker + matugen-driven theme generation, native to crux.
 NScrollView {

@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
+import qs.Services
 
 // Local-folder plugin discovery status — no marketplace, no install flow:
 // a plugin is a directory you drop under Plugins.pluginsDir yourself (see

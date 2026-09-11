@@ -4,6 +4,7 @@ import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 import qs.Modules.Popups
+import qs.Services
 
 // Real Hue brightness/color control UI, hosted in the hue popup PopupHost.qml manages.
 // Pairing (bridge IP / link-button flow) lives in HueTab.qml under

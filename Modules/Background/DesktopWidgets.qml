@@ -7,6 +7,7 @@ import qs.Commons
 import qs.Modules.Media
 import qs.Widgets
 import qs.Modules.Bar.Extras
+import qs.Services
 
 // Desktop info cards (weather, media), pinned to the wallpaper layer,
 // draggable, individually toggleable. See crux skill's notes.md.

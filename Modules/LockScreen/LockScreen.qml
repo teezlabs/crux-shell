@@ -10,6 +10,7 @@ import qs.Commons
 import qs.Modules.SessionMenu
 import qs.Modules.LockScreen
 import qs.Widgets
+import qs.Services
 
 // Spec §6.10: fullscreen blurred wallpaper, clock top-left, password field
 // bottom-left, NET/BAT/VOL top-right, notification summaries bottom-right.

@@ -4,6 +4,7 @@ import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.ControlCenter
 import qs.Widgets
+import qs.Services
 
 // Night light quick toggle: off -> on -> forced -> off.
 CcCircleToggle {

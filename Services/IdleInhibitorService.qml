@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.Modules.ControlCenter
+import qs.Commons
 
 // Single owner of "keep the machine awake": the bar widget and the Control
 // Center tile both drive this. Backed by a Wayland IdleInhibitor (in

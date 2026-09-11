@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Services.UPower
+import qs.Commons
 
 // power-profiles-daemon via Quickshell's UPower binding. `available` must
 // stay a binding, and a profile write can be refused by polkit — see the

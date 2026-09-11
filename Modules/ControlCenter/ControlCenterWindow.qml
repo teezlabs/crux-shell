@@ -14,6 +14,7 @@ import qs.Modules.Media
 import qs.Modules.Popups.Contents
 import qs.Widgets
 import qs.Modules.Bar.Extras
+import qs.Services
 
 // Control Center. Only rows with real backing are wired up; unimplemented ones (night light, recording, color-picker) show disabled, not omitted.
 PanelWindow {

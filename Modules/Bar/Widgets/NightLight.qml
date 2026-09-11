@@ -2,6 +2,7 @@ import QtQuick
 import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
+import qs.Services
 
 // Blue-light filter toggle. Click cycles off -> on -> forced -> off.
 // wlsunset itself is owned by Commons/NightLightService.qml, so night light

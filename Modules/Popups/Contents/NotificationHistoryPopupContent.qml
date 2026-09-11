@@ -5,6 +5,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Modules.Notifications
 import qs.Modules.Popups
+import qs.Services
 
 // Notification history popup content: persistent log of past
 // notifications, distinct from NotificationsWindow.qml's live toast

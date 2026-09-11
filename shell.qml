@@ -33,6 +33,7 @@ import qs.Modules.SessionMenu
 import qs.Modules.SettingsPanel
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
+import qs.Services
 
 ShellRoot {
   PolkitAgent {}

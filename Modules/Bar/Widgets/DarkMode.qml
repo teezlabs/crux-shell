@@ -1,6 +1,7 @@
 import QtQuick
 import qs.Commons
 import qs.Modules.Bar.Extras
+import qs.Services
 
 // Light/dark toggle. Crux's theme is matugen-driven, not a fixed palette — click just re-maps Settings.data.theme via Matugen.setDarkMode().
 Item {

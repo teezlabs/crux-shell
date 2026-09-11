@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.Widgets
+import qs.Services
 
 // Top-level Idle tab: Behavior/Custom subtabs. Backend is Commons/Idle.qml
 // — native ext-idle-notify-v1 IdleMonitor instances, not hypridle.conf.

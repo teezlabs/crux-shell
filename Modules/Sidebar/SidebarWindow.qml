@@ -10,6 +10,7 @@ import qs.Commons
 import qs.Modules.Media
 import qs.Modules.Notifications
 import qs.Widgets
+import qs.Services
 
 // Sidebar Dashboard: Clock/Now Playing/Notifications/Workspaces, all real data. Workspace "previews" are occupied/active chips, not thumbnails (no live screenshot source).
 PanelWindow {

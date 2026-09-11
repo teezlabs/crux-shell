@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import qs.Commons
+import qs.Services
 
 // Loads one bar widget by id — either a built-in from
 // Modules/Bar/Widgets/<id>.qml, or (if no built-in matches) a local plugin's

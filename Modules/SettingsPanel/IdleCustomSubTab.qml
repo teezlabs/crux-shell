@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
+import qs.Services
 
 // Arbitrary user-defined idle commands, each with its own timeout and an
 // optional resume command — noctalia's CustomSubTab.qml equivalent. Backed

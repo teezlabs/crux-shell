@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.Widgets
+import qs.Services
 
 // Top-level Hooks tab: General/Hooks subtabs. Backend is Commons/Hooks.qml.
 ColumnLayout {

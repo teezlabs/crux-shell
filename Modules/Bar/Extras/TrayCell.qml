@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Services.SystemTray
 import qs.Commons
 import qs.Widgets
+import qs.Services
 
 // One tray icon, shared by the bar's inline row and the drawer's grid so
 // both get the same activate/menu/pin behaviour from one place.

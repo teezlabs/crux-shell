@@ -1,6 +1,7 @@
 import QtQuick
 import qs.Commons
 import qs.Modules.ControlCenter
+import qs.Services
 
 // Keep-awake quick toggle, sharing state with the bar widget of the same
 // name via Commons/IdleInhibitorService.qml.

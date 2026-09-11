@@ -5,6 +5,7 @@ import Quickshell.Widgets
 import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
+import qs.Services
 
 // Real systray protocol integration (Quickshell.Services.SystemTray), real
 // per-app icons (not spec §3's abstract rotated-square glyph — confirmed

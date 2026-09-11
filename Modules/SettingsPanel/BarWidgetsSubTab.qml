@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
+import qs.Services
 
 // Add/remove widgets per section as a list — complements the live
 // drag-and-drop reordering directly on the bar (BarSection.qml), which
