@@ -22,13 +22,13 @@ PanelWindow {
 
   readonly property string barPos: Settings.isLoaded ? Settings.getBarPositionForScreen(root.targetScreen ? root.targetScreen.name : "") : "top"
 
-  readonly property var cards: [soundCard, batteryCard, bluetoothCard, wifiCard, hueCard, microphoneCard, brightnessCard, clipboardCard, claudeUsageCard, notificationHistoryCard, systemStatsCard, calendarCard, mediaPlayerCard]
+  readonly property var cards: [soundCard, batteryCard, bluetoothCard, wifiCard, hueCard, microphoneCard, brightnessCard, clipboardCard, claudeUsageCard, notificationHistoryCard, systemStatsCard, calendarCard, mediaPlayerCard, controlCenterCard]
 
   // Deliberately an explicit OR chain rather than cards.some(...): this
   // drives the input mask, and a binding that reads each card through an
   // array indirection is exactly the shape QML's dependency tracker has
   // been unreliable about here (see the crux skill's Grid/itemAt gotcha).
-  readonly property bool anyOpen: soundCard.shown || batteryCard.shown || bluetoothCard.shown || wifiCard.shown || hueCard.shown || microphoneCard.shown || brightnessCard.shown || clipboardCard.shown || claudeUsageCard.shown || notificationHistoryCard.shown || systemStatsCard.shown || calendarCard.shown || mediaPlayerCard.shown
+  readonly property bool anyOpen: soundCard.shown || batteryCard.shown || bluetoothCard.shown || wifiCard.shown || hueCard.shown || microphoneCard.shown || brightnessCard.shown || clipboardCard.shown || claudeUsageCard.shown || notificationHistoryCard.shown || systemStatsCard.shown || calendarCard.shown || mediaPlayerCard.shown || controlCenterCard.shown
 
   function closeAll(): void {
     for (const card of root.cards)
@@ -285,6 +285,23 @@ PanelWindow {
     }
   }
 
+  SlideCard {
+    id: controlCenterCard
+    host: root
+    barPos: root.barPos
+    popupName: "controlCenter"
+    cardWidth: 436
+    cardHeight: controlCenterContent.implicitHeight + contentMargins * 2
+
+    ControlCenterPopupContent {
+      id: controlCenterContent
+      anchors.fill: parent
+      active: controlCenterCard.shown
+      targetScreen: root.targetScreen
+      onRequestClose: controlCenterCard.close()
+    }
+  }
+
   PopupIpc {
     host: root
     card: soundCard
@@ -336,5 +353,9 @@ PanelWindow {
   PopupIpc {
     host: root
     card: mediaPlayerCard
+  }
+  PopupIpc {
+    host: root
+    card: controlCenterCard
   }
 }

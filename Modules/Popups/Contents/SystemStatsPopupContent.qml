@@ -7,7 +7,7 @@ import qs.Modules.ControlCenter
 import qs.Modules.Popups
 
 // Full system-telemetry panel content, fuller than the bar's CPU%/RAM%
-// readout. Metric collection ported 1:1 from ControlCenterWindow.qml,
+// readout. Metric collection ported 1:1 from ControlCenterPopupContent.qml,
 // plus per-core CPU breakdown, every mounted filesystem, and load
 // average. Hosted inside a SlideCard by PopupHost.qml — no
 // window/positioning of its own.

@@ -1,7 +1,6 @@
 pragma Singleton
 
 import QtQuick
-import qs.Modules.Bar.Extras
 
 // Quick toggles the Control Center is allowed to show. Each id maps to
 // Modules/ControlCenter/CcToggles/<id>.qml by convention — same arrangement as
@@ -15,5 +14,12 @@ QtObject {
 
   function has(id) {
     return ids.indexOf(id) !== -1;
+  }
+
+  // Resolved here rather than at the call site: Qt.resolvedUrl is relative
+  // to the file it runs in, and the Control Center's content lives in
+  // Modules/Popups/Contents now, not beside CcToggles.
+  function sourceFor(id) {
+    return has(id) ? Qt.resolvedUrl("CcToggles/" + id + ".qml") : "";
   }
 }

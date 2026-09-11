@@ -8,7 +8,7 @@ import qs.Commons
 
 // Single owner of "keep the machine awake": the bar widget and the Control
 // Center tile both drive this. Backed by a Wayland IdleInhibitor (in
-// ControlCenterWindow, which has the window it needs) plus systemd-inhibit
+// the Control Center, which has the window it needs) plus systemd-inhibit
 // here. See the crux skill's notes.md.
 Singleton {
   id: root

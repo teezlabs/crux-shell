@@ -379,22 +379,12 @@ ShellRoot {
         targetScreen: root.screen
       }
 
-      // Always exists per screen regardless of which bar widgets are
-      // configured — StatusGroup and the standalone ControlCenter icon
-      // both just reach it over the "controlCenter" IPC target (see
-      // ControlCenterWindow.qml's openAt). Previously this was only ever
-      // instantiated as a child of StatusGroup.qml, so it silently didn't
-      // exist at all — and the IPC target never registered — on a bar
-      // layout that dropped StatusGroup in favor of just the standalone
-      // icon (confirmed via `qs ipc show` listing no "controlCenter"
-      // target at all).
-      ControlCenterWindow {
-        targetScreen: root.screen
-      }
-
-      // Always-mapped overlay hosting popups migrated to the
-      // slide-out-from-the-bar treatment (see crux skill's notes.md) —
-      // Sound so far, more to follow.
+      // Always-mapped overlay hosting every bar-flush popup as a SlideCard,
+      // the Control Center included. One instance per screen, so each
+      // monitor's bar icon reaches its own — and it exists regardless of
+      // which widgets are configured, which is what stopped the Control
+      // Center from silently having no IPC target at all on a bar layout
+      // without StatusGroup. See crux skill's notes.md.
       PopupHost {
         targetScreen: root.screen
       }

@@ -204,7 +204,7 @@ Singleton {
 
     property JsonObject general: JsonObject {
       property bool keepAwake: false // inhibit idle/screen-lock while true — Control Center toggle
-      property string avatarImage: "" // "" = fall back to the Arch logo, ControlCenterWindow's header avatar
+      property string avatarImage: "" // "" = fall back to the Arch logo, the Control Center header avatar
       // Applied live via `hyprctl keyword input:natural_scroll` on toggle,
       // and re-applied on boot (see shell.qml) since Hyprland doesn't
       // persist this itself — it's a runtime keyword, not read from
@@ -265,7 +265,7 @@ Singleton {
       property bool volumeOverdrive: false
       // MPRIS player.identity to prefer as "active" over the default
       // "Playing, else first" pick. "" = auto. Matched independently in
-      // Media.qml, MediaPlayerWindow.qml, ControlCenterWindow.qml.
+      // Media.qml, MediaPlayerPopupContent.qml, ControlCenterPopupContent.qml.
       property string preferredMediaPlayer: ""
     }
 

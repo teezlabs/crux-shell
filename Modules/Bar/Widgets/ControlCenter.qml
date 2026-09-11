@@ -5,7 +5,7 @@ import qs.Modules.ControlCenter
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
-// Opens the Control Center popup via IPC — StatusGroup owns the one ControlCenterWindow instance per screen.
+// Opens the Control Center popup, a SlideCard in PopupHost, via the Popups registry.
 Item {
   id: root
 
