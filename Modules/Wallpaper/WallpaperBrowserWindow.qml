@@ -36,7 +36,7 @@ NPanelWindow {
       sorted.sort((a, b) => a.name.localeCompare(b.name));
     return sorted;
   }
-  readonly property var filteredFiles: root.sourceMode === "wallhaven" ? root.whResults : root.localFiltered
+  readonly property var filteredFiles: root.sourceMode === "wallhaven" ? Wallhaven.results : root.localFiltered
 
   function rescan() {
     scanProc.command = ["sh", "-c", "find " + JSON.stringify(Settings.data.wallpaper.directory) + " -maxdepth 1 -type f \\( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' -o -iname '*.mp4' -o -iname '*.webm' \\) -printf '%T@|%p\\n'"];
@@ -71,84 +71,10 @@ NPanelWindow {
     }
   }
 
-  // ---- Wallhaven search (wallhaven.cc public API — no key required for
-  // SFW toplist search) ----
-  readonly property string _userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-  property var whResults: [] // [{id, path (full-res url), thumb, name, ext, isRemote:true}]
-  property bool whLoading: false
-  property string whError: ""
-  property string whSorting: "toplist" // toplist | date_added | views | favorites
-  property int whPage: 1
-  property int whLastPage: 1
-  property bool downloading: false
-
-  readonly property string _whPurity: (Settings.data.wallpaper.wallhavenSfw ? "1" : "0") + (Settings.data.wallpaper.wallhavenSketchy ? "1" : "0") + (Settings.data.wallpaper.wallhavenNsfw ? "1" : "0")
-
-  function _whBuildUrl(page) {
-    var url = "https://wallhaven.cc/api/v1/search?categories=111&purity=" + root._whPurity + "&";
-    if (root.searchText)
-      url += "q=" + encodeURIComponent(root.searchText) + "&";
-    url += "sorting=" + root.whSorting + "&order=desc&";
-    if (root.whSorting === "toplist")
-      url += "topRange=1M&";
-    if (Settings.data.wallpaper.wallhavenApiKey)
-      url += "apikey=" + encodeURIComponent(Settings.data.wallpaper.wallhavenApiKey) + "&";
-    if (Settings.data.wallpaper.wallhavenAtLeast)
-      url += "atleast=" + Settings.data.wallpaper.wallhavenAtLeast + "&";
-    if (Settings.data.wallpaper.wallhavenRatio)
-      url += "ratios=" + Settings.data.wallpaper.wallhavenRatio + "&";
-    url += "page=" + page;
-    return url;
-  }
-
+  // Forwards the rail's search box into the shared service.
   function whSearch(page, append) {
-    if (root.whLoading)
-      return;
-    root.whLoading = true;
-    root.whError = "";
-    root.whPage = page || 1;
-    whSearchProc.append = !!append;
-    whSearchProc.command = ["curl", "-fsSL", "-A", root._userAgent, root._whBuildUrl(root.whPage)];
-    whSearchProc.running = true;
-  }
-
-  Process {
-    id: whSearchProc
-    property bool append: false
-    stdout: StdioCollector {
-      id: whSearchCollector
-      waitForEnd: true
-    }
-    onExited: exitCode => {
-      root.whLoading = false;
-      if (exitCode !== 0) {
-        root.whError = "Network error (curl exit " + exitCode + ")";
-        return;
-      }
-      try {
-        var json = JSON.parse(whSearchCollector.text);
-        if (json.error) {
-          root.whError = json.error;
-          return;
-        }
-        var items = (json.data || []).map(item => {
-          var ext = item.path.split(".").pop().split("?")[0].toLowerCase();
-          return {
-            "id": item.id,
-            "path": item.path,
-            "thumb": item.thumbs ? item.thumbs.large : item.path,
-            "name": "wallhaven-" + item.id + "." + ext,
-            "ext": ext,
-            "isRemote": true
-          };
-        });
-        root.whResults = whSearchProc.append ? root.whResults.concat(items) : items;
-        root.whLastPage = json.meta && json.meta.last_page ? json.meta.last_page : 1;
-        root.selectedIndex = 0;
-      } catch (e) {
-        root.whError = "Parse error: " + e.message;
-      }
-    }
+    Wallhaven.query = root.searchText;
+    Wallhaven.search(page, append);
   }
 
   property string _downloadDest: ""
@@ -161,7 +87,7 @@ NPanelWindow {
     root._downloadDest = Settings.data.wallpaper.directory + "/wallhaven-" + item.id + "." + ext;
     root._pendingWithTheme = withTheme;
     root.downloading = true;
-    whDownloadProc.command = ["curl", "-fsSL", "-A", root._userAgent, "-o", root._downloadDest, item.path];
+    whDownloadProc.command = ["curl", "-fsSL", "-A", Wallhaven._userAgent, "-o", root._downloadDest, item.path];
     whDownloadProc.running = true;
   }
 
@@ -170,7 +96,7 @@ NPanelWindow {
     onExited: exitCode => {
       root.downloading = false;
       if (exitCode !== 0) {
-        root.whError = "Download failed";
+        Wallhaven.error = "Download failed";
         return;
       }
       Settings.setWallpaperForScreen(root.targetMonitor, root._downloadDest);
@@ -215,6 +141,15 @@ NPanelWindow {
   // actions) — the delete button reads "DELETE" once, "CONFIRM DELETE?" for
   // a few seconds after, and only actually removes the file on that second
   // click. Armed state is keyed by path so switching selection disarms it.
+  // The service resets nothing UI-side; a fresh result set means the
+  // selection has to go back to the top.
+  Connections {
+    target: Wallhaven
+    function onResultsReplaced() {
+      root.selectedIndex = 0;
+    }
+  }
+
   property string armedDeletePath: ""
 
   Timer {
@@ -359,7 +294,7 @@ NPanelWindow {
         Layout.fillWidth: true
       }
       NText {
-        text: root.sourceMode === "wallhaven" ? (root.whLoading ? "SEARCHING…" : root.whResults.length + " RESULTS" + (root.whError ? " · " + root.whError : "")) : root.filteredFiles.length + " OF " + root.files.length
+        text: root.sourceMode === "wallhaven" ? (Wallhaven.loading ? "SEARCHING…" : Wallhaven.results.length + " RESULTS" + (Wallhaven.error ? " · " + Wallhaven.error : "")) : root.filteredFiles.length + " OF " + root.files.length
         color: Color.labelText
         size: NText.Size.Caption
       }
@@ -421,7 +356,7 @@ NPanelWindow {
                 onTapped: {
                   root.sourceMode = srcPill.modelData.key;
                   root.selectedIndex = 0;
-                  if (root.sourceMode === "wallhaven" && root.whResults.length === 0)
+                  if (root.sourceMode === "wallhaven" && Wallhaven.results.length === 0)
                     root.whSearch(1, false);
                 }
               }
@@ -513,7 +448,7 @@ NPanelWindow {
               delegate: Item {
                 id: sortPill
                 required property var modelData
-                readonly property bool selected: root.sourceMode === "wallhaven" ? root.whSorting === modelData.key : root.sortMode === modelData.key
+                readonly property bool selected: root.sourceMode === "wallhaven" ? Wallhaven.sorting === modelData.key : root.sortMode === modelData.key
                 width: sortLabel.implicitWidth + 18
                 height: 24
                 Chamfer {
@@ -538,7 +473,7 @@ NPanelWindow {
                 TapHandler {
                   onTapped: {
                     if (root.sourceMode === "wallhaven") {
-                      root.whSorting = sortPill.modelData.key;
+                      Wallhaven.sorting = sortPill.modelData.key;
                       root.whSearch(1, false);
                     } else {
                       root.sortMode = sortPill.modelData.key;
@@ -849,7 +784,7 @@ NPanelWindow {
           }
 
           Item {
-            visible: root.sourceMode === "wallhaven" && root.whPage < root.whLastPage
+            visible: root.sourceMode === "wallhaven" && Wallhaven.page < Wallhaven.lastPage
             Layout.columnSpan: root._columns
             Layout.fillWidth: true
             Layout.preferredHeight: 30
@@ -866,7 +801,7 @@ NPanelWindow {
             }
             NText {
               anchors.centerIn: parent
-              text: root.whLoading ? "LOADING…" : "LOAD MORE"
+              text: Wallhaven.loading ? "LOADING…" : "LOAD MORE"
               color: Color.surfaceText
               size: NText.Size.LabelXs
             }
@@ -875,7 +810,7 @@ NPanelWindow {
               cursorShape: Qt.PointingHandCursor
             }
             TapHandler {
-              onTapped: root.whSearch(root.whPage + 1, true)
+              onTapped: root.whSearch(Wallhaven.page + 1, true)
             }
           }
         }
