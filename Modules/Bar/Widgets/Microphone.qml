@@ -2,8 +2,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Pipewire
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Widgets
+import qs.Modules.Bar.Extras
 
 // Microphone input volume/mute on the bar — exact structural mirror of
 // Sound.qml (output) but bound to Pipewire.defaultAudioSource instead of

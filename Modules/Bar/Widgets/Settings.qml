@@ -1,7 +1,7 @@
 import QtQuick
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel
+import qs.Modules.Bar.Extras
 
 // Gear icon on the bar; the actual settings UI lives in the separate
 // SettingsWindow popup.

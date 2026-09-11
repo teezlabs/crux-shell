@@ -1,9 +1,9 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import qs.Modules.Bar.Extras
-import qs.Commons
 import qs.Widgets
+import qs.Commons
+import qs.Modules.Bar.Extras
 
 // Internal-backlight brightness readout + scroll-to-adjust via brightnessctl. No DDC/external-monitor support (not needed on this hardware).
 Item {

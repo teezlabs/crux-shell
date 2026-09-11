@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import qs.Commons
+import qs.Modules.Wallpaper
 import qs.Modules.Bar.Extras
 
 // Picture-frame icon on the bar — opens this screen's own

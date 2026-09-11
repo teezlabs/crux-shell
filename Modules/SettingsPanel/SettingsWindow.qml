@@ -5,7 +5,7 @@ import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import qs.Commons
-import qs.Modules.Bar.Extras
+import qs.Modules.ControlCenter
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 

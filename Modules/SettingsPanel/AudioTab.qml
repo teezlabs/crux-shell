@@ -3,7 +3,6 @@ import QtQuick.Layouts
 import Quickshell.Services.Pipewire
 import Quickshell.Services.Mpris
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 

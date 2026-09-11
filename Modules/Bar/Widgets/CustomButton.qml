@@ -2,8 +2,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Widgets
+import qs.Modules.Bar.Extras
 
 // User-configurable button: icon, label, left/right click commands, optional refreshed text command.
 // Multi-instance: each button reads its own widgetData entry, not a shared Settings singleton (see BarWidgetRegistry.multiInstanceIds).

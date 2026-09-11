@@ -12,14 +12,24 @@ import Quickshell.Services.Pipewire
 import qs.Commons
 import qs.Modules.Background
 import qs.Modules.Bar
-import qs.Modules.Bar.Extras
+import qs.Modules.ControlCenter
+import qs.Modules.Notifications
+import qs.Modules.Popups
+import qs.Modules.Sidebar
+import qs.Modules.Wallpaper
 import qs.Modules.LockScreen
 import qs.Modules.OSD
 import qs.Modules.Polkit
 import qs.Modules.Tooltip
-// Not instantiated here — statically imported once so the Settings.qml bar
-// widget's own dynamic Loader can resolve qs.Modules.SettingsPanel. See
-// crux skill's SKILL.md.
+// Not instantiated here. Every module directory reachable only from a
+// dynamically Loader-loaded bar widget has to be statically imported once
+// from shell.qml or its qs.* namespace never gets registered with the
+// engine. See crux skill's SKILL.md.
+import qs.Modules.Calendar
+import qs.Modules.Launcher
+import qs.Modules.Media
+import qs.Modules.Popups.Contents
+import qs.Modules.SessionMenu
 import qs.Modules.SettingsPanel
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets

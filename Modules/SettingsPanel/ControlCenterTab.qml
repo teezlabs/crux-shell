@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.Commons
-import qs.Modules.Bar.Extras
+import qs.Modules.ControlCenter
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 

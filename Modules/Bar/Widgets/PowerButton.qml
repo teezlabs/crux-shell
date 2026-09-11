@@ -1,7 +1,8 @@
 import QtQuick
 import qs.Commons
-import qs.Modules.Bar.Extras
+import qs.Modules.SessionMenu
 import qs.Widgets
+import qs.Modules.Bar.Extras
 
 // v2 spec §6.1 Power module: "32px cell, error border, ⏻." Distinct from
 // the generic BarModule treatment (error border instead of outlineVariant,

@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Widgets
 
 // One hook entry: label + command preview + EDIT/SET button (opens HookEditPopup).

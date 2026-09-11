@@ -2,8 +2,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Pipewire
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Widgets
+import qs.Modules.Bar.Extras
 
 // Volume control: click opens the volume popup, scroll adjusts, right-click toggles mute.
 // Styled as "LABEL value" (StatText) per spec §3's "status is text, not glyphs".

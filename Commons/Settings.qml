@@ -3,6 +3,12 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.Modules.ControlCenter
+import qs.Modules.Launcher
+import qs.Modules.Media
+import qs.Modules.Popups.Contents
+import qs.Modules.SessionMenu
+import qs.Widgets
 
 // Lean JSON-backed settings store. Grows as crux needs more, not before.
 Singleton {
@@ -326,7 +332,7 @@ Singleton {
       property int statsRefreshInterval: 2000 // ms between CPU/MEM/TEMP/DISK reads
       property string screenshotCommand: "rishot" // run (via sh -c) by the CAPTURE action tile
       // Quick toggles shown in the top row, in order. Ids come from
-      // Modules/Bar/Extras/CcToggleRegistry.qml.
+      // Modules/ControlCenter/CcToggleRegistry.qml.
       property list<string> toggles: ["Wifi", "Bluetooth", "Microphone", "NightLight"]
     }
 

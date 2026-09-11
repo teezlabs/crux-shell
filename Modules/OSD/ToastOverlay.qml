@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import qs.Commons
-import qs.Modules.Bar.Extras
+import qs.Modules.Notifications
 import qs.Widgets
 
 // Toast overlay: renders Commons/Toast.qml's queue as a chamfered pill,

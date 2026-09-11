@@ -1,7 +1,9 @@
 import QtQuick
 import Quickshell
-import qs.Modules.Bar.Extras
+import qs.Modules.Notifications
+import qs.Modules.Popups
 import qs.Commons
+import qs.Modules.Bar.Extras
 
 // Bell icon on the bar; the persistent history list lives in the
 // notificationHistory popup hosted by PopupHost.qml (distinct from the

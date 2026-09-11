@@ -2,8 +2,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Widgets
+import qs.Modules.Bar.Extras
 
 // Focused window's app name + title, via ToplevelManager.activeToplevel (Hyprland-only, no hyprctl needed).
 Item {

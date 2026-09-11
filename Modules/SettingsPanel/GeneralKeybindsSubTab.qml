@@ -3,7 +3,6 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Widgets
 
 // Read-only reference view of the live keybinds.lua — not parsed/editable,

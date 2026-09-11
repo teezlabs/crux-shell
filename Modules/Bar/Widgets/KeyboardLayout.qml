@@ -2,8 +2,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Widgets
+import qs.Modules.Bar.Extras
 
 // Active keyboard layout, polled via `hyprctl devices -j` every 2s; click cycles via switchxkblayout.
 // Settings.data.keyboard.deviceName lets the user pin a device — `devices -j` can list many fake "keyboards" (mice, power buttons, virtual devices) so auto-picking the first isn't reliable.

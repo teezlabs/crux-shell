@@ -1,6 +1,7 @@
 pragma Singleton
 
 import QtQuick
+import qs.Modules.Notifications
 
 // Lightweight transient status toasts ("Wallpaper applied") — fire-and-
 // forget, one line, no actions/dismiss/urgency. Distinct from

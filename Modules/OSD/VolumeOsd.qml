@@ -3,7 +3,6 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Pipewire
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Widgets
 
 // Volume OSD: shows briefly on any default-sink volume/mute change, from

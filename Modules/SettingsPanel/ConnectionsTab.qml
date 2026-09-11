@@ -4,7 +4,6 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Bluetooth
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 

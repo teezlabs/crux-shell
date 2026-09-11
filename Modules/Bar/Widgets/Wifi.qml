@@ -1,8 +1,9 @@
 import QtQuick
 import Quickshell
 import Quickshell.Networking
-import qs.Modules.Bar.Extras
+import qs.Modules.Popups
 import qs.Commons
+import qs.Modules.Bar.Extras
 
 // Wi-Fi status icon on the bar; the real network list/connect UI lives in
 // the wifi popup hosted by PopupHost.qml (StatusGroup's NET segment is a

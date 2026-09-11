@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import qs.Commons
+import qs.Modules.Popups
 import qs.Modules.Bar.Extras
 
 // Hue bulb status icon on the bar; brightness/color control lives in the

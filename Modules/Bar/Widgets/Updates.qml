@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.Commons
+import qs.Widgets
 import qs.Modules.Bar.Extras
 
 // System package update count. Detection follows noctalia's "update-count"

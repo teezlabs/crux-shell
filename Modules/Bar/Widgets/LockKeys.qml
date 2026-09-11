@@ -2,8 +2,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Widgets
+import qs.Modules.Bar.Extras
 
 // Caps/Num/Scroll lock indicator. capsLock/numLock come from `hyprctl devices -j`; scroll lock has no
 // source on this hardware (not in Hyprland's JSON, no sysfs LED either) so it always shows "unknown", not a bug.

@@ -4,8 +4,8 @@ import Quickshell.Io
 import Quickshell.Networking
 import Quickshell.Services.Pipewire
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Widgets
+import qs.Modules.Bar.Extras
 
 // Merged NET/VOL/BAT status module (spec §6.1), split by 1px dividers. Click opens Control Center.
 // BAT segment only shows if a power_supply device is present — no fake 100% on battery-less desktops.

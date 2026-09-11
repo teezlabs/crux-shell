@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Commons
+import qs.Modules.Bar.Extras
 
 // Configurable-width blank gap for manual bar layout. Multi-instance: width lives on this widget's own
 // widgetData entry, not a shared Settings singleton (see BarWidgetRegistry.multiInstanceIds).

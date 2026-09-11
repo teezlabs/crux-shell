@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.Commons
+import qs.Modules.Popups
 import qs.Modules.Bar.Extras
 
 // Compact session-usage readout on the bar; full detail (session + weekly,

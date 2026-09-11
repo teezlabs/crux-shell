@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
+import qs.Modules.SessionMenu
 
 // Settings for the power-button's existing PowerMenuWindow.qml popup — no
 // new UI surface, just exposing what was previously hardcoded: which

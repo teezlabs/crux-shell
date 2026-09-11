@@ -1,9 +1,10 @@
 import QtQuick
 import Quickshell
 import Quickshell.Services.UPower
-import qs.Modules.Bar.Extras
-import qs.Commons
+import qs.Modules.Popups
 import qs.Widgets
+import qs.Commons
+import qs.Modules.Bar.Extras
 
 // Battery %/charging state via UPower.displayDevice. Auto-hides if !isPresent. Click opens the battery popup via PopupHost's IPC target.
 Item {

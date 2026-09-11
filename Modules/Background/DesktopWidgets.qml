@@ -4,8 +4,9 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Mpris
 import qs.Commons
-import qs.Modules.Bar.Extras
+import qs.Modules.Media
 import qs.Widgets
+import qs.Modules.Bar.Extras
 
 // Desktop info cards (weather, media), pinned to the wallpaper layer,
 // draggable, individually toggleable. See crux skill's notes.md.

@@ -2,8 +2,9 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.Commons
-import qs.Modules.Bar.Extras
+import qs.Modules.Popups
 import qs.Widgets
+import qs.Modules.Bar.Extras
 
 // CPU%/RAM% readout (delta-based /proc/stat, MemTotal-MemAvailable). Click opens the systemStats popup hosted by PopupHost.qml.
 Item {

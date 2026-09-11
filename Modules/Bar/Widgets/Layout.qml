@@ -2,8 +2,8 @@ import QtQuick
 import Quickshell.Hyprland
 import Quickshell.Io
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Widgets
+import qs.Modules.Bar.Extras
 
 // "TILE · MASTER": left is focused window's tiled/floating state, right is the active layout engine — both real Hyprland state.
 Item {

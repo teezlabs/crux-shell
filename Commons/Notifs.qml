@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Notifications
 import qs.Commons
+import qs.Modules.Popups.Contents
 
 // Real org.freedesktop.Notifications DBus daemon — confirmed live (crux
 // owns the name now that it's the daily driver; verified via busctl and a

@@ -7,7 +7,7 @@ import Quickshell.Networking
 import Quickshell.Services.Pipewire
 import Quickshell.Services.Mpris
 import qs.Commons
-import qs.Modules.Bar.Extras
+import qs.Modules.SessionMenu
 import qs.Modules.LockScreen
 import qs.Widgets
 

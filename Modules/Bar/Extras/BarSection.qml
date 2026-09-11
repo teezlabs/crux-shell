@@ -1,6 +1,5 @@
 import QtQuick
 import qs.Commons
-import qs.Modules.Bar.Extras
 
 // One bar section (left/center/right): lays out its widgets and supports
 // long-press-then-drag reordering, including across sections. See crux

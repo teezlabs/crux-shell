@@ -2,7 +2,6 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import qs.Commons
-import qs.Modules.Bar.Extras
 import qs.Widgets
 
 // One per screen (shell.qml's Variants loop). Full-screen, transparent,

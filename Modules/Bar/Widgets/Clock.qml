@@ -1,7 +1,8 @@
 import QtQuick
 import qs.Commons
-import qs.Modules.Bar.Extras
+import qs.Modules.Calendar
 import qs.Widgets
+import qs.Modules.Bar.Extras
 
 // Date · divider · time on a horizontal bar; stacked date/time on a vertical bar (doesn't fit one line at ~32px wide).
 Item {

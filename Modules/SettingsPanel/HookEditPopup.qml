@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import qs.Commons
-import qs.Modules.Bar.Extras
+import qs.Modules.SessionMenu
 import qs.Widgets
 
 // Modal command-editor popup for a single hook (PanelWindow scrim + card,

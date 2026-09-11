@@ -1,8 +1,9 @@
 import QtQuick
 import Quickshell
 import qs.Commons
-import qs.Modules.Bar.Extras
+import qs.Modules.ControlCenter
 import qs.Widgets
+import qs.Modules.Bar.Extras
 
 // Opens the Control Center popup via IPC — StatusGroup owns the one ControlCenterWindow instance per screen.
 Item {

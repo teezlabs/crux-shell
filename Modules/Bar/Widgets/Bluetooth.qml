@@ -1,8 +1,9 @@
 import QtQuick
 import Quickshell
 import Quickshell.Bluetooth
-import qs.Modules.Bar.Extras
+import qs.Modules.Popups
 import qs.Commons
+import qs.Modules.Bar.Extras
 
 // Bluetooth status icon on the bar; the real device list/connect UI lives
 // in the bluetooth popup hosted by PopupHost.qml.
