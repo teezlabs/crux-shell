@@ -47,8 +47,15 @@ RowLayout {
         return;
       const last = kids[kids.length - 1];
       // `elide` only exists on Text, which is what a description is.
-      if (last && last.elide !== undefined)
-        last.Layout.fillWidth = true;
+      if (!last || last.elide === undefined)
+        return;
+      last.Layout.fillWidth = true;
+      // Wrap onto another line rather than truncating. NText defaults to
+      // NoWrap + ElideRight, which is right for a bar widget with a fixed
+      // strip to live in, and wrong for a settings description that simply
+      // needs to be readable.
+      last.wrapMode = Text.WordWrap;
+      last.elide = Text.ElideNone;
     }
   }
 }
