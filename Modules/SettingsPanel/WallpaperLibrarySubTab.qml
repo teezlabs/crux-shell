@@ -45,6 +45,7 @@ NScrollView {
       description: "Current: " + (Settings.data.wallpaper.path || "(none set)")
 
       ColumnLayout {
+        id: wallpapersCol
         Layout.fillWidth: true
         spacing: 10
 
@@ -70,11 +71,23 @@ NScrollView {
           }
         }
 
+        // Column count comes from the width available, not a fixed 5. Five
+        // 130px cells plus their gaps need 682px and the content pane is
+        // about 660, so the last column used to render past the card's
+        // right edge. Driven off the enclosing column's width rather than
+        // the grid's own, which would be a binding loop.
         GridLayout {
+          id: thumbGrid
           Layout.fillWidth: true
-          columns: 5
           rowSpacing: 8
           columnSpacing: 8
+
+          readonly property int minCell: 130
+          readonly property real available: wallpapersCol.width
+          columns: Math.max(1, Math.floor((available + columnSpacing) / (minCell + columnSpacing)))
+          // Cells share the row evenly rather than leaving a ragged gap.
+          readonly property real cellWidth: columns > 0 ? (available - columnSpacing * (columns - 1)) / columns : minCell
+          readonly property real cellHeight: Math.round(cellWidth * 74 / 130)
 
           Repeater {
             model: root.files
@@ -83,8 +96,8 @@ NScrollView {
               id: thumb
               required property string modelData
               readonly property bool isCurrent: Settings.data.wallpaper.path === modelData
-              Layout.preferredWidth: 130
-              Layout.preferredHeight: 74
+              Layout.preferredWidth: thumbGrid.cellWidth
+              Layout.preferredHeight: thumbGrid.cellHeight
 
               Chamfer {
                 anchors.fill: parent
@@ -125,6 +138,19 @@ NScrollView {
           text: "No images found in this directory."
           color: Color.labelText
           size: NText.Size.BodySm
+        }
+      }
+
+      SettingRow {
+        label: "Close on select"
+        NToggle {
+          checked: Settings.data.wallpaper.closeOnSelect
+          onToggled: checked => Settings.data.wallpaper.closeOnSelect = checked
+        }
+        NText {
+          text: "Dismiss the browser (SUPER+W) once a wallpaper is applied"
+          color: Color.labelText
+          size: NText.Size.Caption
         }
       }
     }

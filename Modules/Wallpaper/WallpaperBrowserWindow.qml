@@ -102,6 +102,11 @@ NPanelWindow {
       Settings.setWallpaperForScreen(root.targetMonitor, root._downloadDest);
       if (root._pendingWithTheme && Settings.data.wallpaper.autoTheme)
         Matugen.generateFrom(root._downloadDest);
+      // Closes here, not when the button was pressed: a wallhaven pick has
+      // to finish downloading first, and closing early would hide the
+      // "Download failed" the branch above sets.
+      if (Settings.data.wallpaper.closeOnSelect)
+        root.close();
     }
   }
 
@@ -135,6 +140,8 @@ NPanelWindow {
     Settings.setWallpaperForScreen(root.targetMonitor, root.selectedFile.path);
     if (withTheme && Settings.data.wallpaper.autoTheme)
       Matugen.generateFrom(root.selectedFile.path);
+    if (Settings.data.wallpaper.closeOnSelect)
+      root.close();
   }
 
   // Arm-then-confirm (same convention as the session menu's destructive

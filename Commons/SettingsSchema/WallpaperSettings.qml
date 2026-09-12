@@ -12,6 +12,11 @@ JsonObject {
     property list<var> screenOverrides: []
     property bool autoTheme: true // regenerate theme colors (via matugen) whenever a wallpaper is picked
 
+    // Close the wallpaper browser as soon as a wallpaper is applied.
+    // Default off: browsing several in a row to compare them is the
+    // existing behaviour, and closing on every pick would break it.
+    property bool closeOnSelect: false
+
     // scheme-fidelity (not Material 3's default scheme-tonal-spot) — stays
     // close to the wallpaper's own saturation instead of tonal-spot's
     // deliberately muted/desaturated look.
@@ -61,6 +66,8 @@ JsonObject {
       property bool pywalfox: false
       property bool btop: false
       property bool starship: false
+      // Accent trio for the local startpage served on :8080.
+      property bool startpage: false
       // Syncs /usr/share/sddm/themes/crux's background + colors to
       // whatever's actually live — see bin/crux-sync-greeter.
       property bool sddmGreeter: false

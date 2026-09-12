@@ -110,6 +110,13 @@ Singleton {
           "input": "starship-palette-block.toml",
           "output": Quickshell.env("HOME") + "/.cache/crux/starship-palette-block.toml"
         }
+      ],
+      // The page's index.js polls colors.css and applies the vars to :root.
+      "startpage": [
+        {
+          "input": "startpage-colors.css",
+          "output": Quickshell.env("HOME") + "/Projects/startpage/colors.css"
+        }
       ]
     })
 
