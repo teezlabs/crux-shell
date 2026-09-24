@@ -67,6 +67,24 @@ Item {
     }
   }
 
+  // Keep the popup's folded size in sync with this module, so it can rest
+  // collapsed onto it — the bar reorders and resizes at runtime.
+  function pushMorphSource(): void {
+    if (!root.screen)
+      return;
+    const pos = root.mapToItem(null, 0, 0);
+    Popups.setMorphSource("controlCenter", root.screen, pos.x, pos.y, root.width, root.height);
+  }
+
+  // `screen` is assigned by the loader after construction, so completion
+  // alone is too early — push on every input the position depends on.
+  Component.onCompleted: root.pushMorphSource()
+  onScreenChanged: root.pushMorphSource()
+  onWidthChanged: root.pushMorphSource()
+  onHeightChanged: root.pushMorphSource()
+  onXChanged: root.pushMorphSource()
+  onYChanged: root.pushMorphSource()
+
   HoverHandler {
     cursorShape: Qt.PointingHandCursor
   }
@@ -74,7 +92,7 @@ Item {
     acceptedButtons: Qt.LeftButton
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Popups.openAt("controlCenter", root.screen, pos.x, pos.y);
+      Popups.openFrom("controlCenter", root.screen, pos.x, pos.y, root.width, root.height);
     }
   }
 }

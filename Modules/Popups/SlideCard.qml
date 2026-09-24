@@ -71,11 +71,56 @@ Item {
     root.shown = true;
   }
 
+  // Morph mode: the card also collapses along the bar (to `morphExtent`,
+  // sitting at `morphCross`) instead of only away from it, so it reads as
+  // the triggering bar module itself unfolding into the panel. -1 disables.
+  property real morphExtent: -1
+  property real morphCross: 0
+  property real openCross: 0
+  readonly property bool morphing: root.morphExtent >= 0
+
+  // Morph geometry is pushed by the triggering bar module as soon as it is
+  // laid out, not on the tap: a closed card holds its full cross-axis size,
+  // so learning the collapsed size only at open time means animating down
+  // and back up again, and it never folds into the module at all. Set ahead
+  // of time, the card simply rests folded — invisible either way, since a
+  // closed card is fully collapsed away from the bar.
+  function setMorphSource(x, y, w, h) {
+    const vertical = root.barLeft || root.barRight;
+    root.morphExtent = vertical ? h : w;
+    root.morphCross = vertical ? y : x;
+    if (!root.shown)
+      root.crossPos = root.morphCross;
+    // Keeps a plain open() (IPC, a keybind) landing in the same place a tap
+    // would, instead of at the default cross position.
+    root.openCross = root._clampCross(root.morphCross);
+  }
+
+  function _clampCross(v) {
+    return (root.barLeft || root.barRight) ? Math.max(8, Math.min(v, root.host.height - root.cardHeight - 8)) : Math.max(8, Math.min(v, root.host.width - root.cardWidth - 8));
+  }
+
+  // Morph-mode entry point. Toggles closed if already open, like openAt.
+  function openFrom(x, y, w, h) {
+    if (root.shown) {
+      root.shown = false;
+      return;
+    }
+    root.setMorphSource(x, y, w, h);
+    root.shown = true;
+  }
+
+  onShownChanged: {
+    if (root.morphing)
+      root.crossPos = root.shown ? root.openCross : root.morphCross;
+  }
+
   // The axis of travel away from the bar collapses to 0 on close; the
-  // cross axis (along the bar's own length) stays fixed at its full size
-  // the whole time.
-  readonly property real _animWidth: (root.barLeft || root.barRight) ? (root.shown ? root.cardWidth : 0) : root.cardWidth
-  readonly property real _animHeight: (root.barTop || root.barBottom) ? (root.shown ? root.cardHeight : 0) : root.cardHeight
+  // cross axis (along the bar's own length) holds its full size, unless
+  // morph mode shrinks it back to the bar module it came from.
+  readonly property real _crossClosed: root.morphing ? root.morphExtent : -1
+  readonly property real _animWidth: (root.barLeft || root.barRight) ? (root.shown ? root.cardWidth : 0) : (root.shown || !root.morphing ? root.cardWidth : root._crossClosed)
+  readonly property real _animHeight: (root.barTop || root.barBottom) ? (root.shown ? root.cardHeight : 0) : (root.shown || !root.morphing ? root.cardHeight : root._crossClosed)
 
   width: _animWidth
   height: _animHeight
@@ -98,6 +143,13 @@ Item {
       easing.type: Tokens.easingSidebarSlide
     }
   }
+  Behavior on crossPos {
+    enabled: root.morphing
+    NumberAnimation {
+      duration: Tokens.durationSidebarSlide
+      easing.type: Tokens.easingSidebarSlide
+    }
+  }
 
   // The edge touching the bar stays pinned; the far edge is what moves as
   // width/height animate, so the card visibly grows from (or shrinks
@@ -111,8 +163,10 @@ Item {
     clip: true
 
   Chamfer {
-    width: root.cardWidth
-    height: root.cardHeight
+    // Morph mode draws the outline at the animating size so the panel
+    // visibly unfolds; otherwise it stays full-size and is simply clipped.
+    width: root.morphing ? root.width : root.cardWidth
+    height: root.morphing ? root.height : root.cardHeight
     // Anchored to whichever corner of the shrinking Item stays fixed
     // (the bar-facing edge), so the chamfered background doesn't itself
     // stretch/squash during the collapse — it's always drawn at full
@@ -157,6 +211,14 @@ Item {
     height: root.cardHeight - root.contentMargins * 2
     x: (root.barRight ? root.width - root.cardWidth : 0) + root.contentMargins
     y: (root.barBottom ? root.height - root.cardHeight : 0) + root.contentMargins
+    // The content can't morph with the frame, so it fades in behind it.
+    opacity: root.morphing && !root.shown ? 0 : 1
+    Behavior on opacity {
+      NumberAnimation {
+        duration: Tokens.durationSidebarSlide
+        easing.type: Tokens.easingSidebarSlide
+      }
+    }
   }
 
   }

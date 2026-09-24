@@ -43,6 +43,29 @@ Singleton {
       s.open();
   }
 
+  // Tells a surface which bar module it should fold into, so it can rest
+  // collapsed at that size before it is ever opened. No-op for surfaces
+  // that don't morph.
+  function setMorphSource(name, screen, x, y, w, h): void {
+    const s = root.find(name, screen);
+    if (s && s.setMorphSource)
+      s.setMorphSource(x, y, w, h);
+  }
+
+  // Morph-open: grows the surface out of the bar module at (x, y) sized
+  // w x h. Falls back to openAt for surfaces that don't implement it.
+  function openFrom(name, screen, x, y, w, h): void {
+    const s = root.find(name, screen);
+    if (!s)
+      return;
+    if (s.openFrom)
+      s.openFrom(x, y, w, h);
+    else if (s.openAt)
+      s.openAt(x, y);
+    else
+      s.open();
+  }
+
   function open(name, screen): void {
     const s = root.find(name, screen);
     if (s)
