@@ -89,7 +89,7 @@ Item {
       NText {
         width: 30
         horizontalAlignment: Text.AlignHCenter
-        text: Qt.formatDateTime(root.now, "dd/MM")
+        text: Qt.formatDateTime(root.now, "MM/dd")
         color: Color.labelText
         size: NText.Size.LabelXs
       }
