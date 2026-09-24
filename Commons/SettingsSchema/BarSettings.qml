@@ -16,6 +16,9 @@ JsonObject {
     property bool useSeparateOpacity: false // false = follow theme.barOpacity
     property real backgroundOpacity: 1.0 // used only when useSeparateOpacity is true
 
+    // One chamfered surface per section with the widgets flat inside it,
+    // split by hairlines, instead of an outlined module per widget.
+    property bool groupSections: true
     // Detached floating modules when true, flush edge-to-edge strip when
     // false — opt-in toggle, see crux skill's notes.md.
     property bool floating: true

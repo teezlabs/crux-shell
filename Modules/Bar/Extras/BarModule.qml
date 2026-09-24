@@ -29,8 +29,14 @@ Item {
   // Picks user-configurable opacity source; was hardcoded before, making both sliders no-ops.
   readonly property real effectiveOpacity: Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity
 
+  // Grouped sections draw one surface for the whole section, so a module
+  // inside one carries no chamfer, stroke or rim of its own — only its
+  // hover state.
+  readonly property bool grouped: Settings.isLoaded && Settings.data.bar.groupSections
+
   Chamfer {
     anchors.fill: parent
+    visible: !root.grouped
     chamferSize: Tokens.chamferModule
     cutTopLeft: root.invertChamfer
     cutBottomRight: root.invertChamfer
@@ -43,6 +49,19 @@ Item {
     // shadow has nowhere to fall.
     rimLight: true
     rimOpacity: Tokens.rimOpacityCard
+  }
+
+  // Hover feedback for the grouped case, where the chamfer above is gone.
+  Chamfer {
+    anchors.fill: parent
+    visible: root.grouped
+    chamferSize: Tokens.chamferIcon
+    cutTopLeft: root.invertChamfer
+    cutBottomRight: root.invertChamfer
+    cutTopRight: !root.invertChamfer
+    cutBottomLeft: !root.invertChamfer
+    fillColor: Color.alpha(Color.surfaceContainerHigh, root.hovered ? 0.55 : 0)
+    strokeWidth: 0
   }
 
   Row {

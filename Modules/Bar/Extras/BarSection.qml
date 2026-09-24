@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Commons
+import qs.Widgets
 
 // One bar section (left/center/right): lays out its widgets and supports
 // long-press-then-drag reordering, including across sections. See crux
@@ -121,6 +122,63 @@ Item {
       return 0;
     var beforeMain = sectionRoot.vertical ? (before.y + before.height) : (before.x + before.width);
     return beforeMain + sectionRow.spacing / 2 - 1;
+  }
+
+  // ── Grouped-section chrome ───────────────────────────────────────────
+  // One surface behind the whole section instead of one per widget. Sized
+  // from the section's own width/height (which already re-derive through
+  // _sizeVersion) minus the invisible trailing drop zone, and grown by
+  // groupPadding on every side so the widgets sit inside it rather than
+  // flush with its stroke.
+  readonly property bool grouped: Settings.isLoaded && Settings.data.bar.groupSections && repeater.count > 0
+  readonly property real groupPadding: 5
+  readonly property real _groupMain: (sectionRoot.vertical ? sectionRoot.height : sectionRoot.width) - sectionRoot.trailingSize + sectionRoot.groupPadding * 2
+
+  Chamfer {
+    visible: sectionRoot.grouped
+    x: -sectionRoot.groupPadding
+    y: -sectionRoot.groupPadding
+    width: sectionRoot.vertical ? sectionRoot.width + sectionRoot.groupPadding * 2 : sectionRoot._groupMain
+    height: sectionRoot.vertical ? sectionRoot._groupMain : sectionRoot.height + sectionRoot.groupPadding * 2
+    chamferSize: Tokens.chamferModule
+    // The end-cap accent applied at section scale: the left section is the
+    // mirrored one, same rule the per-module chamfers followed.
+    cutTopLeft: sectionRoot.section === "left"
+    cutBottomRight: sectionRoot.section === "left"
+    cutTopRight: sectionRoot.section !== "left"
+    cutBottomLeft: sectionRoot.section !== "left"
+    fillColor: Color.alpha(Color.surfaceContainer, Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity)
+    strokeColor: Color.outlineVariant
+    strokeWidth: Tokens.borderModule
+    rimLight: true
+    rimOpacity: Tokens.rimOpacityCard
+  }
+
+  // Hairline between neighbouring modules, drawn at each gap's midpoint.
+  // Reads _sizeVersion for the same reason indicatorPos() does — positions
+  // taken through itemAt() don't register as binding dependencies.
+  Repeater {
+    model: sectionRoot.grouped ? Math.max(0, repeater.count - 1) : 0
+
+    delegate: Rectangle {
+      required property int index
+      readonly property var before: {
+        sectionRoot._sizeVersion;
+        return repeater.itemAt(index);
+      }
+      readonly property var after: {
+        sectionRoot._sizeVersion;
+        return repeater.itemAt(index + 1);
+      }
+      // A widget hidden by its own logic collapses to zero, and a hairline
+      // against nothing reads as a stray tick.
+      visible: !!before && !!after && (sectionRoot.vertical ? before.height > 0 && after.height > 0 : before.width > 0 && after.width > 0)
+      color: Color.alpha(Color.outlineVariant, 0.6)
+      width: sectionRoot.vertical ? sectionRoot.width : 1
+      height: sectionRoot.vertical ? 1 : sectionRoot.height * 0.55
+      x: sectionRoot.vertical ? 0 : (before ? Math.round(before.x + before.width + sectionRow.spacing / 2) : 0)
+      y: sectionRoot.vertical ? (before ? Math.round(before.y + before.height + sectionRow.spacing / 2) : 0) : (sectionRoot.height - height) / 2
+    }
   }
 
   // Grid rather than Row/Column so one type covers both bar orientations —

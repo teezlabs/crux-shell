@@ -23,19 +23,23 @@ Item {
   // so neither Settings opacity slider ever did anything here either).
   readonly property real effectiveOpacity: Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity
 
+  // Inside a grouped section the section itself carries the surface, so
+  // this one keeps only hover and the attention stroke.
+  readonly property bool grouped: Settings.isLoaded && Settings.data.bar.groupSections
+
   Chamfer {
     anchors.fill: parent
-    chamferSize: Tokens.chamferModule
+    chamferSize: root.grouped ? Tokens.chamferIcon : Tokens.chamferModule
     cutTopLeft: root.invertChamfer
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: Color.alpha(hoverHandler.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer, root.effectiveOpacity)
+    fillColor: root.grouped ? Color.alpha(Color.surfaceContainerHigh, hoverHandler.hovered ? 0.55 : 0) : Color.alpha(hoverHandler.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer, root.effectiveOpacity)
     strokeColor: root.attention ? Color.tertiary : Color.outlineVariant
-    strokeWidth: Tokens.borderModule
+    strokeWidth: root.grouped && !root.attention ? 0 : Tokens.borderModule
     // Rim only: the bar window is exactly the bar's thickness, so a
     // shadow has nowhere to fall.
-    rimLight: true
+    rimLight: !root.grouped
     rimOpacity: Tokens.rimOpacityCard
   }
 

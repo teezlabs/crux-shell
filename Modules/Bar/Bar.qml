@@ -54,7 +54,10 @@ Item {
   // grows at runtime (an expanding BarPill) used to slide straight over
   // this one. Centre yields instead: it stays centred while there's room
   // and is pushed aside once a neighbour would overlap it.
-  readonly property int sectionGap: Settings.data.bar.contentPadding
+  // Grouped sections paint a surface that overhangs their own bounds by
+  // BarSection.groupPadding on each side, so two adjacent groups need that
+  // much clearance again or their outlines collide when the bar fills up.
+  readonly property int sectionGap: Settings.data.bar.contentPadding + (Settings.data.bar.groupSections ? 12 : 0)
 
   function clampCenter(ideal, size, leadEnd, trailStart) {
     const lo = leadEnd + root.sectionGap;

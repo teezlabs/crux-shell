@@ -47,16 +47,20 @@ Item {
   // Same opacity source BarIconButton and BarModule read.
   readonly property real effectiveOpacity: Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity
 
+  // Inside a grouped section the section itself carries the surface, so
+  // this one keeps only hover and the attention stroke.
+  readonly property bool grouped: Settings.isLoaded && Settings.data.bar.groupSections
+
   Chamfer {
     anchors.fill: parent
-    chamferSize: Tokens.chamferModule
+    chamferSize: root.grouped ? Tokens.chamferIcon : Tokens.chamferModule
     cutTopLeft: root.invertChamfer
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: Color.alpha(hover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer, root.effectiveOpacity)
+    fillColor: root.grouped ? Color.alpha(Color.surfaceContainerHigh, hover.hovered ? 0.55 : 0) : Color.alpha(hover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer, root.effectiveOpacity)
     strokeColor: root.attention ? Color.tertiary : Color.outlineVariant
-    strokeWidth: Tokens.borderModule
+    strokeWidth: root.grouped && !root.attention ? 0 : Tokens.borderModule
   }
 
   Item {

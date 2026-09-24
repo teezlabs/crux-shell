@@ -140,6 +140,19 @@ NScrollView {
       }
 
       SettingRow {
+        label: "Group sections"
+        NToggle {
+          checked: Settings.data.bar.groupSections
+          onToggled: checked => Settings.data.bar.groupSections = checked
+        }
+        NText {
+          text: "One surface per section with hairline splits, instead of an outline around every widget"
+          color: Color.labelText
+          size: NText.Size.Caption
+        }
+      }
+
+      SettingRow {
         label: "Floating"
         NToggle {
           checked: Settings.data.bar.floating

@@ -26,14 +26,18 @@ Item {
     targetScreen: root.screen
   }
 
+  // Inside a grouped section the surface belongs to the section, but the
+  // destructive stroke stays — it is the one accent the bar keeps.
+  readonly property bool grouped: Settings.isLoaded && Settings.data.bar.groupSections
+
   Chamfer {
     anchors.fill: parent
-    chamferSize: Tokens.chamferModule
+    chamferSize: root.grouped ? Tokens.chamferIcon : Tokens.chamferModule
     cutTopLeft: root.invertChamfer
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: Color.alpha(hoverHandler.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer, Tokens.barModuleOpacity)
+    fillColor: root.grouped ? Color.alpha(Color.surfaceContainerHigh, hoverHandler.hovered ? 0.55 : 0) : Color.alpha(hoverHandler.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer, Tokens.barModuleOpacity)
     strokeColor: Color.alpha(Color.error, Tokens.destructiveBorderAlpha)
     strokeWidth: Tokens.borderModule
   }
