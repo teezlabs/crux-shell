@@ -58,7 +58,7 @@ Item {
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: root.grouped ? Color.alpha(Color.surfaceContainerHigh, hover.hovered ? 0.55 : 0) : Color.alpha(hover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer, root.effectiveOpacity)
+    fillColor: root.grouped ? Color.alpha(Color.primary, hover.hovered ? 0.16 : 0) : Color.alpha(hover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer, root.effectiveOpacity)
     strokeColor: root.attention ? Color.tertiary : Color.outlineVariant
     strokeWidth: root.grouped && !root.attention ? 0 : Tokens.borderModule
   }

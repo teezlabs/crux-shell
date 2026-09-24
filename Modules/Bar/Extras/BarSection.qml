@@ -131,7 +131,17 @@ Item {
   // groupPadding on every side so the widgets sit inside it rather than
   // flush with its stroke.
   readonly property bool grouped: Settings.isLoaded && Settings.data.bar.groupSections && repeater.count > 0
-  readonly property real groupPadding: 5
+  // Clamped to the slack the bar actually has around its modules: a plinth
+  // taller than the bar window is silently clipped, stroke and all, and the
+  // grouping just disappears.
+  readonly property real groupPadding: {
+    sectionRoot._sizeVersion;
+    const p = sectionRoot.parent;
+    if (!p)
+      return 2;
+    const slack = (sectionRoot.vertical ? p.width - sectionRoot.width : p.height - sectionRoot.height) / 2;
+    return Math.max(2, Math.min(7, slack - 1));
+  }
   readonly property real _groupMain: (sectionRoot.vertical ? sectionRoot.height : sectionRoot.width) - sectionRoot.trailingSize + sectionRoot.groupPadding * 2
 
   Chamfer {
@@ -147,38 +157,14 @@ Item {
     cutBottomRight: sectionRoot.section === "left"
     cutTopRight: sectionRoot.section !== "left"
     cutBottomLeft: sectionRoot.section !== "left"
-    fillColor: Color.alpha(Color.surfaceContainer, Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity)
+    // A step lighter than the bar strip it sits on, which is plain surface —
+    // surfaceContainer is too close to read as a raised plinth once the
+    // strip background is on.
+    fillColor: Color.alpha(Color.surfaceContainerHigh, Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity)
     strokeColor: Color.outlineVariant
     strokeWidth: Tokens.borderModule
     rimLight: true
     rimOpacity: Tokens.rimOpacityCard
-  }
-
-  // Hairline between neighbouring modules, drawn at each gap's midpoint.
-  // Reads _sizeVersion for the same reason indicatorPos() does — positions
-  // taken through itemAt() don't register as binding dependencies.
-  Repeater {
-    model: sectionRoot.grouped ? Math.max(0, repeater.count - 1) : 0
-
-    delegate: Rectangle {
-      required property int index
-      readonly property var before: {
-        sectionRoot._sizeVersion;
-        return repeater.itemAt(index);
-      }
-      readonly property var after: {
-        sectionRoot._sizeVersion;
-        return repeater.itemAt(index + 1);
-      }
-      // A widget hidden by its own logic collapses to zero, and a hairline
-      // against nothing reads as a stray tick.
-      visible: !!before && !!after && (sectionRoot.vertical ? before.height > 0 && after.height > 0 : before.width > 0 && after.width > 0)
-      color: Color.alpha(Color.outlineVariant, 0.6)
-      width: sectionRoot.vertical ? sectionRoot.width : 1
-      height: sectionRoot.vertical ? 1 : sectionRoot.height * 0.55
-      x: sectionRoot.vertical ? 0 : (before ? Math.round(before.x + before.width + sectionRow.spacing / 2) : 0)
-      y: sectionRoot.vertical ? (before ? Math.round(before.y + before.height + sectionRow.spacing / 2) : 0) : (sectionRoot.height - height) / 2
-    }
   }
 
   // Grid rather than Row/Column so one type covers both bar orientations —

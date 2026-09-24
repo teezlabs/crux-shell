@@ -34,7 +34,7 @@ Item {
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: root.grouped ? Color.alpha(Color.surfaceContainerHigh, hoverHandler.hovered ? 0.55 : 0) : Color.alpha(hoverHandler.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer, root.effectiveOpacity)
+    fillColor: root.grouped ? Color.alpha(Color.primary, hoverHandler.hovered ? 0.16 : 0) : Color.alpha(hoverHandler.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer, root.effectiveOpacity)
     strokeColor: root.attention ? Color.tertiary : Color.outlineVariant
     strokeWidth: root.grouped && !root.attention ? 0 : Tokens.borderModule
     // Rim only: the bar window is exactly the bar's thickness, so a

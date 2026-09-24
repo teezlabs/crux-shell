@@ -60,7 +60,7 @@ Item {
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: Color.alpha(Color.surfaceContainerHigh, root.hovered ? 0.55 : 0)
+    fillColor: Color.alpha(Color.primary, root.hovered ? 0.16 : 0)
     strokeWidth: 0
   }
 
