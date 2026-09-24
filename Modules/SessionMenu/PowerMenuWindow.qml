@@ -14,9 +14,8 @@ NPanelWindow {
 
   popupName: "power"
   surfaceNamespace: "crux-power-menu"
-  // Opaque scrim rather than the usual transparent full-screen surface —
-  // the tiles sit on it, there's nothing to see through.
-  color: Color.alpha(Color.surface, 0.9)
+  // No scrim: the tiles float over the blurred desktop.
+  color: "transparent"
 
   readonly property var actions: [
     {
@@ -120,6 +119,25 @@ NPanelWindow {
     }
   }
 
+  // Content-sized backdrop: nearly transparent on purpose, it exists so
+  // Hyprland has something to blur behind the tiles.
+  Chamfer {
+    readonly property int pad: 20
+    x: layout.x - pad
+    y: layout.y - pad
+    width: layout.width + pad * 2
+    height: layout.height + pad * 2
+    chamferSize: Tokens.chamferPanel
+    cutTopRight: true
+    cutBottomLeft: true
+    fillColor: Color.alpha(Color.surface, 0.18)
+    strokeColor: Color.alpha(Color.outline, 0.4)
+    strokeWidth: Tokens.borderModule
+    // No shadow here: its soft pixels fall outside the outline and, past the
+    // low blur threshold this namespace uses, get blurred into a halo.
+    rimLight: true
+  }
+
   ColumnLayout {
     id: layout
     anchors.centerIn: parent
@@ -153,7 +171,13 @@ NPanelWindow {
             cutBottomLeft: true
             // Spec: "LOCK is default-focused: primary_container fill,
             // accent border" — a flat role fill, not an alpha-blended tint.
-            fillColor: tile.selected ? Color.primaryContainer : Color.surfaceContainer
+            fillColor: Color.alpha(tile.selected ? Color.primaryContainer : Color.surfaceContainer, Tokens.barModuleOpacity)
+            shadow: true
+            shadowBlur: Tokens.shadowBlurCard
+            shadowOpacity: Tokens.shadowOpacityCard
+            shadowOffset: Tokens.shadowOffsetCard
+            rimLight: true
+            rimOpacity: Tokens.rimOpacityCard
             strokeColor: tile.armed ? Color.error : (tile.hasPermanentTint ? tile.permanentTint : (tile.selected ? Color.primary : Color.outline))
             strokeWidth: tile.selected || tile.armed ? 2 : Tokens.borderModule
           }
