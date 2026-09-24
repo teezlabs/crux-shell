@@ -10,7 +10,7 @@ import QtQuick
 // added from the settings panel and won't load if hand-seeded into
 // settings.json.
 QtObject {
-  readonly property var ids: ["Wifi", "Bluetooth", "Microphone", "NightLight", "KeepAwake", "PowerProfile"]
+  readonly property var ids: ["Wifi", "Bluetooth", "Microphone", "NightLight", "KeepAwake", "PowerProfile", "DoNotDisturb"]
 
   function has(id) {
     return ids.indexOf(id) !== -1;
