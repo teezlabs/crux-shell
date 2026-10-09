@@ -55,7 +55,7 @@ NScrollView {
 
           NText {
             text: modelData.name
-            color: Color.surfaceText
+            color: Colors.surfaceText
             size: NText.Size.BodySm
           }
         }
@@ -64,7 +64,7 @@ NScrollView {
       NText {
         visible: Quickshell.screens.length === 0
         text: "No monitors detected."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
     }

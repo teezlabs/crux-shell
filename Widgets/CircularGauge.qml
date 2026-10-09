@@ -10,8 +10,8 @@ Item {
   id: root
 
   property real percent: 0 // 0..100
-  property color trackColor: Color.surfaceContainerHigh
-  property color fillColor: Color.primary
+  property color trackColor: Colors.surfaceContainerHigh
+  property color fillColor: Colors.primary
   property string value: ""
   property string label: ""
 
@@ -60,7 +60,7 @@ Item {
     NText {
       anchors.horizontalCenter: parent.horizontalCenter
       text: root.value
-      color: Color.surfaceText
+      color: Colors.surfaceText
       size: NText.Size.Caption
       font.weight: Font.DemiBold
     }
@@ -68,7 +68,7 @@ Item {
       tracking: true
       anchors.horizontalCenter: parent.horizontalCenter
       text: root.label
-      color: Color.labelText
+      color: Colors.labelText
       font.pixelSize: Tokens.labelXsSize - 1
       font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
     }

@@ -130,8 +130,8 @@ NPanelWindow {
     chamferSize: Tokens.chamferPanel
     cutTopRight: true
     cutBottomLeft: true
-    fillColor: Color.alpha(Color.surface, 0.18)
-    strokeColor: Color.alpha(Color.outline, 0.4)
+    fillColor: Colors.alpha(Colors.surface, 0.18)
+    strokeColor: Colors.alpha(Colors.outline, 0.4)
     strokeWidth: Tokens.borderModule
     // No shadow here: its soft pixels fall outside the outline and, past the
     // low blur threshold this namespace uses, get blurred into a halo.
@@ -158,8 +158,8 @@ NPanelWindow {
           readonly property bool armed: root.armedLabel === modelData.label
           // Only REBOOT/SHUTDOWN carry a permanent tint; others (incl. LOCK) are neutral until selected.
           readonly property bool hasPermanentTint: modelData.tint === "error" || modelData.tint === "tertiary"
-          readonly property color permanentTint: modelData.tint === "error" ? Color.error : Color.tertiary
-          readonly property color accentColor: tile.hasPermanentTint ? tile.permanentTint : Color.primary
+          readonly property color permanentTint: modelData.tint === "error" ? Colors.error : Colors.tertiary
+          readonly property color accentColor: tile.hasPermanentTint ? tile.permanentTint : Colors.primary
 
           width: 108
           height: 108
@@ -171,14 +171,14 @@ NPanelWindow {
             cutBottomLeft: true
             // Spec: "LOCK is default-focused: primary_container fill,
             // accent border" — a flat role fill, not an alpha-blended tint.
-            fillColor: Color.alpha(tile.selected ? Color.primaryContainer : Color.surfaceContainer, Tokens.barModuleOpacity)
+            fillColor: Colors.alpha(tile.selected ? Colors.primaryContainer : Colors.surfaceContainer, Tokens.barModuleOpacity)
             shadow: true
             shadowBlur: Tokens.shadowBlurCard
             shadowOpacity: Tokens.shadowOpacityCard
             shadowOffset: Tokens.shadowOffsetCard
             rimLight: true
             rimOpacity: Tokens.rimOpacityCard
-            strokeColor: tile.armed ? Color.error : (tile.hasPermanentTint ? tile.permanentTint : (tile.selected ? Color.primary : Color.outline))
+            strokeColor: tile.armed ? Colors.error : (tile.hasPermanentTint ? tile.permanentTint : (tile.selected ? Colors.primary : Colors.outline))
             strokeWidth: tile.selected || tile.armed ? 2 : Tokens.borderModule
           }
 
@@ -191,7 +191,7 @@ NPanelWindow {
               width: 20
               height: 20
               color: "transparent"
-              border.color: tile.armed ? Color.error : (tile.hasPermanentTint ? tile.permanentTint : (tile.selected ? Color.primary : Color.labelText))
+              border.color: tile.armed ? Colors.error : (tile.hasPermanentTint ? tile.permanentTint : (tile.selected ? Colors.primary : Colors.labelText))
               border.width: 2
             }
 
@@ -199,7 +199,7 @@ NPanelWindow {
               tracking: true
               anchors.horizontalCenter: parent.horizontalCenter
               text: tile.armed ? "CONFIRM?" : tile.modelData.display
-              color: tile.armed ? Color.error : (tile.modelData.tint === "error" ? Color.error : (tile.selected ? Color.primary : Color.surfaceText))
+              color: tile.armed ? Colors.error : (tile.modelData.tint === "error" ? Colors.error : (tile.selected ? Colors.primary : Colors.surfaceText))
               size: NText.Size.Label
               font.weight: Font.DemiBold
             }
@@ -207,7 +207,7 @@ NPanelWindow {
             NText {
               anchors.horizontalCenter: parent.horizontalCenter
               text: tile.modelData.key
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.LabelXs
             }
           }
@@ -228,7 +228,7 @@ NPanelWindow {
       tracking: true
       Layout.alignment: Qt.AlignHCenter
       text: "←→ SELECT · ⏎ CONFIRM · ESC CANCEL"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
     }
   }

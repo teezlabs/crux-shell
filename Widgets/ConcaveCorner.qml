@@ -24,7 +24,7 @@ Item {
   }
 
   property int corner: ConcaveCorner.Corner.TopLeft
-  property color fillColor: Color.surface
+  property color fillColor: Colors.surface
   // Optional outline along the diagonal only — the two legs sit flush
   // against the panel and the bar, so stroking them would draw a seam
   // through the very junction this shape exists to hide.

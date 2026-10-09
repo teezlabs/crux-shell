@@ -11,7 +11,7 @@ Item {
 
   property string iconName: ""
   property string fallbackIconName: ""
-  property color color: Color.surfaceText
+  property color color: Colors.surfaceText
   // Matches NText and Chamfer: icons settle into a new color rather than
   // cutting, which matters most on a matugen retheme, when every symbolic
   // glyph in the shell changes at once.

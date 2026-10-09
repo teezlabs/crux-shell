@@ -66,7 +66,7 @@ NScrollView {
 
           NText {
             text: root.files.length + " found"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.Caption
           }
         }
@@ -104,8 +104,8 @@ NScrollView {
                 chamferSize: Tokens.chamferIcon
                 cutTopRight: true
                 cutBottomLeft: true
-                fillColor: Color.surfaceContainer
-                strokeColor: thumb.isCurrent ? Color.primary : (thumbHover.hovered ? Color.alpha(Color.primary, 0.5) : Color.outline)
+                fillColor: Colors.surfaceContainer
+                strokeColor: thumb.isCurrent ? Colors.primary : (thumbHover.hovered ? Colors.alpha(Colors.primary, 0.5) : Colors.outline)
                 strokeWidth: thumb.isCurrent ? 2 : Tokens.borderModule
               }
 
@@ -136,7 +136,7 @@ NScrollView {
         NText {
           visible: root.files.length === 0
           text: "No images found in this directory."
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.BodySm
         }
       }
@@ -149,7 +149,7 @@ NScrollView {
         }
         NText {
           text: "Dismiss the browser (SUPER+W) once a wallpaper is applied"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.Caption
         }
       }
@@ -167,7 +167,7 @@ NScrollView {
         }
         NText {
           text: "Pick a new wallpaper automatically"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.Caption
         }
       }
@@ -183,13 +183,13 @@ NScrollView {
           NText {
             tracking: true
             text: "CYCLE INTERVAL"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
             Layout.fillWidth: true
           }
           NText {
             text: Settings.data.wallpaper.autoCycleMinutes + " min"
-            color: Color.surfaceText
+            color: Colors.surfaceText
             size: NText.Size.BodySm
           }
         }
@@ -213,7 +213,7 @@ NScrollView {
         NText {
           tracking: true
           text: "ORDER"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.LabelXs
         }
 
@@ -245,8 +245,8 @@ NScrollView {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: orderPill.selected ? Color.primaryContainer : Color.surfaceContainer
-              strokeColor: orderPill.selected ? Color.primary : Color.outline
+              fillColor: orderPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+              strokeColor: orderPill.selected ? Colors.primary : Colors.outline
               strokeWidth: Tokens.borderModule
             }
 
@@ -255,7 +255,7 @@ NScrollView {
               id: orderLabel
               anchors.centerIn: parent
               text: orderPill.modelData.label
-              color: orderPill.selected ? Color.primaryContainerText : Color.surfaceText
+              color: orderPill.selected ? Colors.primaryContainerText : Colors.surfaceText
               size: NText.Size.LabelXs
             }
 
@@ -280,7 +280,7 @@ NScrollView {
         NText {
           tracking: true
           text: "API KEY"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.LabelXs
         }
         Item {
@@ -291,8 +291,8 @@ NScrollView {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: Color.surface
-            strokeColor: whApiKeyInput.activeFocus ? Color.primary : Color.outline
+            fillColor: Colors.surface
+            strokeColor: whApiKeyInput.activeFocus ? Colors.primary : Colors.outline
             strokeWidth: Tokens.borderModule
           }
           TextInput {
@@ -303,7 +303,7 @@ NScrollView {
             verticalAlignment: Text.AlignVCenter
             text: Settings.data.wallpaper.wallhavenApiKey
             echoMode: activeFocus ? TextInput.Normal : TextInput.Password
-            color: Color.surfaceText
+            color: Colors.surfaceText
             font.family: Tokens.fontFamily
             font.pixelSize: Tokens.bodySmSize
             selectByMouse: true
@@ -313,7 +313,7 @@ NScrollView {
               anchors.verticalCenter: parent.verticalCenter
               visible: parent.text === "" && !parent.activeFocus
               text: "wallhaven.cc/settings/account"
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.BodySm
             }
           }

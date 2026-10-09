@@ -157,8 +157,8 @@ NPanelWindow {
       chamferSize: Tokens.chamferPanel
       cutTopRight: true
       cutBottomLeft: true
-      fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
-      strokeColor: Color.outline
+      fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+      strokeColor: Colors.outline
       strokeWidth: Tokens.borderPanel
       shadow: true
       rimLight: true

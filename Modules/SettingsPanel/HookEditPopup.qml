@@ -36,7 +36,7 @@ PanelWindow {
   }
 
   visible: false
-  color: Color.alpha(Color.surface, 0.75)
+  color: Colors.alpha(Colors.surface, 0.75)
 
   anchors {
     top: true
@@ -72,8 +72,8 @@ PanelWindow {
       chamferSize: Tokens.chamferPanel
       cutTopRight: true
       cutBottomLeft: true
-      fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
-      strokeColor: Color.outline
+      fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+      strokeColor: Colors.outline
       strokeWidth: Tokens.borderPanel
     }
 
@@ -94,7 +94,7 @@ PanelWindow {
 
         NText {
           text: root.hookLabel
-          color: Color.surfaceText
+          color: Colors.surfaceText
           size: NText.Size.BodyLg
           font.weight: Font.DemiBold
           Layout.fillWidth: true
@@ -103,7 +103,7 @@ PanelWindow {
 
         NText {
           text: "×"
-          color: Color.surfaceTextMuted
+          color: Colors.surfaceTextMuted
           size: NText.Size.BodySm
 
           HoverHandler {
@@ -118,7 +118,7 @@ PanelWindow {
       NText {
         tracking: true
         text: root.hookDescription
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
@@ -146,8 +146,8 @@ PanelWindow {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: testHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-            strokeColor: Color.outline
+            fillColor: testHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
+            strokeColor: Colors.outline
             strokeWidth: Tokens.borderModule
           }
 
@@ -156,7 +156,7 @@ PanelWindow {
             id: testLabel
             anchors.centerIn: parent
             text: "TEST"
-            color: root.onTest && commandInput.text !== "" ? Color.surfaceText : Color.surfaceTextMuted
+            color: root.onTest && commandInput.text !== "" ? Colors.surfaceText : Colors.surfaceTextMuted
             size: NText.Size.LabelXs
           }
 
@@ -183,8 +183,8 @@ PanelWindow {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: Color.surfaceContainer
-            strokeColor: Color.outline
+            fillColor: Colors.surfaceContainer
+            strokeColor: Colors.outline
             strokeWidth: Tokens.borderModule
           }
 
@@ -193,7 +193,7 @@ PanelWindow {
             id: cancelLabel
             anchors.centerIn: parent
             text: "CANCEL"
-            color: Color.surfaceText
+            color: Colors.surfaceText
             size: NText.Size.LabelXs
           }
 
@@ -214,8 +214,8 @@ PanelWindow {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: saveHover.hovered ? Color.primaryContainer : Color.primaryContainer
-            strokeColor: Color.primary
+            fillColor: saveHover.hovered ? Colors.primaryContainer : Colors.primaryContainer
+            strokeColor: Colors.primary
             strokeWidth: Tokens.borderModule
           }
 
@@ -224,7 +224,7 @@ PanelWindow {
             id: saveLabel
             anchors.centerIn: parent
             text: "SAVE"
-            color: Color.primaryContainerText
+            color: Colors.primaryContainerText
             size: NText.Size.LabelXs
           }
 

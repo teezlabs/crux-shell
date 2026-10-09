@@ -35,7 +35,7 @@ Item {
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: Color.alpha(Color.surfaceText, root._flash)
+    fillColor: Colors.alpha(Colors.surfaceText, root._flash)
     strokeColor: "transparent"
     // The wash is already an animation; easing its color as well would
     // fight the fade.

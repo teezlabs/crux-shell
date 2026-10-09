@@ -56,7 +56,7 @@ Item {
       anchors.centerIn: parent
       width: 16
       height: 12
-      readonly property color drawColor: !Networking.wifiEnabled ? Color.disabledText : (root.connectedNetwork ? Color.primary : Color.surfaceTextMuted)
+      readonly property color drawColor: !Networking.wifiEnabled ? Colors.disabledText : (root.connectedNetwork ? Colors.primary : Colors.surfaceTextMuted)
       onDrawColorChanged: requestPaint()
       onPaint: {
         var ctx = getContext("2d");

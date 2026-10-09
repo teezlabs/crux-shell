@@ -105,15 +105,15 @@ Item {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: taskDelegate.active ? Color.primaryContainer : (hoverHandler.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer)
-            strokeColor: taskDelegate.active ? Color.primary : Color.outlineVariant
+            fillColor: taskDelegate.active ? Colors.primaryContainer : (hoverHandler.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer)
+            strokeColor: taskDelegate.active ? Colors.primary : Colors.outlineVariant
             strokeWidth: Tokens.borderModule
           }
 
           NText {
             anchors.centerIn: parent
             text: taskDelegate.initial
-            color: taskDelegate.active ? Color.primaryContainerText : Color.surfaceTextMuted
+            color: taskDelegate.active ? Colors.primaryContainerText : Colors.surfaceTextMuted
             size: NText.Size.LabelXs
             font.weight: taskDelegate.active ? Font.DemiBold : Font.Normal
           }

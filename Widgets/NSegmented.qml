@@ -60,8 +60,8 @@ RowLayout {
         chamferSize: Tokens.chamferIcon
         cutTopRight: true
         cutBottomLeft: true
-        fillColor: tile.active ? Color.primaryContainer : (tileHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer)
-        strokeColor: tile.active ? Color.primary : Color.outline
+        fillColor: tile.active ? Colors.primaryContainer : (tileHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer)
+        strokeColor: tile.active ? Colors.primary : Colors.outline
         strokeWidth: Tokens.borderModule
       }
 
@@ -70,7 +70,7 @@ RowLayout {
         text: root.uppercase ? String(tile.modelData.label).toUpperCase() : tile.modelData.label
         size: NText.Size.LabelXs
         tracking: true
-        color: tile.active ? Color.primaryContainerText : Color.surfaceText
+        color: tile.active ? Colors.primaryContainerText : Colors.surfaceText
       }
 
       HoverHandler {

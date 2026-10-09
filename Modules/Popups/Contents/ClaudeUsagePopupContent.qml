@@ -82,7 +82,7 @@ ColumnLayout {
     NText {
       tracking: true
       text: "CLAUDE CODE"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
       font.weight: Font.DemiBold
       Layout.fillWidth: true
@@ -91,7 +91,7 @@ ColumnLayout {
     NText {
       visible: root.tierLabel !== ""
       text: root.tierLabel
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.Caption
     }
   }
@@ -99,7 +99,7 @@ ColumnLayout {
   NText {
     visible: root.usageStatusText !== ""
     text: root.usageStatusText
-    color: Color.error
+    color: Colors.error
     size: NText.Size.Caption
     wrapMode: Text.WordWrap
     Layout.fillWidth: true
@@ -117,13 +117,13 @@ ColumnLayout {
         Layout.fillWidth: true
         NText {
           text: modelData.label || ""
-          color: Color.surfaceText
+          color: Colors.surfaceText
           size: NText.Size.BodySm
           Layout.fillWidth: true
         }
         NText {
           text: Math.round((modelData.percent || 0) * 100) + "%"
-          color: (modelData.percent || 0) > 0.85 ? Color.error : Color.surfaceText
+          color: (modelData.percent || 0) > 0.85 ? Colors.error : Colors.surfaceText
           size: NText.Size.BodySm
         }
       }
@@ -134,13 +134,13 @@ ColumnLayout {
         cellHeight: Tokens.meterTelemetryCellHeight
         value: Math.min(100, (modelData.percent || 0) * 100)
         interactive: false
-        filledColor: (modelData.percent || 0) > 0.85 ? Color.error : Color.primary
-        emptyColor: Color.surfaceContainerHigh
+        filledColor: (modelData.percent || 0) > 0.85 ? Colors.error : Colors.primary
+        emptyColor: Colors.surfaceContainerHigh
       }
 
       NText {
         text: root.formatResetsAt(modelData.resetsAt)
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -149,7 +149,7 @@ ColumnLayout {
   Rectangle {
     Layout.fillWidth: true
     height: Tokens.borderDivider
-    color: Color.surfaceContainerHigh
+    color: Colors.surfaceContainerHigh
   }
 
   RowLayout {
@@ -157,13 +157,13 @@ ColumnLayout {
     NText {
       tracking: true
       text: "TODAY"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
       Layout.fillWidth: true
     }
     NText {
       text: root.todayPrompts + " prompts · " + root.formatTokens(root.todayTotalTokens) + " tokens"
-      color: Color.surfaceText
+      color: Colors.surfaceText
       size: NText.Size.Caption
     }
   }

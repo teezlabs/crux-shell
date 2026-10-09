@@ -26,7 +26,7 @@ NScrollView {
       }
       NText {
         text: "Off disables the live popup stack only — history still logs every real notification."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
@@ -41,7 +41,7 @@ NScrollView {
       }
       NText {
         text: "Temporary — suppresses popups without turning them off entirely."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }

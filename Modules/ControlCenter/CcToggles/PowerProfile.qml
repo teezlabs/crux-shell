@@ -19,7 +19,7 @@ CcCircleToggle {
     width: 16
     height: 16
     readonly property int profile: PowerProfileService.profile
-    readonly property color drawColor: tile.active ? Color.primaryText : Color.surfaceText
+    readonly property color drawColor: tile.active ? Colors.primaryText : Colors.surfaceText
     onProfileChanged: requestPaint()
     onDrawColorChanged: requestPaint()
     onPaint: {

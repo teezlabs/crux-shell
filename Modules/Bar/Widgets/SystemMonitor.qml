@@ -121,19 +121,19 @@ Item {
       StatText {
         label: "CPU"
         value: root.cpuPercent + "%"
-        valueColor: root.cpuWarn ? Color.error : Color.surfaceText
+        valueColor: root.cpuWarn ? Colors.error : Colors.surfaceText
       }
 
       Rectangle {
         width: 1
         height: 12
-        color: Color.surfaceContainerHigh
+        color: Colors.surfaceContainerHigh
       }
 
       StatText {
         label: "RAM"
         value: root.memPercent + "%"
-        valueColor: root.memWarn ? Color.error : Color.surfaceText
+        valueColor: root.memWarn ? Colors.error : Colors.surfaceText
       }
     }
 
@@ -148,7 +148,7 @@ Item {
           width: 28
           horizontalAlignment: Text.AlignHCenter
           text: root.cpuPercent + "%"
-          color: root.cpuWarn ? Color.error : Color.surfaceText
+          color: root.cpuWarn ? Colors.error : Colors.surfaceText
           size: NText.Size.LabelXs
         }
         NText {
@@ -156,7 +156,7 @@ Item {
           width: 28
           horizontalAlignment: Text.AlignHCenter
           text: "CPU"
-          color: Color.labelText
+          color: Colors.labelText
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
@@ -165,7 +165,7 @@ Item {
       Rectangle {
         width: 28
         height: 1
-        color: Color.surfaceContainerHigh
+        color: Colors.surfaceContainerHigh
       }
 
       Column {
@@ -175,7 +175,7 @@ Item {
           width: 28
           horizontalAlignment: Text.AlignHCenter
           text: root.memPercent + "%"
-          color: root.memWarn ? Color.error : Color.surfaceText
+          color: root.memWarn ? Colors.error : Colors.surfaceText
           size: NText.Size.LabelXs
         }
         NText {
@@ -183,7 +183,7 @@ Item {
           width: 28
           horizontalAlignment: Text.AlignHCenter
           text: "RAM"
-          color: Color.labelText
+          color: Colors.labelText
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }

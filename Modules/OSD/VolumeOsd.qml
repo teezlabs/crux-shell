@@ -93,8 +93,8 @@ PanelWindow {
       cutTopRight: true
       cutBottomLeft: true
       cutBottomRight: false
-      fillColor: Color.alpha(Color.surface, Settings.data.osd.backgroundOpacity)
-      strokeColor: root.muted ? Color.alpha(Color.error, Tokens.destructiveBorderAlpha) : Color.outline
+      fillColor: Colors.alpha(Colors.surface, Settings.data.osd.backgroundOpacity)
+      strokeColor: root.muted ? Colors.alpha(Colors.error, Tokens.destructiveBorderAlpha) : Colors.outline
       strokeWidth: Tokens.borderPanel
     }
 
@@ -107,7 +107,7 @@ PanelWindow {
         tracking: true
         width: 40
         text: root.muted ? "MUTE" : "VOL"
-        color: root.muted ? Color.error : Color.labelText
+        color: root.muted ? Colors.error : Colors.labelText
         size: NText.Size.Label
         font.weight: Font.DemiBold
       }
@@ -117,13 +117,13 @@ PanelWindow {
         cellCount: Tokens.meterOsdCells
         cellHeight: Tokens.meterOsdCellHeight
         value: root.muted ? 0 : root.volume * 100
-        filledColor: Color.primary
-        emptyColor: Color.surfaceContainerHigh
+        filledColor: Colors.primary
+        emptyColor: Colors.surfaceContainerHigh
       }
 
       NText {
         text: root.muted ? "—" : String(Math.round(root.volume * 100))
-        color: root.muted ? Color.labelText : Color.primary
+        color: root.muted ? Colors.labelText : Colors.primary
         size: NText.Size.BodyLg
         font.weight: Font.DemiBold
       }

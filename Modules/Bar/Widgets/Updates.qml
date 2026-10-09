@@ -149,7 +149,7 @@ Item {
       StatText {
         label: "UPD"
         value: root.updateCount < 0 ? "…" : String(root.updateCount)
-        valueColor: root.hasUpdates ? Color.tertiary : Color.surfaceTextMuted
+        valueColor: root.hasUpdates ? Colors.tertiary : Colors.surfaceTextMuted
       }
     }
 
@@ -163,7 +163,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: root.updateCount < 0 ? "…" : String(root.updateCount)
-          color: root.hasUpdates ? Color.tertiary : Color.surfaceTextMuted
+          color: root.hasUpdates ? Colors.tertiary : Colors.surfaceTextMuted
           font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
@@ -172,7 +172,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "UPD"
-          color: Color.labelText
+          color: Colors.labelText
           font.family: Tokens.fontFamily
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking

@@ -78,14 +78,14 @@ Item {
       NText {
         visible: root.icon !== ""
         text: root.icon
-        color: Color.surfaceText
+        color: Colors.surfaceText
         anchors.verticalCenter: parent.verticalCenter
       }
 
       NText {
         visible: root.displayText !== ""
         text: root.displayText
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.BodySm
         anchors.verticalCenter: parent.verticalCenter
       }
@@ -95,7 +95,7 @@ Item {
       NText {
         visible: root.icon === "" && root.displayText === ""
         text: "+"
-        color: Color.surfaceTextMuted
+        color: Colors.surfaceTextMuted
         anchors.verticalCenter: parent.verticalCenter
       }
     }
@@ -107,7 +107,7 @@ Item {
         width: 24
         horizontalAlignment: Text.AlignHCenter
         text: root.icon !== "" ? root.icon : (root.displayText !== "" ? root.displayText.charAt(0) : "+")
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.LabelXs
       }
     }

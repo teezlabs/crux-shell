@@ -117,7 +117,7 @@ NScrollView {
 
           Rectangle {
             anchors.fill: parent
-            color: netHover.hovered ? Color.surfaceContainerHigh : "transparent"
+            color: netHover.hovered ? Colors.surfaceContainerHigh : "transparent"
           }
 
           RowLayout {
@@ -128,13 +128,13 @@ NScrollView {
 
             Text {
               text: netRow.modelData.active ? "●" : "○"
-              color: netRow.modelData.active ? Color.primary : Color.labelText
+              color: netRow.modelData.active ? Colors.primary : Colors.labelText
               font.pixelSize: Tokens.bodySmSize
             }
 
             NText {
               text: netRow.modelData.name
-              color: Color.surfaceText
+              color: Colors.surfaceText
               size: NText.Size.BodySm
               elide: Text.ElideRight
               Layout.preferredWidth: 160
@@ -147,7 +147,7 @@ NScrollView {
             NText {
               tracking: true
               text: "AUTO"
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.LabelXs
             }
 
@@ -168,7 +168,7 @@ NScrollView {
 
             Text {
               text: "×"
-              color: forgetHover.hovered ? Color.error : Color.labelText
+              color: forgetHover.hovered ? Colors.error : Colors.labelText
               font.pixelSize: Tokens.bodyLgSize
               HoverHandler {
                 id: forgetHover
@@ -192,7 +192,7 @@ NScrollView {
       NText {
         visible: root.savedNetworks.length === 0
         text: "No saved Wi-Fi networks (nmcli connection show)."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
     }
@@ -214,7 +214,7 @@ NScrollView {
       }
       NText {
         text: root.btAdapter ? "Other devices can see this machine while on" : "No adapter"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -227,7 +227,7 @@ NScrollView {
       }
       NText {
         text: "Off shows devices still using a raw address/UUID as their name (useful mid-pairing)"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true

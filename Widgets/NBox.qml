@@ -6,8 +6,8 @@ import qs.Commons
 Item {
   id: root
 
-  property color fillColor: Color.surfaceContainer
-  property color strokeColor: Color.outline
+  property color fillColor: Colors.surfaceContainer
+  property color strokeColor: Colors.outline
   property int chamferSize: Tokens.chamferModule
   property bool invertChamfer: false
   property real padding: 14

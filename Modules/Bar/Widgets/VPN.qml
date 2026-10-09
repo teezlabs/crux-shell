@@ -151,7 +151,7 @@ Item {
       anchors.centerIn: parent
       width: 14
       height: 16
-      readonly property color drawColor: root.connected ? Color.primary : Color.surfaceTextMuted
+      readonly property color drawColor: root.connected ? Colors.primary : Colors.surfaceTextMuted
       readonly property bool filled: root.connected
       readonly property bool isBusy: root.busy
       onDrawColorChanged: requestPaint()

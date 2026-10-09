@@ -38,13 +38,13 @@ NScrollView {
         implicitHeight: 28
         color: "transparent"
         border.width: Tokens.borderModule
-        border.color: Color.outline
+        border.color: Colors.outline
 
         NText {
           id: discoverLabel
           anchors.centerIn: parent
           text: Hue.discovering ? "…" : "Discover"
-          color: (Hue.discovering || Hue.pairing) ? Color.disabledText : Color.surfaceText
+          color: (Hue.discovering || Hue.pairing) ? Colors.disabledText : Colors.surfaceText
           size: NText.Size.BodySm
         }
 
@@ -63,7 +63,7 @@ NScrollView {
       Layout.fillWidth: true
       visible: Hue.discoveryError !== ""
       text: Hue.discoveryError
-      color: Color.error
+      color: Colors.error
       size: NText.Size.BodySm
       wrapMode: Text.WordWrap
     }
@@ -80,15 +80,15 @@ NScrollView {
       Rectangle {
         implicitWidth: pairLabel.implicitWidth + 20
         implicitHeight: 28
-        color: root.ipField.trim() !== "" ? Color.primaryContainer : Color.surfaceContainerHigh
+        color: root.ipField.trim() !== "" ? Colors.primaryContainer : Colors.surfaceContainerHigh
         border.width: Tokens.borderModule
-        border.color: root.ipField.trim() !== "" ? Color.primary : Color.outline
+        border.color: root.ipField.trim() !== "" ? Colors.primary : Colors.outline
 
         NText {
           id: pairLabel
           anchors.centerIn: parent
           text: "Pair"
-          color: root.ipField.trim() !== "" ? Color.primaryContainerText : Color.disabledText
+          color: root.ipField.trim() !== "" ? Colors.primaryContainerText : Colors.disabledText
           size: NText.Size.BodySm
         }
 
@@ -111,7 +111,7 @@ NScrollView {
       NText {
         Layout.fillWidth: true
         text: "Press the bridge's link button… (" + Hue.pairingSecondsLeft + "s)"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
         wrapMode: Text.WordWrap
       }
@@ -119,7 +119,7 @@ NScrollView {
       NText {
         tracking: true
         text: "Cancel"
-        color: Color.error
+        color: Colors.error
         size: NText.Size.LabelXs
 
         HoverHandler {
@@ -135,7 +135,7 @@ NScrollView {
       Layout.fillWidth: true
       visible: Hue.pairingError !== ""
       text: Hue.pairingError
-      color: Color.error
+      color: Colors.error
       size: NText.Size.BodySm
       wrapMode: Text.WordWrap
     }
@@ -152,7 +152,7 @@ NScrollView {
       NText {
         tracking: true
         text: "Forget"
-        color: Color.error
+        color: Colors.error
         size: NText.Size.LabelXs
 
         HoverHandler {
@@ -183,7 +183,7 @@ NScrollView {
           Layout.fillWidth: true
           height: 34
           readonly property bool isSelected: Settings.data.hue.selectedGroupId === modelData.groupId
-          color: groupRow.isSelected ? Color.primaryContainer : (hoverGroup.hovered ? Color.surfaceContainerHigh : "transparent")
+          color: groupRow.isSelected ? Colors.primaryContainer : (hoverGroup.hovered ? Colors.surfaceContainerHigh : "transparent")
 
           RowLayout {
             anchors.fill: parent
@@ -192,13 +192,13 @@ NScrollView {
 
             Text {
               text: groupRow.isSelected ? "●" : "○"
-              color: groupRow.isSelected ? Color.primary : Color.labelText
+              color: groupRow.isSelected ? Colors.primary : Colors.labelText
               font.pixelSize: Tokens.bodySize
             }
 
             NText {
               text: groupRow.modelData.name
-              color: groupRow.isSelected ? Color.primaryContainerText : Color.surfaceText
+              color: groupRow.isSelected ? Colors.primaryContainerText : Colors.surfaceText
               size: NText.Size.BodySm
               elide: Text.ElideRight
               Layout.fillWidth: true
@@ -218,7 +218,7 @@ NScrollView {
       NText {
         visible: Hue.groups.length === 0
         text: "No rooms/zones found."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
     }
@@ -233,7 +233,7 @@ NScrollView {
       NText {
         tracking: true
         text: Hue.fetchingGroups ? "Refreshing…" : "Refresh"
-        color: Hue.fetchingGroups ? Color.disabledText : Color.primary
+        color: Hue.fetchingGroups ? Colors.disabledText : Colors.primary
         size: NText.Size.LabelXs
 
         HoverHandler {
@@ -251,7 +251,7 @@ NScrollView {
       Layout.fillWidth: true
       visible: Hue.groupsError !== ""
       text: Hue.groupsError
-      color: Color.error
+      color: Colors.error
       size: NText.Size.BodySm
       wrapMode: Text.WordWrap
     }

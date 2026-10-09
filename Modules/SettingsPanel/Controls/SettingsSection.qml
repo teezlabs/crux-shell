@@ -24,13 +24,13 @@ ColumnLayout {
     Rectangle {
       width: 3
       height: 12
-      color: Color.primary
+      color: Colors.primary
     }
 
     NText {
       tracking: true
       text: root.title.toUpperCase()
-      color: Color.surfaceText
+      color: Colors.surfaceText
       size: NText.Size.Label
       font.weight: Font.DemiBold
     }
@@ -44,7 +44,7 @@ ColumnLayout {
     tracking: true
     visible: root.description !== ""
     text: root.description
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.Caption
     wrapMode: Text.WordWrap
     Layout.fillWidth: true

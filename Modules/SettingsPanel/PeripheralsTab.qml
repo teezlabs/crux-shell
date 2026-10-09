@@ -136,7 +136,7 @@ NScrollView {
 
             Rectangle {
               anchors.fill: parent
-              color: kbRow.isSelected ? Color.primaryContainer : (kbHover.hovered ? Color.surfaceContainerHigh : "transparent")
+              color: kbRow.isSelected ? Colors.primaryContainer : (kbHover.hovered ? Colors.surfaceContainerHigh : "transparent")
             }
 
             RowLayout {
@@ -146,12 +146,12 @@ NScrollView {
 
               Text {
                 text: kbRow.isSelected ? "●" : "○"
-                color: kbRow.isSelected ? Color.primary : Color.labelText
+                color: kbRow.isSelected ? Colors.primary : Colors.labelText
                 font.pixelSize: Tokens.bodySmSize
               }
               NText {
                 text: kbRow.modelData.label
-                color: kbRow.isSelected ? Color.primaryContainerText : Color.surfaceText
+                color: kbRow.isSelected ? Colors.primaryContainerText : Colors.surfaceText
                 size: NText.Size.BodySm
                 elide: Text.ElideRight
                 Layout.fillWidth: true
@@ -171,7 +171,7 @@ NScrollView {
         NText {
           visible: root.keyboards.length === 0
           text: "hyprctl reported no keyboard devices."
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.BodySm
         }
       }
@@ -231,7 +231,7 @@ NScrollView {
 
             Rectangle {
               anchors.fill: parent
-              color: vpnRow.modelData.active ? Color.primaryContainer : (vpnHover.hovered ? Color.surfaceContainerHigh : "transparent")
+              color: vpnRow.modelData.active ? Colors.primaryContainer : (vpnHover.hovered ? Colors.surfaceContainerHigh : "transparent")
             }
 
             RowLayout {
@@ -241,19 +241,19 @@ NScrollView {
 
               Text {
                 text: vpnRow.modelData.active ? "●" : "○"
-                color: vpnRow.modelData.active ? Color.primary : Color.labelText
+                color: vpnRow.modelData.active ? Colors.primary : Colors.labelText
                 font.pixelSize: Tokens.bodySmSize
               }
               NText {
                 text: vpnRow.modelData.name
-                color: vpnRow.modelData.active ? Color.primaryContainerText : Color.surfaceText
+                color: vpnRow.modelData.active ? Colors.primaryContainerText : Colors.surfaceText
                 size: NText.Size.BodySm
                 elide: Text.ElideRight
                 Layout.fillWidth: true
               }
               NText {
                 text: vpnRow.modelData.active ? "connected" : "disconnected"
-                color: Color.labelText
+                color: Colors.labelText
                 size: NText.Size.Caption
               }
             }
@@ -275,7 +275,7 @@ NScrollView {
         NText {
           visible: root.vpnList.length === 0
           text: "No VPN/WireGuard connection profiles found (nmcli connection show)."
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.BodySm
         }
       }

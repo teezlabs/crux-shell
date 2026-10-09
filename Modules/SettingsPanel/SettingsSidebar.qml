@@ -30,8 +30,8 @@ ColumnLayout {
 
     Rectangle {
       anchors.fill: parent
-      color: Color.surfaceContainerLow
-      border.color: Color.outline
+      color: Colors.surfaceContainerLow
+      border.color: Colors.outline
       border.width: Tokens.borderPanel
     }
 
@@ -50,8 +50,8 @@ ColumnLayout {
           chamferSize: Tokens.chamferIcon
           cutTopRight: true
           cutBottomLeft: true
-          fillColor: Color.surfaceContainer
-          strokeColor: searchInput.activeFocus ? Color.primary : Color.outline
+          fillColor: Colors.surfaceContainer
+          strokeColor: searchInput.activeFocus ? Colors.primary : Colors.outline
           strokeWidth: Tokens.borderModule
         }
 
@@ -61,7 +61,7 @@ ColumnLayout {
           anchors.leftMargin: 8
           anchors.rightMargin: 8
           verticalAlignment: TextInput.AlignVCenter
-          color: Color.surfaceText
+          color: Colors.surfaceText
           font.family: Tokens.fontFamily
           font.pixelSize: Tokens.bodySmSize
           clip: true
@@ -71,7 +71,7 @@ ColumnLayout {
           NText {
             visible: searchInput.text === "" && !searchInput.activeFocus
             text: "Search settings…"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.BodySm
             verticalAlignment: Text.AlignVCenter
             anchors.fill: parent
@@ -95,7 +95,7 @@ ColumnLayout {
           NText {
             tracking: true
             text: "SETTINGS"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
             font.weight: Font.DemiBold
             Layout.bottomMargin: 10
@@ -115,7 +115,7 @@ ColumnLayout {
 
               Rectangle {
                 anchors.fill: parent
-                color: sidebarItem.active ? Color.primaryContainer : (tabHover.hovered ? Color.surfaceContainerHigh : "transparent")
+                color: sidebarItem.active ? Colors.primaryContainer : (tabHover.hovered ? Colors.surfaceContainerHigh : "transparent")
               }
               Rectangle {
                 visible: sidebarItem.active
@@ -123,7 +123,7 @@ ColumnLayout {
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 width: Tokens.borderMarker
-                color: Color.primary
+                color: Colors.primary
               }
 
               NText {
@@ -133,7 +133,7 @@ ColumnLayout {
                 anchors.rightMargin: 6
                 anchors.verticalCenter: parent.verticalCenter
                 text: sidebarItem.modelData.label
-                color: sidebarItem.active ? Color.primaryContainerText : Color.surfaceText
+                color: sidebarItem.active ? Colors.primaryContainerText : Colors.surfaceText
                 size: NText.Size.BodySm
                 font.weight: sidebarItem.active ? Font.DemiBold : Font.Normal
                 elide: Text.ElideRight
@@ -159,7 +159,7 @@ ColumnLayout {
           NText {
             tracking: true
             text: panel.searchResults.length === 0 ? "No matches" : panel.searchResults.length + " match" + (panel.searchResults.length === 1 ? "" : "es")
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
             Layout.bottomMargin: 10
             Layout.topMargin: 2
@@ -177,7 +177,7 @@ ColumnLayout {
 
               Rectangle {
                 anchors.fill: parent
-                color: resultHover.hovered ? Color.surfaceContainerHigh : "transparent"
+                color: resultHover.hovered ? Colors.surfaceContainerHigh : "transparent"
               }
 
               ColumnLayout {
@@ -190,14 +190,14 @@ ColumnLayout {
 
                 NText {
                   text: resultItem.modelData.label
-                  color: Color.surfaceText
+                  color: Colors.surfaceText
                   size: NText.Size.BodySm
                   elide: Text.ElideRight
                   Layout.fillWidth: true
                 }
                 NText {
                   text: resultItem.modelData.description
-                  color: Color.labelText
+                  color: Colors.labelText
                   size: NText.Size.Caption
                   elide: Text.ElideRight
                   Layout.fillWidth: true

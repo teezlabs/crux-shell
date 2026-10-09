@@ -9,8 +9,8 @@ ColumnLayout {
 
   property string label: ""
   property string description: ""
-  property color labelColor: Color.surfaceText
-  property color descriptionColor: Color.labelText
+  property color labelColor: Colors.surfaceText
+  property color descriptionColor: Colors.labelText
   // Off for a fixed-width label column, where wrapping would change the
   // row height instead of eliding.
   property bool wrap: true

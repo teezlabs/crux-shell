@@ -16,7 +16,7 @@ CcCircleToggle {
     anchors.centerIn: parent
     width: 14
     height: 15
-    readonly property color strokeColor: tile.active ? Color.primaryText : Color.surfaceText
+    readonly property color strokeColor: tile.active ? Colors.primaryText : Colors.surfaceText
     readonly property bool struck: tile.active
     onStrokeColorChanged: requestPaint()
     onStruckChanged: requestPaint()

@@ -31,7 +31,7 @@ Item {
       width: 16
       height: 16
       readonly property bool isDark: root.dark
-      readonly property color drawColor: Color.surfaceText
+      readonly property color drawColor: Colors.surfaceText
       onIsDarkChanged: requestPaint()
       onDrawColorChanged: requestPaint()
       onPaint: {

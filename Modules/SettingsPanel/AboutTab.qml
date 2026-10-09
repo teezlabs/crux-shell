@@ -66,13 +66,13 @@ NScrollView {
       NText {
         Layout.alignment: Qt.AlignTop
         text: "Commit"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
       NText {
         Layout.fillWidth: true
         text: root.commitHash + " (" + root.commitDate + ")"
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.BodySm
         wrapMode: Text.WrapAnywhere
       }
@@ -80,13 +80,13 @@ NScrollView {
       NText {
         Layout.alignment: Qt.AlignTop
         text: "Config dir"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
       NText {
         Layout.fillWidth: true
         text: Quickshell.shellDir
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.BodySm
         wrapMode: Text.WrapAnywhere
       }
@@ -94,13 +94,13 @@ NScrollView {
       NText {
         Layout.alignment: Qt.AlignTop
         text: "Settings file"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
       NText {
         Layout.fillWidth: true
         text: Settings.settingsFile
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.BodySm
         wrapMode: Text.WrapAnywhere
       }
@@ -108,13 +108,13 @@ NScrollView {
       NText {
         Layout.alignment: Qt.AlignTop
         text: "Quickshell"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
       NText {
         Layout.fillWidth: true
         text: root.qsVersion
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.BodySm
         wrapMode: Text.WrapAnywhere
       }

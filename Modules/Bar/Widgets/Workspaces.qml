@@ -154,7 +154,7 @@ Item {
             chamferSize: Tokens.chamferIcon
             cutBottomLeft: root.vertical ? cell.isLast : cell.isFirst
             cutTopRight: root.vertical ? cell.isFirst : cell.isLast
-            fillColor: Color.primaryContainer
+            fillColor: Colors.primaryContainer
 
             Behavior on opacity {
               NumberAnimation {
@@ -167,7 +167,7 @@ Item {
             anchors.fill: parent
             opacity: cell.active && !cell.isFirst && !cell.isLast ? 1 : 0
             visible: opacity > 0
-            color: Color.primaryContainer
+            color: Colors.primaryContainer
 
             Behavior on opacity {
               NumberAnimation {
@@ -193,7 +193,7 @@ Item {
             height: root.vertical ? undefined : Tokens.borderMarker
             opacity: cell.active ? 1 : 0
             visible: opacity > 0
-            color: Color.primary
+            color: Colors.primary
 
             Behavior on opacity {
               NumberAnimation {
@@ -207,7 +207,7 @@ Item {
             tracking: true
             anchors.centerIn: parent
             text: String(cell.wsId)
-            color: cell.active ? Color.primaryContainerText : (cell.occupied ? Color.surfaceText : Color.disabledText)
+            color: cell.active ? Colors.primaryContainerText : (cell.occupied ? Colors.surfaceText : Colors.disabledText)
           }
 
           HoverHandler {

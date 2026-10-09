@@ -149,8 +149,8 @@ NPanelWindow {
       cutTopRight: true
       cutBottomLeft: true
       cutBottomRight: false
-      fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
-      strokeColor: Color.outline
+      fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+      strokeColor: Colors.outline
       strokeWidth: Tokens.borderPanel
       shadow: true
       rimLight: true
@@ -177,7 +177,7 @@ NPanelWindow {
 
         NText {
           text: ">"
-          color: Color.primary
+          color: Colors.primary
           size: NText.Size.BodyLg
           font.weight: Font.DemiBold
         }
@@ -193,7 +193,7 @@ NPanelWindow {
             width: Math.max(1, implicitWidth)
             text: root.query
             onTextChanged: root.query = text
-            color: Color.surfaceText
+            color: Colors.surfaceText
             font.family: Tokens.fontFamily
             font.pixelSize: Tokens.bodyLgSize
             // The Rectangle below is the spec caret (§6.2: 2px×17px).
@@ -209,7 +209,7 @@ NPanelWindow {
               visible: searchInput.text === ""
               x: 6 // clears the caret Rectangle, which sits right at the edge when empty
               text: "search apps…"
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.BodyLg
             }
 
@@ -220,7 +220,7 @@ NPanelWindow {
               anchors.verticalCenter: parent.verticalCenter
               width: 2
               height: 17 // spec §6.2: "2px×17px primary caret" — a fixed dimension, not tied to body-lg's 15px
-              color: Color.primary
+              color: Colors.primary
 
               SequentialAnimation on opacity {
                 loops: Animation.Infinite
@@ -244,7 +244,7 @@ NPanelWindow {
         NText {
           tracking: true
           text: root.execMode ? "RUN" : String(root.results.length).padStart(2, "0") + " MATCHES"
-          color: root.execMode ? Color.primary : Color.labelText
+          color: root.execMode ? Colors.primary : Colors.labelText
           size: NText.Size.LabelXs
         }
       }
@@ -252,7 +252,7 @@ NPanelWindow {
       Rectangle {
         Layout.fillWidth: true
         height: 1
-        color: Color.surfaceContainerHigh
+        color: Colors.surfaceContainerHigh
       }
 
       // ---- Exec mode hint (shown instead of the results list) ----
@@ -266,7 +266,7 @@ NPanelWindow {
           anchors.top: parent.top
           anchors.margins: 18
           text: root.execCommand.trim() === "" ? "Type a command to run…" : "⏎  sh -c \"" + root.execCommand + "\""
-          color: root.execCommand.trim() === "" ? Color.labelText : Color.surfaceText
+          color: root.execCommand.trim() === "" ? Colors.labelText : Colors.surfaceText
           wrapMode: Text.WordWrap
           width: parent.width - 36
         }
@@ -293,7 +293,7 @@ NPanelWindow {
 
           Rectangle {
             anchors.fill: parent
-            color: rowItem.selected ? Color.primaryContainer : "transparent"
+            color: rowItem.selected ? Colors.primaryContainer : "transparent"
           }
 
           Rectangle {
@@ -302,7 +302,7 @@ NPanelWindow {
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             width: 2
-            color: Color.primary
+            color: Colors.primary
           }
 
           Rectangle {
@@ -311,7 +311,7 @@ NPanelWindow {
             anchors.left: parent.left
             anchors.right: parent.right
             height: 1
-            color: Color.surfaceContainerHigh
+            color: Colors.surfaceContainerHigh
           }
 
           RowLayout {
@@ -323,7 +323,7 @@ NPanelWindow {
             NText {
               tracking: true
               text: String(rowItem.index + 1).padStart(2, "0")
-              color: rowItem.selected ? Color.primaryContainerText : Color.labelText
+              color: rowItem.selected ? Colors.primaryContainerText : Colors.labelText
               size: NText.Size.LabelXs
             }
 
@@ -337,8 +337,8 @@ NPanelWindow {
                 chamferSize: Tokens.chamferIcon
                 cutTopRight: true
                 cutBottomLeft: true
-                fillColor: rowItem.selected ? Color.primary : "transparent"
-                strokeColor: rowItem.selected ? Color.primary : Color.outline
+                fillColor: rowItem.selected ? Colors.primary : "transparent"
+                strokeColor: rowItem.selected ? Colors.primary : Colors.outline
                 strokeWidth: 1
               }
 
@@ -357,7 +357,7 @@ NPanelWindow {
 
             NText {
               text: rowItem.modelData.name || ""
-              color: rowItem.selected ? Color.primaryContainerText : Color.surfaceText
+              color: rowItem.selected ? Colors.primaryContainerText : Colors.surfaceText
               elide: Text.ElideRight
               Layout.fillWidth: true
             }
@@ -365,7 +365,7 @@ NPanelWindow {
             NText {
               tracking: true
               text: rowItem.execPath
-              color: rowItem.selected ? Color.primaryContainerText : Color.labelText
+              color: rowItem.selected ? Colors.primaryContainerText : Colors.labelText
               size: NText.Size.Caption
               elide: Text.ElideLeft
               Layout.maximumWidth: 220
@@ -387,7 +387,7 @@ NPanelWindow {
         id: footer
         Layout.fillWidth: true
         Layout.preferredHeight: 40
-        color: Color.surfaceContainerLow
+        color: Colors.surfaceContainerLow
 
         Row {
           anchors.centerIn: parent
@@ -396,19 +396,19 @@ NPanelWindow {
           NText {
             tracking: true
             text: "↑↓ MOVE"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
           }
           NText {
             tracking: true
             text: "⏎ LAUNCH"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
           }
           NText {
             tracking: true
             text: "ESC CLOSE"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
           }
         }

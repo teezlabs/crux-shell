@@ -160,8 +160,8 @@ Item {
     // A step lighter than the bar strip it sits on, which is plain surface —
     // surfaceContainer is too close to read as a raised plinth once the
     // strip background is on.
-    fillColor: Color.alpha(Color.surfaceContainerHigh, Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity)
-    strokeColor: Color.outlineVariant
+    fillColor: Colors.alpha(Colors.surfaceContainerHigh, Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity)
+    strokeColor: Colors.outlineVariant
     strokeWidth: Tokens.borderModule
     rimLight: true
     rimOpacity: Tokens.rimOpacityCard
@@ -358,7 +358,7 @@ Item {
     width: sectionRoot.vertical ? (sectionRow.width > 0 ? sectionRow.width : 24) : 2
     height: sectionRoot.vertical ? 2 : (sectionRow.height > 0 ? sectionRow.height : 24)
     radius: 1
-    color: Color.primary
+    color: Colors.primary
     visible: sectionRoot.isDropTarget
     x: sectionRoot.vertical ? 0 : sectionRoot.indicatorPos()
     y: sectionRoot.vertical ? sectionRoot.indicatorPos() : 0

@@ -251,7 +251,7 @@ ColumnLayout {
     NText {
       tracking: true
       text: "SYSTEM STATS"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
     }
 
@@ -261,13 +261,13 @@ ColumnLayout {
 
     NText {
       text: "Uptime " + root.uptimeText
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.Caption
     }
 
     Text {
       text: "×"
-      color: closeHover.hovered ? Color.surfaceText : Color.labelText
+      color: closeHover.hovered ? Colors.surfaceText : Colors.labelText
       font.pixelSize: Tokens.bodyLgSize
 
       HoverHandler {
@@ -297,7 +297,7 @@ ColumnLayout {
     }
     CircularGauge {
       percent: Math.min(100, root.tempC)
-      fillColor: Color.tertiary
+      fillColor: Colors.tertiary
       value: Math.round(root.tempC) + "°"
       label: "TEMP"
     }
@@ -307,12 +307,12 @@ ColumnLayout {
       spacing: 2
       NText {
         text: "MEM " + root.memUsedGb.toFixed(1) + " / " + root.memTotalGb.toFixed(1) + " GB"
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.BodySm
       }
       NText {
         text: "LOAD " + root.loadAvg1.toFixed(2) + " • " + root.loadAvg5.toFixed(2) + " • " + root.loadAvg15.toFixed(2)
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -327,7 +327,7 @@ ColumnLayout {
     NText {
       tracking: true
       text: "CORES (" + root.coresUsage.length + ")"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
     }
 
@@ -352,7 +352,7 @@ ColumnLayout {
               anchors.bottom: parent.bottom
               width: parent.width
               height: Math.max(2, parent.height * (Math.min(100, root.coresUsage[index]) / 100))
-              color: root.coresUsage[index] >= 85 ? Color.error : Color.primary
+              color: root.coresUsage[index] >= 85 ? Colors.error : Colors.primary
 
               Behavior on height {
                 NumberAnimation {
@@ -376,7 +376,7 @@ ColumnLayout {
     NText {
       tracking: true
       text: "DISK"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
     }
 
@@ -392,14 +392,14 @@ ColumnLayout {
           Layout.fillWidth: true
           NText {
             text: modelData.target
-            color: Color.surfaceText
+            color: Colors.surfaceText
             size: NText.Size.BodySm
             elide: Text.ElideMiddle
             Layout.fillWidth: true
           }
           NText {
             text: modelData.usedGb.toFixed(1) + " / " + modelData.sizeGb.toFixed(1) + " GB (" + modelData.percent + "%)"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.Caption
           }
         }
@@ -410,8 +410,8 @@ ColumnLayout {
           cellHeight: Tokens.meterTelemetryCellHeight
           value: modelData.percent
           interactive: false
-          filledColor: modelData.percent >= 90 ? Color.error : Color.primary
-          emptyColor: Color.surfaceContainerHigh
+          filledColor: modelData.percent >= 90 ? Colors.error : Colors.primary
+          emptyColor: Colors.surfaceContainerHigh
         }
       }
     }

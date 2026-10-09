@@ -60,7 +60,7 @@ Item {
             return Math.max(0, Math.min(1, v[i]));
           }
 
-          color: Color.primary
+          color: Colors.primary
           radius: 0
 
           x: root.vertical ? 0 : bar.index * (root.barWidth + root.barGap)

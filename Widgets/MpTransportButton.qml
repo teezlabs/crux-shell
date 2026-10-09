@@ -17,14 +17,14 @@ Item {
 
   Rectangle {
     anchors.fill: parent
-    color: root.active ? Color.primaryContainer : Color.surface
+    color: root.active ? Colors.primaryContainer : Colors.surface
     opacity: root.available ? 1 : 0.35
   }
 
   Text {
     anchors.centerIn: parent
     text: root.glyph
-    color: root.active ? Color.primary : Color.surfaceText
+    color: root.active ? Colors.primary : Colors.surfaceText
     font.pixelSize: 14
   }
 

@@ -81,8 +81,8 @@ NScrollView {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: swatch.applied ? Color.primaryContainer : (swatchHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer)
-            strokeColor: swatch.applied ? Color.primary : Color.outline
+            fillColor: swatch.applied ? Colors.primaryContainer : (swatchHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer)
+            strokeColor: swatch.applied ? Colors.primary : Colors.outline
             strokeWidth: Tokens.borderModule
           }
 
@@ -100,7 +100,7 @@ NScrollView {
                   width: 12
                   height: 12
                   color: modelData
-                  border.color: Color.outline
+                  border.color: Colors.outline
                   border.width: 1
                 }
               }
@@ -108,7 +108,7 @@ NScrollView {
 
             NText {
               text: swatch.modelData.name
-              color: Color.surfaceText
+              color: Colors.surfaceText
               size: NText.Size.BodySm
             }
           }
@@ -146,13 +146,13 @@ NScrollView {
             width: 22
             height: 22
             color: Settings.data.theme[fieldRow.modelData.key]
-            border.color: Color.outline
+            border.color: Colors.outline
             border.width: 1
           }
 
           NText {
             text: fieldRow.modelData.label
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.BodySm
             Layout.preferredWidth: 110
           }
@@ -166,8 +166,8 @@ NScrollView {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: Color.surface
-              strokeColor: fieldInput.activeFocus ? Color.primary : Color.outline
+              fillColor: Colors.surface
+              strokeColor: fieldInput.activeFocus ? Colors.primary : Colors.outline
               strokeWidth: Tokens.borderModule
             }
 
@@ -178,7 +178,7 @@ NScrollView {
               anchors.rightMargin: 6
               verticalAlignment: Text.AlignVCenter
               text: Settings.data.theme[fieldRow.modelData.key]
-              color: Color.surfaceText
+              color: Colors.surfaceText
               font.family: Tokens.fontFamily
               font.pixelSize: Tokens.captionSize
               onEditingFinished: {

@@ -84,7 +84,7 @@ NScrollView {
 
     NText {
       text: "Grace delay: how long a stage waits after going idle before it actually fires — any activity in that window cancels it."
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
@@ -104,7 +104,7 @@ NScrollView {
 
       NText {
         text: "Screen off"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
       CommandField {
@@ -116,7 +116,7 @@ NScrollView {
 
       NText {
         text: "Resume screen off"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
       CommandField {
@@ -128,7 +128,7 @@ NScrollView {
 
       NText {
         text: "Lock"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
       CommandField {
@@ -140,7 +140,7 @@ NScrollView {
 
       NText {
         text: "Suspend"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
       CommandField {
@@ -152,7 +152,7 @@ NScrollView {
 
       NText {
         text: "Resume suspend"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
       CommandField {
@@ -181,8 +181,8 @@ NScrollView {
       chamferSize: Tokens.chamferIcon
       cutTopRight: true
       cutBottomLeft: true
-      fillColor: Color.surface
-      strokeColor: input.activeFocus ? Color.primary : Color.outline
+      fillColor: Colors.surface
+      strokeColor: input.activeFocus ? Colors.primary : Colors.outline
       strokeWidth: Tokens.borderModule
     }
 
@@ -193,7 +193,7 @@ NScrollView {
       anchors.rightMargin: 8
       verticalAlignment: Text.AlignVCenter
       text: field.value
-      color: text === "" ? Color.labelText : Color.surfaceText
+      color: text === "" ? Colors.labelText : Colors.surfaceText
       font.family: Tokens.fontFamily
       font.pixelSize: Tokens.bodySmSize
       selectByMouse: true
@@ -202,7 +202,7 @@ NScrollView {
       NText {
         visible: input.text === "" && !input.activeFocus
         text: field.placeholder
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
     }

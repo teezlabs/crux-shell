@@ -36,7 +36,7 @@ NScrollView {
 
           NText {
             text: row.modelData
-            color: Color.surfaceText
+            color: Colors.surfaceText
             size: NText.Size.BodySm
             Layout.fillWidth: true
           }
@@ -64,14 +64,14 @@ NScrollView {
       NText {
         visible: Settings.data.controlCenter.toggles.length === 0
         text: "No toggles — the row is hidden."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
 
       NText {
         tracking: true
         text: "ADD"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
         Layout.topMargin: 4
       }
@@ -165,7 +165,7 @@ NScrollView {
 
     NText {
       text: "Run through sh -c, so flags/arguments work (e.g. \"rishot -c\")."
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true

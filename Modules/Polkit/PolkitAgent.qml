@@ -121,8 +121,8 @@ Item {
       width: 320
       height: column.implicitHeight + 24
       radius: Tokens.radiusXXS
-      color: Color.surface
-      border.color: root.failed ? Color.error : Color.outline
+      color: Colors.surface
+      border.color: root.failed ? Colors.error : Colors.outline
       border.width: 1
 
       Item {
@@ -143,7 +143,7 @@ Item {
 
           NText {
             text: "Authentication required"
-            color: Color.surfaceText
+            color: Colors.surfaceText
             font.pixelSize: 13
             font.bold: true
             Layout.fillWidth: true
@@ -151,7 +151,7 @@ Item {
 
           NText {
             text: root.message
-            color: Color.surfaceTextMuted
+            color: Colors.surfaceTextMuted
             font.pixelSize: 11
             wrapMode: Text.WordWrap
             Layout.fillWidth: true
@@ -160,7 +160,7 @@ Item {
           NText {
             visible: root.failed
             text: "Authentication failed — try again"
-            color: Color.error
+            color: Colors.error
             font.pixelSize: 11
             Layout.fillWidth: true
           }
@@ -175,7 +175,7 @@ Item {
               anchors.margins: 6
               verticalAlignment: TextInput.AlignVCenter
               echoMode: TextInput.Password
-              color: Color.surfaceText
+              color: Colors.surfaceText
               font.family: Settings.data.ui.fontFamily
               font.pixelSize: 13
               enabled: root.dialogVisible && !root.submitted
@@ -185,7 +185,7 @@ Item {
                 z: -1
                 anchors.fill: parent
                 anchors.margins: -6
-                color: Color.surfaceContainer
+                color: Colors.surfaceContainer
                 radius: Tokens.radiusXXS
               }
             }
@@ -201,7 +201,7 @@ Item {
 
             NText {
               text: "Cancel"
-              color: Color.surfaceTextMuted
+              color: Colors.surfaceTextMuted
               font.pixelSize: 12
               MouseArea {
                 anchors.fill: parent
@@ -212,7 +212,7 @@ Item {
 
             NText {
               text: root.submitted ? "Checking…" : "OK"
-              color: Color.primary
+              color: Colors.primary
               font.pixelSize: 12
               MouseArea {
                 anchors.fill: parent

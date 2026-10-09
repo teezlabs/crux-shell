@@ -82,8 +82,8 @@ PanelWindow {
       chamferSize: Tokens.chamferPanel
       cutTopRight: true
       cutBottomLeft: true
-      fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
-      strokeColor: Color.outline
+      fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+      strokeColor: Colors.outline
       strokeWidth: Tokens.borderPanel
     }
 
@@ -118,13 +118,13 @@ PanelWindow {
           anchors.leftMargin: 6
           anchors.rightMargin: 6
           height: 1
-          color: Color.outlineVariant
+          color: Colors.outlineVariant
         }
 
         Rectangle {
           visible: !row.modelData.isSeparator
           anchors.fill: parent
-          color: rowHover.hovered && row.modelData.enabled ? Color.surfaceContainerHigh : "transparent"
+          color: rowHover.hovered && row.modelData.enabled ? Colors.surfaceContainerHigh : "transparent"
         }
 
         RowLayout {
@@ -139,7 +139,7 @@ PanelWindow {
           Text {
             visible: row.modelData.buttonType !== QsMenuButtonType.None
             text: row.modelData.checkState === Qt.Checked ? "●" : "○"
-            color: Color.primary
+            color: Colors.primary
             font.pixelSize: Tokens.captionSize
           }
 
@@ -148,13 +148,13 @@ PanelWindow {
             Layout.preferredWidth: 14
             Layout.preferredHeight: 14
             source: root.resolveIcon(row.modelData.icon)
-            color: Color.surfaceText
+            color: Colors.surfaceText
           }
 
           NText {
             Layout.fillWidth: true
             text: row.modelData.text
-            color: row.modelData.enabled ? Color.surfaceText : Color.disabledText
+            color: row.modelData.enabled ? Colors.surfaceText : Colors.disabledText
             size: NText.Size.BodySm
             elide: Text.ElideRight
           }
@@ -162,7 +162,7 @@ PanelWindow {
           Text {
             visible: row.modelData.hasChildren
             text: "›"
-            color: Color.labelText
+            color: Colors.labelText
             font.pixelSize: Tokens.bodySmSize
           }
         }
@@ -208,13 +208,13 @@ PanelWindow {
         anchors.leftMargin: 6
         anchors.rightMargin: 6
         height: 1
-        color: Color.outlineVariant
+        color: Colors.outlineVariant
       }
 
       Rectangle {
         anchors.fill: parent
         anchors.topMargin: 1
-        color: pinHover.hovered ? Color.surfaceContainerHigh : "transparent"
+        color: pinHover.hovered ? Colors.surfaceContainerHigh : "transparent"
       }
 
       RowLayout {
@@ -227,13 +227,13 @@ PanelWindow {
           Layout.preferredWidth: 14
           Layout.preferredHeight: 14
           source: Quickshell.iconPath("pin-symbolic", "")
-          color: Color.primary
+          color: Colors.primary
         }
 
         NText {
           Layout.fillWidth: true
           text: root.pinLabel
-          color: Color.primary
+          color: Colors.primary
           size: NText.Size.BodySm
           elide: Text.ElideRight
         }

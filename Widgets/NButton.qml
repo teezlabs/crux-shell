@@ -32,18 +32,18 @@ Item {
 
   readonly property color fill: {
     if (hover.hovered)
-      return Color.surfaceContainerHigh;
-    return root.accent ? Color.primaryContainer : Color.surfaceContainer;
+      return Colors.surfaceContainerHigh;
+    return root.accent ? Colors.primaryContainer : Colors.surfaceContainer;
   }
   readonly property color stroke: {
     if (root.destructive)
-      return Color.alpha(Color.error, Tokens.destructiveBorderAlpha);
-    return root.accent ? Color.primary : Color.outline;
+      return Colors.alpha(Colors.error, Tokens.destructiveBorderAlpha);
+    return root.accent ? Colors.primary : Colors.outline;
   }
   readonly property color labelColor: {
     if (root.destructive)
-      return Color.error;
-    return root.accent ? Color.primaryContainerText : Color.surfaceText;
+      return Colors.error;
+    return root.accent ? Colors.primaryContainerText : Colors.surfaceText;
   }
 
   implicitHeight: 30

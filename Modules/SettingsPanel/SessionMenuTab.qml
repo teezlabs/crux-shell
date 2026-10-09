@@ -53,7 +53,7 @@ NScrollView {
             }
             NText {
               text: "shown"
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.Caption
             }
           }
@@ -66,7 +66,7 @@ NScrollView {
             }
             NText {
               text: "confirm"
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.Caption
             }
           }

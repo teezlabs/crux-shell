@@ -37,8 +37,8 @@ NScrollView {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: Color.surface
-            strokeColor: urlInput.activeFocus ? Color.primary : Color.outline
+            fillColor: Colors.surface
+            strokeColor: urlInput.activeFocus ? Colors.primary : Colors.outline
             strokeWidth: Tokens.borderModule
           }
 
@@ -48,7 +48,7 @@ NScrollView {
             anchors.verticalCenter: parent.verticalCenter
             anchors.leftMargin: 8
             text: "https://github.com/user/crux-plugins"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.BodySm
           }
 
@@ -58,7 +58,7 @@ NScrollView {
             anchors.leftMargin: 8
             anchors.rightMargin: 8
             verticalAlignment: Text.AlignVCenter
-            color: Color.surfaceText
+            color: Colors.surfaceText
             font.family: Tokens.fontFamily
             font.pixelSize: Tokens.bodySmSize
             selectByMouse: true
@@ -77,8 +77,8 @@ NScrollView {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: Color.surface
-              strokeColor: nameInput.activeFocus ? Color.primary : Color.outline
+              fillColor: Colors.surface
+              strokeColor: nameInput.activeFocus ? Colors.primary : Colors.outline
               strokeWidth: Tokens.borderModule
             }
 
@@ -88,7 +88,7 @@ NScrollView {
               anchors.verticalCenter: parent.verticalCenter
               anchors.leftMargin: 8
               text: "Display name (optional)"
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.BodySm
             }
 
@@ -98,7 +98,7 @@ NScrollView {
               anchors.leftMargin: 8
               anchors.rightMargin: 8
               verticalAlignment: Text.AlignVCenter
-              color: Color.surfaceText
+              color: Colors.surfaceText
               font.family: Tokens.fontFamily
               font.pixelSize: Tokens.bodySmSize
               selectByMouse: true
@@ -114,15 +114,15 @@ NScrollView {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: addHover.hovered ? Color.primaryContainer : Color.surfaceContainer
-              strokeColor: Color.primary
+              fillColor: addHover.hovered ? Colors.primaryContainer : Colors.surfaceContainer
+              strokeColor: Colors.primary
               strokeWidth: Tokens.borderModule
             }
             NText {
               id: addLabel
               anchors.centerIn: parent
               text: "Add"
-              color: Color.primary
+              color: Colors.primary
               size: NText.Size.BodySm
             }
             HoverHandler {
@@ -174,8 +174,8 @@ NScrollView {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: Color.surfaceContainer
-              strokeColor: srcRow.modelData.enabled === false ? Color.outline : Color.primary
+              fillColor: Colors.surfaceContainer
+              strokeColor: srcRow.modelData.enabled === false ? Colors.outline : Colors.primary
               strokeWidth: Tokens.borderModule
             }
 
@@ -190,14 +190,14 @@ NScrollView {
                 spacing: 0
                 NText {
                   text: srcRow.modelData.name || srcRow.modelData.url
-                  color: Color.surfaceText
+                  color: Colors.surfaceText
                   size: NText.Size.BodySm
                   elide: Text.ElideMiddle
                   Layout.fillWidth: true
                 }
                 NText {
                   text: srcRow.modelData.url
-                  color: Color.labelText
+                  color: Colors.labelText
                   size: NText.Size.Caption
                   elide: Text.ElideMiddle
                   Layout.fillWidth: true
@@ -218,7 +218,7 @@ NScrollView {
               NText {
                 tracking: true
                 text: "REMOVE"
-                color: Color.error
+                color: Colors.error
                 size: NText.Size.LabelXs
                 HoverHandler {
                   cursorShape: Qt.PointingHandCursor
@@ -238,7 +238,7 @@ NScrollView {
         NText {
           visible: Settings.data.plugins.sources.length === 0
           text: "No sources yet."
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.BodySm
         }
       }

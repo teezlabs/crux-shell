@@ -63,7 +63,7 @@ NScrollView {
 
     NText {
       text: "Per scroll notch on the bar's Status module, and per hardware volume key press."
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
@@ -77,7 +77,7 @@ NScrollView {
       }
       NText {
         text: "Lets scroll/hardware keys push volume up to 150% — the Sound popup's own slider still caps at 100%."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
@@ -102,7 +102,7 @@ NScrollView {
           Layout.fillWidth: true
           height: 34
           readonly property bool isDefault: root.sink && modelData.id === root.sink.id
-          color: sinkRow.isDefault ? Color.primaryContainer : (hoverSink.hovered ? Color.surfaceContainerHigh : "transparent")
+          color: sinkRow.isDefault ? Colors.primaryContainer : (hoverSink.hovered ? Colors.surfaceContainerHigh : "transparent")
 
           RowLayout {
             anchors.fill: parent
@@ -111,13 +111,13 @@ NScrollView {
 
             Text {
               text: sinkRow.isDefault ? "●" : "○"
-              color: sinkRow.isDefault ? Color.primary : Color.labelText
+              color: sinkRow.isDefault ? Colors.primary : Colors.labelText
               font.pixelSize: Tokens.bodySize
             }
 
             NText {
               text: sinkRow.modelData.description || sinkRow.modelData.name || ""
-              color: sinkRow.isDefault ? Color.primaryContainerText : Color.surfaceText
+              color: sinkRow.isDefault ? Colors.primaryContainerText : Colors.surfaceText
               size: NText.Size.BodySm
               elide: Text.ElideRight
               Layout.fillWidth: true
@@ -126,7 +126,7 @@ NScrollView {
             NText {
               visible: sinkRow.modelData.audio
               text: sinkRow.modelData.audio ? Math.round(sinkRow.modelData.audio.volume * 100) + "%" : ""
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.BodySm
             }
           }
@@ -145,7 +145,7 @@ NScrollView {
       NText {
         visible: root.allSinks.length === 0
         text: "No output devices found."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
     }
@@ -168,7 +168,7 @@ NScrollView {
           Layout.fillWidth: true
           height: 34
           readonly property bool isDefault: root.source && modelData.id === root.source.id
-          color: sourceRow.isDefault ? Color.primaryContainer : (hoverSource.hovered ? Color.surfaceContainerHigh : "transparent")
+          color: sourceRow.isDefault ? Colors.primaryContainer : (hoverSource.hovered ? Colors.surfaceContainerHigh : "transparent")
 
           RowLayout {
             anchors.fill: parent
@@ -177,13 +177,13 @@ NScrollView {
 
             Text {
               text: sourceRow.isDefault ? "●" : "○"
-              color: sourceRow.isDefault ? Color.primary : Color.labelText
+              color: sourceRow.isDefault ? Colors.primary : Colors.labelText
               font.pixelSize: Tokens.bodySize
             }
 
             NText {
               text: sourceRow.modelData.description || sourceRow.modelData.name || ""
-              color: sourceRow.isDefault ? Color.primaryContainerText : Color.surfaceText
+              color: sourceRow.isDefault ? Colors.primaryContainerText : Colors.surfaceText
               size: NText.Size.BodySm
               elide: Text.ElideRight
               Layout.fillWidth: true
@@ -192,7 +192,7 @@ NScrollView {
             NText {
               visible: sourceRow.modelData.audio
               text: sourceRow.modelData.audio ? Math.round(sourceRow.modelData.audio.volume * 100) + "%" : ""
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.BodySm
             }
           }
@@ -211,7 +211,7 @@ NScrollView {
       NText {
         visible: root.allSources.length === 0
         text: "No input devices found."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
     }
@@ -257,8 +257,8 @@ NScrollView {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: playerPill.selected ? Color.primaryContainer : Color.surfaceContainer
-            strokeColor: playerPill.selected ? Color.primary : Color.outline
+            fillColor: playerPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+            strokeColor: playerPill.selected ? Colors.primary : Colors.outline
             strokeWidth: Tokens.borderModule
           }
 
@@ -267,7 +267,7 @@ NScrollView {
             id: playerLabel
             anchors.centerIn: parent
             text: playerPill.modelData.label
-            color: playerPill.selected ? Color.primaryContainerText : Color.surfaceText
+            color: playerPill.selected ? Colors.primaryContainerText : Colors.surfaceText
             size: NText.Size.LabelXs
           }
 
@@ -284,7 +284,7 @@ NScrollView {
     NText {
       visible: root.mprisPlayers.length === 0
       text: "No MPRIS players currently detected — open one to pick it here."
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.BodySm
       wrapMode: Text.WordWrap
       Layout.fillWidth: true

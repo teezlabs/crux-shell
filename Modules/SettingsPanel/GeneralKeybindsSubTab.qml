@@ -16,7 +16,7 @@ ColumnLayout {
   NText {
     tracking: true
     text: "~/.config/hypr/keybinds.lua (read-only — edit the file directly, then `hyprctl reload`)"
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.Caption
     wrapMode: Text.WordWrap
     Layout.fillWidth: true
@@ -36,8 +36,8 @@ ColumnLayout {
       chamferSize: Tokens.chamferModule
       cutTopRight: true
       cutBottomLeft: true
-      fillColor: Color.surfaceContainer
-      strokeColor: Color.outline
+      fillColor: Colors.surfaceContainer
+      strokeColor: Colors.outline
       strokeWidth: Tokens.borderModule
     }
 
@@ -53,7 +53,7 @@ ColumnLayout {
         id: text
         width: parent.width
         text: file.text()
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.Caption
         wrapMode: Text.NoWrap
       }

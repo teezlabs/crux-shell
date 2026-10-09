@@ -31,8 +31,8 @@ RowLayout {
         chamferSize: Tokens.chamferIcon
         cutTopRight: true
         cutBottomLeft: true
-        fillColor: pill.active ? Color.primaryContainer : (pillHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer)
-        strokeColor: pill.active ? Color.primary : Color.outline
+        fillColor: pill.active ? Colors.primaryContainer : (pillHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer)
+        strokeColor: pill.active ? Colors.primary : Colors.outline
         strokeWidth: Tokens.borderModule
       }
 
@@ -42,7 +42,7 @@ RowLayout {
         text: pill.modelData.label.toUpperCase()
         size: NText.Size.LabelXs
         tracking: true
-        color: pill.active ? Color.primaryContainerText : Color.surfaceText
+        color: pill.active ? Colors.primaryContainerText : Colors.surfaceText
       }
 
       HoverHandler {

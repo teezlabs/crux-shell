@@ -14,7 +14,7 @@ Item {
   property string iconFallback: ""
   // Most tiles want the normal text colour; RECORD wants the error tone, so
   // the recolour shader doesn't flatten breeze's red dot to plain white.
-  property color iconColor: Color.surfaceText
+  property color iconColor: Colors.surfaceText
   property bool available: true
   property bool active: false
   signal tapped
@@ -23,7 +23,7 @@ Item {
 
   Rectangle {
     anchors.fill: parent
-    color: root.active ? Color.alpha(Color.primary, 0.14) : (hoverHandler.hovered && root.available ? Color.surfaceContainerHigh : Color.surfaceContainer)
+    color: root.active ? Colors.alpha(Colors.primary, 0.14) : (hoverHandler.hovered && root.available ? Colors.surfaceContainerHigh : Colors.surfaceContainer)
     opacity: root.available ? 1 : 0.4
   }
 
@@ -45,7 +45,7 @@ Item {
       tracking: true
       anchors.verticalCenter: parent.verticalCenter
       text: root.label
-      color: root.active ? Color.primary : Color.surfaceText
+      color: root.active ? Colors.primary : Colors.surfaceText
       size: NText.Size.LabelXs
       font.weight: Font.DemiBold
     }

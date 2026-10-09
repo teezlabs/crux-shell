@@ -24,7 +24,7 @@ ColumnLayout {
     NText {
       tracking: true
       text: "HUE"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
       font.weight: Font.DemiBold
       Layout.fillWidth: true
@@ -33,7 +33,7 @@ ColumnLayout {
     NText {
       visible: root.group !== null
       text: root.group ? root.group.name : ""
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.Caption
     }
   }
@@ -41,7 +41,7 @@ ColumnLayout {
   NText {
     visible: !Hue.paired
     text: "Not paired — configure in Settings → Hue."
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.BodySm
     wrapMode: Text.WordWrap
     Layout.fillWidth: true
@@ -50,7 +50,7 @@ ColumnLayout {
   NText {
     visible: Hue.paired && !root.group
     text: "No room/zone selected — pick one in Settings → Hue."
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.BodySm
     wrapMode: Text.WordWrap
     Layout.fillWidth: true
@@ -83,7 +83,7 @@ ColumnLayout {
 
     NText {
       text: root.group ? Math.round(root.brightness01 * 100) + "%" : ""
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.BodySm
       Layout.preferredWidth: 34
     }
@@ -97,7 +97,7 @@ ColumnLayout {
     property int diameter: 22
 
     Repeater {
-      model: [Color.primary, Color.tertiary, Color.error, Color.surfaceText]
+      model: [Colors.primary, Colors.tertiary, Colors.error, Colors.surfaceText]
 
       Rectangle {
         width: colorSwatchRow.diameter
@@ -105,7 +105,7 @@ ColumnLayout {
         radius: 0
         color: modelData
         border.width: root.group && root.group.lastColor.toString() === modelData.toString() ? 2 : 1
-        border.color: root.group && root.group.lastColor.toString() === modelData.toString() ? Color.surfaceText : Color.outline
+        border.color: root.group && root.group.lastColor.toString() === modelData.toString() ? Colors.surfaceText : Colors.outline
 
         HoverHandler {
           cursorShape: Qt.PointingHandCursor

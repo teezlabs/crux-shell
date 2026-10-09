@@ -30,7 +30,7 @@ Flickable {
     contentItem: Rectangle {
       implicitWidth: root.handleWidth
       implicitHeight: 40
-      color: bar.pressed ? Color.primary : Color.alpha(Color.surfaceTextMuted, bar.hovered ? 0.6 : 0.35)
+      color: bar.pressed ? Colors.primary : Colors.alpha(Colors.surfaceTextMuted, bar.hovered ? 0.6 : 0.35)
     }
   }
 }

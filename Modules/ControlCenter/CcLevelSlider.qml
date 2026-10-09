@@ -14,8 +14,8 @@ Item {
 
   property real value: 0 // 0..100
   property bool interactive: true
-  property color filledColor: Color.primary
-  property color trackColor: Color.surfaceContainerHigh
+  property color filledColor: Colors.primary
+  property color trackColor: Colors.surfaceContainerHigh
   property real trackHeight: 4
   property real thumbRadius: 7
 

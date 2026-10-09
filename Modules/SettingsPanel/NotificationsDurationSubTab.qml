@@ -64,7 +64,7 @@ NScrollView {
       }
       NText {
         text: "When an app requests its own expiry, honor it instead of the durations above."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true

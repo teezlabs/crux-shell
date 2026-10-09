@@ -200,7 +200,7 @@ Item {
           width: 14
           height: 14
           source: Quickshell.iconPath(root.expanded ? TrayModel.collapseIcon(root.vertical) : TrayModel.expandIcon(root.vertical), "")
-          color: root.expanded ? Color.primary : Color.surfaceTextMuted
+          color: root.expanded ? Colors.primary : Colors.surfaceTextMuted
         }
 
         HoverHandler {

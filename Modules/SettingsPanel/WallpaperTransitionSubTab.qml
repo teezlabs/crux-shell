@@ -70,13 +70,13 @@ NScrollView {
           NText {
             tracking: true
             text: "DURATION"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
             Layout.fillWidth: true
           }
           NText {
             text: Settings.data.wallpaper.transitionDuration + " ms"
-            color: Color.surfaceText
+            color: Colors.surfaceText
             size: NText.Size.BodySm
           }
         }
@@ -100,13 +100,13 @@ NScrollView {
           NText {
             tracking: true
             text: "EDGE SMOOTHNESS"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
             Layout.fillWidth: true
           }
           NText {
             text: Settings.data.wallpaper.transitionEdgeSmoothness.toFixed(2)
-            color: Color.surfaceText
+            color: Colors.surfaceText
             size: NText.Size.BodySm
           }
         }

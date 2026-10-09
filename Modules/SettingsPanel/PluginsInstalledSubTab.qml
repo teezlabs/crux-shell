@@ -28,7 +28,7 @@ NScrollView {
 
       NText {
         text: Plugins.pluginsDir
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.BodySm
         elide: Text.ElideMiddle
         Layout.fillWidth: true
@@ -65,8 +65,8 @@ NScrollView {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: Color.alpha(row.entry.error ? Color.error : Color.primary, 0.1)
-            strokeColor: Color.alpha(row.entry.error ? Color.error : Color.primary, 0.4)
+            fillColor: Colors.alpha(row.entry.error ? Colors.error : Colors.primary, 0.1)
+            strokeColor: Colors.alpha(row.entry.error ? Colors.error : Colors.primary, 0.4)
             strokeWidth: Tokens.borderModule
           }
 
@@ -78,13 +78,13 @@ NScrollView {
 
             Text {
               text: row.entry.error ? "✕" : "✓"
-              color: row.entry.error ? Color.error : Color.primary
+              color: row.entry.error ? Colors.error : Colors.primary
               font.pixelSize: Tokens.bodySize
             }
 
             NText {
               text: row.entry.label || row.modelData
-              color: Color.surfaceText
+              color: Colors.surfaceText
               size: NText.Size.BodySm
               Layout.preferredWidth: 140
               elide: Text.ElideRight
@@ -92,7 +92,7 @@ NScrollView {
 
             NText {
               text: row.entry.error ? row.entry.error : row.entry.dir
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.Caption
               elide: Text.ElideMiddle
               Layout.fillWidth: true
@@ -104,14 +104,14 @@ NScrollView {
       NText {
         visible: Object.keys(Plugins.entries).length === 0
         text: "No plugins found."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
 
       NText {
         visible: Plugins.lastScanError !== ""
         text: Plugins.lastScanError
-        color: Color.error
+        color: Colors.error
         size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true

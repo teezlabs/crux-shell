@@ -28,8 +28,8 @@ Item {
       anchors.centerIn: parent
       width: 14
       height: 12
-      readonly property color accentColor: Color.primary
-      readonly property color trackColor: Color.surfaceTextMuted
+      readonly property color accentColor: Colors.primary
+      readonly property color trackColor: Colors.surfaceTextMuted
       onPaint: {
         var ctx = getContext("2d");
         ctx.reset();

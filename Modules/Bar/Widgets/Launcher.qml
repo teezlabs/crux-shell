@@ -38,7 +38,7 @@ Item {
         delegate: Rectangle {
           width: 3
           height: 3
-          color: Color.surfaceText
+          color: Colors.surfaceText
         }
       }
     }

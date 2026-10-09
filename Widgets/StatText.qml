@@ -10,13 +10,13 @@ Row {
 
   property string label: ""
   property string value: ""
-  property color valueColor: Color.surfaceText
+  property color valueColor: Colors.surfaceText
   spacing: 5
 
   NText {
     tracking: true
     text: root.label.toUpperCase()
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.LabelXs
     anchors.verticalCenter: parent.verticalCenter
   }

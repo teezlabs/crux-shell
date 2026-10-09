@@ -8,8 +8,8 @@ Item {
   property real value: 0 // 0..100
   property int cellCount: 18
   property int cellHeight: 5
-  property color filledColor: Color.primary
-  property color emptyColor: Color.surfaceContainerHigh
+  property color filledColor: Colors.primary
+  property color emptyColor: Colors.surfaceContainerHigh
   property bool interactive: false
   signal moved(real value)
 

@@ -44,8 +44,8 @@ Item {
       readonly property int profile: PowerProfileService.profile
       readonly property color drawColor: {
         if (PowerProfileService.degraded)
-          return Color.tertiary;
-        return profile === PowerProfile.Balanced ? Color.surfaceTextMuted : Color.primary;
+          return Colors.tertiary;
+        return profile === PowerProfile.Balanced ? Colors.surfaceTextMuted : Colors.primary;
       }
       onProfileChanged: requestPaint()
       onDrawColorChanged: requestPaint()

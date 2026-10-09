@@ -43,7 +43,7 @@ Item {
       anchors.centerIn: parent
       width: 16
       height: 14
-      readonly property color drawColor: Color.surfaceTextMuted
+      readonly property color drawColor: Colors.surfaceTextMuted
       onDrawColorChanged: requestPaint()
       onPaint: {
         var ctx = getContext("2d");

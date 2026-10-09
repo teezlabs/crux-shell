@@ -42,7 +42,7 @@ Item {
       anchors.centerIn: parent
       width: 12
       height: 14
-      readonly property color drawColor: !Hue.paired ? Color.disabledText : (root.lit ? Color.primary : Color.surfaceTextMuted)
+      readonly property color drawColor: !Hue.paired ? Colors.disabledText : (root.lit ? Colors.primary : Colors.surfaceTextMuted)
       onDrawColorChanged: requestPaint()
       onPaint: {
         var ctx = getContext("2d");

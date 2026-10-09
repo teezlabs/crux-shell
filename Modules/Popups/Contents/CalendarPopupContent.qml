@@ -61,7 +61,7 @@ ColumnLayout {
 
     NText {
       text: Qt.formatDateTime(root.viewDate, "MMMM yyyy").toUpperCase()
-      color: Color.surfaceText
+      color: Colors.surfaceText
       size: NText.Size.BodyLg
       font.weight: Font.DemiBold
     }
@@ -72,7 +72,7 @@ ColumnLayout {
       spacing: 12
       NText {
         text: "‹"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodyLg
         HoverHandler {
           cursorShape: Qt.PointingHandCursor
@@ -83,7 +83,7 @@ ColumnLayout {
       }
       NText {
         text: "›"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodyLg
         HoverHandler {
           cursorShape: Qt.PointingHandCursor
@@ -109,7 +109,7 @@ ColumnLayout {
         Layout.alignment: Qt.AlignHCenter
         horizontalAlignment: Text.AlignHCenter
         text: modelData
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
         tracking: true
       }
@@ -126,7 +126,7 @@ ColumnLayout {
         Rectangle {
           anchors.fill: parent
           visible: cell.modelData.isToday
-          color: Color.primaryContainer
+          color: Colors.primaryContainer
         }
         Rectangle {
           visible: cell.modelData.isToday
@@ -134,12 +134,12 @@ ColumnLayout {
           anchors.left: parent.left
           anchors.right: parent.right
           height: Tokens.borderMarker
-          color: Color.primary
+          color: Colors.primary
         }
         NText {
           anchors.centerIn: parent
           text: String(cell.modelData.day)
-          color: cell.modelData.isToday ? Color.primaryContainerText : (cell.modelData.inMonth ? Color.surfaceText : Color.calendarOutOfMonth)
+          color: cell.modelData.isToday ? Colors.primaryContainerText : (cell.modelData.inMonth ? Colors.surfaceText : Colors.calendarOutOfMonth)
         }
       }
     }

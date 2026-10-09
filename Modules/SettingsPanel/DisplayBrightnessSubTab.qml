@@ -40,7 +40,7 @@ NScrollView {
 
     NText {
       text: "Keeps brightnessctl from ever setting the backlight all the way to 0% — a scroll-down that overshoots can't leave the screen unrecoverably black."
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true

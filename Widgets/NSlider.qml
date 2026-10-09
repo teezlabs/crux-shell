@@ -34,14 +34,14 @@ Item {
     anchors.verticalCenter: parent.verticalCenter
     width: parent.width
     height: 4
-    color: Color.surfaceContainerHigh
-    border.color: Color.outline
+    color: Colors.surfaceContainerHigh
+    border.color: Colors.outline
     border.width: Tokens.borderModule
 
     Rectangle {
       width: parent.width * root._ratio
       height: parent.height
-      color: Color.primary
+      color: Colors.primary
     }
   }
 
@@ -51,7 +51,7 @@ Item {
     height: 14
     anchors.verticalCenter: parent.verticalCenter
     x: root._ratio * (root.width - width)
-    color: Color.primary
+    color: Colors.primary
   }
 
   MouseArea {

@@ -35,7 +35,7 @@ NScrollView {
       NText {
         readonly property bool installed: FontService.families.indexOf(Settings.data.ui.fontFamily) !== -1
         text: installed ? "✓ installed" : "not installed — falls back"
-        color: installed ? Color.primary : Color.labelText
+        color: installed ? Colors.primary : Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -59,7 +59,7 @@ NScrollView {
 
       NText {
         text: "Used by the keybinds viewer and hook command fields"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -77,7 +77,7 @@ NScrollView {
 
       NText {
         text: "Empty = the Arch logo in Control Center's header"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -114,7 +114,7 @@ NScrollView {
 
       NText {
         text: "Qt date/time format, e.g. HH:mm or h:mm AP"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -132,7 +132,7 @@ NScrollView {
 
       NText {
         text: "Shown uppercased, e.g. WED 25 AUG"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -150,7 +150,7 @@ NScrollView {
       }
       NText {
         text: "Natural scroll direction (input:natural_scroll)"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -167,23 +167,23 @@ NScrollView {
 
       NText {
         text: "Config"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
       NText {
         text: Quickshell.shellDir
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.BodySm
       }
 
       NText {
         text: "Settings"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
       NText {
         text: Settings.settingsFile
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.BodySm
       }
     }

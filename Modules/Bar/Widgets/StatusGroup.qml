@@ -87,26 +87,26 @@ Item {
       StatText {
         label: "NET"
         value: root.netLabel
-        valueColor: Networking.wifiEnabled ? Color.surfaceText : Color.disabledText
+        valueColor: Networking.wifiEnabled ? Colors.surfaceText : Colors.disabledText
       }
 
       Rectangle {
         width: 1
         height: 12
-        color: Color.surfaceContainerHigh
+        color: Colors.surfaceContainerHigh
       }
 
       StatText {
         label: "VOL"
         value: root.muted ? "—" : String(Math.round(root.volume * 100))
-        valueColor: root.muted ? Color.error : Color.surfaceText
+        valueColor: root.muted ? Colors.error : Colors.surfaceText
       }
 
       Rectangle {
         visible: root.hasBattery
         width: 1
         height: 12
-        color: Color.surfaceContainerHigh
+        color: Colors.surfaceContainerHigh
       }
 
       StatText {
@@ -136,7 +136,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: root.netLabel
-          color: Networking.wifiEnabled ? Color.surfaceText : Color.disabledText
+          color: Networking.wifiEnabled ? Colors.surfaceText : Colors.disabledText
           size: NText.Size.LabelXs
         }
         NText {
@@ -144,7 +144,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "NET"
-          color: Color.labelText
+          color: Colors.labelText
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
@@ -153,7 +153,7 @@ Item {
       Rectangle {
         width: 24
         height: 1
-        color: Color.surfaceContainerHigh
+        color: Colors.surfaceContainerHigh
       }
 
       Column {
@@ -163,7 +163,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: root.muted ? "—" : String(Math.round(root.volume * 100))
-          color: root.muted ? Color.error : Color.surfaceText
+          color: root.muted ? Colors.error : Colors.surfaceText
           size: NText.Size.LabelXs
         }
         NText {
@@ -171,7 +171,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "VOL"
-          color: Color.labelText
+          color: Colors.labelText
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
@@ -181,7 +181,7 @@ Item {
         visible: root.hasBattery
         width: 24
         height: 1
-        color: Color.surfaceContainerHigh
+        color: Colors.surfaceContainerHigh
       }
 
       Column {
@@ -192,7 +192,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: String(root.batteryPercent)
-          color: Color.surfaceText
+          color: Colors.surfaceText
           size: NText.Size.LabelXs
         }
         NText {
@@ -200,7 +200,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "BAT"
-          color: Color.labelText
+          color: Colors.labelText
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }

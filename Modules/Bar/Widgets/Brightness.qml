@@ -123,7 +123,7 @@ Item {
       StatText {
         label: "BRI"
         value: root.percent + "%"
-        valueColor: Color.surfaceText
+        valueColor: Colors.surfaceText
       }
     }
 
@@ -138,7 +138,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: root.percent + "%"
-          color: Color.surfaceText
+          color: Colors.surfaceText
           size: NText.Size.LabelXs
         }
         NText {
@@ -146,7 +146,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "BRI"
-          color: Color.labelText
+          color: Colors.labelText
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }

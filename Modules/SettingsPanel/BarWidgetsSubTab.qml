@@ -49,7 +49,7 @@ RowLayout {
       NText {
         tracking: true
         text: sectionColumn.section.toUpperCase()
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
         font.weight: Font.DemiBold
       }
@@ -63,8 +63,8 @@ RowLayout {
           chamferSize: Tokens.chamferModule
           cutTopRight: true
           cutBottomLeft: true
-          fillColor: Color.surfaceContainer
-          strokeColor: Color.outline
+          fillColor: Colors.surfaceContainer
+          strokeColor: Colors.outline
           strokeWidth: Tokens.borderModule
         }
 
@@ -89,7 +89,7 @@ RowLayout {
 
               NText {
                 text: rowItem.modelData.id || ""
-                color: Color.surfaceText
+                color: Colors.surfaceText
                 size: NText.Size.BodySm
                 Layout.fillWidth: true
               }
@@ -100,13 +100,13 @@ RowLayout {
 
                 Rectangle {
                   anchors.fill: parent
-                  color: removeHover.hovered ? Color.alpha(Color.error, 0.2) : "transparent"
+                  color: removeHover.hovered ? Colors.alpha(Colors.error, 0.2) : "transparent"
                 }
 
                 Text {
                   anchors.centerIn: parent
                   text: "×"
-                  color: Color.error
+                  color: Colors.error
                   font.pixelSize: Tokens.bodySize
                 }
 
@@ -126,7 +126,7 @@ RowLayout {
       NText {
         tracking: true
         text: "ADD"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
         Layout.topMargin: 4
       }
@@ -149,8 +149,8 @@ RowLayout {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: addHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-              strokeColor: Color.outline
+              fillColor: addHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
+              strokeColor: Colors.outline
               strokeWidth: Tokens.borderModule
             }
 
@@ -158,7 +158,7 @@ RowLayout {
               id: addLabel
               anchors.centerIn: parent
               text: addChip.modelData
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.LabelXs
             }
 

@@ -85,18 +85,18 @@ Item {
       NText {
         tracking: true
         text: root.floating ? "FLOAT" : "TILE"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Label
       }
       NText {
         text: "·"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Label
       }
       NText {
         tracking: true
         text: root.layoutName
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Label
       }
     }
@@ -110,7 +110,7 @@ Item {
         width: 24
         horizontalAlignment: Text.AlignHCenter
         text: root.floating ? "FLT" : "TILE"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
       }
       NText {
@@ -118,7 +118,7 @@ Item {
         width: 24
         horizontalAlignment: Text.AlignHCenter
         text: root.layoutName
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
       }
     }

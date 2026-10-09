@@ -264,8 +264,8 @@ NPanelWindow {
       chamferSize: Tokens.chamferPanel
       cutTopRight: true
       cutBottomLeft: true
-      fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
-      strokeColor: Color.outline
+      fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+      strokeColor: Colors.outline
       strokeWidth: Tokens.borderPanel
       shadow: true
       rimLight: true
@@ -289,12 +289,12 @@ NPanelWindow {
       Rectangle {
         width: 3
         height: 20
-        color: Color.primary
+        color: Colors.primary
       }
       NText {
         tracking: true
         text: "WALLPAPER BROWSER"
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.BodyLg
         font.weight: Font.DemiBold
         font.letterSpacing: 1
@@ -304,7 +304,7 @@ NPanelWindow {
       }
       NText {
         text: root.sourceMode === "wallhaven" ? (Wallhaven.loading ? "SEARCHING…" : Wallhaven.results.length + " RESULTS" + (Wallhaven.error ? " · " + Wallhaven.error : "")) : root.filteredFiles.length + " OF " + root.files.length
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -347,14 +347,14 @@ NPanelWindow {
                 chamferSize: Tokens.chamferIcon
                 cutTopRight: true
                 cutBottomLeft: true
-                fillColor: srcPill.selected ? Color.primaryContainer : Color.surfaceContainer
-                strokeColor: srcPill.selected ? Color.primary : Color.outline
+                fillColor: srcPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                strokeColor: srcPill.selected ? Colors.primary : Colors.outline
                 strokeWidth: Tokens.borderModule
               }
               NText {
                 anchors.centerIn: parent
                 text: srcPill.modelData.label
-                color: srcPill.selected ? Color.primaryContainerText : Color.surfaceText
+                color: srcPill.selected ? Colors.primaryContainerText : Colors.surfaceText
                 font.pixelSize: 8
                 font.weight: Font.DemiBold
               }
@@ -382,8 +382,8 @@ NPanelWindow {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: Color.surface
-            strokeColor: searchInput.activeFocus ? Color.primary : Color.outline
+            fillColor: Colors.surface
+            strokeColor: searchInput.activeFocus ? Colors.primary : Colors.outline
             strokeWidth: Tokens.borderModule
           }
 
@@ -393,7 +393,7 @@ NPanelWindow {
             anchors.leftMargin: 10
             anchors.rightMargin: 10
             verticalAlignment: Text.AlignVCenter
-            color: Color.surfaceText
+            color: Colors.surfaceText
             font.family: Tokens.fontFamily
             font.pixelSize: Tokens.bodySmSize
             selectByMouse: true
@@ -409,7 +409,7 @@ NPanelWindow {
               anchors.centerIn: parent
               visible: parent.text === "" && !parent.activeFocus
               text: root.sourceMode === "wallhaven" ? "/ SEARCH WALLHAVEN ⏎" : "/ SEARCH"
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.BodySm
             }
           }
@@ -421,7 +421,7 @@ NPanelWindow {
           NText {
             tracking: true
             text: "SORT"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
           }
           RowLayout {
@@ -465,15 +465,15 @@ NPanelWindow {
                   chamferSize: Tokens.chamferIcon
                   cutTopRight: true
                   cutBottomLeft: true
-                  fillColor: sortPill.selected ? Color.primaryContainer : Color.surfaceContainer
-                  strokeColor: sortPill.selected ? Color.primary : Color.outline
+                  fillColor: sortPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                  strokeColor: sortPill.selected ? Colors.primary : Colors.outline
                   strokeWidth: Tokens.borderModule
                 }
                 NText {
                   id: sortLabel
                   anchors.centerIn: parent
                   text: sortPill.modelData.label
-                  color: sortPill.selected ? Color.primaryContainerText : Color.surfaceText
+                  color: sortPill.selected ? Colors.primaryContainerText : Colors.surfaceText
                   size: NText.Size.LabelXs
                 }
                 HoverHandler {
@@ -501,7 +501,7 @@ NPanelWindow {
           NText {
             tracking: true
             text: "PURITY"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
           }
           RowLayout {
@@ -532,15 +532,15 @@ NPanelWindow {
                   chamferSize: Tokens.chamferIcon
                   cutTopRight: true
                   cutBottomLeft: true
-                  fillColor: purityPill.selected ? Color.primaryContainer : Color.surfaceContainer
-                  strokeColor: purityPill.selected ? Color.primary : Color.outline
+                  fillColor: purityPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                  strokeColor: purityPill.selected ? Colors.primary : Colors.outline
                   strokeWidth: Tokens.borderModule
                 }
                 NText {
                   id: purityLabel
                   anchors.centerIn: parent
                   text: purityPill.modelData.label
-                  color: purityPill.selected ? Color.primaryContainerText : Color.surfaceText
+                  color: purityPill.selected ? Colors.primaryContainerText : Colors.surfaceText
                   size: NText.Size.LabelXs
                 }
                 HoverHandler {
@@ -564,7 +564,7 @@ NPanelWindow {
           NText {
             tracking: true
             text: "QUALITY / RATIO"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
           }
           NComboBox {
@@ -633,7 +633,7 @@ NPanelWindow {
           NText {
             tracking: true
             text: "DIRECTORY"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
           }
           Item {
@@ -644,8 +644,8 @@ NPanelWindow {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: Color.surface
-              strokeColor: dirInput.activeFocus ? Color.primary : Color.outline
+              fillColor: Colors.surface
+              strokeColor: dirInput.activeFocus ? Colors.primary : Colors.outline
               strokeWidth: Tokens.borderModule
             }
             TextInput {
@@ -655,7 +655,7 @@ NPanelWindow {
               anchors.rightMargin: 8
               verticalAlignment: Text.AlignVCenter
               text: Settings.data.wallpaper.directory
-              color: Color.surfaceText
+              color: Colors.surfaceText
               font.family: Tokens.fontFamily
               font.pixelSize: Tokens.captionSize
               selectByMouse: true
@@ -673,7 +673,7 @@ NPanelWindow {
 
         NText {
           text: "← → ↑ ↓ MOVE\n⏎ APPLY + THEME\n⇧⏎ WALLPAPER ONLY\n/ SEARCH  R RANDOM\nESC CLOSE"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.LabelXs
           lineHeight: 1.6
         }
@@ -717,8 +717,8 @@ NPanelWindow {
                 chamferSize: Tokens.chamferIcon
                 cutTopRight: true
                 cutBottomLeft: true
-                fillColor: Color.surfaceContainer
-                strokeColor: thumb.isSelected ? Color.primary : Color.outline
+                fillColor: Colors.surfaceContainer
+                strokeColor: thumb.isSelected ? Colors.primary : Colors.outline
                 strokeWidth: thumb.isSelected ? 2 : Tokens.borderModule
               }
 
@@ -770,13 +770,13 @@ NPanelWindow {
                 height: 15
                 Rectangle {
                   anchors.fill: parent
-                  color: thumb.isVideo ? Color.alpha(Color.tertiary, 0.85) : thumb.isRemote ? Color.alpha(Color.primary, 0.85) : Color.alpha(Color.surface, 0.75)
+                  color: thumb.isVideo ? Colors.alpha(Colors.tertiary, 0.85) : thumb.isRemote ? Colors.alpha(Colors.primary, 0.85) : Colors.alpha(Colors.surface, 0.75)
                 }
                 NText {
                   id: badgeLabel
                   anchors.centerIn: parent
                   text: thumb.isVideo ? "VID" : thumb.isRemote ? "WEB" : "IMG"
-                  color: (thumb.isVideo || thumb.isRemote) ? Color.primaryText : Color.labelText
+                  color: (thumb.isVideo || thumb.isRemote) ? Colors.primaryText : Colors.labelText
                   font.pixelSize: 8
                   font.weight: Font.DemiBold
                 }
@@ -804,14 +804,14 @@ NPanelWindow {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: loadMoreHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-              strokeColor: Color.outline
+              fillColor: loadMoreHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
+              strokeColor: Colors.outline
               strokeWidth: Tokens.borderModule
             }
             NText {
               anchors.centerIn: parent
               text: Wallhaven.loading ? "LOADING…" : "LOAD MORE"
-              color: Color.surfaceText
+              color: Colors.surfaceText
               size: NText.Size.LabelXs
             }
             HoverHandler {
@@ -842,8 +842,8 @@ NPanelWindow {
             chamferSize: Tokens.chamferPanel
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: Color.surfaceContainer
-            strokeColor: Color.outline
+            fillColor: Colors.surfaceContainer
+            strokeColor: Colors.outline
             strokeWidth: Tokens.borderModule
           }
 
@@ -890,7 +890,7 @@ NPanelWindow {
             visible: !root.selectedFile
             anchors.centerIn: parent
             text: "NO SELECTION"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
           }
         }
@@ -901,14 +901,14 @@ NPanelWindow {
           visible: root.selectedFile !== null
           NText {
             text: root.selectedFile ? root.selectedFile.name : ""
-            color: Color.surfaceText
+            color: Colors.surfaceText
             size: NText.Size.BodySm
             elide: Text.ElideMiddle
             Layout.fillWidth: true
           }
           NText {
             text: Settings.data.wallpaper.directory
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.Caption
             elide: Text.ElideMiddle
             Layout.fillWidth: true
@@ -918,7 +918,7 @@ NPanelWindow {
         Rectangle {
           Layout.fillWidth: true
           height: 1
-          color: Color.surfaceContainerHigh
+          color: Colors.surfaceContainerHigh
         }
 
         // ---- Monitor targeting ----
@@ -928,7 +928,7 @@ NPanelWindow {
           NText {
             tracking: true
             text: "TARGET"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
           }
           Flow {
@@ -945,15 +945,15 @@ NPanelWindow {
                 chamferSize: Tokens.chamferIcon
                 cutTopRight: true
                 cutBottomLeft: true
-                fillColor: allPill.selected ? Color.primaryContainer : Color.surfaceContainer
-                strokeColor: allPill.selected ? Color.primary : Color.outline
+                fillColor: allPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                strokeColor: allPill.selected ? Colors.primary : Colors.outline
                 strokeWidth: Tokens.borderModule
               }
               NText {
                 id: allLabel
                 anchors.centerIn: parent
                 text: "ALL"
-                color: allPill.selected ? Color.primaryContainerText : Color.surfaceText
+                color: allPill.selected ? Colors.primaryContainerText : Colors.surfaceText
                 size: NText.Size.LabelXs
               }
               HoverHandler {
@@ -977,15 +977,15 @@ NPanelWindow {
                   chamferSize: Tokens.chamferIcon
                   cutTopRight: true
                   cutBottomLeft: true
-                  fillColor: monPill.selected ? Color.primaryContainer : Color.surfaceContainer
-                  strokeColor: monPill.selected ? Color.primary : Color.outline
+                  fillColor: monPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                  strokeColor: monPill.selected ? Colors.primary : Colors.outline
                   strokeWidth: Tokens.borderModule
                 }
                 NText {
                   id: monLabel
                   anchors.centerIn: parent
                   text: monPill.modelData.name + (monPill.modelData === Quickshell.screens[0] ? " ★" : "")
-                  color: monPill.selected ? Color.primaryContainerText : Color.surfaceText
+                  color: monPill.selected ? Colors.primaryContainerText : Colors.surfaceText
                   size: NText.Size.LabelXs
                 }
                 HoverHandler {
@@ -1002,7 +1002,7 @@ NPanelWindow {
         Rectangle {
           Layout.fillWidth: true
           height: 1
-          color: Color.surfaceContainerHigh
+          color: Colors.surfaceContainerHigh
         }
 
         // ---- Matugen scheme + templates ----
@@ -1012,7 +1012,7 @@ NPanelWindow {
           NText {
             tracking: true
             text: "SCHEME"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
           }
           Flow {
@@ -1032,15 +1032,15 @@ NPanelWindow {
                   chamferSize: Tokens.chamferIcon
                   cutTopRight: true
                   cutBottomLeft: true
-                  fillColor: schemePill.selected ? Color.primaryContainer : Color.surfaceContainer
-                  strokeColor: schemePill.selected ? Color.primary : Color.outline
+                  fillColor: schemePill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                  strokeColor: schemePill.selected ? Colors.primary : Colors.outline
                   strokeWidth: Tokens.borderModule
                 }
                 NText {
                   id: schemeLabel
                   anchors.centerIn: parent
                   text: schemePill.label
-                  color: schemePill.selected ? Color.primaryContainerText : Color.surfaceText
+                  color: schemePill.selected ? Colors.primaryContainerText : Colors.surfaceText
                   font.pixelSize: 8
                 }
                 HoverHandler {
@@ -1070,7 +1070,7 @@ NPanelWindow {
               return n;
             }
             text: "WRITES " + _enabledCount + " TEMPLATES"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
             Layout.topMargin: 4
           }
@@ -1095,14 +1095,14 @@ NPanelWindow {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: applyThemeHover.hovered ? Color.primary : Color.primaryContainer
-              strokeColor: Color.primary
+              fillColor: applyThemeHover.hovered ? Colors.primary : Colors.primaryContainer
+              strokeColor: Colors.primary
               strokeWidth: Tokens.borderModule
             }
             NText {
               anchors.centerIn: parent
               text: root.downloading ? "DOWNLOADING…" : "APPLY + THEME"
-              color: applyThemeHover.hovered ? Color.primaryText : Color.primaryContainerText
+              color: applyThemeHover.hovered ? Colors.primaryText : Colors.primaryContainerText
               size: NText.Size.BodySm
               font.weight: Font.DemiBold
             }
@@ -1132,14 +1132,14 @@ NPanelWindow {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: parent.armed ? Color.error : (deleteHover.hovered ? Color.alpha(Color.error, 0.16) : "transparent")
-              strokeColor: Color.alpha(Color.error, parent.armed ? 1 : 0.6)
+              fillColor: parent.armed ? Colors.error : (deleteHover.hovered ? Colors.alpha(Colors.error, 0.16) : "transparent")
+              strokeColor: Colors.alpha(Colors.error, parent.armed ? 1 : 0.6)
               strokeWidth: Tokens.borderModule
             }
             NText {
               anchors.centerIn: parent
               text: parent.armed ? "CONFIRM DELETE?" : "DELETE"
-              color: parent.armed ? Color.errorText : Color.error
+              color: parent.armed ? Colors.errorText : Colors.error
               size: NText.Size.Caption
             }
             HoverHandler {

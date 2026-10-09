@@ -187,8 +187,8 @@ Item {
     // The fillets complete these two corners; the stroke stops where their
     // arcs pick it up.
     strokeTrim: root.cornerSize
-    fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
-    strokeColor: Color.outline
+    fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+    strokeColor: Colors.outline
     strokeWidth: Tokens.borderPanel
     // Rim only, no shadow: `body` clips for the collapse animation, so a
     // shadow would be cut off flush at the card's own edge.
@@ -226,13 +226,13 @@ Item {
   // The two fillets that blend the card into the bar it grew from, one at
   // each end of the bar-facing edge. They only make sense once the card
   // has actually come out, so they fade with it.
-  readonly property color _cornerFill: Color.alpha(Color.surface, Tokens.panelOpacity)
+  readonly property color _cornerFill: Colors.alpha(Colors.surface, Tokens.panelOpacity)
 
   ConcaveCorner {
     id: cornerA
     size: root.cornerSize
     fillColor: root._cornerFill
-    strokeColor: Color.outline
+    strokeColor: Colors.outline
     strokeWidth: Tokens.borderPanel
     opacity: root.shown ? 1 : 0
     visible: opacity > 0
@@ -251,7 +251,7 @@ Item {
     id: cornerB
     size: root.cornerSize
     fillColor: root._cornerFill
-    strokeColor: Color.outline
+    strokeColor: Colors.outline
     strokeWidth: Tokens.borderPanel
     opacity: cornerA.opacity
     visible: opacity > 0

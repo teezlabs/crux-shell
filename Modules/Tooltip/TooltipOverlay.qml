@@ -99,8 +99,8 @@ PanelWindow {
       chamferSize: Tokens.chamferIcon
       cutTopRight: true
       cutBottomLeft: true
-      fillColor: Color.alpha(Color.surfaceContainerHigh, Tokens.panelOpacity)
-      strokeColor: Color.outlineVariant
+      fillColor: Colors.alpha(Colors.surfaceContainerHigh, Tokens.panelOpacity)
+      strokeColor: Colors.outlineVariant
       strokeWidth: Tokens.borderModule
     }
 
@@ -108,7 +108,7 @@ PanelWindow {
       id: label
       anchors.centerIn: parent
       text: TooltipService.text
-      color: Color.surfaceText
+      color: Colors.surfaceText
       size: NText.Size.Caption
       horizontalAlignment: Text.AlignHCenter
       wrapMode: Text.WordWrap

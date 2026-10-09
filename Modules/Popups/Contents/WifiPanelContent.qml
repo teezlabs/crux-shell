@@ -299,7 +299,7 @@ ColumnLayout {
     NText {
       tracking: true
       text: "WI-FI"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
       font.weight: Font.DemiBold
       Layout.fillWidth: true
@@ -322,69 +322,69 @@ ColumnLayout {
     NText {
       tracking: true
       text: "PING"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
     }
     NText {
       text: Model.formatPingLatency(root.internetPingLatency, root.internetPingSamples.length > 0)
-      color: root.internetPingPacketLoss > 0 ? Color.error : Color.surfaceText
+      color: root.internetPingPacketLoss > 0 ? Colors.error : Colors.surfaceText
       size: NText.Size.Caption
     }
     NText {
       tracking: true
       text: "LOSS"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
     }
     NText {
       text: Model.formatPacketLoss(root.internetPingPacketLoss, root.internetPingSamples.length > 0)
-      color: root.internetPingPacketLoss > 0 ? Color.error : Color.surfaceText
+      color: root.internetPingPacketLoss > 0 ? Colors.error : Colors.surfaceText
       size: NText.Size.Caption
     }
 
     NText {
       tracking: true
       text: "DOWN"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
     }
     NText {
       text: root.hasTransferStats ? Model.formatRate(root.downloadRate) : "--"
-      color: Color.surfaceText
+      color: Colors.surfaceText
       size: NText.Size.Caption
     }
     NText {
       tracking: true
       text: "UP"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
     }
     NText {
       text: root.hasTransferStats ? Model.formatRate(root.uploadRate) : "--"
-      color: Color.surfaceText
+      color: Colors.surfaceText
       size: NText.Size.Caption
     }
 
     NText {
       tracking: true
       text: "IP"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
     }
     NText {
       text: root.info.ip || "--"
-      color: Color.surfaceText
+      color: Colors.surfaceText
       size: NText.Size.Caption
     }
     NText {
       tracking: true
       text: "GATEWAY"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
     }
     NText {
       text: root.info.gateway || "--"
-      color: Color.surfaceText
+      color: Colors.surfaceText
       size: NText.Size.Caption
     }
   }
@@ -397,7 +397,7 @@ ColumnLayout {
     NText {
       tracking: true
       text: "DNS PROVIDER"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
     }
 
@@ -420,8 +420,8 @@ ColumnLayout {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: dnsPill.selected ? Color.primaryContainer : Color.surfaceContainer
-            strokeColor: dnsPill.selected ? Color.primary : Color.outline
+            fillColor: dnsPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+            strokeColor: dnsPill.selected ? Colors.primary : Colors.outline
             strokeWidth: Tokens.borderModule
           }
 
@@ -429,7 +429,7 @@ ColumnLayout {
             tracking: true
             anchors.centerIn: parent
             text: dnsPill.modelData.toUpperCase()
-            color: dnsPill.selected ? Color.primaryContainerText : Color.surfaceText
+            color: dnsPill.selected ? Colors.primaryContainerText : Colors.surfaceText
             size: NText.Size.LabelXs
           }
 
@@ -468,7 +468,7 @@ ColumnLayout {
 
           Rectangle {
             anchors.fill: parent
-            color: rowHover.hovered ? Color.surfaceContainerHigh : "transparent"
+            color: rowHover.hovered ? Colors.surfaceContainerHigh : "transparent"
           }
 
           RowLayout {
@@ -478,20 +478,20 @@ ColumnLayout {
 
             NText {
               text: rowItem.modelData.connected ? "●" : (rowItem.modelData.known ? "○" : "·")
-              color: rowItem.modelData.connected ? Color.primary : Color.labelText
+              color: rowItem.modelData.connected ? Colors.primary : Colors.labelText
               size: NText.Size.BodySm
             }
 
             NText {
               text: rowItem.modelData.ssid
-              color: Color.surfaceText
+              color: Colors.surfaceText
               elide: Text.ElideRight
               Layout.fillWidth: true
             }
 
             NText {
               text: rowItem.modelData.signal + "%"
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.Caption
             }
 
@@ -499,7 +499,7 @@ ColumnLayout {
             Text {
               visible: rowItem.modelData.known && !rowItem.modelData.connected && !(root.actionKind !== "" && root.actionSsid === rowItem.modelData.ssid)
               text: "×"
-              color: forgetHover.hovered ? Color.error : Color.labelText
+              color: forgetHover.hovered ? Colors.error : Colors.labelText
               font.pixelSize: Tokens.bodyLgSize
               HoverHandler {
                 id: forgetHover
@@ -517,7 +517,7 @@ ColumnLayout {
               tracking: true
               visible: root.actionKind !== "" && root.actionSsid === rowItem.modelData.ssid
               text: (root.actionKind === "connect" ? "CONNECTING" : (root.actionKind === "disconnect" ? "DISCONNECTING" : "FORGETTING")) + "…"
-              color: Color.primary
+              color: Colors.primary
               size: NText.Size.LabelXs
             }
           }
@@ -545,8 +545,8 @@ ColumnLayout {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: Color.surface
-              strokeColor: pwInput.activeFocus ? Color.primary : Color.outline
+              fillColor: Colors.surface
+              strokeColor: pwInput.activeFocus ? Colors.primary : Colors.outline
               strokeWidth: Tokens.borderModule
             }
 
@@ -559,7 +559,7 @@ ColumnLayout {
               text: root.passwordText
               onTextChanged: root.passwordText = text
               echoMode: TextInput.Password
-              color: Color.surfaceText
+              color: Colors.surfaceText
               font.family: Tokens.fontFamily
               font.pixelSize: Tokens.captionSize
               focus: rowItem.modelData.ssid === root.passwordSsid
@@ -571,7 +571,7 @@ ColumnLayout {
           NText {
             tracking: true
             text: "CONNECT"
-            color: Color.primary
+            color: Colors.primary
             size: NText.Size.LabelXs
             MouseArea {
               anchors.fill: parent

@@ -18,8 +18,8 @@ Item {
     chamferSize: Tokens.chamferIcon
     cutTopRight: true
     cutBottomLeft: true
-    fillColor: root.checked ? Color.primaryContainer : Color.surfaceContainerHigh
-    strokeColor: root.checked ? Color.primary : Color.outline
+    fillColor: root.checked ? Colors.primaryContainer : Colors.surfaceContainerHigh
+    strokeColor: root.checked ? Colors.primary : Colors.outline
     strokeWidth: Tokens.borderModule
   }
 
@@ -29,7 +29,7 @@ Item {
     height: parent.height - 6
     anchors.verticalCenter: parent.verticalCenter
     x: root.checked ? parent.width - width - 3 : 3
-    color: root.checked ? Color.primary : Color.labelText
+    color: root.checked ? Colors.primary : Colors.labelText
 
     Behavior on x {
       NumberAnimation {

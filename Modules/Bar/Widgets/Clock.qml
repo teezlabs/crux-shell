@@ -50,20 +50,20 @@ Item {
       NText {
         tracking: true
         text: Qt.formatDateTime(root.now, Settings.data.ui.dateFormat).toUpperCase()
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
 
       Rectangle {
         width: 1
         height: 12
-        color: Color.surfaceContainerHigh
+        color: Colors.surfaceContainerHigh
       }
 
       NText {
         tracking: true
         text: Qt.formatDateTime(root.now, Settings.data.ui.clockFormat)
-        color: Color.surfaceText
+        color: Colors.surfaceText
         font.weight: Font.DemiBold
       }
     }
@@ -76,21 +76,21 @@ Item {
         width: 30
         horizontalAlignment: Text.AlignHCenter
         text: Qt.formatDateTime(root.now, "HH")
-        color: Color.surfaceText
+        color: Colors.surfaceText
         font.weight: Font.DemiBold
       }
       NText {
         width: 30
         horizontalAlignment: Text.AlignHCenter
         text: Qt.formatDateTime(root.now, "mm")
-        color: Color.surfaceText
+        color: Colors.surfaceText
         font.weight: Font.DemiBold
       }
       NText {
         width: 30
         horizontalAlignment: Text.AlignHCenter
         text: Qt.formatDateTime(root.now, "MM/dd")
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
       }
     }

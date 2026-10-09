@@ -31,7 +31,7 @@ NScrollView {
         }
         NText {
           text: "Regenerate colors on every pick"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.Caption
         }
       }
@@ -44,7 +44,7 @@ NScrollView {
         NText {
           tracking: true
           text: "SCHEME"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.LabelXs
         }
 
@@ -104,8 +104,8 @@ NScrollView {
                 chamferSize: Tokens.chamferIcon
                 cutTopRight: true
                 cutBottomLeft: true
-                fillColor: schemePill.selected ? Color.primaryContainer : Color.surfaceContainer
-                strokeColor: schemePill.selected ? Color.primary : Color.outline
+                fillColor: schemePill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                strokeColor: schemePill.selected ? Colors.primary : Colors.outline
                 strokeWidth: Tokens.borderModule
               }
 
@@ -114,7 +114,7 @@ NScrollView {
                 id: schemeLabel
                 anchors.centerIn: parent
                 text: schemePill.modelData.label
-                color: schemePill.selected ? Color.primaryContainerText : Color.surfaceText
+                color: schemePill.selected ? Colors.primaryContainerText : Colors.surfaceText
                 size: NText.Size.LabelXs
               }
 
@@ -151,7 +151,7 @@ NScrollView {
         NText {
           visible: Matugen.lastError !== ""
           text: Matugen.lastError
-          color: Color.error
+          color: Colors.error
           size: NText.Size.Caption
           wrapMode: Text.WordWrap
           Layout.fillWidth: true
@@ -227,8 +227,8 @@ NScrollView {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: tplPill.selected ? Color.primaryContainer : Color.surfaceContainer
-              strokeColor: tplPill.selected ? Color.primary : Color.outline
+              fillColor: tplPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+              strokeColor: tplPill.selected ? Colors.primary : Colors.outline
               strokeWidth: Tokens.borderModule
             }
 
@@ -237,7 +237,7 @@ NScrollView {
               id: tplLabel
               anchors.centerIn: parent
               text: tplPill.modelData.label
-              color: tplPill.selected ? Color.primaryContainerText : Color.surfaceText
+              color: tplPill.selected ? Colors.primaryContainerText : Colors.surfaceText
               size: NText.Size.LabelXs
             }
 

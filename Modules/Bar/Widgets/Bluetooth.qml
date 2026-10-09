@@ -56,7 +56,7 @@ Item {
       anchors.centerIn: parent
       width: 10
       height: 14
-      readonly property color strokeColor: !root.adapter || !root.adapter.enabled ? Color.disabledText : (root.anyConnected ? Color.primary : Color.surfaceTextMuted)
+      readonly property color strokeColor: !root.adapter || !root.adapter.enabled ? Colors.disabledText : (root.anyConnected ? Colors.primary : Colors.surfaceTextMuted)
       onStrokeColorChanged: requestPaint()
       onPaint: {
         var ctx = getContext("2d");

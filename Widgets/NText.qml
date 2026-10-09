@@ -96,7 +96,7 @@ Text {
   property bool animateColor: true
 
   opacity: enabled ? 1.0 : 0.6
-  color: Color.surfaceText
+  color: Colors.surfaceText
 
   Behavior on color {
     enabled: root.animateColor

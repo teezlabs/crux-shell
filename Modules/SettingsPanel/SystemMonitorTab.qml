@@ -43,7 +43,7 @@ NScrollView {
       NText {
         tracking: true
         text: "CPU"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
       }
       SettingRow {
@@ -80,7 +80,7 @@ NScrollView {
       NText {
         tracking: true
         text: "RAM"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
       }
       SettingRow {
@@ -117,7 +117,7 @@ NScrollView {
       NText {
         tracking: true
         text: "DISK"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
       }
       SettingRow {
@@ -154,7 +154,7 @@ NScrollView {
       NText {
         tracking: true
         text: "TEMP"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
       }
       SettingRow {

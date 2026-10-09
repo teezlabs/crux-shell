@@ -78,8 +78,8 @@ Item {
     chamferSize: Tokens.chamferIcon
     cutTopRight: true
     cutBottomLeft: true
-    fillColor: hover.hovered || popup.opened ? Color.surfaceContainerHigh : Color.surfaceContainer
-    strokeColor: popup.opened ? Color.primary : Color.outline
+    fillColor: hover.hovered || popup.opened ? Colors.surfaceContainerHigh : Colors.surfaceContainer
+    strokeColor: popup.opened ? Colors.primary : Colors.outline
     strokeWidth: Tokens.borderModule
   }
 
@@ -92,7 +92,7 @@ Item {
     anchors.verticalCenter: parent.verticalCenter
     text: root.label === "" ? root.currentLabel : (root.label + ": " + root.currentLabel)
     size: root.textSize
-    color: root.currentKey === "" ? Color.labelText : Color.surfaceText
+    color: root.currentKey === "" ? Colors.labelText : Colors.surfaceText
   }
 
   // Caret drawn geometrically — no glyph font dependency.
@@ -103,7 +103,7 @@ Item {
     anchors.verticalCenter: parent.verticalCenter
     width: 9
     height: 6
-    readonly property color drawColor: Color.surfaceTextMuted
+    readonly property color drawColor: Colors.surfaceTextMuted
     onDrawColorChanged: requestPaint()
     onPaint: {
       const ctx = getContext("2d");
@@ -142,8 +142,8 @@ Item {
       chamferSize: Tokens.chamferIcon
       cutTopRight: true
       cutBottomLeft: true
-      fillColor: Color.surfaceContainerHigh
-      strokeColor: Color.outline
+      fillColor: Colors.surfaceContainerHigh
+      strokeColor: Colors.outline
       strokeWidth: Tokens.borderModule
     }
 
@@ -155,7 +155,7 @@ Item {
       anchors.left: parent.left
       anchors.right: parent.right
       placeholderText: "Filter…"
-      fillColor: Color.surfaceContainer
+      fillColor: Colors.surfaceContainer
       onTextEdited: text => root.query = text
     }
 
@@ -181,14 +181,14 @@ Item {
 
         Rectangle {
           anchors.fill: parent
-          color: rowHover.hovered ? Color.surfaceContainer : "transparent"
+          color: rowHover.hovered ? Colors.surfaceContainer : "transparent"
         }
 
         // Selection marker, per the spec's left-edge marker convention.
         Rectangle {
           width: Tokens.borderMarker
           height: parent.height
-          color: Color.primary
+          color: Colors.primary
           visible: row.current
         }
 
@@ -200,7 +200,7 @@ Item {
           anchors.verticalCenter: parent.verticalCenter
           text: row.modelData.label
           size: root.textSize
-          color: row.current ? Color.primary : Color.surfaceText
+          color: row.current ? Colors.primary : Colors.surfaceText
         }
 
         HoverHandler {

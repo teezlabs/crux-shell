@@ -36,7 +36,7 @@ Item {
       Rectangle {
         anchors.fill: parent
         color: "transparent"
-        border.color: Color.surfaceText
+        border.color: Colors.surfaceText
         border.width: 1
       }
 
@@ -45,8 +45,8 @@ Item {
         y: -2
         width: 6
         height: 4
-        color: Color.surface
-        border.color: Color.surfaceText
+        color: Colors.surface
+        border.color: Colors.surfaceText
         border.width: 1
       }
     }

@@ -37,8 +37,8 @@ Item {
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: root.grouped ? Color.alpha(Color.primary, hoverHandler.hovered ? 0.16 : 0) : Color.alpha(hoverHandler.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer, Tokens.barModuleOpacity)
-    strokeColor: Color.alpha(Color.error, Tokens.destructiveBorderAlpha)
+    fillColor: root.grouped ? Colors.alpha(Colors.primary, hoverHandler.hovered ? 0.16 : 0) : Colors.alpha(hoverHandler.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, Tokens.barModuleOpacity)
+    strokeColor: Colors.alpha(Colors.error, Tokens.destructiveBorderAlpha)
     strokeWidth: Tokens.borderModule
   }
 
@@ -51,7 +51,7 @@ Item {
     anchors.centerIn: parent
     width: 14
     height: 14
-    readonly property color drawColor: Color.error
+    readonly property color drawColor: Colors.error
     onDrawColorChanged: requestPaint()
     onPaint: {
       var ctx = getContext("2d");

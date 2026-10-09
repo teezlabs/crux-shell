@@ -20,7 +20,7 @@ RowLayout {
     tracking: true
     Layout.preferredWidth: 32
     text: root.label
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.Label
     font.weight: Font.DemiBold
   }
@@ -35,6 +35,6 @@ RowLayout {
     Layout.preferredWidth: 26
     horizontalAlignment: Text.AlignRight
     text: String(Math.round(root.value))
-    color: Color.surfaceText
+    color: Colors.surfaceText
   }
 }

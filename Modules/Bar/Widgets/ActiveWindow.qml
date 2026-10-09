@@ -45,7 +45,7 @@ Item {
       width: Math.min(200, implicitWidth)
       elide: Text.ElideRight
       text: root.hasWindow ? (root.appName !== "" ? root.appName + " — " + root.windowTitle : root.windowTitle) : "Desktop"
-      color: root.hasWindow ? Color.surfaceText : Color.surfaceTextMuted
+      color: root.hasWindow ? Colors.surfaceText : Colors.surfaceTextMuted
       size: NText.Size.BodySm
     }
 
@@ -59,7 +59,7 @@ Item {
         width: 24
         horizontalAlignment: Text.AlignHCenter
         text: root.hasWindow ? (root.appName !== "" ? root.appName.charAt(0) : "•") : "—"
-        color: root.hasWindow ? Color.surfaceText : Color.surfaceTextMuted
+        color: root.hasWindow ? Colors.surfaceText : Colors.surfaceTextMuted
         size: NText.Size.LabelXs
         font.weight: Font.DemiBold
       }

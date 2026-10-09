@@ -90,7 +90,7 @@ ColumnLayout {
   NText {
     tracking: true
     text: "BRIGHTNESS"
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.LabelXs
     font.weight: Font.DemiBold
   }
@@ -105,14 +105,14 @@ ColumnLayout {
       cellHeight: Tokens.meterControlCenterCellHeight
       value: root.percent
       interactive: true
-      filledColor: Color.primary
-      emptyColor: Color.surfaceContainerHigh
+      filledColor: Colors.primary
+      emptyColor: Colors.surfaceContainerHigh
       onMoved: pct => root.setBrightness(pct / 100)
     }
 
     NText {
       text: root.percent + "%"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.BodySm
       Layout.preferredWidth: 34
     }
@@ -121,7 +121,7 @@ ColumnLayout {
   NText {
     visible: !root.available
     text: "No internal backlight device detected."
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.Caption
     wrapMode: Text.WordWrap
     Layout.fillWidth: true

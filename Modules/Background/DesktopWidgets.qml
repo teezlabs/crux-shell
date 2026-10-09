@@ -139,8 +139,8 @@ Variants {
         cutTopRight: true
         cutBottomLeft: false
         cutBottomRight: false
-        fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
-        strokeColor: Color.outline
+        fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+        strokeColor: Colors.outline
         strokeWidth: Tokens.borderPanel
       }
 
@@ -160,8 +160,8 @@ Variants {
             Layout.preferredWidth: 36
             Layout.preferredHeight: 36
             category: Weather.iconCategory(Weather.currentWeatherCode)
-            strokeColor: Color.surfaceText
-            accentColor: Color.tertiary
+            strokeColor: Colors.surfaceText
+            accentColor: Colors.tertiary
           }
 
           ColumnLayout {
@@ -170,14 +170,14 @@ Variants {
 
             NText {
               text: isNaN(Weather.currentTempF) ? "--°" : Math.round(Weather.currentTempF) + "°"
-              color: Color.surfaceText
+              color: Colors.surfaceText
               size: NText.Size.BodyLg
               font.weight: Font.DemiBold
             }
             NText {
               Layout.fillWidth: true
               text: Weather.cityName
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.Caption
               elide: Text.ElideRight
             }
@@ -203,7 +203,7 @@ Variants {
                 tracking: true
                 Layout.alignment: Qt.AlignHCenter
                 text: _day ? _day.dayName : ""
-                color: Color.labelText
+                color: Colors.labelText
                 size: NText.Size.LabelXs
               }
               WeatherIcon {
@@ -211,13 +211,13 @@ Variants {
                 Layout.preferredWidth: 18
                 Layout.preferredHeight: 18
                 category: _day ? Weather.iconCategory(_day.weatherCode) : "cloud"
-                strokeColor: Color.surfaceTextMuted
-                accentColor: Color.tertiary
+                strokeColor: Colors.surfaceTextMuted
+                accentColor: Colors.tertiary
               }
               NText {
                 Layout.alignment: Qt.AlignHCenter
                 text: _day ? _day.tempMaxF + "°" : ""
-                color: Color.surfaceTextMuted
+                color: Colors.surfaceTextMuted
                 size: NText.Size.LabelXs
               }
             }
@@ -273,8 +273,8 @@ Variants {
         cutTopRight: false
         cutBottomLeft: false
         cutBottomRight: false
-        fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
-        strokeColor: Color.outline
+        fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+        strokeColor: Colors.outline
         strokeWidth: Tokens.borderPanel
       }
 
@@ -299,8 +299,8 @@ Variants {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: Color.surfaceContainer
-              strokeColor: Color.outline
+              fillColor: Colors.surfaceContainer
+              strokeColor: Colors.outline
               strokeWidth: Tokens.borderModule
             }
 
@@ -317,7 +317,7 @@ Variants {
               anchors.centerIn: parent
               visible: !window.activePlayer || window.activePlayer.trackArtUrl === ""
               text: window.isPlaying ? "▶" : "⏸"
-              color: Color.labelText
+              color: Colors.labelText
               font.pixelSize: Tokens.bodySize
             }
           }
@@ -329,7 +329,7 @@ Variants {
             NText {
               Layout.fillWidth: true
               text: window.activePlayer ? window.activePlayer.trackTitle : ""
-              color: Color.surfaceText
+              color: Colors.surfaceText
               font.weight: Font.DemiBold
               elide: Text.ElideRight
               maximumLineCount: 1
@@ -337,7 +337,7 @@ Variants {
             NText {
               Layout.fillWidth: true
               text: window.activePlayer ? window.activePlayer.trackArtist : ""
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.Caption
               elide: Text.ElideRight
               maximumLineCount: 1
@@ -351,8 +351,8 @@ Variants {
           cellHeight: Tokens.meterSidebarSeekCellHeight
           value: window._length > 0 ? (window._position / window._length) * 100 : 0
           interactive: !!window.activePlayer && window.activePlayer.canSeek
-          filledColor: Color.primary
-          emptyColor: Color.surfaceContainerHigh
+          filledColor: Colors.primary
+          emptyColor: Colors.surfaceContainerHigh
           onMoved: pct => {
             if (window.activePlayer && window.activePlayer.canSeek)
               window.activePlayer.position = (pct / 100) * window._length;

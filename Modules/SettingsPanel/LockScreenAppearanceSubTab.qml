@@ -30,7 +30,7 @@ NScrollView {
 
       NText {
         text: "Qt date/time format, e.g. HH:mm or h:mm AP"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -60,7 +60,7 @@ NScrollView {
       }
       NText {
         text: "Off = mirror the live desktop wallpaper"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -145,7 +145,7 @@ NScrollView {
       }
       NText {
         text: "Read-only track info, no playback buttons on the lock screen"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }

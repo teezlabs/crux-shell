@@ -70,7 +70,7 @@ Item {
             width: 2
             height: eqRowH.barHeights[index]
             y: eqRowH.maxBarHeight - height
-            color: Color.primary
+            color: Colors.primary
             opacity: root.isPlaying ? 1 : 0.35
           }
         }
@@ -79,7 +79,7 @@ Item {
       NText {
         tracking: true
         text: root.displayText
-        color: Color.surfaceText
+        color: Colors.surfaceText
         elide: Text.ElideRight
         width: Math.min(implicitWidth, root.contentVertical && !root.vertical ? 70 : 210)
       }
@@ -98,7 +98,7 @@ Item {
           width: 2
           height: parent.barHeights[index]
           y: parent.maxBarHeight - height
-          color: Color.primary
+          color: Colors.primary
           opacity: root.isPlaying ? 1 : 0.35
         }
       }

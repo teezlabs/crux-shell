@@ -347,8 +347,8 @@ ColumnLayout {
         Rectangle {
           anchors.fill: parent
           radius: width / 2
-          color: Color.surfaceContainer
-          border.color: Color.outline
+          color: Colors.surfaceContainer
+          border.color: Colors.outline
           border.width: Tokens.borderModule
           clip: true
 
@@ -372,13 +372,13 @@ ColumnLayout {
         spacing: 0
         NText {
           text: root.whoHost
-          color: Color.surfaceText
+          color: Colors.surfaceText
           size: NText.Size.BodyLg
           font.weight: Font.DemiBold
         }
         NText {
           text: "Uptime: " + root.uptimeText
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.Caption
         }
       }
@@ -400,7 +400,7 @@ ColumnLayout {
           height: 16
           iconName: "preferences-system-symbolic"
           fallbackIconName: "preferences-system"
-          color: Color.surfaceText
+          color: Colors.surfaceText
         }
       }
 
@@ -417,7 +417,7 @@ ColumnLayout {
           height: 16
           iconName: "system-shutdown-symbolic"
           fallbackIconName: "system-shutdown"
-          color: Color.surfaceText
+          color: Colors.surfaceText
         }
       }
 
@@ -431,7 +431,7 @@ ColumnLayout {
           height: 14
           iconName: "window-close-symbolic"
           fallbackIconName: "window-close"
-          color: Color.surfaceText
+          color: Colors.surfaceText
         }
       }
     }
@@ -506,7 +506,7 @@ ColumnLayout {
         spacing: 4
         NText {
           text: root.sink ? (root.sink.description || root.sink.name || "Output") : "No output"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.Caption
           elide: Text.ElideRight
           Layout.fillWidth: true
@@ -530,7 +530,7 @@ ColumnLayout {
         spacing: 4
         NText {
           text: root.source ? (root.source.description || root.source.name || "Input") : "No input"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.Caption
           elide: Text.ElideRight
           Layout.fillWidth: true
@@ -562,13 +562,13 @@ ColumnLayout {
       visible: !root.hasBacklight
       NText {
         text: "Brightness"
-        color: Color.disabledText
+        color: Colors.disabledText
         size: NText.Size.BodySm
         Layout.fillWidth: true
       }
       NText {
         text: "n/a"
-        color: Color.disabledText
+        color: Colors.disabledText
         size: NText.Size.Caption
       }
     }
@@ -594,19 +594,19 @@ ColumnLayout {
           spacing: 0
           NText {
             text: Weather.cityName
-            color: Color.surfaceText
+            color: Colors.surfaceText
             font.weight: Font.DemiBold
           }
           RowLayout {
             spacing: 6
             NText {
               text: Math.round(Weather.currentTempF) + Weather.unitSuffix
-              color: Color.surfaceText
+              color: Colors.surfaceText
               size: NText.Size.BodySm
             }
             NText {
               text: "(" + Weather.gmtOffsetLabel + ")"
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.Caption
             }
           }
@@ -629,7 +629,7 @@ ColumnLayout {
               tracking: true
               Layout.alignment: Qt.AlignHCenter
               text: modelData.dayName.toUpperCase()
-              color: Color.labelText
+              color: Colors.labelText
               font.pixelSize: Tokens.labelXsSize - 1
               font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
             }
@@ -642,7 +642,7 @@ ColumnLayout {
             NText {
               Layout.alignment: Qt.AlignHCenter
               text: modelData.tempMaxF + "°/" + modelData.tempMinF + "°"
-              color: Color.surfaceTextMuted
+              color: Colors.surfaceTextMuted
               font.pixelSize: Tokens.labelXsSize - 1
             }
           }
@@ -664,14 +664,14 @@ ColumnLayout {
 
         NText {
           text: root.activePlayer ? root.activePlayer.identity : ""
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.Caption
           elide: Text.ElideRight
           Layout.fillWidth: true
         }
         NText {
           text: root.activePlayer ? root.activePlayer.trackTitle : ""
-          color: Color.surfaceText
+          color: Colors.surfaceText
           size: NText.Size.BodySm
           font.weight: Font.DemiBold
           elide: Text.ElideRight
@@ -683,8 +683,8 @@ ColumnLayout {
           cellHeight: Tokens.meterSidebarSeekCellHeight
           value: root.mediaLength > 0 ? (root.mediaPosition / root.mediaLength) * 100 : 0
           interactive: !!root.activePlayer && root.activePlayer.canSeek
-          filledColor: Color.primary
-          emptyColor: Color.surfaceContainerHigh
+          filledColor: Colors.primary
+          emptyColor: Colors.surfaceContainerHigh
           onMoved: pct => {
             if (root.activePlayer && root.activePlayer.canSeek)
               root.activePlayer.position = (pct / 100) * root.mediaLength;
@@ -697,12 +697,12 @@ ColumnLayout {
           Rectangle {
             anchors.fill: parent
             radius: height / 2
-            color: root.isPlaying ? Color.primary : Color.surfaceContainer
+            color: root.isPlaying ? Colors.primary : Colors.surfaceContainer
           }
           Text {
             anchors.centerIn: parent
             text: root.isPlaying ? "⏸" : "▶"
-            color: root.isPlaying ? Color.surface : Color.surfaceText
+            color: root.isPlaying ? Colors.surface : Colors.surfaceText
             font.pixelSize: 13
           }
           HoverHandler {
@@ -719,7 +719,7 @@ ColumnLayout {
       NText {
         visible: !root.activePlayer
         text: "No media playing"
-        color: Color.disabledText
+        color: Colors.disabledText
         size: NText.Size.BodySm
         Layout.fillWidth: true
       }
@@ -736,7 +736,7 @@ ColumnLayout {
         }
         CircularGauge {
           percent: Math.min(100, root.tempC)
-          fillColor: Color.tertiary
+          fillColor: Colors.tertiary
           value: Math.round(root.tempC) + "°"
           label: "TEMP"
         }
@@ -777,7 +777,7 @@ ColumnLayout {
         label: "RECORD"
         icon: "media-record-symbolic"
         iconFallback: "media-record"
-        iconColor: Color.error
+        iconColor: Colors.error
         available: root.hasRecorder
       }
       CcActionButton {

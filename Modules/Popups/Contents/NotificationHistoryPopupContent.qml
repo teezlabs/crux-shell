@@ -48,7 +48,7 @@ ColumnLayout {
   }
 
   function urgencyColor(urgency) {
-    return urgency === NotificationUrgency.Critical ? Color.primary : (urgency === NotificationUrgency.Low ? Color.outline : Color.tertiary);
+    return urgency === NotificationUrgency.Critical ? Colors.primary : (urgency === NotificationUrgency.Low ? Colors.outline : Colors.tertiary);
   }
 
   RowLayout {
@@ -57,7 +57,7 @@ ColumnLayout {
     NText {
       tracking: true
       text: "NOTIFICATIONS"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
       font.weight: Font.DemiBold
       Layout.fillWidth: true
@@ -67,7 +67,7 @@ ColumnLayout {
       tracking: true
       visible: root.history.length > 0
       text: "CLEAR ALL"
-      color: Color.error
+      color: Colors.error
       size: NText.Size.LabelXs
 
       HoverHandler {
@@ -82,7 +82,7 @@ ColumnLayout {
   NText {
     visible: root.history.length === 0
     text: "No notifications yet"
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.BodySm
   }
 
@@ -102,7 +102,7 @@ ColumnLayout {
 
       Rectangle {
         anchors.fill: parent
-        color: rowHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
+        color: rowHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
       }
 
       Rectangle {
@@ -134,7 +134,7 @@ ColumnLayout {
           NText {
             tracking: true
             text: (rowItem.modelData.appName || "").toUpperCase()
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
             Layout.fillWidth: true
             elide: Text.ElideRight
@@ -142,7 +142,7 @@ ColumnLayout {
 
           NText {
             text: root.relativeTime(rowItem.modelData.timestamp)
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
           }
         }
@@ -150,7 +150,7 @@ ColumnLayout {
         NText {
           Layout.fillWidth: true
           text: rowItem.modelData.summary || ""
-          color: Color.surfaceText
+          color: Colors.surfaceText
           size: NText.Size.BodySm
           font.weight: Font.DemiBold
           elide: Text.ElideRight
@@ -160,7 +160,7 @@ ColumnLayout {
           Layout.fillWidth: true
           visible: (rowItem.modelData.body || "") !== ""
           text: rowItem.modelData.body || ""
-          color: Color.surfaceTextMuted
+          color: Colors.surfaceTextMuted
           size: NText.Size.BodySm
           wrapMode: Text.WordWrap
           maximumLineCount: 2
@@ -174,7 +174,7 @@ ColumnLayout {
         anchors.top: parent.top
         anchors.margins: 8
         text: "×"
-        color: Color.labelText
+        color: Colors.labelText
         font.pixelSize: Tokens.bodyLgSize
 
         HoverHandler {

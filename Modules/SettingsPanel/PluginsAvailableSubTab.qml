@@ -27,7 +27,7 @@ NScrollView {
 
         NText {
           text: Plugins.fetching ? "Refreshing…" : (Settings.data.plugins.sources.length === 0 ? "No sources configured." : Plugins.availablePlugins.length + " plugin(s) found")
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.BodySm
           Layout.fillWidth: true
         }
@@ -43,7 +43,7 @@ NScrollView {
     NText {
       visible: Plugins.lastInstallError !== ""
       text: Plugins.lastInstallError
-      color: Color.error
+      color: Colors.error
       size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
@@ -68,8 +68,8 @@ NScrollView {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: Color.surfaceContainer
-            strokeColor: Color.outline
+            fillColor: Colors.surfaceContainer
+            strokeColor: Colors.outline
             strokeWidth: Tokens.borderModule
           }
 
@@ -84,13 +84,13 @@ NScrollView {
               spacing: 1
               NText {
                 text: row.modelData.label || row.modelData.id
-                color: Color.surfaceText
+                color: Colors.surfaceText
                 size: NText.Size.BodySm
                 elide: Text.ElideRight
               }
               NText {
                 text: (row.modelData.description || "") + "  ·  " + (row.modelData.source ? row.modelData.source.name : "")
-                color: Color.labelText
+                color: Colors.labelText
                 size: NText.Size.Caption
                 elide: Text.ElideRight
                 Layout.fillWidth: true
@@ -107,8 +107,8 @@ NScrollView {
                 chamferSize: Tokens.chamferIcon
                 cutTopRight: true
                 cutBottomLeft: true
-                fillColor: installHover.hovered ? Color.primaryContainer : Color.surfaceContainerHigh
-                strokeColor: Color.primary
+                fillColor: installHover.hovered ? Colors.primaryContainer : Colors.surfaceContainerHigh
+                strokeColor: Colors.primary
                 strokeWidth: Tokens.borderModule
               }
               NText {
@@ -116,7 +116,7 @@ NScrollView {
                 id: installLabel
                 anchors.centerIn: parent
                 text: row.busy ? "INSTALLING…" : "INSTALL"
-                color: Color.primary
+                color: Colors.primary
                 size: NText.Size.LabelXs
               }
               HoverHandler {
@@ -134,7 +134,7 @@ NScrollView {
               tracking: true
               visible: row.modelData.installed
               text: "INSTALLED"
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.LabelXs
             }
           }
@@ -144,7 +144,7 @@ NScrollView {
       NText {
         visible: !Plugins.fetching && Plugins.availablePlugins.length === 0 && Settings.data.plugins.sources.length > 0
         text: "No plugins found from configured sources yet — try Refresh."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
 
@@ -153,7 +153,7 @@ NScrollView {
         delegate: Text {
           required property string modelData
           text: modelData + ": " + Plugins.fetchErrors[modelData]
-          color: Color.error
+          color: Colors.error
           font.family: Tokens.fontFamily
           font.pixelSize: Tokens.captionSize
           wrapMode: Text.WordWrap

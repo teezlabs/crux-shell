@@ -38,7 +38,7 @@ NScrollView {
 
         NText {
           text: "Density presets:"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.Caption
         }
 
@@ -68,8 +68,8 @@ NScrollView {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: densityHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-              strokeColor: Color.outline
+              fillColor: densityHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
+              strokeColor: Colors.outline
               strokeWidth: Tokens.borderModule
             }
 
@@ -78,7 +78,7 @@ NScrollView {
               id: densityLabel
               anchors.centerIn: parent
               text: densityTile.modelData.label
-              color: Color.surfaceText
+              color: Colors.surfaceText
               size: NText.Size.LabelXs
             }
 
@@ -147,7 +147,7 @@ NScrollView {
         }
         NText {
           text: "One surface per section with hairline splits, instead of an outline around every widget"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.Caption
         }
       }
@@ -160,7 +160,7 @@ NScrollView {
         }
         NText {
           text: "Off = a real bar flush with the screen edge, ignoring the gap below"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.Caption
         }
       }
@@ -205,7 +205,7 @@ NScrollView {
         }
         NText {
           text: Settings.data.bar.borderWidth + "px"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.BodySm
           opacity: Settings.data.bar.showBorder ? 1 : 0.4
         }
@@ -219,7 +219,7 @@ NScrollView {
         }
         NText {
           text: "Show only when the pointer touches the bar's edge"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.Caption
         }
       }
@@ -243,7 +243,7 @@ NScrollView {
         }
         NText {
           text: Math.round(Settings.data.bar.barBackgroundOpacity * 100) + "%"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.BodySm
           opacity: Settings.data.bar.showBackground ? 1 : 0.4
         }
@@ -268,7 +268,7 @@ NScrollView {
         }
         NText {
           text: Math.round(Settings.data.bar.backgroundOpacity * 100) + "%"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.BodySm
           opacity: Settings.data.bar.useSeparateOpacity ? 1 : 0.4
         }
@@ -317,7 +317,7 @@ NScrollView {
 
             NText {
               text: modelData.name
-              color: Color.surfaceText
+              color: Colors.surfaceText
               size: NText.Size.BodySm
             }
           }
@@ -359,7 +359,7 @@ NScrollView {
 
               NText {
                 text: overrideRow.screenName + " — custom position"
-                color: Color.surfaceText
+                color: Colors.surfaceText
                 size: NText.Size.BodySm
               }
             }

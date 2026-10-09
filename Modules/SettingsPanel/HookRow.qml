@@ -22,7 +22,7 @@ RowLayout {
 
     NText {
       text: root.label
-      color: root.value ? Color.surfaceText : Color.surfaceTextMuted
+      color: root.value ? Colors.surfaceText : Colors.surfaceTextMuted
       size: NText.Size.BodySm
       font.weight: Font.DemiBold
     }
@@ -30,7 +30,7 @@ RowLayout {
     NText {
       tracking: true
       text: root.description
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
@@ -39,7 +39,7 @@ RowLayout {
     NText {
       visible: root.value !== ""
       text: root.value
-      color: Color.primary
+      color: Colors.primary
       size: NText.Size.Caption
       elide: Text.ElideMiddle
       Layout.fillWidth: true

@@ -22,8 +22,8 @@ Item {
   Rectangle {
     anchors.fill: parent
     radius: width / 2
-    color: root.active ? Color.primary : (hover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainerLow)
-    border.color: root.active ? "transparent" : Color.outlineVariant
+    color: root.active ? Colors.primary : (hover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainerLow)
+    border.color: root.active ? "transparent" : Colors.outlineVariant
     border.width: root.active ? 0 : Tokens.borderModule
     opacity: root.available ? 1 : 0.4
   }

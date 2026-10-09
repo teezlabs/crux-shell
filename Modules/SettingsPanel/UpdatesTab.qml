@@ -50,7 +50,7 @@ NScrollView {
         NText {
           tracking: true
           text: "TERMINAL  (\"{}\" = the command to run)"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.LabelXs
         }
         NTextInput {
@@ -68,7 +68,7 @@ NScrollView {
         NText {
           tracking: true
           text: "COUNT COMMAND"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.LabelXs
         }
         NTextInput {
@@ -87,7 +87,7 @@ NScrollView {
         NText {
           tracking: true
           text: "UPDATE COMMAND"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.LabelXs
         }
         NTextInput {

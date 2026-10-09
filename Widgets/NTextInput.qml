@@ -15,7 +15,7 @@ Item {
   // Overrides the token family — used by the font-picker fields, which
   // render their own value as a live preview.
   property string fontFamily: ""
-  property color fillColor: Color.surface
+  property color fillColor: Colors.surface
   property real horizontalPadding: 8
 
   signal editingFinished
@@ -36,7 +36,7 @@ Item {
     cutTopRight: true
     cutBottomLeft: true
     fillColor: root.fillColor
-    strokeColor: input.activeFocus ? Color.primary : Color.outline
+    strokeColor: input.activeFocus ? Colors.primary : Colors.outline
     strokeWidth: Tokens.borderModule
   }
 
@@ -46,7 +46,7 @@ Item {
     visible: input.text === "" && !input.activeFocus
     size: NText.Size.BodySm
     mono: root.mono
-    color: Color.disabledText
+    color: Colors.disabledText
     verticalAlignment: Text.AlignVCenter
   }
 
@@ -57,9 +57,9 @@ Item {
     anchors.rightMargin: root.horizontalPadding
     verticalAlignment: TextInput.AlignVCenter
     clip: true
-    color: Color.surfaceText
-    selectionColor: Color.primaryContainer
-    selectedTextColor: Color.primaryContainerText
+    color: Colors.surfaceText
+    selectionColor: Colors.primaryContainer
+    selectedTextColor: Colors.primaryContainerText
     font.family: root.fontFamily !== "" ? root.fontFamily : (root.mono ? Tokens.monoFontFamily : Tokens.fontFamily)
     font.pixelSize: Tokens.bodySmSize
     selectByMouse: true

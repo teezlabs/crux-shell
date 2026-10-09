@@ -49,7 +49,7 @@ Item {
     anchors.fill: parent
     anchors.margins: 1
     color: "transparent"
-    border.color: Color.tertiary
+    border.color: Colors.tertiary
     border.width: 1
   }
 

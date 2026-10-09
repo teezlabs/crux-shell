@@ -130,7 +130,7 @@ ColumnLayout {
     NText {
       tracking: true
       text: "CLIPBOARD"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
       font.weight: Font.DemiBold
       Layout.fillWidth: true
@@ -139,7 +139,7 @@ ColumnLayout {
     NText {
       tracking: true
       text: "CLEAR ALL"
-      color: Color.error
+      color: Colors.error
       size: NText.Size.LabelXs
       MouseArea {
         anchors.fill: parent
@@ -152,7 +152,7 @@ ColumnLayout {
   NText {
     visible: !root.cliphistAvailable
     text: "cliphist not found"
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.BodySm
   }
 
@@ -172,7 +172,7 @@ ColumnLayout {
 
       Rectangle {
         anchors.fill: parent
-        color: rowHover.hovered ? Color.surfaceContainerHigh : "transparent"
+        color: rowHover.hovered ? Colors.surfaceContainerHigh : "transparent"
       }
 
       RowLayout {
@@ -182,7 +182,7 @@ ColumnLayout {
 
         NText {
           text: rowItem.modelData.isImage ? "[image]" : rowItem.modelData.preview
-          color: Color.surfaceText
+          color: Colors.surfaceText
           size: NText.Size.BodySm
           elide: Text.ElideRight
           Layout.fillWidth: true
@@ -190,7 +190,7 @@ ColumnLayout {
 
         Text {
           text: "×"
-          color: Color.labelText
+          color: Colors.labelText
           font.pixelSize: Tokens.bodyLgSize
           MouseArea {
             anchors.fill: parent

@@ -105,7 +105,7 @@ Item {
       StatText {
         label: "KBD"
         value: root.currentLayout
-        valueColor: Color.surfaceText
+        valueColor: Colors.surfaceText
       }
     }
 
@@ -120,7 +120,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: root.currentLayout
-          color: Color.surfaceText
+          color: Colors.surfaceText
           size: NText.Size.LabelXs
         }
         NText {
@@ -128,7 +128,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "KBD"
-          color: Color.labelText
+          color: Colors.labelText
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }

@@ -132,7 +132,7 @@ ColumnLayout {
     NText {
       tracking: true
       text: "BLUETOOTH"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
       font.weight: Font.DemiBold
       Layout.fillWidth: true
@@ -147,7 +147,7 @@ ColumnLayout {
   NText {
     visible: !root.adapter || !root.adapter.enabled
     text: root.adapter ? "Bluetooth is off" : "No adapter"
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.BodySm
   }
 
@@ -198,7 +198,7 @@ ColumnLayout {
         tracking: true
         visible: rowItem.modelData.header !== undefined
         text: (rowItem.modelData.header || "").toUpperCase()
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
         anchors.verticalCenter: parent.verticalCenter
       }
@@ -206,7 +206,7 @@ ColumnLayout {
       Rectangle {
         visible: rowItem.modelData.device !== undefined
         anchors.fill: parent
-        color: rowHover.hovered ? Color.surfaceContainerHigh : "transparent"
+        color: rowHover.hovered ? Colors.surfaceContainerHigh : "transparent"
       }
 
       RowLayout {
@@ -221,13 +221,13 @@ ColumnLayout {
 
         NText {
           text: parent.device && parent.device.connected ? "●" : "○"
-          color: parent.device && parent.device.connected ? Color.primary : Color.labelText
+          color: parent.device && parent.device.connected ? Colors.primary : Colors.labelText
           size: NText.Size.BodySm
         }
 
         NText {
           text: parent.device ? Model.deviceLabel(parent.device) : ""
-          color: Color.surfaceText
+          color: Colors.surfaceText
           elide: Text.ElideRight
           Layout.fillWidth: true
         }
@@ -235,14 +235,14 @@ ColumnLayout {
         NText {
           visible: !!(parent.device && parent.device.batteryAvailable)
           text: parent.device ? Math.round(parent.device.battery * 100) + "%" : ""
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.Caption
         }
 
         NText {
           visible: parent.pending !== ""
           text: parent.pending.toUpperCase() + "…"
-          color: Color.primary
+          color: Colors.primary
           size: NText.Size.Caption
         }
 
@@ -250,7 +250,7 @@ ColumnLayout {
           tracking: true
           visible: !!(parent.pending === "" && parent.device && (parent.device.paired || parent.device.bonded || parent.device.trusted))
           text: "FORGET"
-          color: Color.error
+          color: Colors.error
           size: NText.Size.LabelXs
           MouseArea {
             anchors.fill: parent

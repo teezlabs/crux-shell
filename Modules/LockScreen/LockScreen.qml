@@ -231,7 +231,7 @@ Loader {
             // Darkens the blurred wallpaper enough that on_surface text stays
             // legible regardless of the source image's own brightness.
             anchors.fill: parent
-            color: Color.alpha(Color.surface, Settings.data.lockScreen.dimAmount)
+            color: Colors.alpha(Colors.surface, Settings.data.lockScreen.dimAmount)
           }
 
           MouseArea {
@@ -253,7 +253,7 @@ Loader {
             NText {
               tracking: true
               text: Qt.formatDateTime(surface.now, Settings.data.lockScreen.clockFormat)
-              color: Color.surfaceText
+              color: Colors.surfaceText
               size: NText.Size.Display
             }
 
@@ -264,14 +264,14 @@ Loader {
                 anchors.verticalCenter: parent.verticalCenter
                 width: 52
                 height: 2
-                color: Color.primary
+                color: Colors.primary
               }
 
               NText {
                 tracking: true
                 anchors.verticalCenter: parent.verticalCenter
                 text: Qt.formatDateTime(surface.now, Settings.data.lockScreen.dateFormat).toUpperCase()
-                color: Color.labelText
+                color: Colors.labelText
                 font.pixelSize: 14
                 font.letterSpacing: 14 * 0.26
               }
@@ -280,7 +280,7 @@ Loader {
             NText {
               visible: Settings.data.lockScreen.showMediaControls && !!surface.activeMprisPlayer
               text: surface.activeMprisPlayer ? ((surface.activeMprisPlayer.trackArtist ? surface.activeMprisPlayer.trackArtist + " — " : "") + (surface.activeMprisPlayer.trackTitle || "")) : ""
-              color: Color.labelText
+              color: Colors.labelText
               font.pixelSize: 14
               elide: Text.ElideRight
               width: 400
@@ -302,13 +302,13 @@ Loader {
               NText {
                 tracking: true
                 text: "NET"
-                color: Color.labelText
+                color: Colors.labelText
                 size: NText.Size.Label
                 font.weight: Font.Medium
               }
               NText {
                 text: surface.netLabel
-                color: Networking.wifiEnabled ? Color.surfaceText : Color.disabledText
+                color: Networking.wifiEnabled ? Colors.surfaceText : Colors.disabledText
                 size: NText.Size.Caption
               }
             }
@@ -319,13 +319,13 @@ Loader {
               NText {
                 tracking: true
                 text: "BAT"
-                color: Color.labelText
+                color: Colors.labelText
                 size: NText.Size.Label
                 font.weight: Font.Medium
               }
               NText {
                 text: surface.batteryPercent
-                color: Color.surfaceText
+                color: Colors.surfaceText
                 size: NText.Size.Caption
               }
             }
@@ -336,13 +336,13 @@ Loader {
               NText {
                 tracking: true
                 text: "VOL"
-                color: Color.labelText
+                color: Colors.labelText
                 size: NText.Size.Label
                 font.weight: Font.Medium
               }
               NText {
                 text: surface.muted ? "—" : String(Math.round(surface.volume * 100))
-                color: surface.muted ? Color.error : Color.surfaceText
+                color: surface.muted ? Colors.error : Colors.surfaceText
                 size: NText.Size.Caption
               }
             }
@@ -404,8 +404,8 @@ Loader {
                     chamferSize: Tokens.chamferIcon
                     cutTopRight: true
                     cutBottomLeft: true
-                    fillColor: powerBtn.armed ? Color.alpha(Color.error, 0.25) : (powerMouse.containsMouse ? Color.surfaceContainerHigh : "transparent")
-                    strokeColor: Color.alpha(Color.error, powerBtn.armed ? 1 : (powerMouse.containsMouse ? 0.7 : 0.4))
+                    fillColor: powerBtn.armed ? Colors.alpha(Colors.error, 0.25) : (powerMouse.containsMouse ? Colors.surfaceContainerHigh : "transparent")
+                    strokeColor: Colors.alpha(Colors.error, powerBtn.armed ? 1 : (powerMouse.containsMouse ? 0.7 : 0.4))
                     strokeWidth: Tokens.borderModule
                   }
 
@@ -415,7 +415,7 @@ Loader {
                     width: 14
                     height: 14
                     property string kind: powerBtn.modelData.id
-                    readonly property color drawColor: Color.error
+                    readonly property color drawColor: Colors.error
                     onDrawColorChanged: requestPaint()
                     onPaint: {
                       var ctx = getContext("2d");
@@ -482,7 +482,7 @@ Loader {
                   tracking: true
                   anchors.horizontalCenter: parent.horizontalCenter
                   text: powerBtn.armed ? "CONFIRM?" : powerBtn.modelData.label
-                  color: Color.labelText
+                  color: Colors.labelText
                   font.pixelSize: Tokens.labelXsSize - 2
                   font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
                 }
@@ -504,8 +504,8 @@ Loader {
               chamferSize: Tokens.chamferModule
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: Color.alpha(Color.surface, Tokens.panelOpacity)
-              strokeColor: Color.outline
+              fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+              strokeColor: Colors.outline
               strokeWidth: Tokens.borderPanel
             }
 
@@ -519,7 +519,7 @@ Loader {
 
               NText {
                 text: ">"
-                color: Color.primary
+                color: Colors.primary
                 size: NText.Size.BodyLg
                 font.weight: Font.DemiBold
                 anchors.verticalCenter: parent.verticalCenter
@@ -533,7 +533,7 @@ Loader {
                 passwordCharacter: "•"
                 passwordMaskDelay: 0
                 enabled: !lockContext.unlockInProgress && !root.lockedOut
-                color: Color.primary
+                color: Colors.primary
                 font.family: Tokens.fontFamily
                 font.pixelSize: Tokens.bodyLgSize
                 font.letterSpacing: Tokens.bodyLgSize * 0.4
@@ -563,7 +563,7 @@ Loader {
               anchors.rightMargin: 16
               anchors.verticalCenter: parent.verticalCenter
               text: "⏎ UNLOCK"
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.LabelXs
             }
           }
@@ -579,7 +579,7 @@ Loader {
               tracking: true
               visible: surface.capsLockOn
               text: "CAPS LOCK ON"
-              color: Color.error
+              color: Colors.error
               size: NText.Size.LabelXs
             }
 
@@ -587,7 +587,7 @@ Loader {
               tracking: true
               visible: lockContext.showFailure
               text: lockContext.errorMessage || "AUTHENTICATION FAILED"
-              color: Color.error
+              color: Colors.error
               size: NText.Size.LabelXs
             }
 
@@ -595,7 +595,7 @@ Loader {
               tracking: true
               visible: root.lockedOut
               text: "LOCKED OUT — TRY AGAIN IN " + root.lockoutRemaining + "s"
-              color: Color.error
+              color: Colors.error
               size: NText.Size.LabelXs
             }
 
@@ -603,7 +603,7 @@ Loader {
               tracking: true
               visible: !root.lockedOut && root.failedAttempts > 0
               text: "ATTEMPTS " + root.failedAttempts
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.LabelXs
             }
           }
@@ -628,12 +628,12 @@ Loader {
                 width: 400
                 height: cardCol.implicitHeight + 16
 
-                readonly property color urgencyColor: modelData.urgency === 2 ? Color.primary : (modelData.urgency === 0 ? Color.outline : Color.tertiary)
+                readonly property color urgencyColor: modelData.urgency === 2 ? Colors.primary : (modelData.urgency === 0 ? Colors.outline : Colors.tertiary)
 
                 Rectangle {
                   anchors.fill: parent
-                  color: Color.alpha(Color.surfaceContainer, 0.94)
-                  border.color: Color.outlineVariant
+                  color: Colors.alpha(Colors.surfaceContainer, 0.94)
+                  border.color: Colors.outlineVariant
                   border.width: Tokens.borderPanel
                 }
                 Rectangle {
@@ -656,13 +656,13 @@ Loader {
                   NText {
                     tracking: true
                     text: (card.modelData.appName || "").toUpperCase()
-                    color: Color.labelText
+                    color: Colors.labelText
                     size: NText.Size.LabelXs
                   }
                   NText {
                     width: parent.width
                     text: card.modelData.summary || ""
-                    color: Color.surfaceText
+                    color: Colors.surfaceText
                     size: NText.Size.BodySm
                     font.weight: Font.DemiBold
                     elide: Text.ElideRight

@@ -97,21 +97,21 @@ Item {
         text: "C"
         size: NText.Size.Label
         font.weight: Font.DemiBold
-        color: root.capsLockOn ? Color.primary : Color.alpha(Color.surfaceTextMuted, 0.35)
+        color: root.capsLockOn ? Colors.primary : Colors.alpha(Colors.surfaceTextMuted, 0.35)
       }
       NText {
         visible: root.showNum && (!root.hideWhenOff || root.numLockOn)
         text: "N"
         size: NText.Size.Label
         font.weight: Font.DemiBold
-        color: root.numLockOn ? Color.primary : Color.alpha(Color.surfaceTextMuted, 0.35)
+        color: root.numLockOn ? Colors.primary : Colors.alpha(Colors.surfaceTextMuted, 0.35)
       }
       NText {
         visible: root.showScroll && !root.hideWhenOff
         text: "S"
         size: NText.Size.Label
         font.weight: Font.DemiBold
-        color: Color.alpha(Color.surfaceTextMuted, 0.2)
+        color: Colors.alpha(Colors.surfaceTextMuted, 0.2)
       }
     }
 
@@ -126,7 +126,7 @@ Item {
         text: "C"
         size: NText.Size.LabelXs
         font.weight: Font.DemiBold
-        color: root.capsLockOn ? Color.primary : Color.alpha(Color.surfaceTextMuted, 0.35)
+        color: root.capsLockOn ? Colors.primary : Colors.alpha(Colors.surfaceTextMuted, 0.35)
       }
       NText {
         visible: root.showNum && (!root.hideWhenOff || root.numLockOn)
@@ -135,7 +135,7 @@ Item {
         text: "N"
         size: NText.Size.LabelXs
         font.weight: Font.DemiBold
-        color: root.numLockOn ? Color.primary : Color.alpha(Color.surfaceTextMuted, 0.35)
+        color: root.numLockOn ? Colors.primary : Colors.alpha(Colors.surfaceTextMuted, 0.35)
       }
       NText {
         visible: root.showScroll && !root.hideWhenOff
@@ -144,7 +144,7 @@ Item {
         text: "S"
         size: NText.Size.LabelXs
         font.weight: Font.DemiBold
-        color: Color.alpha(Color.surfaceTextMuted, 0.2)
+        color: Colors.alpha(Colors.surfaceTextMuted, 0.2)
       }
     }
   }

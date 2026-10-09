@@ -23,7 +23,7 @@ RowLayout {
   // SettingsWindow; see the crux skill.
   NLabel {
     label: root.label
-    labelColor: Color.labelText
+    labelColor: Colors.labelText
     wrap: false
     Layout.preferredWidth: root.labelWidth
     Layout.minimumWidth: root.labelWidth

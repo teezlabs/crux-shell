@@ -47,7 +47,7 @@ NScrollView {
         tracking: true
         visible: Notifs.history.length > 0
         text: "CLEAR ALL"
-        color: Color.error
+        color: Colors.error
         size: NText.Size.LabelXs
 
         HoverHandler {
@@ -66,7 +66,7 @@ NScrollView {
       NText {
         visible: Notifs.history.length === 0
         text: "No notifications yet"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
 
@@ -78,7 +78,7 @@ NScrollView {
           required property var modelData
           Layout.fillWidth: true
           height: 30
-          color: rowHover.hovered ? Color.surfaceContainerHigh : "transparent"
+          color: rowHover.hovered ? Colors.surfaceContainerHigh : "transparent"
 
           RowLayout {
             anchors.fill: parent
@@ -89,7 +89,7 @@ NScrollView {
             NText {
               tracking: true
               text: (rowItem.modelData.appName || "").toUpperCase()
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.LabelXs
               Layout.preferredWidth: 110
               elide: Text.ElideRight
@@ -97,7 +97,7 @@ NScrollView {
 
             NText {
               text: rowItem.modelData.summary || ""
-              color: Color.surfaceText
+              color: Colors.surfaceText
               size: NText.Size.BodySm
               elide: Text.ElideRight
               Layout.fillWidth: true
@@ -105,7 +105,7 @@ NScrollView {
 
             Text {
               text: "×"
-              color: Color.labelText
+              color: Colors.labelText
               font.pixelSize: Tokens.bodyLgSize
 
               HoverHandler {
@@ -126,7 +126,7 @@ NScrollView {
       NText {
         visible: Notifs.history.length > 20
         text: "+ " + (Notifs.history.length - 20) + " more — open the bar's notification history icon to see all"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }

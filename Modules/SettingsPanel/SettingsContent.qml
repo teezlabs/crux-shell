@@ -37,7 +37,7 @@ ColumnLayout {
       Rectangle {
         width: 3
         height: 16
-        color: Color.primary
+        color: Colors.primary
       }
 
       NText {
@@ -47,7 +47,7 @@ ColumnLayout {
               return panel.tabs[i].label;
           return "";
         }
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.BodyLg
         font.weight: Font.DemiBold
         Layout.fillWidth: true
@@ -65,8 +65,8 @@ ColumnLayout {
           chamferSize: Tokens.chamferIcon
           cutTopRight: true
           cutBottomLeft: true
-          fillColor: closeHover.hovered ? Color.alpha(Color.error, 0.16) : "transparent"
-          strokeColor: Color.alpha(Color.error, closeHover.hovered ? 0.7 : Tokens.destructiveBorderAlpha)
+          fillColor: closeHover.hovered ? Colors.alpha(Colors.error, 0.16) : "transparent"
+          strokeColor: Colors.alpha(Colors.error, closeHover.hovered ? 0.7 : Tokens.destructiveBorderAlpha)
           strokeWidth: Tokens.borderModule
         }
 
@@ -75,7 +75,7 @@ ColumnLayout {
           anchors.centerIn: parent
           width: 10
           height: 10
-          readonly property color strokeColor: closeHover.hovered ? Color.error : Color.surfaceTextMuted
+          readonly property color strokeColor: closeHover.hovered ? Colors.error : Colors.surfaceTextMuted
           onStrokeColorChanged: requestPaint()
           onPaint: {
             var ctx = getContext("2d");
@@ -105,7 +105,7 @@ ColumnLayout {
     Rectangle {
       Layout.fillWidth: true
       Layout.preferredHeight: Tokens.borderDivider
-      color: Color.surfaceContainerHigh
+      color: Colors.surfaceContainerHigh
     }
   }
 

@@ -8,5 +8,5 @@ Rectangle {
 
   implicitWidth: vertical ? Tokens.borderDivider : 0
   implicitHeight: vertical ? 0 : Tokens.borderDivider
-  color: Color.surfaceContainerHigh
+  color: Colors.surfaceContainerHigh
 }

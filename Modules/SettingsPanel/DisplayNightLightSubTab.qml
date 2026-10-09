@@ -62,7 +62,7 @@ NScrollView {
       }
       NText {
         text: Weather.hasLocation ? "Real sunrise/sunset for " + Weather.cityName : "Resolving location…"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -83,7 +83,7 @@ NScrollView {
       }
       NText {
         text: Settings.data.nightLight.nightTemp + "K"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
     }
@@ -104,7 +104,7 @@ NScrollView {
       }
       NText {
         text: Settings.data.nightLight.dayTemp + "K"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
     }

@@ -10,8 +10,8 @@ Canvas {
   id: root
 
   property string category: "cloud"
-  property color strokeColor: Color.surfaceText
-  property color accentColor: Color.tertiary
+  property color strokeColor: Colors.surfaceText
+  property color accentColor: Colors.tertiary
 
   onCategoryChanged: requestPaint()
   onStrokeColorChanged: requestPaint()

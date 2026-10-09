@@ -38,7 +38,7 @@ Item {
       width: 18
       height: 12
       readonly property bool isActive: root.active
-      readonly property color drawColor: root.active ? Color.tertiary : Color.surfaceText
+      readonly property color drawColor: root.active ? Colors.tertiary : Colors.surfaceText
       onIsActiveChanged: requestPaint()
       onDrawColorChanged: requestPaint()
       onPaint: {

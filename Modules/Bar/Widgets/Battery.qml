@@ -24,7 +24,7 @@ Item {
   readonly property bool low: present && !charging && !pluggedIn && percent <= Settings.data.battery.lowThreshold && percent > Settings.data.battery.criticalThreshold
   readonly property bool critical: present && !charging && !pluggedIn && percent <= Settings.data.battery.criticalThreshold
 
-  readonly property color statusColor: root.critical ? Color.error : (root.low ? Color.tertiary : (root.charging ? Color.primary : Color.surfaceText))
+  readonly property color statusColor: root.critical ? Colors.error : (root.low ? Colors.tertiary : (root.charging ? Colors.primary : Colors.surfaceText))
 
   function formatDuration(seconds) {
     if (!seconds || seconds <= 0)
@@ -78,7 +78,7 @@ Item {
         cellHeight: Tokens.meterBarBatteryCellHeight
         value: root.percent
         filledColor: root.statusColor
-        emptyColor: Color.surfaceContainerHigh
+        emptyColor: Colors.surfaceContainerHigh
       }
 
       StatText {
@@ -107,7 +107,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "BAT"
-          color: Color.labelText
+          color: Colors.labelText
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }

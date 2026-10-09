@@ -85,7 +85,7 @@ NScrollView {
       NText {
         visible: root.entries.length === 0
         text: "No custom commands yet."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.BodySm
       }
 
@@ -104,8 +104,8 @@ NScrollView {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: Color.surfaceContainerHigh
-            strokeColor: Color.outline
+            fillColor: Colors.surfaceContainerHigh
+            strokeColor: Colors.outline
             strokeWidth: Tokens.borderModule
           }
 
@@ -122,7 +122,7 @@ NScrollView {
               TextInput {
                 Layout.fillWidth: true
                 text: entryRow.modelData.name || ""
-                color: Color.surfaceText
+                color: Colors.surfaceText
                 font.family: Tokens.fontFamily
                 font.pixelSize: Tokens.bodySmSize
                 font.weight: Font.DemiBold
@@ -133,7 +133,7 @@ NScrollView {
               NText {
                 tracking: true
                 text: "REMOVE"
-                color: Color.error
+                color: Colors.error
                 size: NText.Size.LabelXs
 
                 HoverHandler {
@@ -151,7 +151,7 @@ NScrollView {
 
               NText {
                 text: "Timeout"
-                color: Color.labelText
+                color: Colors.labelText
                 size: NText.Size.Caption
               }
 
@@ -172,7 +172,7 @@ NScrollView {
 
               NText {
                 text: "On idle"
-                color: Color.labelText
+                color: Colors.labelText
                 size: NText.Size.Caption
                 Layout.preferredWidth: 60
               }
@@ -186,8 +186,8 @@ NScrollView {
                   chamferSize: Tokens.chamferIcon
                   cutTopRight: true
                   cutBottomLeft: true
-                  fillColor: Color.surface
-                  strokeColor: cmdInput.activeFocus ? Color.primary : Color.outline
+                  fillColor: Colors.surface
+                  strokeColor: cmdInput.activeFocus ? Colors.primary : Colors.outline
                   strokeWidth: Tokens.borderModule
                 }
 
@@ -198,7 +198,7 @@ NScrollView {
                   anchors.rightMargin: 6
                   verticalAlignment: Text.AlignVCenter
                   text: entryRow.modelData.command || ""
-                  color: Color.surfaceText
+                  color: Colors.surfaceText
                   font.family: Tokens.fontFamily
                   font.pixelSize: Tokens.captionSize
                   selectByMouse: true
@@ -213,7 +213,7 @@ NScrollView {
 
               NText {
                 text: "On resume"
-                color: Color.labelText
+                color: Colors.labelText
                 size: NText.Size.Caption
                 Layout.preferredWidth: 60
               }
@@ -227,8 +227,8 @@ NScrollView {
                   chamferSize: Tokens.chamferIcon
                   cutTopRight: true
                   cutBottomLeft: true
-                  fillColor: Color.surface
-                  strokeColor: resumeInput.activeFocus ? Color.primary : Color.outline
+                  fillColor: Colors.surface
+                  strokeColor: resumeInput.activeFocus ? Colors.primary : Colors.outline
                   strokeWidth: Tokens.borderModule
                 }
 
@@ -239,7 +239,7 @@ NScrollView {
                   anchors.rightMargin: 6
                   verticalAlignment: Text.AlignVCenter
                   text: entryRow.modelData.resumeCommand || ""
-                  color: Color.surfaceText
+                  color: Colors.surfaceText
                   font.family: Tokens.fontFamily
                   font.pixelSize: Tokens.captionSize
                   selectByMouse: true

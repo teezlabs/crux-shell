@@ -23,7 +23,7 @@ ColumnLayout {
   readonly property bool pluggedIn: present && (device.state === UPowerDeviceState.FullyCharged || device.state === UPowerDeviceState.PendingCharge)
   readonly property bool low: present && !charging && !pluggedIn && percent <= Settings.data.battery.lowThreshold && percent > Settings.data.battery.criticalThreshold
   readonly property bool critical: present && !charging && !pluggedIn && percent <= Settings.data.battery.criticalThreshold
-  readonly property color statusColor: root.critical ? Color.error : (root.low ? Color.tertiary : (root.charging ? Color.primary : Color.surfaceText))
+  readonly property color statusColor: root.critical ? Colors.error : (root.low ? Colors.tertiary : (root.charging ? Colors.primary : Colors.surfaceText))
 
   function formatDuration(seconds) {
     var mins = Math.round(seconds / 60);
@@ -64,7 +64,7 @@ ColumnLayout {
   NText {
     tracking: true
     text: "BATTERY"
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.LabelXs
     font.weight: Font.DemiBold
   }
@@ -82,7 +82,7 @@ ColumnLayout {
 
     NText {
       text: root.statusText
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.BodySm
       Layout.fillWidth: true
       wrapMode: Text.WordWrap
@@ -95,7 +95,7 @@ ColumnLayout {
     cellHeight: Tokens.meterControlCenterCellHeight
     value: root.percent
     filledColor: root.statusColor
-    emptyColor: Color.surfaceContainerHigh
+    emptyColor: Colors.surfaceContainerHigh
   }
 
   RowLayout {
@@ -106,7 +106,7 @@ ColumnLayout {
     NText {
       tracking: true
       text: "HEALTH"
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.LabelXs
     }
     Item {
@@ -114,7 +114,7 @@ ColumnLayout {
     }
     NText {
       text: root.healthKnown ? Math.round(root.device.healthPercentage) + "%" : ""
-      color: Color.surfaceText
+      color: Colors.surfaceText
       size: NText.Size.BodySm
     }
   }
@@ -123,7 +123,7 @@ ColumnLayout {
     tracking: true
     text: "POWER PROFILE"
     visible: Settings.data.battery.showPowerProfile
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.LabelXs
     Layout.topMargin: 4
   }
@@ -148,8 +148,8 @@ ColumnLayout {
           chamferSize: Tokens.chamferIcon
           cutTopRight: true
           cutBottomLeft: true
-          fillColor: profileTile.active ? Color.primaryContainer : (profileHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer)
-          strokeColor: profileTile.active ? Color.primary : Color.outline
+          fillColor: profileTile.active ? Colors.primaryContainer : (profileHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer)
+          strokeColor: profileTile.active ? Colors.primary : Colors.outline
           strokeWidth: Tokens.borderModule
         }
 
@@ -157,7 +157,7 @@ ColumnLayout {
           tracking: true
           anchors.centerIn: parent
           text: profileTile.modelData.label
-          color: profileTile.active ? Color.primaryContainerText : Color.surfaceText
+          color: profileTile.active ? Colors.primaryContainerText : Colors.surfaceText
           size: NText.Size.LabelXs
         }
 

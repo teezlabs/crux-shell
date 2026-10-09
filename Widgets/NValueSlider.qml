@@ -45,6 +45,6 @@ RowLayout {
     Layout.preferredWidth: root.readoutWidth > 0 ? root.readoutWidth : implicitWidth
     text: root.readoutText !== "" ? root.readoutText : root.format(root.value)
     size: NText.Size.BodySm
-    color: Color.labelText
+    color: Colors.labelText
   }
 }

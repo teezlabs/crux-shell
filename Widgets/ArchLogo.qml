@@ -6,7 +6,7 @@ import qs.Commons
 Item {
   id: root
 
-  property color tintColor: Color.primary
+  property color tintColor: Colors.primary
 
   Image {
     id: logo

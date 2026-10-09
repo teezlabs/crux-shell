@@ -174,8 +174,8 @@ PanelWindow {
 
     Rectangle {
       anchors.fill: parent
-      color: Color.alpha(Color.surface, Tokens.panelOpacity)
-      border.color: Color.outline
+      color: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+      border.color: Colors.outline
       border.width: Tokens.borderPanel
     }
 
@@ -197,14 +197,14 @@ PanelWindow {
         NText {
           tracking: true
           text: root._clockNow
-          color: Color.surfaceText
+          color: Colors.surfaceText
           size: NText.Size.Title
           font.weight: Font.ExtraLight
         }
         NText {
           tracking: true
           text: root._clockDate.toUpperCase()
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.LabelXs
         }
       }
@@ -212,7 +212,7 @@ PanelWindow {
       Rectangle {
         Layout.fillWidth: true
         height: Tokens.borderDivider
-        color: Color.surfaceContainerHigh
+        color: Colors.surfaceContainerHigh
       }
 
       // Now Playing
@@ -224,7 +224,7 @@ PanelWindow {
         NText {
           tracking: true
           text: "NOW PLAYING"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.LabelXs
         }
 
@@ -241,8 +241,8 @@ PanelWindow {
               chamferSize: Tokens.chamferModule
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: Color.surfaceContainer
-              strokeColor: Color.outline
+              fillColor: Colors.surfaceContainer
+              strokeColor: Colors.outline
               strokeWidth: Tokens.borderModule
             }
 
@@ -262,7 +262,7 @@ PanelWindow {
               onPaint: {
                 var ctx = getContext("2d");
                 ctx.reset();
-                ctx.strokeStyle = Color.surfaceContainerHigh;
+                ctx.strokeStyle = Colors.surfaceContainerHigh;
                 ctx.lineWidth = 2;
                 for (var x = -height; x < width; x += 8) {
                   ctx.beginPath();
@@ -280,14 +280,14 @@ PanelWindow {
             NText {
               Layout.fillWidth: true
               text: root.activePlayer ? root.activePlayer.trackTitle : ""
-              color: Color.surfaceText
+              color: Colors.surfaceText
               font.weight: Font.DemiBold
               elide: Text.ElideRight
             }
             NText {
               Layout.fillWidth: true
               text: root.activePlayer ? root.activePlayer.trackArtist : ""
-              color: Color.surfaceTextMuted
+              color: Colors.surfaceTextMuted
               size: NText.Size.BodySm
               elide: Text.ElideRight
             }
@@ -300,8 +300,8 @@ PanelWindow {
           cellHeight: Tokens.meterSidebarSeekCellHeight
           value: root.length > 0 ? (root.position / root.length) * 100 : 0
           interactive: !!root.activePlayer && root.activePlayer.canSeek
-          filledColor: Color.primary
-          emptyColor: Color.surfaceContainerHigh
+          filledColor: Colors.primary
+          emptyColor: Colors.surfaceContainerHigh
           onMoved: pct => {
             if (root.activePlayer && root.activePlayer.canSeek)
               root.activePlayer.position = (pct / 100) * root.length;
@@ -337,7 +337,7 @@ PanelWindow {
       Rectangle {
         Layout.fillWidth: true
         height: Tokens.borderDivider
-        color: Color.surfaceContainerHigh
+        color: Colors.surfaceContainerHigh
       }
 
       // Notifications
@@ -350,7 +350,7 @@ PanelWindow {
           NText {
             tracking: true
             text: "NOTIFICATIONS"
-            color: Color.labelText
+            color: Colors.labelText
             size: NText.Size.LabelXs
           }
           Item {
@@ -360,7 +360,7 @@ PanelWindow {
             tracking: true
             visible: root.notifications.length > 0
             text: "CLEAR"
-            color: Color.primary
+            color: Colors.primary
             size: NText.Size.LabelXs
 
             HoverHandler {
@@ -375,7 +375,7 @@ PanelWindow {
         NText {
           visible: root.notifications.length === 0
           text: "NO NOTIFICATIONS"
-          color: Color.disabledText
+          color: Colors.disabledText
           size: NText.Size.BodySm
         }
 
@@ -392,11 +392,11 @@ PanelWindow {
             Layout.fillWidth: true
             Layout.preferredHeight: 24
 
-            readonly property color urgencyColor: modelData.urgency === NotificationUrgency.Critical ? Color.primary : (modelData.urgency === NotificationUrgency.Low ? Color.outline : Color.tertiary)
+            readonly property color urgencyColor: modelData.urgency === NotificationUrgency.Critical ? Colors.primary : (modelData.urgency === NotificationUrgency.Low ? Colors.outline : Colors.tertiary)
 
             Rectangle {
               anchors.fill: parent
-              color: Color.surfaceContainer
+              color: Colors.surfaceContainer
             }
             Rectangle {
               anchors.left: parent.left
@@ -411,7 +411,7 @@ PanelWindow {
               anchors.leftMargin: 12
               verticalAlignment: Text.AlignVCenter
               text: card.modelData.summary || ""
-              color: Color.surfaceText
+              color: Colors.surfaceText
               size: NText.Size.BodySm
               elide: Text.ElideRight
             }
@@ -422,7 +422,7 @@ PanelWindow {
       Rectangle {
         Layout.fillWidth: true
         height: Tokens.borderDivider
-        color: Color.surfaceContainerHigh
+        color: Colors.surfaceContainerHigh
       }
 
       // Workspaces — 5-up previews. No live window-thumbnail source exists
@@ -435,7 +435,7 @@ PanelWindow {
         NText {
           tracking: true
           text: "WORKSPACES"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.LabelXs
         }
 
@@ -460,8 +460,8 @@ PanelWindow {
                 chamferSize: Tokens.chamferIcon
                 cutTopRight: true
                 cutBottomLeft: true
-                fillColor: cell.modelData.active ? Color.primaryContainer : Color.surfaceContainer
-                strokeColor: Color.outlineVariant
+                fillColor: cell.modelData.active ? Colors.primaryContainer : Colors.surfaceContainer
+                strokeColor: Colors.outlineVariant
                 strokeWidth: Tokens.borderModule
               }
               Rectangle {
@@ -470,13 +470,13 @@ PanelWindow {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 height: 2
-                color: Color.primary
+                color: Colors.primary
               }
 
               NText {
                 anchors.centerIn: parent
                 text: String(cell.modelData.wsId)
-                color: cell.modelData.active ? Color.primaryContainerText : (cell.modelData.occupied ? Color.surfaceText : Color.disabledText)
+                color: cell.modelData.active ? Colors.primaryContainerText : (cell.modelData.occupied ? Colors.surfaceText : Colors.disabledText)
               }
 
               HoverHandler {

@@ -58,8 +58,8 @@ Item {
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: root.grouped ? Color.alpha(Color.primary, hover.hovered ? 0.16 : 0) : Color.alpha(hover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer, root.effectiveOpacity)
-    strokeColor: root.attention ? Color.tertiary : Color.outlineVariant
+    fillColor: root.grouped ? Colors.alpha(Colors.primary, hover.hovered ? 0.16 : 0) : Colors.alpha(hover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, root.effectiveOpacity)
+    strokeColor: root.attention ? Colors.tertiary : Colors.outlineVariant
     strokeWidth: root.grouped && !root.attention ? 0 : Tokens.borderModule
   }
 
@@ -78,7 +78,7 @@ Item {
     elide: Text.ElideRight
     size: NText.Size.LabelXs
     tracking: true
-    color: Color.surfaceTextMuted
+    color: Colors.surfaceTextMuted
     // Clipped by the parent while collapsing rather than popping out.
     visible: root.revealed
     opacity: root.revealed ? 1 : 0

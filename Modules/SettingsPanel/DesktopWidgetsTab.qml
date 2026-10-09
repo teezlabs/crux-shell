@@ -53,8 +53,8 @@ NScrollView {
           chamferSize: Tokens.chamferIcon
           cutTopRight: true
           cutBottomLeft: true
-          fillColor: resetWeatherHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-          strokeColor: Color.outline
+          fillColor: resetWeatherHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
+          strokeColor: Colors.outline
           strokeWidth: Tokens.borderModule
         }
 
@@ -62,7 +62,7 @@ NScrollView {
           id: resetWeatherLabel
           anchors.centerIn: parent
           text: "Reset position"
-          color: Color.surfaceText
+          color: Colors.surfaceText
           size: NText.Size.BodySm
         }
 
@@ -103,8 +103,8 @@ NScrollView {
           chamferSize: Tokens.chamferIcon
           cutTopRight: true
           cutBottomLeft: true
-          fillColor: resetMediaHover.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-          strokeColor: Color.outline
+          fillColor: resetMediaHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
+          strokeColor: Colors.outline
           strokeWidth: Tokens.borderModule
         }
 
@@ -112,7 +112,7 @@ NScrollView {
           id: resetMediaLabel
           anchors.centerIn: parent
           text: "Reset position"
-          color: Color.surfaceText
+          color: Colors.surfaceText
           size: NText.Size.BodySm
         }
 

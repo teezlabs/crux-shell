@@ -38,7 +38,7 @@ Item {
       anchors.centerIn: parent
       width: 12
       height: 13
-      readonly property color strokeColor: Color.surfaceText
+      readonly property color strokeColor: Colors.surfaceText
       onStrokeColorChanged: requestPaint()
       onPaint: {
         var ctx = getContext("2d");
@@ -75,7 +75,7 @@ Item {
       width: 5
       height: 5
       radius: 0
-      color: Color.tertiary
+      color: Colors.tertiary
     }
   }
 }

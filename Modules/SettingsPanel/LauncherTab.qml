@@ -29,7 +29,7 @@ NScrollView {
       }
       NText {
         text: "Off = plain substring search"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -42,7 +42,7 @@ NScrollView {
       }
       NText {
         text: "Empty-query list only — a real search still sorts by match quality"
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -73,7 +73,7 @@ NScrollView {
 
       NText {
         text: "Typing this first runs the rest as a shell command (sh -c) instead of searching apps. Empty disables it."
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
@@ -100,7 +100,7 @@ NScrollView {
 
     NText {
       text: "Trims how many of cliphist's own entries are shown/kept in the popup — doesn't touch cliphist's own database or run a wipe."
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true

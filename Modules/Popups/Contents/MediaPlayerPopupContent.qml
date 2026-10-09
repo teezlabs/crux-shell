@@ -68,8 +68,8 @@ ColumnLayout {
         chamferSize: Tokens.chamferModule
         cutTopRight: true
         cutBottomLeft: true
-        fillColor: Color.surfaceContainer
-        strokeColor: Color.outline
+        fillColor: Colors.surfaceContainer
+        strokeColor: Colors.outline
         strokeWidth: Tokens.borderModule
       }
 
@@ -92,7 +92,7 @@ ColumnLayout {
         onPaint: {
           var ctx = getContext("2d");
           ctx.reset();
-          ctx.strokeStyle = Color.surfaceContainerHigh;
+          ctx.strokeStyle = Colors.surfaceContainerHigh;
           ctx.lineWidth = 2;
           for (var x = -height; x < width; x += 10) {
             ctx.beginPath();
@@ -109,7 +109,7 @@ ColumnLayout {
         visible: !root.activePlayer || root.activePlayer.trackArtUrl === ""
         text: "ALBUM\nART"
         horizontalAlignment: Text.AlignHCenter
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
       }
     }
@@ -121,26 +121,26 @@ ColumnLayout {
       NText {
         tracking: true
         text: root.activePlayer ? root.activePlayer.identity.toUpperCase() : ""
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.LabelXs
       }
       NText {
         Layout.fillWidth: true
         text: root.activePlayer ? root.activePlayer.trackTitle : ""
-        color: Color.surfaceText
+        color: Colors.surfaceText
         size: NText.Size.BodyLg
         font.weight: Font.DemiBold
         elide: Text.ElideRight
       }
       NText {
         text: root.activePlayer ? root.activePlayer.trackArtist : ""
-        color: Color.surfaceText
+        color: Colors.surfaceText
       }
       NText {
         tracking: true
         visible: root.activePlayer && root.activePlayer.trackAlbum !== ""
         text: root.activePlayer ? root.activePlayer.trackAlbum : ""
-        color: Color.labelText
+        color: Colors.labelText
         size: NText.Size.Caption
       }
     }
@@ -152,8 +152,8 @@ ColumnLayout {
     cellHeight: Tokens.meterMediaSeekCellHeight
     value: root.length > 0 ? (root.position / root.length) * 100 : 0
     interactive: !!root.activePlayer && root.activePlayer.canSeek
-    filledColor: Color.primary
-    emptyColor: Color.surfaceContainerHigh
+    filledColor: Colors.primary
+    emptyColor: Colors.surfaceContainerHigh
     onMoved: pct => {
       if (root.activePlayer && root.activePlayer.canSeek)
         root.activePlayer.position = (pct / 100) * root.length;
@@ -165,7 +165,7 @@ ColumnLayout {
 
     NText {
       text: root.fmtTime(root.position)
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.Caption
     }
     Item {
@@ -173,7 +173,7 @@ ColumnLayout {
     }
     NText {
       text: "-" + root.fmtTime(root.length - root.position)
-      color: Color.labelText
+      color: Colors.labelText
       size: NText.Size.Caption
     }
   }

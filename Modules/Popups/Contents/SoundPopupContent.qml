@@ -40,7 +40,7 @@ ColumnLayout {
   NText {
     tracking: true
     text: "SOUND"
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.LabelXs
     font.weight: Font.DemiBold
   }
@@ -58,15 +58,15 @@ ColumnLayout {
         chamferSize: Tokens.chamferIcon
         cutTopRight: true
         cutBottomLeft: true
-        fillColor: hoverMute.hovered ? Color.surfaceContainerHigh : Color.surfaceContainer
-        strokeColor: root.muted ? Color.alpha(Color.error, Tokens.destructiveBorderAlpha) : Color.outline
+        fillColor: hoverMute.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
+        strokeColor: root.muted ? Colors.alpha(Colors.error, Tokens.destructiveBorderAlpha) : Colors.outline
         strokeWidth: Tokens.borderModule
       }
 
       NText {
         anchors.centerIn: parent
         text: root.muted ? "×" : "))"
-        color: root.muted ? Color.error : Color.surfaceText
+        color: root.muted ? Colors.error : Colors.surfaceText
         size: NText.Size.BodySm
       }
 
@@ -87,14 +87,14 @@ ColumnLayout {
       cellHeight: Tokens.meterControlCenterCellHeight
       value: root.muted ? 0 : root.volume * 100
       interactive: true
-      filledColor: Color.primary
-      emptyColor: Color.surfaceContainerHigh
+      filledColor: Colors.primary
+      emptyColor: Colors.surfaceContainerHigh
       onMoved: pct => root.setVolume(pct)
     }
 
     NText {
       text: root.muted ? "—" : Math.round(root.volume * 100) + "%"
-      color: root.muted ? Color.error : Color.labelText
+      color: root.muted ? Colors.error : Colors.labelText
       size: NText.Size.BodySm
       Layout.preferredWidth: 34
     }
@@ -103,7 +103,7 @@ ColumnLayout {
   NText {
     tracking: true
     text: "OUTPUT"
-    color: Color.labelText
+    color: Colors.labelText
     size: NText.Size.LabelXs
     Layout.topMargin: 4
   }
@@ -121,7 +121,7 @@ ColumnLayout {
         Layout.fillWidth: true
         height: 32
         readonly property bool isDefault: root.sink && modelData.id === root.sink.id
-        color: sinkRow.isDefault ? Color.primaryContainer : (hoverSink.hovered ? Color.surfaceContainerHigh : "transparent")
+        color: sinkRow.isDefault ? Colors.primaryContainer : (hoverSink.hovered ? Colors.surfaceContainerHigh : "transparent")
 
         RowLayout {
           anchors.fill: parent
@@ -130,13 +130,13 @@ ColumnLayout {
 
           Text {
             text: sinkRow.isDefault ? "●" : "○"
-            color: sinkRow.isDefault ? Color.primary : Color.labelText
+            color: sinkRow.isDefault ? Colors.primary : Colors.labelText
             font.pixelSize: Tokens.bodySmSize
           }
 
           NText {
             text: sinkRow.modelData.description || sinkRow.modelData.name || ""
-            color: sinkRow.isDefault ? Color.primaryContainerText : Color.surfaceText
+            color: sinkRow.isDefault ? Colors.primaryContainerText : Colors.surfaceText
             size: NText.Size.BodySm
             elide: Text.ElideRight
             Layout.fillWidth: true

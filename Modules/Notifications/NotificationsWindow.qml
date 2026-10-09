@@ -87,7 +87,7 @@ PanelWindow {
         }
 
         readonly property int urgencyLevel: modelData.urgency
-        readonly property color urgencyColor: urgencyLevel === NotificationUrgency.Critical ? Color.primary : (urgencyLevel === NotificationUrgency.Low ? Color.outline : Color.tertiary)
+        readonly property color urgencyColor: urgencyLevel === NotificationUrgency.Critical ? Colors.primary : (urgencyLevel === NotificationUrgency.Low ? Colors.outline : Colors.tertiary)
 
         Timer {
           readonly property int _urgencySec: card.urgencyLevel === NotificationUrgency.Critical ? Settings.data.notifications.criticalUrgencyDurationSec : (card.urgencyLevel === NotificationUrgency.Low ? Settings.data.notifications.lowUrgencyDurationSec : Settings.data.notifications.normalUrgencyDurationSec)
@@ -106,8 +106,8 @@ PanelWindow {
           chamferSize: Tokens.chamferModule
           cutTopRight: true
           cutBottomLeft: true
-          fillColor: Color.alpha(Color.surfaceContainer, Settings.data.notifications.backgroundOpacity)
-          strokeColor: Color.outlineVariant
+          fillColor: Colors.alpha(Colors.surfaceContainer, Settings.data.notifications.backgroundOpacity)
+          strokeColor: Colors.outlineVariant
           strokeWidth: Tokens.borderModule
           shadow: true
           shadowBlur: Tokens.shadowBlurCard
@@ -139,7 +139,7 @@ PanelWindow {
             NText {
               tracking: true
               text: (card.modelData.appName || "").toUpperCase()
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.LabelXs
             }
             Item {
@@ -147,7 +147,7 @@ PanelWindow {
             }
             NText {
               text: "NOW"
-              color: Color.labelText
+              color: Colors.labelText
               size: NText.Size.LabelXs
             }
           }
@@ -155,7 +155,7 @@ PanelWindow {
           NText {
             Layout.fillWidth: true
             text: card.modelData.summary || ""
-            color: Color.surfaceText
+            color: Colors.surfaceText
             size: NText.Size.BodySm
             font.weight: Font.DemiBold
             elide: Text.ElideRight
@@ -165,7 +165,7 @@ PanelWindow {
             Layout.fillWidth: true
             visible: (card.modelData.body || "") !== ""
             text: card.modelData.body || ""
-            color: Color.surfaceTextMuted
+            color: Colors.surfaceTextMuted
             size: NText.Size.BodySm
             wrapMode: Text.WordWrap
             maximumLineCount: 3
@@ -186,10 +186,10 @@ PanelWindow {
                 required property var modelData
                 required property int index
                 readonly property bool isPrimary: index === 0
-                readonly property color tint: isPrimary ? Color.primary : Color.labelText
+                readonly property color tint: isPrimary ? Colors.primary : Colors.labelText
                 Layout.preferredHeight: 26
                 Layout.fillWidth: true
-                color: actHover.hovered ? Color.alpha(Color.primary, 0.14) : "transparent"
+                color: actHover.hovered ? Colors.alpha(Colors.primary, 0.14) : "transparent"
 
                 Rectangle {
                   visible: actionCell.isPrimary
@@ -241,10 +241,10 @@ PanelWindow {
             Rectangle {
               id: dismissCell
               readonly property bool isPrimary: (card.modelData.actions || []).length === 0
-              readonly property color tint: isPrimary ? Color.error : Color.labelText
+              readonly property color tint: isPrimary ? Colors.error : Colors.labelText
               Layout.preferredHeight: 26
               Layout.fillWidth: true
-              color: dismissHover.hovered ? Color.alpha(Color.error, 0.14) : "transparent"
+              color: dismissHover.hovered ? Colors.alpha(Colors.error, 0.14) : "transparent"
 
               Rectangle {
                 visible: dismissCell.isPrimary
@@ -300,7 +300,7 @@ PanelWindow {
       Layout.fillWidth: true
       Layout.preferredHeight: 28
       visible: root.notifications.length > 0
-      color: Color.surfaceContainerLow
+      color: Colors.surfaceContainerLow
 
       RowLayout {
         anchors.fill: parent
@@ -310,7 +310,7 @@ PanelWindow {
           tracking: true
           visible: root.earlierCount > 0
           text: root.earlierCount + " EARLIER"
-          color: Color.labelText
+          color: Colors.labelText
           size: NText.Size.LabelXs
         }
         Item {
@@ -319,7 +319,7 @@ PanelWindow {
         NText {
           tracking: true
           text: "CLEAR ALL"
-          color: Color.primary
+          color: Colors.primary
           size: NText.Size.LabelXs
 
           HoverHandler {

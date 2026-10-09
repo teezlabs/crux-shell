@@ -21,8 +21,8 @@ Item {
     chamferSize: Tokens.chamferModule
     cutTopRight: true
     cutBottomLeft: true
-    fillColor: Color.surfaceContainer
-    strokeColor: Color.outline
+    fillColor: Colors.surfaceContainer
+    strokeColor: Colors.outline
     strokeWidth: Tokens.borderModule
     shadow: true
     shadowBlur: Tokens.shadowBlurCard

@@ -85,7 +85,7 @@ Item {
       anchors.centerIn: parent
       width: 16
       height: 14
-      readonly property color drawColor: root.ethernetConnected ? Color.primary : Color.outlineVariant
+      readonly property color drawColor: root.ethernetConnected ? Colors.primary : Colors.outlineVariant
       onDrawColorChanged: requestPaint()
       onPaint: {
         var ctx = getContext("2d");

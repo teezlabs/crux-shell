@@ -80,7 +80,7 @@ Item {
       anchors.centerIn: parent
       width: 14
       height: 14
-      readonly property color drawColor: root.sessionPercent > 0.85 ? Color.error : Color.surfaceText
+      readonly property color drawColor: root.sessionPercent > 0.85 ? Colors.error : Colors.surfaceText
       onDrawColorChanged: requestPaint()
       onPaint: {
         var ctx = getContext("2d");

@@ -136,7 +136,7 @@ Item {
     y: 0
     x: (root.cutTopLeft ? root.chamferSize : 0) + root.strokeWidth
     width: Math.max(0, root.width - x - (root.cutTopRight ? root.chamferSize : 0) - root.strokeWidth)
-    color: Color.alpha(Color.surfaceText, root.rimOpacity)
+    color: Colors.alpha(Colors.surfaceText, root.rimOpacity)
     z: 1
   }
 

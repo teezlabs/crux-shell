@@ -53,7 +53,7 @@ Item {
       StatText {
         label: "MIC"
         value: root.muted ? "—" : String(Math.round(root.volume * 100))
-        valueColor: root.muted ? Color.error : Color.surfaceText
+        valueColor: root.muted ? Colors.error : Colors.surfaceText
       }
     }
 
@@ -68,7 +68,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: root.muted ? "—" : String(Math.round(root.volume * 100))
-          color: root.muted ? Color.error : Color.surfaceText
+          color: root.muted ? Colors.error : Colors.surfaceText
           size: NText.Size.LabelXs
         }
         NText {
@@ -76,7 +76,7 @@ Item {
           width: 24
           horizontalAlignment: Text.AlignHCenter
           text: "MIC"
-          color: Color.labelText
+          color: Colors.labelText
           font.pixelSize: Tokens.labelXsSize - 1
           font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
         }
