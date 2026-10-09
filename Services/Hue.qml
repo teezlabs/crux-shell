@@ -210,6 +210,8 @@ Singleton {
 
       if (request.status !== 200) {
         root.groupsError = "Failed to fetch rooms/zones.";
+        if (request.status === 0 && retryTimer.attempts++ < 12)
+          retryTimer.restart();
         return;
       }
 
@@ -359,6 +361,18 @@ Singleton {
       root.groups = arr;
     }
   }
+
+  // Settings load async, so paired flips true after startup; network may lag too.
+  onPairedChanged: if (paired) fetchGroups()
+
+  Timer {
+    id: retryTimer
+    interval: 5000
+    property int attempts: 0
+    onTriggered: root.fetchGroups()
+  }
+
+  onGroupsDataChanged: retryTimer.attempts = 0
 
   Component.onCompleted: {
     if (root.paired)
