@@ -6,7 +6,7 @@ import qs.Services
 
 // Power profile quick toggle: cycles power-saver -> balanced ->
 // performance. Unavailable where no power-profiles-daemon is running.
-CcCircleToggle {
+CcToggleButton {
   id: tile
   signal expandRequested(string which)
 

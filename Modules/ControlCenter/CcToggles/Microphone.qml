@@ -7,7 +7,7 @@ import qs.Modules.ControlCenter
 import qs.Widgets
 
 // Microphone mute quick toggle.
-CcCircleToggle {
+CcToggleButton {
   id: tile
   signal expandRequested(string which)
 

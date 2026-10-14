@@ -3,7 +3,7 @@ import qs.Commons
 import qs.Modules.ControlCenter
 
 // Silences notification toasts; history still records them.
-CcCircleToggle {
+CcToggleButton {
   id: tile
 
   active: Settings.data.notifications.doNotDisturb

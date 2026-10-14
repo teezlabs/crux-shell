@@ -250,17 +250,17 @@ ColumnLayout {
     Layout.fillWidth: true
     spacing: 18
 
-    CircularGauge {
+    StatMeter {
       percent: root.cpuPercent
       value: Math.round(root.cpuPercent) + "%"
       label: "CPU"
     }
-    CircularGauge {
+    StatMeter {
       percent: root.memPercent
       value: root.memUsedGb.toFixed(1) + "G"
       label: "MEM"
     }
-    CircularGauge {
+    StatMeter {
       percent: Math.min(100, root.tempC)
       fillColor: Colors.tertiary
       value: Math.round(root.tempC) + "°"
