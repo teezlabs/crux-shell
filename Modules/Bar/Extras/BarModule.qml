@@ -43,12 +43,6 @@ Item {
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
     fillColor: Colors.alpha(root.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, root.effectiveOpacity)
-    strokeColor: Colors.outlineVariant
-    strokeWidth: Tokens.borderModule
-    // Rim only: the bar window is exactly the bar's thickness, so a
-    // shadow has nowhere to fall.
-    rimLight: true
-    rimOpacity: Tokens.rimOpacityCard
   }
 
   // Hover feedback for the grouped case, where the chamfer above is gone.

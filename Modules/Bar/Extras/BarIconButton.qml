@@ -34,13 +34,7 @@ Item {
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: root.grouped ? Colors.alpha(Colors.primary, hoverHandler.hovered ? 0.16 : 0) : Colors.alpha(hoverHandler.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, root.effectiveOpacity)
-    strokeColor: root.attention ? Colors.tertiary : Colors.outlineVariant
-    strokeWidth: root.grouped && !root.attention ? 0 : Tokens.borderModule
-    // Rim only: the bar window is exactly the bar's thickness, so a
-    // shadow has nowhere to fall.
-    rimLight: !root.grouped
-    rimOpacity: Tokens.rimOpacityCard
+    fillColor: root.attention ? Colors.alpha(Colors.tertiary, hoverHandler.hovered ? 0.26 : 0.18) : (root.grouped ? Colors.alpha(Colors.primary, hoverHandler.hovered ? 0.16 : 0) : Colors.alpha(hoverHandler.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, root.effectiveOpacity))
   }
 
   Item {

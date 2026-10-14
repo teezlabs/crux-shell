@@ -171,21 +171,12 @@ Item {
     x: root.barRight ? root.width - root.cardWidth : 0
     y: root.barBottom ? root.height - root.cardHeight : 0
     chamferSize: Tokens.chamferPanel
-    // Flush against the bar, so cut only the two corners on the far side
-    // from it, and skip the stroke on the near side entirely — the card
-    // reads as growing out of the bar instead of floating as a fully
-    // separate bordered card.
+    // Fill only, no outline; cut only the two corners away from the bar.
     cutTopLeft: root.barBottom || root.barRight
     cutTopRight: root.barBottom || root.barLeft
     cutBottomLeft: root.barTop || root.barRight
     cutBottomRight: root.barTop || root.barLeft
-    omitStrokeSide: root.barBottom ? "bottom" : (root.barLeft ? "left" : (root.barRight ? "right" : "top"))
     fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
-    strokeColor: Colors.outline
-    strokeWidth: Tokens.borderPanel
-    // Rim only, no shadow: `body` clips for the collapse animation, so a
-    // shadow would be cut off flush at the card's own edge.
-    rimLight: root.barLeft || root.barRight
   }
 
   // Swallow clicks on the card itself so they don't fall through to the

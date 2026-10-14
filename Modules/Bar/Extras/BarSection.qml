@@ -164,10 +164,6 @@ Item {
     // surfaceContainer is too close to read as a raised plinth once the
     // strip background is on.
     fillColor: Colors.alpha(Colors.surfaceContainerHigh, Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity)
-    strokeColor: Colors.outlineVariant
-    strokeWidth: Tokens.borderModule
-    rimLight: true
-    rimOpacity: Tokens.rimOpacityCard
   }
 
   // Grid rather than Row/Column so one type covers both bar orientations —
