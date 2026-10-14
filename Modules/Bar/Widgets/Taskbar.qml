@@ -106,8 +106,8 @@ Item {
             cutTopRight: true
             cutBottomLeft: true
             fillColor: taskDelegate.active ? Colors.primaryContainer : (hoverHandler.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer)
-            strokeColor: taskDelegate.active ? Colors.primary : Colors.outlineVariant
-            strokeWidth: Tokens.borderModule
+            strokeColor: Colors.primary
+            strokeWidth: taskDelegate.active ? Tokens.borderModule : 0
           }
 
           NText {

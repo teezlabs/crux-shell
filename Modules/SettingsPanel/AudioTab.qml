@@ -257,9 +257,7 @@ NScrollView {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: playerPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
-            strokeColor: playerPill.selected ? Colors.primary : Colors.outline
-            strokeWidth: Tokens.borderModule
+            fillColor: playerPill.selected ? Colors.primary : Colors.surfaceContainer
           }
 
           NText {
@@ -267,7 +265,7 @@ NScrollView {
             id: playerLabel
             anchors.centerIn: parent
             text: playerPill.modelData.label
-            color: playerPill.selected ? Colors.primaryContainerText : Colors.surfaceText
+            color: playerPill.selected ? Colors.primaryText : Colors.surfaceText
             size: NText.Size.LabelXs
           }
 

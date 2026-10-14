@@ -105,8 +105,8 @@ NScrollView {
                 cutTopRight: true
                 cutBottomLeft: true
                 fillColor: Colors.surfaceContainer
-                strokeColor: thumb.isCurrent ? Colors.primary : (thumbHover.hovered ? Colors.alpha(Colors.primary, 0.5) : Colors.outline)
-                strokeWidth: thumb.isCurrent ? 2 : Tokens.borderModule
+                strokeColor: Colors.primary
+                strokeWidth: thumb.isCurrent ? 2 : 0
               }
 
               Image {
@@ -245,9 +245,7 @@ NScrollView {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: orderPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
-              strokeColor: orderPill.selected ? Colors.primary : Colors.outline
-              strokeWidth: Tokens.borderModule
+              fillColor: orderPill.selected ? Colors.primary : Colors.surfaceContainer
             }
 
             NText {
@@ -255,7 +253,7 @@ NScrollView {
               id: orderLabel
               anchors.centerIn: parent
               text: orderPill.modelData.label
-              color: orderPill.selected ? Colors.primaryContainerText : Colors.surfaceText
+              color: orderPill.selected ? Colors.primaryText : Colors.surfaceText
               size: NText.Size.LabelXs
             }
 
@@ -292,8 +290,8 @@ NScrollView {
             cutTopRight: true
             cutBottomLeft: true
             fillColor: Colors.surface
-            strokeColor: whApiKeyInput.activeFocus ? Colors.primary : Colors.outline
-            strokeWidth: Tokens.borderModule
+            strokeColor: Colors.primary
+            strokeWidth: whApiKeyInput.activeFocus ? Tokens.borderModule : 0
           }
           TextInput {
             id: whApiKeyInput

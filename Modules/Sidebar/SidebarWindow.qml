@@ -242,8 +242,6 @@ PanelWindow {
               cutTopRight: true
               cutBottomLeft: true
               fillColor: Colors.surfaceContainer
-              strokeColor: Colors.outline
-              strokeWidth: Tokens.borderModule
             }
 
             Image {
@@ -461,8 +459,6 @@ PanelWindow {
                 cutTopRight: true
                 cutBottomLeft: true
                 fillColor: cell.modelData.active ? Colors.primaryContainer : Colors.surfaceContainer
-                strokeColor: Colors.outlineVariant
-                strokeWidth: Tokens.borderModule
               }
               Rectangle {
                 visible: cell.modelData.active

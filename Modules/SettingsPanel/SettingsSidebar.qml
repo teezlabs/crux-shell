@@ -51,8 +51,8 @@ ColumnLayout {
           cutTopRight: true
           cutBottomLeft: true
           fillColor: Colors.surfaceContainer
-          strokeColor: searchInput.activeFocus ? Colors.primary : Colors.outline
-          strokeWidth: Tokens.borderModule
+          strokeColor: Colors.primary
+          strokeWidth: searchInput.activeFocus ? Tokens.borderModule : 0
         }
 
         TextInput {

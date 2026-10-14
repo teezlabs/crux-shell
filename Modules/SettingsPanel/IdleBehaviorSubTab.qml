@@ -182,8 +182,8 @@ NScrollView {
       cutTopRight: true
       cutBottomLeft: true
       fillColor: Colors.surface
-      strokeColor: input.activeFocus ? Colors.primary : Colors.outline
-      strokeWidth: Tokens.borderModule
+      strokeColor: Colors.primary
+      strokeWidth: input.activeFocus ? Tokens.borderModule : 0
     }
 
     TextInput {

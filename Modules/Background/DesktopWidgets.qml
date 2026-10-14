@@ -140,8 +140,6 @@ Variants {
         cutBottomLeft: false
         cutBottomRight: false
         fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
-        strokeColor: Colors.outline
-        strokeWidth: Tokens.borderPanel
       }
 
       ColumnLayout {
@@ -274,8 +272,6 @@ Variants {
         cutBottomLeft: false
         cutBottomRight: false
         fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
-        strokeColor: Colors.outline
-        strokeWidth: Tokens.borderPanel
       }
 
       ColumnLayout {
@@ -300,8 +296,6 @@ Variants {
               cutTopRight: true
               cutBottomLeft: true
               fillColor: Colors.surfaceContainer
-              strokeColor: Colors.outline
-              strokeWidth: Tokens.borderModule
             }
 
             Image {

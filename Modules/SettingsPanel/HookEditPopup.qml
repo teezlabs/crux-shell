@@ -73,8 +73,6 @@ PanelWindow {
       cutTopRight: true
       cutBottomLeft: true
       fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
-      strokeColor: Colors.outline
-      strokeWidth: Tokens.borderPanel
     }
 
     MouseArea {
@@ -147,8 +145,6 @@ PanelWindow {
             cutTopRight: true
             cutBottomLeft: true
             fillColor: testHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
-            strokeColor: Colors.outline
-            strokeWidth: Tokens.borderModule
           }
 
           NText {
@@ -184,8 +180,6 @@ PanelWindow {
             cutTopRight: true
             cutBottomLeft: true
             fillColor: Colors.surfaceContainer
-            strokeColor: Colors.outline
-            strokeWidth: Tokens.borderModule
           }
 
           NText {

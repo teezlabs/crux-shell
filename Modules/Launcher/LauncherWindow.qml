@@ -150,10 +150,7 @@ NPanelWindow {
       cutBottomLeft: true
       cutBottomRight: false
       fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
-      strokeColor: Colors.outline
-      strokeWidth: Tokens.borderPanel
       shadow: true
-      rimLight: true
     }
 
     MouseArea {
@@ -337,9 +334,7 @@ NPanelWindow {
                 chamferSize: Tokens.chamferIcon
                 cutTopRight: true
                 cutBottomLeft: true
-                fillColor: rowItem.selected ? Colors.primary : "transparent"
-                strokeColor: rowItem.selected ? Colors.primary : Colors.outline
-                strokeWidth: 1
+                fillColor: rowItem.selected ? Colors.primary : Colors.surfaceContainerHigh
               }
 
               // DesktopEntry.icon is a bare icon-theme name, not a path — Quickshell.iconPath() resolves it via the icon theme.

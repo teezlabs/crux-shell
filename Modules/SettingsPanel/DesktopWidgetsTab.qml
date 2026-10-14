@@ -54,8 +54,6 @@ NScrollView {
           cutTopRight: true
           cutBottomLeft: true
           fillColor: resetWeatherHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
-          strokeColor: Colors.outline
-          strokeWidth: Tokens.borderModule
         }
 
         NText {
@@ -104,8 +102,6 @@ NScrollView {
           cutTopRight: true
           cutBottomLeft: true
           fillColor: resetMediaHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
-          strokeColor: Colors.outline
-          strokeWidth: Tokens.borderModule
         }
 
         NText {

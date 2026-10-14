@@ -69,8 +69,6 @@ NScrollView {
               cutTopRight: true
               cutBottomLeft: true
               fillColor: densityHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
-              strokeColor: Colors.outline
-              strokeWidth: Tokens.borderModule
             }
 
             NText {

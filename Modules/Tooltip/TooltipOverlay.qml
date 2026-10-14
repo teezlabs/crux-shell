@@ -100,8 +100,6 @@ PanelWindow {
       cutTopRight: true
       cutBottomLeft: true
       fillColor: Colors.alpha(Colors.surfaceContainerHigh, Tokens.panelOpacity)
-      strokeColor: Colors.outlineVariant
-      strokeWidth: Tokens.borderModule
     }
 
     NText {

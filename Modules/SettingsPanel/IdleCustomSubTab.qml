@@ -105,8 +105,6 @@ NScrollView {
             cutTopRight: true
             cutBottomLeft: true
             fillColor: Colors.surfaceContainerHigh
-            strokeColor: Colors.outline
-            strokeWidth: Tokens.borderModule
           }
 
           ColumnLayout {
@@ -187,8 +185,8 @@ NScrollView {
                   cutTopRight: true
                   cutBottomLeft: true
                   fillColor: Colors.surface
-                  strokeColor: cmdInput.activeFocus ? Colors.primary : Colors.outline
-                  strokeWidth: Tokens.borderModule
+                  strokeColor: Colors.primary
+                  strokeWidth: cmdInput.activeFocus ? Tokens.borderModule : 0
                 }
 
                 TextInput {
@@ -228,8 +226,8 @@ NScrollView {
                   cutTopRight: true
                   cutBottomLeft: true
                   fillColor: Colors.surface
-                  strokeColor: resumeInput.activeFocus ? Colors.primary : Colors.outline
-                  strokeWidth: Tokens.borderModule
+                  strokeColor: Colors.primary
+                  strokeWidth: resumeInput.activeFocus ? Tokens.borderModule : 0
                 }
 
                 TextInput {
