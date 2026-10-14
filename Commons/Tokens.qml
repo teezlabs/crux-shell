@@ -59,6 +59,9 @@ QtObject {
   readonly property int spaceLg: 12
   readonly property int spaceXl: 16
 
+  // Height of one row in a popup list (devices, networks, sinks, clips).
+  readonly property int rowHeight: 34
+
   // §4 Geometry — chamfer sizes, one per tier.
   readonly property int chamferPanel: 14 // launcher, control center, sidebar, media, calendar
   readonly property int chamferModule: 9 // bar module, OSD, power tile (spec range 8-10)

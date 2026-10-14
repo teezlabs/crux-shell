@@ -111,28 +111,32 @@ ColumnLayout {
     Repeater {
       model: root.allSinks
 
-      delegate: Rectangle {
+      delegate: Item {
         id: sinkRow
         required property var modelData
         Layout.fillWidth: true
-        height: 32
+        height: Tokens.rowHeight
         readonly property bool isDefault: root.sink && modelData.id === root.sink.id
-        color: sinkRow.isDefault ? Colors.primaryContainer : (hoverSink.hovered ? Colors.surfaceContainerHigh : "transparent")
+
+        PopupRowBackground {
+          hovered: hoverSink.hovered
+          selected: sinkRow.isDefault
+        }
 
         RowLayout {
           anchors.fill: parent
           anchors.leftMargin: Tokens.spaceMd
           anchors.rightMargin: Tokens.spaceMd
 
-          Text {
+          NText {
             text: sinkRow.isDefault ? "●" : "○"
             color: sinkRow.isDefault ? Colors.primary : Colors.labelText
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
           }
 
           NText {
             text: sinkRow.modelData.description || sinkRow.modelData.name || ""
-            color: sinkRow.isDefault ? Colors.primaryContainerText : Colors.surfaceText
+            color: Colors.surfaceText
             size: NText.Size.BodySm
             elide: Text.ElideRight
             Layout.fillWidth: true

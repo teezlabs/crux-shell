@@ -149,11 +149,10 @@ ColumnLayout {
       id: rowItem
       required property var modelData
       width: ListView.view.width
-      height: 32
+      height: Tokens.rowHeight
 
-      Rectangle {
-        anchors.fill: parent
-        color: rowHover.hovered ? Colors.surfaceContainerHigh : "transparent"
+      PopupRowBackground {
+        hovered: rowHover.hovered
       }
 
       RowLayout {

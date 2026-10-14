@@ -182,7 +182,7 @@ ColumnLayout {
       id: rowItem
       required property var modelData
       width: ListView.view.width
-      height: modelData.header !== undefined ? 22 : 36
+      height: modelData.header !== undefined ? 22 : Tokens.rowHeight
 
       NText {
         tracking: true
@@ -193,10 +193,10 @@ ColumnLayout {
         anchors.verticalCenter: parent.verticalCenter
       }
 
-      Rectangle {
+      PopupRowBackground {
         visible: rowItem.modelData.device !== undefined
-        anchors.fill: parent
-        color: rowHover.hovered ? Colors.surfaceContainerHigh : "transparent"
+        hovered: rowHover.hovered
+        selected: !!(rowItem.modelData.device && rowItem.modelData.device.connected)
       }
 
       RowLayout {

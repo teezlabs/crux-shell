@@ -113,28 +113,32 @@ ColumnLayout {
     Repeater {
       model: root.allSources
 
-      delegate: Rectangle {
+      delegate: Item {
         id: sourceRow
         required property var modelData
         Layout.fillWidth: true
-        height: 32
+        height: Tokens.rowHeight
         readonly property bool isDefault: root.source && modelData.id === root.source.id
-        color: sourceRow.isDefault ? Colors.primaryContainer : (hoverSource.hovered ? Colors.surfaceContainerHigh : "transparent")
+
+        PopupRowBackground {
+          hovered: hoverSource.hovered
+          selected: sourceRow.isDefault
+        }
 
         RowLayout {
           anchors.fill: parent
           anchors.leftMargin: Tokens.spaceMd
           anchors.rightMargin: Tokens.spaceMd
 
-          Text {
+          NText {
             text: sourceRow.isDefault ? "●" : "○"
             color: sourceRow.isDefault ? Colors.primary : Colors.labelText
-            font.pixelSize: Tokens.bodySmSize
+            size: NText.Size.BodySm
           }
 
           NText {
             text: sourceRow.modelData.description || sourceRow.modelData.name || ""
-            color: sourceRow.isDefault ? Colors.primaryContainerText : Colors.surfaceText
+            color: Colors.surfaceText
             size: NText.Size.BodySm
             elide: Text.ElideRight
             Layout.fillWidth: true

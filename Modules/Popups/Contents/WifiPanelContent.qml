@@ -446,7 +446,7 @@ ColumnLayout {
       required property var modelData
       required property int index
       width: ListView.view.width
-      height: rowItem.modelData.ssid === root.passwordSsid ? 76 : 36
+      height: rowItem.modelData.ssid === root.passwordSsid ? Tokens.rowHeight + 40 : Tokens.rowHeight
 
       Column {
         anchors.fill: parent
@@ -454,11 +454,11 @@ ColumnLayout {
 
         Item {
           width: parent.width
-          height: 36
+          height: Tokens.rowHeight
 
-          Rectangle {
-            anchors.fill: parent
-            color: rowHover.hovered ? Colors.surfaceContainerHigh : "transparent"
+          PopupRowBackground {
+            hovered: rowHover.hovered
+            selected: !!rowItem.modelData.connected
           }
 
           RowLayout {
