@@ -31,19 +31,16 @@ Item {
   readonly property bool destructive: root.variant === "destructive"
 
   readonly property color fill: {
-    if (hover.hovered)
-      return Colors.surfaceContainerHigh;
-    return root.accent ? Colors.primaryContainer : Colors.surfaceContainer;
-  }
-  readonly property color stroke: {
+    if (root.accent)
+      return hover.hovered ? Qt.lighter(Colors.primary, 1.08) : Colors.primary;
     if (root.destructive)
-      return Colors.alpha(Colors.error, Tokens.destructiveBorderAlpha);
-    return root.accent ? Colors.primary : Colors.outline;
+      return Colors.alpha(Colors.error, hover.hovered ? 0.24 : 0.14);
+    return hover.hovered ? Qt.lighter(Colors.surfaceContainerHigh, 1.3) : Colors.surfaceContainerHigh;
   }
   readonly property color labelColor: {
     if (root.destructive)
       return Colors.error;
-    return root.accent ? Colors.primaryContainerText : Colors.surfaceText;
+    return root.accent ? Colors.primaryText : Colors.surfaceText;
   }
 
   implicitHeight: 30
@@ -58,8 +55,6 @@ Item {
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
     fillColor: root.fill
-    strokeColor: root.stroke
-    strokeWidth: Tokens.borderModule
   }
 
   Row {

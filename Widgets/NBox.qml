@@ -1,13 +1,12 @@
 import QtQuick
 import qs.Commons
 
-// Chamfered group container for a set of fields or buttons. The chamfer
-// tier and the two-opposite-corner convention match every other surface.
+// Chamfered, fill-only group container for a set of fields or buttons.
 Item {
   id: root
 
   property color fillColor: Colors.surfaceContainer
-  property color strokeColor: Colors.outline
+  property color strokeColor: "transparent"
   property int chamferSize: Tokens.chamferModule
   property bool invertChamfer: false
   property real padding: 14
@@ -25,7 +24,7 @@ Item {
     cutBottomLeft: !root.invertChamfer
     fillColor: root.fillColor
     strokeColor: root.strokeColor
-    strokeWidth: Tokens.borderModule
+    strokeWidth: root.strokeColor.a > 0 ? Tokens.borderModule : 0
   }
 
   Item {

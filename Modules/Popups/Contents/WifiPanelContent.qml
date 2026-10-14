@@ -410,16 +410,14 @@ ColumnLayout {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: dnsPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
-            strokeColor: dnsPill.selected ? Colors.primary : Colors.outline
-            strokeWidth: Tokens.borderModule
+            fillColor: dnsPill.selected ? Colors.primary : Colors.surfaceContainerHigh
           }
 
           NText {
             tracking: true
             anchors.centerIn: parent
             text: dnsPill.modelData.toUpperCase()
-            color: dnsPill.selected ? Colors.primaryContainerText : Colors.surfaceText
+            color: dnsPill.selected ? Colors.primaryText : Colors.surfaceText
             size: NText.Size.LabelXs
           }
 
@@ -535,9 +533,9 @@ ColumnLayout {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: Colors.surface
-              strokeColor: pwInput.activeFocus ? Colors.primary : Colors.outline
-              strokeWidth: Tokens.borderModule
+              fillColor: Colors.surfaceContainerHigh
+              strokeColor: Colors.primary
+              strokeWidth: pwInput.activeFocus ? Tokens.borderModule : 0
             }
 
             TextInput {

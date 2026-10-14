@@ -54,9 +54,7 @@ ColumnLayout {
         chamferSize: Tokens.chamferIcon
         cutTopRight: true
         cutBottomLeft: true
-        fillColor: hoverMute.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
-        strokeColor: root.muted ? Colors.alpha(Colors.error, Tokens.destructiveBorderAlpha) : Colors.outline
-        strokeWidth: Tokens.borderModule
+        fillColor: root.muted ? Colors.alpha(Colors.error, hoverMute.hovered ? 0.24 : 0.14) : (hoverMute.hovered ? Qt.lighter(Colors.surfaceContainerHigh, 1.3) : Colors.surfaceContainerHigh)
       }
 
       NText {

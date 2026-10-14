@@ -35,8 +35,6 @@ Item {
     width: parent.width
     height: 4
     color: Colors.surfaceContainerHigh
-    border.color: Colors.outline
-    border.width: Tokens.borderModule
 
     Rectangle {
       width: parent.width * root._ratio

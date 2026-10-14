@@ -144,16 +144,14 @@ ColumnLayout {
           chamferSize: Tokens.chamferIcon
           cutTopRight: true
           cutBottomLeft: true
-          fillColor: profileTile.active ? Colors.primaryContainer : (profileHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer)
-          strokeColor: profileTile.active ? Colors.primary : Colors.outline
-          strokeWidth: Tokens.borderModule
+          fillColor: profileTile.active ? Colors.primary : (profileHover.hovered ? Qt.lighter(Colors.surfaceContainerHigh, 1.3) : Colors.surfaceContainerHigh)
         }
 
         NText {
           tracking: true
           anchors.centerIn: parent
           text: profileTile.modelData.label
-          color: profileTile.active ? Colors.primaryContainerText : Colors.surfaceText
+          color: profileTile.active ? Colors.primaryText : Colors.surfaceText
           size: NText.Size.LabelXs
         }
 

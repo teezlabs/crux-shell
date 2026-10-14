@@ -87,9 +87,7 @@ Flow {
         chamferSize: Tokens.chamferIcon
         cutTopRight: true
         cutBottomLeft: true
-        fillColor: chip.on ? Colors.primaryContainer : (chipHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer)
-        strokeColor: chip.on ? Colors.primary : Colors.outline
-        strokeWidth: Tokens.borderModule
+        fillColor: chip.on ? Colors.primary : (chipHover.hovered ? Qt.lighter(Colors.surfaceContainerHigh, 1.3) : Colors.surfaceContainerHigh)
       }
 
       NText {
@@ -98,7 +96,7 @@ Flow {
         text: root.uppercase ? String(chip.modelData.label).toUpperCase() : chip.modelData.label
         size: NText.Size.LabelXs
         tracking: true
-        color: chip.on ? Colors.primaryContainerText : Colors.surfaceText
+        color: chip.on ? Colors.primaryText : Colors.surfaceText
       }
 
       HoverHandler {
