@@ -76,24 +76,9 @@ ColumnLayout {
       fetchProc.running = true
   }
 
-  RowLayout {
-    Layout.fillWidth: true
-
-    NText {
-      tracking: true
-      text: "CLAUDE CODE"
-      color: Colors.labelText
-      size: NText.Size.LabelXs
-      font.weight: Font.DemiBold
-      Layout.fillWidth: true
-    }
-
-    NText {
-      visible: root.tierLabel !== ""
-      text: root.tierLabel
-      color: Colors.labelText
-      size: NText.Size.Caption
-    }
+  PopupHeader {
+    title: "CLAUDE CODE"
+    meta: root.tierLabel
   }
 
   NText {

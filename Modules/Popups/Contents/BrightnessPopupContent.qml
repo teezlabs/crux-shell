@@ -87,12 +87,8 @@ ColumnLayout {
 
   Component.onCompleted: detectProc.running = true
 
-  NText {
-    tracking: true
-    text: "BRIGHTNESS"
-    color: Colors.labelText
-    size: NText.Size.LabelXs
-    font.weight: Font.DemiBold
+  PopupHeader {
+    title: "BRIGHTNESS"
   }
 
   RowLayout {

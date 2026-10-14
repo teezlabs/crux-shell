@@ -249,7 +249,6 @@ PanelWindow {
       id: systemStatsContent
       anchors.fill: parent
       active: systemStatsCard.shown
-      onRequestClose: systemStatsCard.shown = false
     }
   }
 

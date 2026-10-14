@@ -20,10 +20,6 @@ ColumnLayout {
   // refresh timer.
   property bool active: false
 
-  // Emitted by the header's own close button, since this content has no
-  // window of its own to set visible on directly anymore.
-  signal requestClose
-
   // ---- CPU: aggregate + per-core, delta-based from /proc/stat ----
   property real cpuPercent: 0
   property var coresUsage: []
@@ -244,40 +240,9 @@ ColumnLayout {
   Component.onCompleted: root.refreshStats()
 
   // ---- Header ----
-  RowLayout {
-    Layout.fillWidth: true
-    spacing: 10
-
-    NText {
-      tracking: true
-      text: "SYSTEM STATS"
-      color: Colors.labelText
-      size: NText.Size.LabelXs
-    }
-
-    Item {
-      Layout.fillWidth: true
-    }
-
-    NText {
-      text: "Uptime " + root.uptimeText
-      color: Colors.labelText
-      size: NText.Size.Caption
-    }
-
-    Text {
-      text: "×"
-      color: closeHover.hovered ? Colors.surfaceText : Colors.labelText
-      font.pixelSize: Tokens.bodyLgSize
-
-      HoverHandler {
-        id: closeHover
-        cursorShape: Qt.PointingHandCursor
-      }
-      TapHandler {
-        onTapped: root.requestClose()
-      }
-    }
+  PopupHeader {
+    title: "SYSTEM STATS"
+    meta: "Up " + root.uptimeText
   }
 
   // ---- CPU + MEM + TEMP dials ----

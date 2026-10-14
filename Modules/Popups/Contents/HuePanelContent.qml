@@ -18,24 +18,9 @@ ColumnLayout {
   readonly property var group: Hue.selectedGroup
   readonly property real brightness01: group ? group.brightness01 : 0
 
-  RowLayout {
-    Layout.fillWidth: true
-
-    NText {
-      tracking: true
-      text: "HUE"
-      color: Colors.labelText
-      size: NText.Size.LabelXs
-      font.weight: Font.DemiBold
-      Layout.fillWidth: true
-    }
-
-    NText {
-      visible: root.group !== null
-      text: root.group ? root.group.name : ""
-      color: Colors.labelText
-      size: NText.Size.Caption
-    }
+  PopupHeader {
+    title: "HUE"
+    meta: root.group ? root.group.name : ""
   }
 
   NText {

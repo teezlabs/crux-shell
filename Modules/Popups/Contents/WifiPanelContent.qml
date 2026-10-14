@@ -293,18 +293,8 @@ ColumnLayout {
 
   onWifiNetworkObjectsChanged: syncWifiNetworks()
 
-  RowLayout {
-    Layout.fillWidth: true
-
-    NText {
-      tracking: true
-      text: "WI-FI"
-      color: Colors.labelText
-      size: NText.Size.LabelXs
-      font.weight: Font.DemiBold
-      Layout.fillWidth: true
-    }
-
+  PopupHeader {
+    title: "WI-FI"
     NToggle {
       checked: Networking.wifiEnabled
       onToggled: root.toggleWifi()

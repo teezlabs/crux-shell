@@ -124,29 +124,10 @@ ColumnLayout {
     onExited: root.refresh()
   }
 
-  RowLayout {
-    Layout.fillWidth: true
-
-    NText {
-      tracking: true
-      text: "CLIPBOARD"
-      color: Colors.labelText
-      size: NText.Size.LabelXs
-      font.weight: Font.DemiBold
-      Layout.fillWidth: true
-    }
-
-    NText {
-      tracking: true
-      text: "CLEAR ALL"
-      color: Colors.error
-      size: NText.Size.LabelXs
-      MouseArea {
-        anchors.fill: parent
-        cursorShape: Qt.PointingHandCursor
-        onClicked: wipeProc.running = true
-      }
-    }
+  PopupHeader {
+    title: "CLIPBOARD"
+    action: "CLEAR ALL"
+    onActionTapped: wipeProc.running = true
   }
 
   NText {

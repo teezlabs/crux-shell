@@ -126,18 +126,8 @@ ColumnLayout {
     }
   }
 
-  RowLayout {
-    Layout.fillWidth: true
-
-    NText {
-      tracking: true
-      text: "BLUETOOTH"
-      color: Colors.labelText
-      size: NText.Size.LabelXs
-      font.weight: Font.DemiBold
-      Layout.fillWidth: true
-    }
-
+  PopupHeader {
+    title: "BLUETOOTH"
     NToggle {
       checked: !!(root.adapter && root.adapter.enabled)
       onToggled: root.toggleBluetooth()

@@ -39,12 +39,8 @@ ColumnLayout {
       root.source.audio.muted = false;
   }
 
-  NText {
-    tracking: true
-    text: "MICROPHONE"
-    color: Colors.labelText
-    size: NText.Size.LabelXs
-    font.weight: Font.DemiBold
+  PopupHeader {
+    title: "MICROPHONE"
   }
 
   RowLayout {

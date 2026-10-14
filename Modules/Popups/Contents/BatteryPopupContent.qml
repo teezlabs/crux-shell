@@ -61,12 +61,8 @@ ColumnLayout {
     }
   ]
 
-  NText {
-    tracking: true
-    text: "BATTERY"
-    color: Colors.labelText
-    size: NText.Size.LabelXs
-    font.weight: Font.DemiBold
+  PopupHeader {
+    title: "BATTERY"
   }
 
   RowLayout {

@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell.Services.Mpris
 import qs.Commons
 import qs.Widgets
+import qs.Modules.Popups
 
 // Media player popup content: every control is live MPRIS, gated on the
 // player's own can*/Supported flags. No fabricated "year".
@@ -52,6 +53,11 @@ ColumnLayout {
     var m = Math.floor(seconds / 60);
     var s = Math.floor(seconds % 60);
     return m + ":" + String(s).padStart(2, "0");
+  }
+
+  PopupHeader {
+    title: "MEDIA"
+    meta: root.activePlayer ? root.activePlayer.identity : ""
   }
 
   NText {
@@ -125,12 +131,6 @@ ColumnLayout {
       Layout.fillWidth: true
       spacing: 3
 
-      NText {
-        tracking: true
-        text: root.activePlayer ? root.activePlayer.identity.toUpperCase() : ""
-        color: Colors.labelText
-        size: NText.Size.LabelXs
-      }
       NText {
         Layout.fillWidth: true
         text: root.activePlayer ? root.activePlayer.trackTitle : ""

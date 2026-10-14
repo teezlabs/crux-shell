@@ -51,32 +51,10 @@ ColumnLayout {
     return urgency === NotificationUrgency.Critical ? Colors.primary : (urgency === NotificationUrgency.Low ? Colors.outline : Colors.tertiary);
   }
 
-  RowLayout {
-    Layout.fillWidth: true
-
-    NText {
-      tracking: true
-      text: "NOTIFICATIONS"
-      color: Colors.labelText
-      size: NText.Size.LabelXs
-      font.weight: Font.DemiBold
-      Layout.fillWidth: true
-    }
-
-    NText {
-      tracking: true
-      visible: root.history.length > 0
-      text: "CLEAR ALL"
-      color: Colors.error
-      size: NText.Size.LabelXs
-
-      HoverHandler {
-        cursorShape: Qt.PointingHandCursor
-      }
-      TapHandler {
-        onTapped: Notifs.clearHistory()
-      }
-    }
+  PopupHeader {
+    title: "NOTIFICATIONS"
+    action: root.history.length > 0 ? "CLEAR ALL" : ""
+    onActionTapped: Notifs.clearHistory()
   }
 
   NText {

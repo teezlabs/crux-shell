@@ -37,12 +37,8 @@ ColumnLayout {
       root.sink.audio.muted = false;
   }
 
-  NText {
-    tracking: true
-    text: "SOUND"
-    color: Colors.labelText
-    size: NText.Size.LabelXs
-    font.weight: Font.DemiBold
+  PopupHeader {
+    title: "SOUND"
   }
 
   RowLayout {
