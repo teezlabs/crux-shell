@@ -142,12 +142,15 @@ Item {
     const slack = (sectionRoot.vertical ? p.width - sectionRoot.width : p.height - sectionRoot.height) / 2;
     return Math.max(2, Math.min(7, slack - 1));
   }
-  readonly property real _groupMain: (sectionRoot.vertical ? sectionRoot.height : sectionRoot.width) - sectionRoot.trailingSize + sectionRoot.groupPadding * 2
+  // Along the bar there's no slack limit, so the ends get more room than the
+  // sides: a highlighted end widget shouldn't crowd the chamfered corner.
+  readonly property real groupInset: sectionRoot.grouped ? Math.max(sectionRoot.groupPadding, Tokens.spaceMd) : 0
+  readonly property real _groupMain: (sectionRoot.vertical ? sectionRoot.height : sectionRoot.width) - sectionRoot.trailingSize + sectionRoot.groupInset * 2
 
   Chamfer {
     visible: sectionRoot.grouped
-    x: -sectionRoot.groupPadding
-    y: -sectionRoot.groupPadding
+    x: sectionRoot.vertical ? -sectionRoot.groupPadding : -sectionRoot.groupInset
+    y: sectionRoot.vertical ? -sectionRoot.groupInset : -sectionRoot.groupPadding
     width: sectionRoot.vertical ? sectionRoot.width + sectionRoot.groupPadding * 2 : sectionRoot._groupMain
     height: sectionRoot.vertical ? sectionRoot._groupMain : sectionRoot.height + sectionRoot.groupPadding * 2
     chamferSize: Tokens.chamferModule

@@ -37,8 +37,8 @@ Item {
   // Plain x/y, not anchors — see crux skill's notes.md.
   BarSection {
     id: leftSection
-    x: root.vertical ? (root.width - width) / 2 : Settings.data.bar.contentPadding
-    y: root.vertical ? Settings.data.bar.contentPadding : (root.height - height) / 2
+    x: root.vertical ? (root.width - width) / 2 : Settings.data.bar.contentPadding + leftSection.groupInset
+    y: root.vertical ? Settings.data.bar.contentPadding + leftSection.groupInset : (root.height - height) / 2
     section: "left"
     screen: root.screen
     vertical: root.vertical
@@ -54,10 +54,9 @@ Item {
   // grows at runtime (an expanding BarPill) used to slide straight over
   // this one. Centre yields instead: it stays centred while there's room
   // and is pushed aside once a neighbour would overlap it.
-  // Grouped sections paint a surface that overhangs their own bounds by
-  // BarSection.groupPadding on each side, so two adjacent groups need that
-  // much clearance again or their outlines collide when the bar fills up.
-  readonly property int sectionGap: Settings.data.bar.contentPadding + (Settings.data.bar.groupSections ? 12 : 0)
+  // Grouped sections overhang their own bounds by BarSection.groupInset at
+  // each end, so adjacent groups need both overhangs plus contentPadding.
+  readonly property real sectionGap: Settings.data.bar.contentPadding + (Settings.data.bar.groupSections ? Tokens.spaceMd * 2 : 0)
 
   function clampCenter(ideal, size, leadEnd, trailStart) {
     const lo = leadEnd + root.sectionGap;
@@ -86,8 +85,8 @@ Item {
   // contentPadding — see crux skill's notes.md.
   BarSection {
     id: rightSection
-    x: root.vertical ? (root.width - width) / 2 : root.width - width - Settings.data.bar.contentPadding + rightSection.trailingSize
-    y: root.vertical ? root.height - height - Settings.data.bar.contentPadding + rightSection.trailingSize : (root.height - height) / 2
+    x: root.vertical ? (root.width - width) / 2 : root.width - width - Settings.data.bar.contentPadding - rightSection.groupInset + rightSection.trailingSize
+    y: root.vertical ? root.height - height - Settings.data.bar.contentPadding - rightSection.groupInset + rightSection.trailingSize : (root.height - height) / 2
     section: "right"
     screen: root.screen
     vertical: root.vertical
