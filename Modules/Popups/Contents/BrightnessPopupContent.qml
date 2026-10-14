@@ -15,7 +15,7 @@ import qs.Modules.Popups
 ColumnLayout {
   id: root
 
-  spacing: 12
+  spacing: Tokens.spaceLg
 
   property string backlightDevice: ""
   property real maxBrightness: 100

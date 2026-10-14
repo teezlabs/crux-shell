@@ -28,7 +28,7 @@ Item {
   // from it ("wifi" -> "wifi" and "wifi_<screen>").
   property string popupName: ""
   // Inset applied to the content layer on all four sides.
-  property real contentMargins: 14
+  property real contentMargins: Tokens.spaceXl
   property real cardWidth: 300
   property real cardHeight: 200
   // Cross-axis position (along the bar's own length) — lines up with a

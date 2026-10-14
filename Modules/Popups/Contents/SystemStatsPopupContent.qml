@@ -14,7 +14,7 @@ import qs.Modules.Popups
 ColumnLayout {
   id: root
 
-  spacing: 14
+  spacing: Tokens.spaceLg
 
   // Bound to the owning SlideCard's `open` from PopupHost — drives the
   // refresh timer.

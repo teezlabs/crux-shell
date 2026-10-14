@@ -14,7 +14,7 @@ import qs.Modules.Popups
 ColumnLayout {
   id: root
 
-  spacing: 12
+  spacing: Tokens.spaceLg
 
   readonly property var device: UPower.displayDevice
   readonly property bool present: !!device && device.isPresent === true

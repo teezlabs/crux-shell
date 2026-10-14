@@ -11,7 +11,7 @@ import qs.Modules.Popups
 ColumnLayout {
   id: root
 
-  spacing: 10
+  spacing: Tokens.spaceLg
 
   // Bound to the owning SlideCard's `open` from PopupHost — refreshes the
   // list on open, same as the old toggle()-triggered refresh().
@@ -177,8 +177,8 @@ ColumnLayout {
 
       RowLayout {
         anchors.fill: parent
-        anchors.leftMargin: 8
-        anchors.rightMargin: 8
+        anchors.leftMargin: Tokens.spaceMd
+        anchors.rightMargin: Tokens.spaceMd
 
         NText {
           text: rowItem.modelData.isImage ? "[image]" : rowItem.modelData.preview

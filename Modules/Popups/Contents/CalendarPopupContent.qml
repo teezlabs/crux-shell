@@ -8,7 +8,7 @@ import qs.Widgets
 ColumnLayout {
   id: root
 
-  spacing: 10
+  spacing: Tokens.spaceLg
 
   property date viewDate: new Date()
   readonly property date today: new Date()

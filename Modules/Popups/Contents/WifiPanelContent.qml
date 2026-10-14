@@ -22,7 +22,7 @@ ColumnLayout {
   // itself on this, an inline Control Center section collapses.
   signal requestClose
 
-  spacing: 10
+  spacing: Tokens.spaceLg
 
   readonly property var networkDevices: Networking.devices ? Networking.devices.values : []
   readonly property var wifiDevice: findDevice(DeviceType.Wifi)
@@ -473,8 +473,8 @@ ColumnLayout {
 
           RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 4
-            anchors.rightMargin: 4
+            anchors.leftMargin: Tokens.spaceMd
+            anchors.rightMargin: Tokens.spaceMd
 
             NText {
               text: rowItem.modelData.connected ? "●" : (rowItem.modelData.known ? "○" : "·")

@@ -19,7 +19,7 @@ import qs.Widgets
 ColumnLayout {
   id: root
 
-  spacing: 12
+  spacing: Tokens.spaceLg
 
   // Set from the card's shown state: the stats timer and the media position
   // ticker only run while the panel is actually open.

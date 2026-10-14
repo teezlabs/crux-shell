@@ -13,7 +13,7 @@ import qs.Services
 ColumnLayout {
   id: root
 
-  spacing: 10
+  spacing: Tokens.spaceLg
 
   readonly property var group: Hue.selectedGroup
   readonly property real brightness01: group ? group.brightness01 : 0

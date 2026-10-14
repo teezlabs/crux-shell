@@ -52,6 +52,13 @@ QtObject {
   readonly property int labelXsWeight: Font.DemiBold // 600
   readonly property real labelXsTracking: 0.17 // spec range 0.16-0.18em
 
+  // §3 Spacing — the one scale every gap and inset comes from.
+  readonly property int spaceXs: 2
+  readonly property int spaceSm: 4
+  readonly property int spaceMd: 8
+  readonly property int spaceLg: 12
+  readonly property int spaceXl: 16
+
   // §4 Geometry — chamfer sizes, one per tier.
   readonly property int chamferPanel: 14 // launcher, control center, sidebar, media, calendar
   readonly property int chamferModule: 9 // bar module, OSD, power tile (spec range 8-10)

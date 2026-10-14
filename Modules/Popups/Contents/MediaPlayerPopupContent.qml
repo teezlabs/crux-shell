@@ -9,7 +9,7 @@ import qs.Widgets
 ColumnLayout {
   id: root
 
-  spacing: 12
+  spacing: Tokens.spaceLg
 
   // Set by PopupHost from the card's shown state — the position ticker
   // only runs while the card is actually open.

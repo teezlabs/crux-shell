@@ -14,7 +14,7 @@ import qs.Services
 ColumnLayout {
   id: root
 
-  spacing: 10
+  spacing: Tokens.spaceLg
 
   // Bound to the owning SlideCard's `open` from PopupHost.
   property bool active: false

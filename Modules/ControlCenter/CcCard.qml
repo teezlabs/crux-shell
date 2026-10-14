@@ -9,8 +9,8 @@ import qs.Widgets
 Item {
   id: root
 
-  property real padding: 12
-  property real spacing: 8
+  property real padding: Tokens.spaceLg
+  property real spacing: Tokens.spaceMd
   default property alias content: inner.data
 
   Layout.fillWidth: true

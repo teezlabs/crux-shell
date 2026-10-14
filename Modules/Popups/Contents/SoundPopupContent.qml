@@ -11,7 +11,7 @@ import qs.Modules.Popups
 ColumnLayout {
   id: root
 
-  spacing: 12
+  spacing: Tokens.spaceLg
 
   readonly property var sink: Pipewire.ready ? Pipewire.defaultAudioSink : null
   readonly property real volume: sink && sink.audio ? sink.audio.volume : 0
@@ -125,8 +125,8 @@ ColumnLayout {
 
         RowLayout {
           anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
+          anchors.leftMargin: Tokens.spaceMd
+          anchors.rightMargin: Tokens.spaceMd
 
           Text {
             text: sinkRow.isDefault ? "●" : "○"

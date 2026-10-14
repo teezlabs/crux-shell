@@ -18,7 +18,7 @@ ColumnLayout {
   // Center section's expanded state.
   property bool panelActive: false
 
-  spacing: 10
+  spacing: Tokens.spaceLg
 
   readonly property var adapter: Bluetooth.defaultAdapter
   readonly property var devices: Bluetooth.devices ? Bluetooth.devices.values : []
@@ -212,8 +212,8 @@ ColumnLayout {
       RowLayout {
         visible: rowItem.modelData.device !== undefined
         anchors.fill: parent
-        anchors.leftMargin: 4
-        anchors.rightMargin: 4
+        anchors.leftMargin: Tokens.spaceMd
+        anchors.rightMargin: Tokens.spaceMd
         spacing: 8
 
         readonly property var device: rowItem.modelData.device
