@@ -447,13 +447,21 @@ ColumnLayout {
       Repeater {
         model: Settings.data.controlCenter.toggles
 
-        delegate: Loader {
-          id: toggleLoader
+        // Each toggle centered in an equal share of the row.
+        delegate: Item {
+          id: toggleSlot
           required property string modelData
-          Layout.preferredWidth: 40
+          Layout.fillWidth: true
           Layout.preferredHeight: 40
-          active: CcToggleRegistry.has(modelData)
-          source: CcToggleRegistry.sourceFor(modelData)
+
+          Loader {
+            id: toggleLoader
+            anchors.centerIn: parent
+            width: 40
+            height: 40
+            active: CcToggleRegistry.has(toggleSlot.modelData)
+            source: CcToggleRegistry.sourceFor(toggleSlot.modelData)
+          }
 
           Connections {
             target: toggleLoader.item
@@ -471,10 +479,6 @@ ColumnLayout {
             }
           }
         }
-      }
-
-      Item {
-        Layout.fillWidth: true
       }
     }
   }
@@ -605,29 +609,38 @@ ColumnLayout {
         spacing: 4
         Repeater {
           model: Weather.daily
-          delegate: ColumnLayout {
+          // Item wrapper: a ColumnLayout won't grow past its children.
+          delegate: Item {
+            id: dayCell
             required property var modelData
             Layout.fillWidth: true
-            spacing: 2
-            NText {
-              tracking: true
-              Layout.alignment: Qt.AlignHCenter
-              text: modelData.dayName.toUpperCase()
-              color: Colors.labelText
-              font.pixelSize: Tokens.labelXsSize - 1
-              font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
-            }
-            WeatherIcon {
-              Layout.alignment: Qt.AlignHCenter
-              Layout.preferredWidth: 22
-              Layout.preferredHeight: 22
-              category: Weather.iconCategory(modelData.weatherCode)
-            }
-            NText {
-              Layout.alignment: Qt.AlignHCenter
-              text: modelData.tempMaxF + "°/" + modelData.tempMinF + "°"
-              color: Colors.surfaceTextMuted
-              font.pixelSize: Tokens.labelXsSize - 1
+            implicitWidth: dayCol.implicitWidth
+            implicitHeight: dayCol.implicitHeight
+
+            ColumnLayout {
+              id: dayCol
+              anchors.horizontalCenter: parent.horizontalCenter
+              spacing: 2
+              NText {
+                tracking: true
+                Layout.alignment: Qt.AlignHCenter
+                text: dayCell.modelData.dayName.toUpperCase()
+                color: Colors.labelText
+                font.pixelSize: Tokens.labelXsSize - 1
+                font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
+              }
+              WeatherIcon {
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: 22
+                Layout.preferredHeight: 22
+                category: Weather.iconCategory(dayCell.modelData.weatherCode)
+              }
+              NText {
+                Layout.alignment: Qt.AlignHCenter
+                text: dayCell.modelData.tempMaxF + "°/" + dayCell.modelData.tempMinF + "°"
+                color: Colors.surfaceTextMuted
+                font.pixelSize: Tokens.labelXsSize - 1
+              }
             }
           }
         }
@@ -700,18 +713,13 @@ ColumnLayout {
         }
       }
 
-      NText {
-        visible: !root.activePlayer
-        text: "No media playing"
-        color: Colors.disabledText
-        size: NText.Size.BodySm
-        Layout.fillWidth: true
-      }
-
+      // No player: the dials take the whole card as one row.
       Grid {
-        columns: 2
+        id: gauges
+        Layout.fillWidth: !root.activePlayer
+        columns: root.activePlayer ? 2 : 4
         rowSpacing: 4
-        columnSpacing: 4
+        columnSpacing: root.activePlayer ? 4 : Math.max(4, (parent.width - 4 * 52) / 3)
 
         CircularGauge {
           percent: root.cpuPercent
