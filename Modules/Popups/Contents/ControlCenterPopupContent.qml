@@ -550,29 +550,13 @@ ColumnLayout {
 
   // ---- BRI slider (only if a backlight device exists) ----
   CcCard {
+    visible: root.hasBacklight
     CcSlider {
       Layout.fillWidth: true
-      visible: root.hasBacklight
       label: "BRI"
       value: root.brightnessPercent
       onMoved: pct => root.setBrightness(pct)
     }
-    RowLayout {
-      Layout.fillWidth: true
-      visible: !root.hasBacklight
-      NText {
-        text: "Brightness"
-        color: Colors.disabledText
-        size: NText.Size.BodySm
-        Layout.fillWidth: true
-      }
-      NText {
-        text: "n/a"
-        color: Colors.disabledText
-        size: NText.Size.Caption
-      }
-    }
-
   }
   // ---- Weather (real: ip-api.com geolocation + open-meteo forecast,
   // see Commons/Weather.qml) ----

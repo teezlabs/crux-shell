@@ -54,9 +54,16 @@ ColumnLayout {
     return m + ":" + String(s).padStart(2, "0");
   }
 
+  NText {
+    visible: !root.activePlayer
+    text: "Nothing playing"
+    color: Colors.labelText
+    size: NText.Size.BodySm
+  }
 
   RowLayout {
     Layout.fillWidth: true
+    visible: !!root.activePlayer
     spacing: 14
 
     Item {
@@ -148,6 +155,7 @@ ColumnLayout {
 
   SegMeter {
     Layout.fillWidth: true
+    visible: !!root.activePlayer
     cellCount: Tokens.meterMediaSeekCells
     cellHeight: Tokens.meterMediaSeekCellHeight
     value: root.length > 0 ? (root.position / root.length) * 100 : 0
@@ -162,6 +170,7 @@ ColumnLayout {
 
   RowLayout {
     Layout.fillWidth: true
+    visible: !!root.activePlayer
 
     NText {
       text: root.fmtTime(root.position)
@@ -180,6 +189,7 @@ ColumnLayout {
 
   RowLayout {
     Layout.fillWidth: true
+    visible: !!root.activePlayer
     spacing: 1
 
     MpTransportButton {
