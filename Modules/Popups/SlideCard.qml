@@ -124,12 +124,8 @@ Item {
 
   width: _animWidth
   height: _animHeight
-  // Not clipped here: the corner fillets deliberately paint outside these
-  // bounds. The clip that hides the collapsing content lives on `body`.
+  // The clip that hides the collapsing content lives on `body`.
   clip: false
-
-  // How far the fillet reaches along the bar from the card's edge.
-  property real cornerSize: Tokens.chamferPanel
 
   Behavior on width {
     NumberAnimation {
@@ -184,15 +180,12 @@ Item {
     cutBottomLeft: root.barTop || root.barRight
     cutBottomRight: root.barTop || root.barLeft
     omitStrokeSide: root.barBottom ? "bottom" : (root.barLeft ? "left" : (root.barRight ? "right" : "top"))
-    // The fillets complete these two corners; the stroke stops where their
-    // arcs pick it up.
-    strokeTrim: root.cornerSize
     fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
     strokeColor: Colors.outline
     strokeWidth: Tokens.borderPanel
     // Rim only, no shadow: `body` clips for the collapse animation, so a
     // shadow would be cut off flush at the card's own edge.
-    rimLight: root.barTop || root.barLeft || root.barRight
+    rimLight: root.barLeft || root.barRight
   }
 
   // Swallow clicks on the card itself so they don't fall through to the
@@ -221,42 +214,5 @@ Item {
     }
   }
 
-  }
-
-  // The two fillets that blend the card into the bar it grew from, one at
-  // each end of the bar-facing edge. They only make sense once the card
-  // has actually come out, so they fade with it.
-  readonly property color _cornerFill: Colors.alpha(Colors.surface, Tokens.panelOpacity)
-
-  ConcaveCorner {
-    id: cornerA
-    size: root.cornerSize
-    fillColor: root._cornerFill
-    strokeColor: Colors.outline
-    strokeWidth: Tokens.borderPanel
-    opacity: root.shown ? 1 : 0
-    visible: opacity > 0
-    corner: root.barTop ? ConcaveCorner.Corner.TopRight : (root.barBottom ? ConcaveCorner.Corner.BottomRight : (root.barLeft ? ConcaveCorner.Corner.BottomLeft : ConcaveCorner.Corner.BottomRight))
-    x: root.barLeft ? 0 : (root.barRight ? root.width - size : -size)
-    y: (root.barTop || root.barBottom) ? (root.barBottom ? root.height - size : 0) : -size
-    Behavior on opacity {
-      NumberAnimation {
-        duration: Tokens.durationSidebarSlide
-        easing.type: Tokens.easingSidebarSlide
-      }
-    }
-  }
-
-  ConcaveCorner {
-    id: cornerB
-    size: root.cornerSize
-    fillColor: root._cornerFill
-    strokeColor: Colors.outline
-    strokeWidth: Tokens.borderPanel
-    opacity: cornerA.opacity
-    visible: opacity > 0
-    corner: root.barTop ? ConcaveCorner.Corner.TopLeft : (root.barBottom ? ConcaveCorner.Corner.BottomLeft : (root.barLeft ? ConcaveCorner.Corner.TopLeft : ConcaveCorner.Corner.TopRight))
-    x: root.barLeft ? 0 : (root.barRight ? root.width - size : root.width)
-    y: (root.barTop || root.barBottom) ? (root.barBottom ? root.height - size : 0) : root.height
   }
 }
