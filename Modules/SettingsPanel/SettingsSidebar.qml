@@ -99,7 +99,7 @@ ColumnLayout {
               id: sidebarEntry
               required property var modelData
               required property int index
-              readonly property bool startsSection: index === 0 || panel.tabs[index - 1].section !== modelData.section
+              readonly property bool startsSection: modelData.section !== "" && (index === 0 || panel.tabs[index - 1].section !== modelData.section)
               Layout.fillWidth: true
               spacing: 0
 

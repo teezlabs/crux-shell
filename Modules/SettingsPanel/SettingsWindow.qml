@@ -17,7 +17,7 @@ NPanelWindow {
   popupName: "settings"
 
   readonly property string screenName: screen ? screen.name : ""
-  property string activeTab: "appearance"
+  property string activeTab: "home"
 
   // Fuzzy-search sidebar state. jumpSubTab is read once (onChanged, not a
   // binding) so later manual NTabBar clicks aren't fought by a stale hit.
@@ -50,6 +50,11 @@ NPanelWindow {
 
   // Sidebar order; a header is drawn wherever `section` changes.
   readonly property var tabs: [
+    {
+      "id": "home",
+      "label": "Home",
+      "section": ""
+    },
     {
       "id": "appearance",
       "label": "Appearance",
@@ -212,6 +217,10 @@ NPanelWindow {
         tabs: root.tabs
         activeTab: root.activeTab
         jumpSubTab: root.jumpSubTab
+        onNavigate: (tab, subTab) => root.jumpToSearchHit({
+                                                         "tab": tab,
+                                                         "subTab": subTab
+                                                       })
         panelVisible: root.visible
         targetScreen: root.targetScreen
         screenName: root.screenName

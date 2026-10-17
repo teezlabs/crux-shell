@@ -32,7 +32,8 @@ Item {
 
     // ---- Appearance > General / Colors ----
     { "label": "Avatar image", "description": "Picture in the Control Center header", "tab": "appearance", "subTab": "general", "keywords": "profile picture user" },
-    { "label": "Restart crux", "description": "Reload every widget and settings page", "tab": "about", "subTab": "", "keywords": "reload relaunch" },
+    { "label": "Home", "description": "crux overview: theme, quick settings and shortcuts", "tab": "home", "subTab": "", "keywords": "overview start dashboard github" },
+    { "label": "Restart crux", "description": "Reload every widget and settings page", "tab": "home", "subTab": "", "keywords": "reload relaunch" },
     { "label": "Color presets", "description": "Built-in palette presets for the theme", "tab": "appearance", "subTab": "colors", "keywords": "palette scheme" },
     { "label": "Manual colors", "description": "Hand-pick individual theme role colors", "tab": "appearance", "subTab": "colors", "keywords": "palette hex" },
     { "label": "Dark mode", "description": "Switch between the cached dark and light theme branches", "tab": "appearance", "subTab": "colors", "keywords": "light theme" },

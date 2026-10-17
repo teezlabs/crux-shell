@@ -23,6 +23,8 @@ ColumnLayout {
   property var targetScreen: null
   property string screenName: ""
 
+  signal navigate(string tab, string subTab)
+
   Layout.margins: 16
   spacing: 12
 
@@ -115,6 +117,12 @@ ColumnLayout {
     Layout.fillHeight: true
     // Defensive: clips tabs taller than the card (see notes.md).
     clip: true
+
+    HomeTab {
+      anchors.fill: parent
+      visible: panel.activeTab === "home"
+      onNavigate: (tab, subTab) => panel.navigate(tab, subTab)
+    }
 
     GeneralTab {
       anchors.fill: parent
