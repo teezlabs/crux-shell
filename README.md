@@ -2,7 +2,7 @@
 
 # crux
 
-<img src=".github/screenshot.png" alt="crux running on a vertical bar" width="800">
+<img src=".github/screenshot.png" alt="crux with a floating vertical bar and the calendar drawer open" width="800">
 
 <h4>My own Hyprland shell, written from scratch instead of forking one.</h4>
 
@@ -42,7 +42,7 @@
 ## Requirements
 
 - [Hyprland](https://hyprland.org) with a **Lua config** (`hyprland.lua`). crux talks to Hyprland in Lua dispatch syntax, so a classic `hyprland.conf` setup can't switch workspaces from the bar
-- [Quickshell](https://quickshell.org), the upstream release, not the `noctalia-qs` fork
+- [Quickshell](https://quickshell.org)
 - `matugen`, `brightnessctl`, `wlsunset`, `cliphist`, `wl-clipboard`, `playerctl`, `networkmanager`, `bluez`, `python`, `git`
 
 Optional:
