@@ -23,10 +23,15 @@ Singleton {
     if (!Settings.isLoaded || Settings.data.theme.darkMode === on)
       return;
     Settings.data.theme.darkMode = on;
-    if (Settings.data.wallpaper.path !== "")
+    // Presets ship a dark palette only, so the switch regenerates from the wallpaper and replaces it.
+    const preset = Settings.data.theme.colorScheme;
+    if (Settings.data.wallpaper.path !== "") {
       root.generateFrom(Settings.data.wallpaper.path);
-    else
+      if (preset !== "")
+        Toast.show(preset + " is dark-only, switched to wallpaper colors");
+    } else {
       Toast.show("Pick a wallpaper to regenerate colors");
+    }
   }
 
   function toggleDarkMode(): void {
