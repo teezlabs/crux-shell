@@ -120,7 +120,7 @@ ColumnLayout {
                 readonly property var modelData: sidebarEntry.modelData
                 readonly property bool active: panel.activeTab === modelData.id
                 Layout.fillWidth: true
-                Layout.preferredHeight: 28
+                Layout.preferredHeight: 26
 
                 Rectangle {
                   anchors.fill: parent

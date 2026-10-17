@@ -163,7 +163,7 @@ NPanelWindow {
     id: card
     anchors.centerIn: parent
     width: 860
-    height: 720
+    height: 780
 
     Chamfer {
       anchors.fill: parent
