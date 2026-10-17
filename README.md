@@ -9,6 +9,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/teezlabs/crux-shell?style=for-the-badge&logo=github&color=pink)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/teezlabs/crux-shell?style=for-the-badge&logo=github&color=lightgreen) <br>
 ![Static Badge](https://img.shields.io/badge/hypr-crux-lightblue?style=for-the-badge)
+[![0ver](https://img.shields.io/github/v/release/teezlabs/crux-shell?style=for-the-badge&label=0ver&color=orange)](https://0ver.org)
 
 </div>
 
