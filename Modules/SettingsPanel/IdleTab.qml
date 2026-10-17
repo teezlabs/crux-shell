@@ -3,8 +3,8 @@ import QtQuick.Layouts
 import qs.Widgets
 import qs.Services
 
-// Top-level Idle tab: Behavior/Custom subtabs. Backend is Commons/Idle.qml
-// — native ext-idle-notify-v1 IdleMonitor instances, not hypridle.conf.
+// Top-level Power tab: idle Behavior/Custom and the Session Menu as subtabs.
+// Idle backend is Commons/Idle.qml (ext-idle-notify-v1), not hypridle.conf.
 ColumnLayout {
   id: root
   spacing: 14
@@ -25,6 +25,10 @@ ColumnLayout {
       {
         "id": "custom",
         "label": "Custom"
+      },
+      {
+        "id": "sessionMenu",
+        "label": "Session Menu"
       }
     ]
     activeId: root.subTab
@@ -41,5 +45,11 @@ ColumnLayout {
     Layout.fillWidth: true
     Layout.fillHeight: true
     visible: root.subTab === "custom"
+  }
+
+  SessionMenuTab {
+    Layout.fillWidth: true
+    Layout.fillHeight: true
+    visible: root.subTab === "sessionMenu"
   }
 }

@@ -127,12 +127,7 @@ NPanelWindow {
     },
     {
       "id": "idle",
-      "label": "Idle",
-      "section": "Session"
-    },
-    {
-      "id": "sessionMenu",
-      "label": "Session Menu",
+      "label": "Power",
       "section": "Session"
     },
     {

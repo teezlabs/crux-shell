@@ -107,7 +107,7 @@ Item {
     { "label": "Volume OSD", "description": "Volume overlay — enabled, position, duration", "tab": "notifications", "subTab": "osd", "keywords": "overlay popup" },
 
     // ---- Session Menu ----
-    { "label": "Session menu actions", "description": "Which power actions show and which need a confirm tap", "tab": "sessionMenu", "subTab": "", "keywords": "power lock suspend logout reboot shutdown confirm" },
+    { "label": "Session menu actions", "description": "Which power actions show and which need a confirm tap", "tab": "idle", "subTab": "sessionMenu", "keywords": "power lock suspend logout reboot shutdown confirm" },
 
     // ---- Plugins ----
     { "label": "Plugins", "description": "Discovered and enabled local plugins", "tab": "plugins", "subTab": "", "keywords": "extensions add" },
