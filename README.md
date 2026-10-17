@@ -4,7 +4,7 @@
 
 <img src=".github/screenshot.png" alt="crux with a floating top bar, and a floating vertical bar with the calendar drawer open" width="800">
 
-<h4>My own Hyprland shell, written from scratch instead of forking one.</h4>
+<h4>Sharp by design.</h4>
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/teezlabs/crux-shell?style=for-the-badge&logo=github&color=pink)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/teezlabs/crux-shell?style=for-the-badge&logo=github&color=lightgreen) <br>
