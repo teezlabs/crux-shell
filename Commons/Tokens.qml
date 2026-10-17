@@ -66,6 +66,8 @@ QtObject {
   readonly property int chamferPanel: 14 // launcher, control center, sidebar, media, calendar
   readonly property int chamferModule: 9 // bar module, OSD, power tile (spec range 8-10)
   readonly property int chamferIcon: 5 // icon / small tile
+  // A cell inside a bar group: chamferModule less 4px inset x (2 - sqrt 2), so its cut runs parallel to the group's.
+  readonly property int chamferGroupedCell: 7
 
   // Docked bar: space between the modules and the strip's inner edge line.
   readonly property int barJoinGap: spaceSm

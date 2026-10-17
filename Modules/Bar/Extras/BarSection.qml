@@ -142,9 +142,8 @@ Item {
     const slack = (sectionRoot.vertical ? p.width - sectionRoot.width : p.height - sectionRoot.height) / 2;
     return Math.max(2, Math.min(7, slack - 1));
   }
-  // Along the bar there's no slack limit, so the ends get more room than the
-  // sides: a highlighted end widget shouldn't crowd the chamfered corner.
-  readonly property real groupInset: sectionRoot.grouped ? Math.max(sectionRoot.groupPadding, Tokens.spaceMd) : 0
+  // Same as the side padding, so an end widget sits evenly inside the chamfered corner.
+  readonly property real groupInset: sectionRoot.grouped ? sectionRoot.groupPadding : 0
   readonly property real _groupMain: (sectionRoot.vertical ? sectionRoot.height : sectionRoot.width) - sectionRoot.trailingSize + sectionRoot.groupInset * 2
 
   Chamfer {

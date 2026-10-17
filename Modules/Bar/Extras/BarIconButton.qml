@@ -29,7 +29,7 @@ Item {
 
   Chamfer {
     anchors.fill: parent
-    chamferSize: root.grouped ? Tokens.chamferIcon : Tokens.chamferModule
+    chamferSize: root.grouped ? Tokens.chamferGroupedCell : Tokens.chamferModule
     cutTopLeft: root.invertChamfer
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer

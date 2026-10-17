@@ -55,7 +55,7 @@ Item {
   Chamfer {
     anchors.fill: parent
     visible: root.grouped
-    chamferSize: Tokens.chamferIcon
+    chamferSize: Tokens.chamferGroupedCell
     cutTopLeft: root.invertChamfer
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
