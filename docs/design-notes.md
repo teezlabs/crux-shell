@@ -874,3 +874,15 @@ Opening the browser used to decode every original (141 megapixels here) each tim
 
 Wallhaven results use a plain `GridView` instead: thumbnails sit 3px inside a 5px chamfer, which is enough for their corners to clear the cut without any mask.
 
+
+## Chamfered window corners
+
+Hyprland can only round all four corners the same way. `rounding_power = 1` turns its superellipse into a 45° cut, but that cut is symmetric, and its border shader insets the diagonal using L1 distance, so by its own math the cut edge works out √2 thinner than the straight ones. Crux's corner language is asymmetric (top-right and bottom-left), which needed real shader work.
+
+A C++ plugin would have been the usual route. Hyprland 0.56 reads shader overrides from a directory and swaps them in at runtime with `hyprctl reloadshaders <dir>`, keeping the old set if loading fails. Replacing `rounding.glsl` and `border.glsl` covers the window clip and the border without a plugin's per-version rebuilds or its ability to crash the session.
+
+The per-corner mask travels in `rounding_power`, because that is the only per-window float that reaches both shaders. The blurred background behind translucent windows is always drawn with a hardcoded power of 2, so the default mask is chosen for any value outside the encoded range. Blur and border then agree for every window that doesn't override its mask.
+
+Which corner a fragment belongs to is read from the texcoord derivatives, not from `gl_FragCoord`. On the rotated DP-1, framebuffer space is turned 270° from the window, and the first version cut the bottom-left corner when it meant the top-left. `dFdx`/`dFdy` of `v_texcoord` map a framebuffer offset back into the surface's own orientation, and they also stay correct for cropped surfaces, where the texcoord centre isn't 0.5.
+
+The outer cut is the inner one plus `thick * (2 - √2)`. That keeps the diagonal parallel to the window's own cut and gives it the same perpendicular width as the edges, which is the same offset `Chamfer.qml` applies to its stroke.
