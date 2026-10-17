@@ -66,8 +66,9 @@ Item {
       root.shown = false;
       return;
     }
-    const vertical = root.barLeft || root.barRight;
-    root.crossPos = vertical ? Math.max(8, Math.min(y, root.host.height - root.cardHeight - 8)) : Math.max(8, Math.min(x, root.host.width - root.cardWidth - 8));
+    const anchor = (root.barLeft || root.barRight) ? y : x;
+    // A binding, so content that fills in after opening re-clamps the card.
+    root.crossPos = Qt.binding(() => root._clampCross(anchor));
     root.shown = true;
   }
 
