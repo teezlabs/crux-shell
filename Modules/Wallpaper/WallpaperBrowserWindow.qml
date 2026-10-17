@@ -68,6 +68,10 @@ NPanelWindow {
         });
       }
       root.files = out;
+      if (root._selectCurrentOnScan) {
+        root._selectCurrentOnScan = false;
+        root.selectCurrent();
+      }
     }
   }
 
@@ -186,9 +190,18 @@ NPanelWindow {
 
   onSelectedFileChanged: root.armedDeletePath = ""
 
+  // Opens on the wallpaper in use, so the theme controls act on it rather than the grid's first file.
+  property bool _selectCurrentOnScan: false
+  function selectCurrent() {
+    const current = Settings.getWallpaperForScreen(root.targetMonitor);
+    const i = root.localFiltered.findIndex(f => f.path === current);
+    root.selectedIndex = i >= 0 ? i : 0;
+  }
+
   onVisibleChanged: if (visible) {
-    root.rescan();
     root.selectedIndex = 0;
+    root._selectCurrentOnScan = root.sourceMode === "local";
+    root.rescan();
   }
 
   // Don't steal focus into searchInput on open, or arrow/Enter/R shortcuts below (gated on !activeFocus) go dead.
