@@ -26,7 +26,6 @@ Item {
   BarIconButton {
     id: btn
     invertChamfer: root.invertChamfer
-    attention: root.lit
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
       Popups.openFrom("hue", root.screen, pos.x, pos.y, root.width, root.height);

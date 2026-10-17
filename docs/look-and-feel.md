@@ -9,6 +9,15 @@ Crux follows the spec in `docs/Quickshell Hyprland Shell v2.pdf`. `Commons/Token
 - Workspaces: a filled cell marks the focused workspace; the accent edge mark and accent number mark the workspace each monitor is showing, so the unfocused monitor still reads
 - **Direction D was reverted on 2026-10-17** (fill-only, no outlines, cut squares, segmented meters). Commit `6623f0b` undid it. Don't reapply D-style changes unless asked
 
+## State colors
+
+Bar modules (and anything that copies them) use one meaning per color:
+
+- **On / active:** tint the icon `Colors.primary`. No box
+- **Needs attention:** tint the icon `Colors.tertiary` and set the button's `attention`, which draws a tertiary box. Reserve this for states the user should notice (usage near a limit, a forced mode, a degraded profile, keep-awake left on)
+- **Critical, muted or destructive:** `Colors.error`. The power button's faint `error` outline is the one permanent accent
+- **Off / unavailable:** `Colors.surfaceTextMuted`, or `Colors.disabledText` when the feature is unusable
+
 ## Motion
 
 - Durations and easings come from Tokens §7. Never type one at a call site

@@ -128,7 +128,6 @@ Item {
   BarIconButton {
     id: btn
     invertChamfer: root.invertChamfer
-    attention: root.connected
     onTapped: root.toggle()
 
     HoverHandler {

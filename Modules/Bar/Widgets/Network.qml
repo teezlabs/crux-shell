@@ -64,7 +64,6 @@ Item {
   BarIconButton {
     id: btn
     invertChamfer: root.invertChamfer
-    attention: root.ethernetConnected
 
     HoverHandler {
       cursorShape: Qt.PointingHandCursor
