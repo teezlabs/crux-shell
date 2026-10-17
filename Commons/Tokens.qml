@@ -67,6 +67,9 @@ QtObject {
   readonly property int chamferModule: 9 // bar module, OSD, power tile (spec range 8-10)
   readonly property int chamferIcon: 5 // icon / small tile
 
+  // Docked bar: space between the modules and the strip's inner edge line.
+  readonly property int barJoinGap: spaceSm
+
   // Corner radius for the few surfaces that are rounded rather than
   // chamfered (the polkit dialog) — crux's own language is chamfers.
   readonly property int radiusXXS: 2

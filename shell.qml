@@ -293,8 +293,9 @@ ShellRoot {
         right: root.effectiveFloatMargin
       }
       // When vertical, top+bottom anchors fill height and only implicitWidth matters (and vice versa).
-      implicitWidth: root.effectiveThickness
-      implicitHeight: root.effectiveThickness
+      readonly property int joinGap: Settings.data.bar.showBackground && !Settings.data.bar.floating ? Tokens.barJoinGap : 0
+      implicitWidth: root.effectiveThickness + root.joinGap
+      implicitHeight: root.effectiveThickness + root.joinGap
       // Transparent so the margins above actually read as a floating gap
       // around a rounded pill (the Rectangle below), not a plain inset
       // rectangle on a same-colored background.
@@ -367,10 +368,18 @@ ShellRoot {
           color: Colors.outline
         }
 
-        Bar {
-          screen: root.screen
-          vertical: root.barIsVertical
-          contentVertical: root.contentVertical
+        // Modules keep the configured thickness; joinGap is extra strip on the inner side.
+        Item {
+          x: root.barPosition === "right" ? root.joinGap : 0
+          y: root.barPosition === "bottom" ? root.joinGap : 0
+          width: root.barIsVertical ? root.effectiveThickness : parent.width
+          height: root.barIsVertical ? parent.height : root.effectiveThickness
+
+          Bar {
+            screen: root.screen
+            vertical: root.barIsVertical
+            contentVertical: root.contentVertical
+          }
         }
       }
 

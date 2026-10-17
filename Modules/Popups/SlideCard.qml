@@ -44,7 +44,7 @@ Item {
   // per-popup _barOffset used.
   // Docked strip: the card overlaps the bar's inner edge line so the two outlines join.
   readonly property bool joined: Settings.data.bar.showBackground && !Settings.data.bar.floating
-  readonly property real barOffset: Settings.data.bar.thickness + (Settings.data.bar.floating ? Settings.data.bar.floatMargin : 0) - (root.joined ? Tokens.borderPanel : 0)
+  readonly property real barOffset: Settings.data.bar.thickness + (Settings.data.bar.floating ? Settings.data.bar.floatMargin : 0) + (root.joined ? Tokens.barJoinGap - Tokens.borderPanel : 0)
 
   default property alias content: contentLayer.data
 
