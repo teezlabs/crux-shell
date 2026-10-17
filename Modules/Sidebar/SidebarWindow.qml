@@ -143,6 +143,13 @@ PanelWindow {
   visible: false
   color: "transparent"
 
+  // Closes on a click outside it, on any monitor.
+  HyprlandFocusGrab {
+    active: root.visible
+    windows: [root]
+    onCleared: Popups.closeAll()
+  }
+
   anchors {
     top: true
     left: true
@@ -152,7 +159,7 @@ PanelWindow {
 
   WlrLayershell.layer: WlrLayer.Overlay
   WlrLayershell.namespace: "crux-sidebar"
-  WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+  WlrLayershell.keyboardFocus: root.visible ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
   exclusionMode: ExclusionMode.Ignore
 
   Shortcut {

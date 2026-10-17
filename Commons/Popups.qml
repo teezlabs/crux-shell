@@ -27,6 +27,16 @@ Singleton {
     delete root.surfaces[root.key(name, screen)];
   }
 
+  // Closes every registered popup on every screen. The focus grabs call this when a click
+  // lands outside them, on any monitor.
+  function closeAll(): void {
+    for (const k in root.surfaces) {
+      const s = root.surfaces[k];
+      if (s && s.close)
+        s.close();
+    }
+  }
+
   // Falls back to a screen-less registration so a caller that doesn't know
   // its screen still reaches a globally-unique surface.
   function find(name, screen): var {

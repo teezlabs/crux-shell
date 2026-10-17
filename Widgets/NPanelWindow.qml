@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import qs.Commons
 
 // Shared chrome for crux's full-screen popup surfaces — the launcher,
@@ -83,7 +84,7 @@ PanelWindow {
 
   WlrLayershell.layer: WlrLayer.Overlay
   WlrLayershell.namespace: root.surfaceNamespace
-  WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+  WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
   exclusionMode: ExclusionMode.Ignore
 
   Shortcut {
@@ -92,9 +93,17 @@ PanelWindow {
     onActivated: root.close()
   }
 
+  // Keyboard focus while open, and `cleared` on a click outside on any monitor; an
+  // Exclusive layer would swallow clicks on the other monitors instead.
+  HyprlandFocusGrab {
+    active: root.visible
+    windows: [root]
+    onCleared: Popups.closeAll()
+  }
+
   MouseArea {
     anchors.fill: parent
     enabled: root.closeOnOutsideClick
-    onClicked: root.close()
+    onClicked: Popups.closeAll()
   }
 }

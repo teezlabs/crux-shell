@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import qs.Commons
 import qs.Modules.Popups.Contents
 
@@ -33,6 +34,14 @@ PanelWindow {
   function closeAll(): void {
     for (const card of root.cards)
       card.close();
+  }
+
+  // Keyboard focus while open, and `cleared` on a click outside this surface on any monitor.
+  // An Exclusive layer would swallow clicks on the other monitors instead.
+  HyprlandFocusGrab {
+    active: root.anyOpen
+    windows: [root]
+    onCleared: Popups.closeAll()
   }
 
   // Lets a bar widget on this screen reach a card directly instead of
@@ -76,7 +85,7 @@ PanelWindow {
 
   WlrLayershell.layer: WlrLayer.Overlay
   WlrLayershell.namespace: "crux-popup-host"
-  WlrLayershell.keyboardFocus: root.anyOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+  WlrLayershell.keyboardFocus: root.anyOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
   exclusionMode: ExclusionMode.Ignore
 
   Shortcut {
@@ -88,7 +97,7 @@ PanelWindow {
   MouseArea {
     anchors.fill: parent
     enabled: root.anyOpen
-    onClicked: root.closeAll()
+    onClicked: Popups.closeAll()
   }
 
   SlideCard {
