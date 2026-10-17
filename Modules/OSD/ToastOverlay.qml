@@ -1,17 +1,26 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import qs.Commons
 import qs.Modules.Notifications
 import qs.Widgets
 
 // Toast overlay: renders Commons/Toast.qml's queue as a chamfered pill,
-// bottom-center. One global instance (not per-screen like VolumeOsd), plus
-// a small FIFO queue so rapid Toast.show() calls don't clobber each other.
+// bottom-center of the focused monitor. One global instance (not per-screen like
+// VolumeOsd), plus a small FIFO queue so rapid Toast.show() calls don't clobber each other.
 PanelWindow {
   id: root
 
   screen: Quickshell.screens[0] ?? null
+
+  function _focusedScreen() {
+    const name = Hyprland.focusedMonitor ? Hyprland.focusedMonitor.name : "";
+    for (const s of Quickshell.screens)
+      if (s.name === name)
+        return s;
+    return Quickshell.screens[0] ?? null;
+  }
 
   property var _queue: []
   property string message: ""
@@ -32,6 +41,8 @@ PanelWindow {
     if (root.opened || root._queue.length === 0)
       return;
     var next = root._queue.shift();
+    // The window is unmapped between toasts, so it can move to the focused monitor first.
+    root.screen = root._focusedScreen();
     root.message = next.message;
     root.opened = true;
     hideTimer.interval = next.duration;
