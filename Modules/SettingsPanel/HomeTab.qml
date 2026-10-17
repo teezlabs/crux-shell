@@ -17,6 +17,7 @@ NScrollView {
 
   readonly property string repoUrl: "https://github.com/teezlabs/crux-shell"
   property string commit: "…"
+  property string version: ""
 
   readonly property string themeSource: {
     const preset = Settings.data.theme.colorScheme;
@@ -35,7 +36,19 @@ NScrollView {
     }
   }
 
-  Component.onCompleted: commitProc.running = true
+  Process {
+    id: versionProc
+    command: ["git", "-C", Quickshell.shellDir, "describe", "--tags", "--abbrev=0"]
+    stdout: StdioCollector {
+      waitForEnd: true
+      onStreamFinished: root.version = text.trim()
+    }
+  }
+
+  Component.onCompleted: {
+    commitProc.running = true;
+    versionProc.running = true;
+  }
 
   ColumnLayout {
     id: col
@@ -62,7 +75,7 @@ NScrollView {
         }
         NText {
           tracking: true
-          text: "SHARP BY DESIGN · " + root.commit.toUpperCase()
+          text: "SHARP BY DESIGN · " + (root.version !== "" ? root.version.toUpperCase() + " · " : "") + root.commit.toUpperCase()
           size: NText.Size.LabelXs
           color: Colors.labelText
         }
