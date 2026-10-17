@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
 import qs.Commons
@@ -32,14 +33,57 @@ PanelWindow {
 
   readonly property string wallpaperPath: Settings.isLoaded && targetScreen ? Settings.getWallpaperForScreen(targetScreen.name) : ""
 
-  Image {
-    x: root.barPosition === "right" ? root.width - width : 0
-    y: root.barPosition === "bottom" ? root.height - height : 0
-    width: root.targetScreen ? root.targetScreen.width : 0
-    height: root.targetScreen ? root.targetScreen.height : 0
-    source: root.wallpaperPath ? "file://" + root.wallpaperPath : ""
-    fillMode: Image.PreserveAspectCrop
-    asynchronous: true
-    cache: true
+  // Solid up to the bar's outer edge, then fades out by the work area's edge.
+  readonly property bool fadesForward: barPosition === "top" || barPosition === "left"
+  readonly property real solidStop: extent > 0 ? Tokens.barExtent / extent : 1
+
+  Item {
+    id: strip
+    anchors.fill: parent
+    clip: true
+    visible: false
+    layer.enabled: true
+
+    Image {
+      x: root.barPosition === "right" ? root.width - width : 0
+      y: root.barPosition === "bottom" ? root.height - height : 0
+      width: root.targetScreen ? root.targetScreen.width : 0
+      height: root.targetScreen ? root.targetScreen.height : 0
+      source: root.wallpaperPath ? "file://" + root.wallpaperPath : ""
+      fillMode: Image.PreserveAspectCrop
+      asynchronous: true
+      cache: true
+    }
+  }
+
+  Rectangle {
+    id: fadeMask
+    anchors.fill: parent
+    visible: false
+    layer.enabled: true
+    gradient: Gradient {
+      orientation: root.vertical ? Gradient.Horizontal : Gradient.Vertical
+      GradientStop {
+        position: 0
+        color: Qt.rgba(0, 0, 0, root.fadesForward ? 1 : 0)
+      }
+      GradientStop {
+        position: root.fadesForward ? root.solidStop : 1 - root.solidStop
+        color: Qt.rgba(0, 0, 0, 1)
+      }
+      GradientStop {
+        position: 1
+        color: Qt.rgba(0, 0, 0, root.fadesForward ? 0 : 1)
+      }
+    }
+  }
+
+  MultiEffect {
+    anchors.fill: parent
+    source: strip
+    maskEnabled: true
+    maskSource: fadeMask
+    maskThresholdMin: 0.5
+    maskSpreadAtMin: 1
   }
 }
