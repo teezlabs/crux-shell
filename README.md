@@ -2,7 +2,7 @@
 
 # crux
 
-<img src=".github/screenshot.png" alt="crux with a floating vertical bar and the calendar drawer open" width="800">
+<img src=".github/screenshot.png" alt="crux with a floating top bar, and a floating vertical bar with the calendar drawer open" width="800">
 
 <h4>My own Hyprland shell, written from scratch instead of forking one.</h4>
 
