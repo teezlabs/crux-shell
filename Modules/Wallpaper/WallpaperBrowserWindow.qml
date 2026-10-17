@@ -116,8 +116,12 @@ NPanelWindow {
 
   property int selectedIndex: 0
   onSelectedIndexChanged: {
-    if (strip.currentIndex !== root.selectedIndex)
+    if (root.sourceMode === "local" && strip.currentIndex !== root.selectedIndex)
       strip.currentIndex = root.selectedIndex;
+    if (root.sourceMode === "wallhaven") {
+      whGrid.currentIndex = root.selectedIndex;
+      whGrid.positionViewAtIndex(root.selectedIndex, GridView.Contain);
+    }
     // Wallhaven pages in as the strip nears its end.
     if (root.sourceMode === "wallhaven" && !Wallhaven.loading && Wallhaven.page < Wallhaven.lastPage && root.selectedIndex >= root.filteredFiles.length - 3)
       root.whSearch(Wallhaven.page + 1, true);
@@ -222,6 +226,17 @@ NPanelWindow {
     enabled: root.visible && !searchInput.activeFocus
     onActivated: root._moveSelection(1)
   }
+  // Wallhaven is a grid, so Up and Down step a row there.
+  Shortcut {
+    sequence: "Up"
+    enabled: root.visible && !searchInput.activeFocus && root.sourceMode === "wallhaven"
+    onActivated: root._moveSelection(-whGrid.columns)
+  }
+  Shortcut {
+    sequence: "Down"
+    enabled: root.visible && !searchInput.activeFocus && root.sourceMode === "wallhaven"
+    onActivated: root._moveSelection(whGrid.columns)
+  }
   Shortcut {
     sequence: "Return"
     enabled: root.visible && !searchInput.activeFocus
@@ -301,7 +316,7 @@ NPanelWindow {
         NText {
           visible: !root.portrait
           tracking: true
-          text: "← → MOVE · ⏎ APPLY + THEME · ⇧⏎ WALLPAPER ONLY · / SEARCH · R RANDOM"
+          text: (root.sourceMode === "wallhaven" ? "← → ↑ ↓" : "← →") + " MOVE · ⏎ APPLY + THEME · ⇧⏎ WALLPAPER ONLY · / SEARCH · R RANDOM"
           color: Colors.labelText
           size: NText.Size.LabelXs
         }
@@ -549,13 +564,14 @@ NPanelWindow {
         }
       }
 
-      // ---- Slice strip ----
+      // ---- Slice strip (local library) ----
       ListView {
         id: strip
+        visible: root.sourceMode === "local"
         Layout.fillWidth: true
         Layout.preferredHeight: root._sliceHeight
         orientation: ListView.Horizontal
-        model: root.filteredFiles
+        model: visible ? root.filteredFiles : []
         // Negative spacing lets neighbouring slants run parallel with a small gap.
         spacing: root._sliceGap - root._skew
         clip: true
@@ -595,7 +611,87 @@ NPanelWindow {
           anchors.centerIn: parent
           visible: root.filteredFiles.length === 0
           tracking: true
-          text: root.sourceMode === "wallhaven" && Wallhaven.loading ? "SEARCHING…" : "NOTHING HERE"
+          text: "NOTHING HERE"
+          color: Colors.labelText
+          size: NText.Size.LabelXs
+        }
+      }
+
+      // ---- Wallhaven grid ----
+      // Thumbnails sit 3px inside a 5px chamfer, enough for their corners to clear the cut,
+      // so no mask effect is needed.
+      GridView {
+        id: whGrid
+        visible: root.sourceMode === "wallhaven"
+        Layout.fillWidth: true
+        Layout.preferredHeight: root._sliceHeight
+        clip: true
+        boundsBehavior: Flickable.StopAtBounds
+        model: visible ? root.filteredFiles : []
+        readonly property int columns: Math.max(1, Math.floor(width / 240))
+        cellWidth: Math.floor(width / columns)
+        cellHeight: Math.round((cellWidth - 8) * 9 / 16) + 8
+
+        onCurrentIndexChanged: if (visible && root.selectedIndex !== currentIndex && currentIndex >= 0)
+          root.selectedIndex = currentIndex
+        // Pages in more results as the grid nears its end.
+        onContentYChanged: if (visible && contentHeight > 0 && contentY + height > contentHeight - cellHeight * 2 && !Wallhaven.loading && Wallhaven.page < Wallhaven.lastPage)
+          root.whSearch(Wallhaven.page + 1, true)
+
+        delegate: Item {
+          id: cell
+          required property var modelData
+          required property int index
+          readonly property bool selected: index === root.selectedIndex
+          width: whGrid.cellWidth
+          height: whGrid.cellHeight
+
+          Item {
+            anchors.fill: parent
+            anchors.margins: 4
+
+            Chamfer {
+              anchors.fill: parent
+              chamferSize: Tokens.chamferIcon
+              cutTopRight: true
+              cutBottomLeft: true
+              fillColor: Colors.surfaceContainer
+              strokeColor: cell.selected ? Colors.primary : (cellHover.hovered ? Colors.alpha(Colors.primary, 0.5) : Colors.outline)
+              strokeWidth: cell.selected ? 2 : Tokens.borderModule
+            }
+
+            Image {
+              anchors.fill: parent
+              anchors.margins: 3
+              source: cell.modelData.thumb
+              fillMode: Image.PreserveAspectCrop
+              asynchronous: true
+              cache: true
+              sourceSize: Qt.size(width, height)
+              opacity: status === Image.Ready ? 1 : 0
+              Behavior on opacity {
+                NumberAnimation {
+                  duration: Tokens.durationPanel
+                }
+              }
+            }
+
+            HoverHandler {
+              id: cellHover
+              cursorShape: Qt.PointingHandCursor
+            }
+            TapHandler {
+              onTapped: root.selectedIndex = cell.index
+              onDoubleTapped: root.applyWallpaper(true)
+            }
+          }
+        }
+
+        NText {
+          anchors.centerIn: parent
+          visible: root.filteredFiles.length === 0
+          tracking: true
+          text: Wallhaven.loading ? "SEARCHING…" : (Wallhaven.error ? Wallhaven.error.toUpperCase() : "NO RESULTS")
           color: Colors.labelText
           size: NText.Size.LabelXs
         }
