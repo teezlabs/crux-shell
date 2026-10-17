@@ -66,10 +66,34 @@ NPanelWindow {
         });
       }
       root.files = out;
+      if (!thumbProc.running)
+        thumbProc.running = true;
       if (root._selectCurrentOnScan) {
         root._selectCurrentOnScan = false;
         root.selectCurrent();
       }
+    }
+  }
+
+  // path -> cached thumbnail, so slices decode a small JPEG instead of a full-size
+  // original every time the browser opens. Falls back to the original without ImageMagick.
+  property var thumbs: ({})
+
+  Process {
+    id: thumbProc
+    command: ["bash", "-c", 'cache="$HOME/.cache/crux/wallpaper-thumbs"; mkdir -p "$cache"; command -v magick >/dev/null || exit 0; for f in "$1"/*; do case "${f,,}" in *.jpg|*.jpeg|*.png|*.webp) ;; *) continue ;; esac; key=$(printf "%s|%s" "$f" "$(stat -c %Y "$f")" | md5sum | cut -c1-16); t="$cache/$key.jpg"; [[ -s "$t" ]] || magick "$f[0]" -resize x576 -quality 88 "$t" 2>/dev/null; [[ -s "$t" ]] && printf "%s|%s\n" "$f" "$t"; done', "bash", Settings.data.wallpaper.directory]
+    stdout: StdioCollector {
+      id: thumbOut
+      waitForEnd: true
+    }
+    onExited: {
+      const map = {};
+      for (const line of thumbOut.text.split("\n")) {
+        const bar = line.lastIndexOf("|");
+        if (bar > 0)
+          map[line.substring(0, bar)] = line.substring(bar + 1);
+      }
+      root.thumbs = map;
     }
   }
 
@@ -594,6 +618,7 @@ NPanelWindow {
           root.selectedIndex = currentIndex
 
         delegate: WallpaperSlice {
+          thumbPath: root.thumbs[modelData.path] || ""
           sliceWidth: root._sliceWidth
           expandedWidth: root._expandedWidth
           skew: root._skew

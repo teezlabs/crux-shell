@@ -12,6 +12,8 @@ Item {
   required property var modelData
   required property int index
 
+  // A cached downscaled copy of a local image, when one exists.
+  property string thumbPath: ""
   property real sliceWidth: 135
   property real expandedWidth: 768
   property real skew: 28
@@ -45,7 +47,7 @@ Item {
   Image {
     id: thumb
     visible: false
-    source: slice.isVideo ? "" : slice.isRemote ? slice.modelData.thumb : "file://" + slice.modelData.path
+    source: slice.isVideo ? "" : slice.isRemote ? slice.modelData.thumb : "file://" + (slice.thumbPath || slice.modelData.path)
     fillMode: Image.PreserveAspectCrop
     asynchronous: true
     cache: true

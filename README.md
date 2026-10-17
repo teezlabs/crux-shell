@@ -52,6 +52,7 @@ Optional:
 | `lm_sensors` | CPU temperature in the Control Center |
 | `wf-recorder` | The Control Center's record action |
 | `hyprpicker` | The Control Center's color picker |
+| `imagemagick` | Small cached thumbnails, so the wallpaper browser opens fast |
 | `kitty`, `gtk3`, `gtk4`, `qt6ct`, `yazi`, `btop`, `starship`, `vesktop` | Theming those apps from your wallpaper |
 
 ## Install

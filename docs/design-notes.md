@@ -870,5 +870,7 @@ The wallpaper browser copies skwd-wall's "slices" view: a horizontal `ListView` 
 
 `WallpaperSlice.qml` gets the slant without layers: each slice is one `Shape` whose parallelogram path is filled with the image itself (`ShapePath.fillItem`, centred by `fillTransform`), so `Shape.CurveRenderer` anti-aliases the slanted edges. The first version sheared a clipping container instead; that also avoided layers, but Qt clips a transformed item through the stencil buffer, which is aliased, and the unfocused slices' slants showed as stairs. The source `Image` is never drawn itself and keeps its decoded pixel size, so the texture maps 1:1. Each image decodes once at the expanded size (`sourceSize`), so focusing a slice never re-decodes it. Measured on DP-1 with the stencil version: stepping through 20 slices in 3 seconds cost about 6% of one core.
 
+Opening the browser used to decode every original (141 megapixels here) each time, about 1.4s of CPU, because the image cache is too small to keep them. After each scan a bash job writes a 576px-tall JPEG per image to `~/.cache/crux/wallpaper-thumbs`, keyed on path and mtime, and slices load those: an open now costs about 0.46s. Without ImageMagick the job exits and slices fall back to the originals.
+
 Wallhaven results use a plain `GridView` instead: thumbnails sit 3px inside a 5px chamfer, which is enough for their corners to clear the cut without any mask.
 
