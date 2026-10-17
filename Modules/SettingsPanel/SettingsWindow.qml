@@ -142,7 +142,7 @@ NPanelWindow {
     },
     {
       "id": "general",
-      "label": "General",
+      "label": "Input",
       "section": "Advanced"
     },
     {

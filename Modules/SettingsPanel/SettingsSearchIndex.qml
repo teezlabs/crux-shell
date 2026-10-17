@@ -6,11 +6,11 @@ Item {
   id: root
 
   readonly property var entries: [
-    // ---- General > Basics / Keybinds ----
-    { "label": "Font family", "description": "Interface font used across the shell", "tab": "general", "subTab": "basics", "keywords": "font typeface" },
-    { "label": "UI scale", "description": "Global multiplier for every font-size token", "tab": "general", "subTab": "basics", "keywords": "scale zoom size" },
+    // ---- Input > General / Keybinds ----
+    { "label": "Font family", "description": "Interface font used across the shell", "tab": "appearance", "subTab": "general", "keywords": "font typeface" },
+    { "label": "UI scale", "description": "Global multiplier for every font-size token", "tab": "appearance", "subTab": "general", "keywords": "scale zoom size" },
     { "label": "Keybinds", "description": "Edit ~/.config/hypr/keybinds.lua, then hyprctl reload", "tab": "general", "subTab": "keybinds", "keywords": "shortcuts keys hyprland" },
-    { "label": "Monospaced font", "description": "Font used by the keybinds viewer and hook command fields", "tab": "general", "subTab": "basics", "keywords": "font mono code" },
+    { "label": "Monospaced font", "description": "Font used by the keybinds viewer and hook command fields", "tab": "appearance", "subTab": "general", "keywords": "font mono code" },
     { "label": "Reverse scrolling", "description": "Natural scroll direction, applied live via hyprctl", "tab": "general", "subTab": "basics", "keywords": "natural scroll direction touchpad mouse" },
     { "label": "Bar clock time format", "description": "Qt date/time format for the bar's Clock widget", "tab": "general", "subTab": "basics", "keywords": "region locale 24 hour 12 hour clock" },
     { "label": "Bar clock date format", "description": "Qt date/time format for the bar's Clock widget", "tab": "general", "subTab": "basics", "keywords": "region locale date" },
@@ -30,7 +30,8 @@ Item {
     { "label": "Widget settings", "description": "Per-instance config for widgets like CustomButton and Spacer", "tab": "bar", "subTab": "widgets", "keywords": "edit custom button spacer" },
 
     // ---- Appearance > General / Colors ----
-    { "label": "Appearance font", "description": "Font + scale for the whole shell", "tab": "appearance", "subTab": "general" },
+    { "label": "Avatar image", "description": "Picture in the Control Center header", "tab": "appearance", "subTab": "general", "keywords": "profile picture user" },
+    { "label": "Restart crux", "description": "Reload every widget and settings page", "tab": "about", "subTab": "", "keywords": "reload relaunch" },
     { "label": "Bar opacity", "description": "Background transparency of the bar and popups", "tab": "appearance", "subTab": "general", "keywords": "transparency alpha" },
     { "label": "Color presets", "description": "Built-in palette presets for the theme", "tab": "appearance", "subTab": "colors", "keywords": "palette scheme" },
     { "label": "Manual colors", "description": "Hand-pick individual theme role colors", "tab": "appearance", "subTab": "colors", "keywords": "palette hex" },

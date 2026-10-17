@@ -120,5 +120,19 @@ NScrollView {
       }
     }
   }
+
+  SettingsSection {
+    title: "Reload"
+    description: "Reloads every widget and settings page — use after editing a .qml file by hand outside this session."
+
+    RowLayout {
+      spacing: 10
+
+      NButton {
+        text: "Restart crux"
+        onClicked: Quickshell.execDetached(["bash", "-c", "pkill -f 'qs -c crux'; sleep 0.5; nohup qs -c crux --log-rules qt.qpa.wayland.textinput.warning=false >/dev/null 2>&1 & disown"])
+      }
+    }
+  }
   }
 }

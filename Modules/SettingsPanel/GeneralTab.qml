@@ -2,8 +2,8 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Widgets
 
-// Top-level "General" settings tab: Basics (shell info, restart) and
-// Keybinds (read-only reference) as subtabs.
+// Top-level "Input" settings tab: General (region, input) and Keybinds
+// (read-only reference) as subtabs.
 ColumnLayout {
   id: root
   spacing: 14
@@ -22,7 +22,7 @@ ColumnLayout {
     model: [
       {
         "id": "basics",
-        "label": "Basics"
+        "label": "General"
       },
       {
         "id": "keybinds",
