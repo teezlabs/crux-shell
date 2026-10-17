@@ -886,3 +886,11 @@ The per-corner mask travels in `rounding_power`, because that is the only per-wi
 Which corner a fragment belongs to is read from the texcoord derivatives, not from `gl_FragCoord`. On the rotated DP-1, framebuffer space is turned 270° from the window, and the first version cut the bottom-left corner when it meant the top-left. `dFdx`/`dFdy` of `v_texcoord` map a framebuffer offset back into the surface's own orientation, and they also stay correct for cropped surfaces, where the texcoord centre isn't 0.5.
 
 The outer cut is the inner one plus `thick * (2 - √2)`. That keeps the diagonal parallel to the window's own cut and gives it the same perpendicular width as the edges, which is the same offset `Chamfer.qml` applies to its stroke.
+
+## The bar backdrop
+
+Hyprland's scrolling layout keeps drawing columns that are scrolled off-screen, and it doesn't clip them to the work area. With three or more windows on a workspace, the column above the focused one ends a few pixels inside the bar's reserved strip, so a slice of it showed through the translucent bar and the gap around the floating pill.
+
+`BarBackdrop` is a Top-layer window that covers the whole strip (`barExtent + barMargin`) and draws the wallpaper with the same `PreserveAspectCrop` as `Background`, so it reads as the wallpaper itself. The bar window could not simply grow to cover its margins, because every bar widget anchors its popup from window coordinates plus `Tokens.barMargin`.
+
+Within a layer, Hyprland stacks surfaces in the order they are created, so the bar's `visible` waits on the backdrop's. The backdrop does not follow wallpaper-switch transitions, so the strip snaps to the new image while the rest of the screen animates. With auto-hide on, the bar reserves no space and the backdrop stays unmapped.

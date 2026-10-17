@@ -307,7 +307,15 @@ ShellRoot {
       // written by the settings panel's checkboxes but never actually read
       // anywhere, so toggling a monitor off did nothing.
       // Mapping before settings load locks in the schema-default margins.
-      visible: root.shownOnThisScreen && Settings.isLoaded
+      // Waits on the backdrop so it maps first and stacks below the bar.
+      visible: root.shownOnThisScreen && Settings.isLoaded && (root.autoHide || backdrop.visible)
+
+      BarBackdrop {
+        id: backdrop
+        targetScreen: root.screen
+        barPosition: root.barPosition
+        visible: root.shownOnThisScreen && Settings.isLoaded && !root.autoHide
+      }
 
       WlrLayershell.layer: WlrLayer.Top
       WlrLayershell.namespace: "crux-bar"
