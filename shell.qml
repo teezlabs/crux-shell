@@ -77,6 +77,7 @@ ShellRoot {
       Hooks.init();
       Idle.init();
       NightLightService.init();
+      WindowCorners.init();
       applyReverseScroll();
     }
   }

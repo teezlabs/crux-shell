@@ -52,7 +52,7 @@ Check any ported script that calls `hyprctl dispatch` for this.
 `Assets/hypr-shaders/` overrides three of Hyprland's built-in shaders so windows get crux's per-corner chamfers instead of a symmetric superellipse.
 
 - `rounding.glsl` clips window contents, `border.glsl` draws the border along the same outline, and `quad.frag` exists only to tell `rounding.glsl` that rects have no texcoord
-- Load with `hyprctl reloadshaders ~/.config/quickshell/crux/Assets/hypr-shaders`. `hyprctl reloadshaders` with no path goes back to the stock shaders. Hyprland reads the directory from a path that is passed in, so a broken override never affects compositor startup
+- `Services/WindowCorners.qml` loads them at crux boot with `hyprctl reloadshaders <shellDir>/Assets/hypr-shaders`. They survive `hyprctl reload`, so they only need loading once per session. `hyprctl reloadshaders` with no path goes back to the stock shaders. The directory is passed in at runtime, so a broken override never affects compositor startup
 - Never copy the files into `~/.config/hypr/shaders/`. Hyprland loads that directory at startup, and a shader that fails there takes the compositor down with it
 - The size of the cut is `decoration:rounding`. `rounding = 30` gives a cut of about 14px
 - The corners come from `rounding_power`. Any value outside `[3, 4)` uses the default mask: top-right and bottom-left (`CRUX_DEFAULT_MASK`). A window rule can set `rounding_power = 3 + mask / 16` with bits TL=1, TR=2, BR=4, BL=8 (top-left and bottom-right is `3 + 5/16 = 3.3125`)
