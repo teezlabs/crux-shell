@@ -68,7 +68,8 @@ Item {
     var total = 0;
     for (var i = 0; i < repeater.count; i++) {
       var item = repeater.itemAt(i);
-      if (item)
+      // Grid skips zero-sized children entirely, spacing included.
+      if (item && item.width > 0 && item.height > 0)
         total += (vertical ? item.height : item.width) + sectionRow.spacing;
     }
     total += vertical ? trailingZone.height : trailingZone.width;
