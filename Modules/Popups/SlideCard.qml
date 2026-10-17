@@ -208,7 +208,7 @@ Item {
     cutBottomLeft: root.barTop || root.barRight
     cutBottomRight: root.barTop || root.barLeft
     omitStrokeSide: !root.joined ? "" : (root.barBottom ? "bottom" : (root.barLeft ? "left" : (root.barRight ? "right" : "top")))
-    fillColor: Colors.alpha(Colors.surface, root.joined ? Settings.data.bar.barBackgroundOpacity : Tokens.panelOpacity)
+    fillColor: root.joined ? Colors.alpha(Colors.barSurface, Settings.data.bar.barBackgroundOpacity) : Colors.alpha(Colors.surface, Tokens.panelOpacity)
     strokeColor: Colors.outline
     strokeWidth: Tokens.borderPanel
     // Rim only, no shadow: `body` clips for the collapse animation, so a

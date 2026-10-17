@@ -42,8 +42,17 @@ Singleton {
   // that specific hex lands at ~30%, not disabledText's 40%.
   readonly property color calendarOutOfMonth: alpha(surfaceTextMuted, 0.30)
 
+  // The bar strip and the drawers joined to it: surface carrying a little of the accent, so the bar
+  // picks up the theme's hue even under schemes whose neutrals are pure grey.
+  readonly property color barSurface: mix(surface, primary, 0.08)
+
   // Convenience: color + alpha, for hover fills / scrims.
   function alpha(c, a) {
     return Qt.rgba(c.r, c.g, c.b, a);
+  }
+
+  // Linear blend from a to b by t (0..1).
+  function mix(a, b, t) {
+    return Qt.rgba(a.r + (b.r - a.r) * t, a.g + (b.g - a.g) * t, a.b + (b.b - a.b) * t, 1);
   }
 }

@@ -9,6 +9,10 @@ Crux follows the spec in `docs/Quickshell Hyprland Shell v2.pdf`. `Commons/Token
 - Workspaces: a filled cell marks the focused workspace; the accent edge mark and accent number mark the workspace each monitor is showing, so the unfocused monitor still reads
 - **Direction D was reverted on 2026-10-17** (fill-only, no outlines, cut squares, segmented meters). Commit `6623f0b` undid it. Don't reapply D-style changes unless asked
 
+## Bar surface
+
+The bar strip and the drawers joined to it fill with `Colors.barSurface`: `surface` with 8% of `primary` mixed in. Schemes like rainbow and neutral generate pure-grey neutrals, which left the strip near-black; the tint carries the theme's hue into the bar whatever the scheme.
+
 ## State colors
 
 Bar modules (and anything that copies them) use one meaning per color:

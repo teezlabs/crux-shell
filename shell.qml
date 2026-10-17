@@ -339,7 +339,7 @@ ShellRoot {
           chamferSize: Settings.data.bar.floating ? Tokens.chamferBarFloating : 0
           cutTopRight: Settings.data.bar.floating
           cutBottomLeft: Settings.data.bar.floating
-          fillColor: Colors.alpha(Colors.surface, Settings.data.bar.barBackgroundOpacity)
+          fillColor: Colors.alpha(Colors.barSurface, Settings.data.bar.barBackgroundOpacity)
           strokeColor: Tokens.barPill ? Colors.outline : "transparent"
           strokeWidth: Tokens.borderPanel
         }
