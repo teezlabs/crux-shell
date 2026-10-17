@@ -26,8 +26,8 @@ Singleton {
   readonly property color error: Settings.data.theme.errorTone
   readonly property color surfaceText: Settings.data.theme.surfaceText
   readonly property color surfaceTextMuted: Settings.data.theme.surfaceTextMuted
-  readonly property color primaryText: Settings.data.theme.mOnPrimary
-  readonly property color errorText: Settings.data.theme.mOnError
+  readonly property color primaryText: Settings.data.theme.primaryText
+  readonly property color errorText: Settings.data.theme.errorText
 
   // Derived, per spec §1 ("Tertiary/label text" and "Disabled/empty" rows) —
   // alpha-composited rather than a flat pre-blended hex, so it reads

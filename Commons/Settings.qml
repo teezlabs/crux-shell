@@ -52,6 +52,11 @@ Singleton {
         adapter.bar.backgroundOpacity = adapter.theme.barOpacity;
         adapter.bar.useSeparateOpacity = true;
       }
+      // One-time: text-on-fill colors used to live in the legacy mOnPrimary/mOnError roles.
+      if (adapter.theme.primaryText === "")
+        adapter.theme.primaryText = adapter.theme.mOnPrimary || adapter.theme.surface;
+      if (adapter.theme.errorText === "")
+        adapter.theme.errorText = adapter.theme.mOnError || adapter.theme.surface;
       if (!root.isLoaded) {
         root.isLoaded = true;
         root.settingsLoaded();

@@ -4,17 +4,9 @@ import Quickshell.Io
 // Split out of Settings.qml; the JsonAdapter serializes this exactly as
 // it did when the block was inline.
 JsonObject {
-    property string mPrimary: "#89b4fa" // accent
-    property string mOnPrimary: "#1e1e2e"
-    property string mSecondary: "#f38ba8" // warning/error accent
-    property string mOnSecondary: "#1e1e2e"
-    property string mSurface: "#1e1e2e" // popup/card background
-    property string mOnSurface: "#cdd6f4" // primary text
-    property string mSurfaceVariant: "#313244" // input fields, pills
-    property string mOnSurfaceVariant: "#6c7086" // secondary/muted text
-    property string mOutline: "#45475a" // borders, hover fill
-    property string mError: "#f38ba8"
-    property string mOnError: "#1e1e2e"
+    // Legacy: read once by Settings' migration into primaryText/errorText.
+    property string mOnPrimary: ""
+    property string mOnError: ""
 
     property real barOpacity: 1.0 // legacy: read once by Settings' migration into bar.backgroundOpacity
 
@@ -34,6 +26,9 @@ JsonObject {
     property string errorTone: "#F5A89F" // named errorTone, not error — JsonObject already has a built-in "error" signal
     property string surfaceText: "#DDE4E8"
     property string surfaceTextMuted: "#9AA5AC"
+    // Readable text on primary and error fills.
+    property string primaryText: ""
+    property string errorText: ""
 
     // Name of the applied Assets/ColorSchemes preset, "" when the colors
     // came from a wallpaper via matugen instead.

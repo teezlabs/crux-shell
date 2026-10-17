@@ -33,12 +33,16 @@ conf_lines = [
     f"fontFamily=\"{ui.get('fontFamily', 'JetBrains Mono')}\"",
     "",
 ]
-for key in [
-    "mPrimary", "mOnPrimary", "mSurface", "mOnSurface", "mSurfaceVariant",
-    "mOnSurfaceVariant", "mOutline", "mError", "mOnError",
-]:
-    if key in theme:
-        conf_lines.append(f"{key}={theme[key]}")
+# The greeter's theme.conf keeps its m-prefixed names; fill them from crux's live roles.
+greeter_keys = {
+    "mPrimary": "primary", "mOnPrimary": "primaryText",
+    "mSurface": "surface", "mOnSurface": "surfaceText",
+    "mSurfaceVariant": "surfaceContainerHigh", "mOnSurfaceVariant": "surfaceTextMuted",
+    "mOutline": "outline", "mError": "errorTone", "mOnError": "errorText",
+}
+for key, role in greeter_keys.items():
+    if theme.get(role):
+        conf_lines.append(f"{key}={theme[role]}")
 
 staging = Path.home() / ".cache/crux/greeter-theme.conf"
 staging.parent.mkdir(parents=True, exist_ok=True)

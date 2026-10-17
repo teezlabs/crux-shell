@@ -17,7 +17,7 @@ Singleton {
   property var schemes: []
   property bool loaded: false
 
-  readonly property var roles: ["surface", "surfaceContainerLow", "surfaceContainer", "surfaceContainerHigh", "outline", "outlineVariant", "primary", "primaryContainer", "primaryContainerText", "tertiary", "errorTone", "surfaceText", "surfaceTextMuted"]
+  readonly property var roles: ["surface", "surfaceContainerLow", "surfaceContainer", "surfaceContainerHigh", "outline", "outlineVariant", "primary", "primaryContainer", "primaryContainerText", "tertiary", "errorTone", "surfaceText", "surfaceTextMuted", "primaryText", "errorText"]
 
   function refresh(): void {
     listProc.running = true;
@@ -48,6 +48,11 @@ Singleton {
       Toast.show("Scheme " + name + " has no usable colors");
       return;
     }
+    // Older scheme files carry no text-on-fill roles; their dark surface reads on a light primary.
+    if (palette.primaryText === undefined && palette.surface !== undefined)
+      theme.primaryText = palette.surface;
+    if (palette.errorText === undefined && palette.surface !== undefined)
+      theme.errorText = palette.surface;
     theme.colorScheme = name;
     Toast.show(name + " applied");
   }

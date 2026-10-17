@@ -243,20 +243,7 @@ Singleton {
         var data = JSON.parse(stdoutCollector.text);
         var c = data.colors;
         var theme = Settings.data.theme;
-        theme.mPrimary = c.primary[root.variant].color;
-        theme.mOnPrimary = c.on_primary[root.variant].color;
-        theme.mSecondary = c.secondary[root.variant].color;
-        theme.mOnSecondary = c.on_secondary[root.variant].color;
-        theme.mSurface = c.surface[root.variant].color;
-        theme.mOnSurface = c.on_surface[root.variant].color;
-        theme.mSurfaceVariant = c.surface_variant[root.variant].color;
-        theme.mOnSurfaceVariant = c.on_surface_variant[root.variant].color;
-        theme.mOutline = c.outline[root.variant].color;
-        theme.mError = c.error[root.variant].color;
-        theme.mOnError = c.on_error[root.variant].color;
-
-        // Tonal-spot roles for the v2 spec (§1) — same JSON response, just
-        // more of its fields.
+        // Tonal-spot roles for the v2 spec (§1).
         theme.surface = c.surface[root.variant].color;
         theme.surfaceContainerLow = c.surface_container_low[root.variant].color;
         theme.surfaceContainer = c.surface_container[root.variant].color;
@@ -270,6 +257,8 @@ Singleton {
         theme.errorTone = c.error[root.variant].color;
         theme.surfaceText = c.on_surface[root.variant].color;
         theme.surfaceTextMuted = c.on_surface_variant[root.variant].color;
+        theme.primaryText = c.on_primary[root.variant].color;
+        theme.errorText = c.on_error[root.variant].color;
 
         // Wallpaper colors replace whatever preset was applied.
         theme.colorScheme = "";
