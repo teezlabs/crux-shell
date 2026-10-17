@@ -53,6 +53,7 @@ Item {
     var values = Hyprland.workspaces && Hyprland.workspaces.values ? Hyprland.workspaces.values : [];
     var occupied = {};
     var focusedId = -1;
+    var shownId = -1;
     for (var i = 0; i < values.length; i++) {
       var ws = values[i];
       if (!ws || (ws.name && ws.name.indexOf("special:") === 0))
@@ -63,6 +64,8 @@ Item {
       occupied[ws.id] = true;
       if (ws.focused === true)
         focusedId = ws.id;
+      if (ws.active === true)
+        shownId = ws.id;
     }
 
     wsModel.clear();
@@ -71,7 +74,8 @@ Item {
       wsModel.append({
         "wsId": n,
         "occupied": !!occupied[n],
-        "active": n === focusedId
+        "active": n === focusedId,
+        "shown": n === shownId
       });
     }
   }
@@ -132,6 +136,8 @@ Item {
           required property int wsId
           required property bool occupied
           required property bool active
+          // Visible on this monitor, focused or not.
+          required property bool shown
           required property int index
 
           readonly property int longSide: 28
@@ -181,8 +187,8 @@ Item {
           // edge inset for a vertical one — same "underline" idea rotated
           // onto whichever edge faces the direction workspaces read in.
           Rectangle {
-            anchors.bottom: !root.vertical ? parent.bottom : undefined
-            anchors.left: root.vertical ? parent.left : parent.left
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
             anchors.right: !root.vertical ? parent.right : undefined
             anchors.top: root.vertical ? parent.top : undefined
             anchors.topMargin: root.vertical ? 6 : 0
@@ -191,7 +197,7 @@ Item {
             anchors.rightMargin: !root.vertical ? 6 : 0
             width: root.vertical ? Tokens.borderMarker : undefined
             height: root.vertical ? undefined : Tokens.borderMarker
-            opacity: cell.active ? 1 : 0
+            opacity: cell.shown ? 1 : 0
             visible: opacity > 0
             color: Colors.primary
 
@@ -207,7 +213,8 @@ Item {
             tracking: true
             anchors.centerIn: parent
             text: String(cell.wsId)
-            color: cell.active ? Colors.primaryContainerText : (cell.occupied ? Colors.surfaceText : Colors.disabledText)
+            color: cell.active ? Colors.primaryContainerText : (cell.shown ? Colors.primary : (cell.occupied ? Colors.surfaceText : Colors.disabledText))
+            font.weight: cell.shown ? Font.DemiBold : tierWeight
           }
 
           HoverHandler {

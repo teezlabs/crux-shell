@@ -6,6 +6,7 @@ Crux follows the spec in `docs/Quickshell Hyprland Shell v2.pdf`. `Commons/Token
 
 - Outlined panels, Control Center circles, round sliders and ring gauges
 - Every corner is a chamfer. No radii anywhere. `ConcaveCorner` is a straight 45° cut, not an arc
+- Workspaces: a filled cell marks the focused workspace; the accent edge mark and accent number mark the workspace each monitor is showing, so the unfocused monitor still reads
 - **Direction D was reverted on 2026-10-17** (fill-only, no outlines, cut squares, segmented meters). Commit `6623f0b` undid it. Don't reapply D-style changes unless asked
 
 ## Motion
