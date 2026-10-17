@@ -48,7 +48,7 @@ Item {
     label: root.connectedName !== "" ? root.connectedName : (root.adapter && root.adapter.enabled ? "No device" : "Off")
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Popups.openAt("bluetooth", root.screen, pos.x, pos.y);
+      Popups.openFrom("bluetooth", root.screen, pos.x, pos.y, root.width, root.height);
     }
 
     // Geometric "B"-glyph stand-in (bowtie) — no font/emoji glyph dependency.

@@ -30,7 +30,7 @@ Item {
     invertChamfer: root.invertChamfer
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Popups.openAt("notificationHistory", root.screen, pos.x, pos.y);
+      Popups.openFrom("notificationHistory", root.screen, pos.x, pos.y, root.width, root.height);
     }
 
     // Geometric bell glyph — body + clapper, no font/emoji dependency.

@@ -215,7 +215,7 @@ Item {
   TapHandler {
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Popups.openAt("controlCenter", root.screen, pos.x, pos.y);
+      Popups.openFrom("controlCenter", root.screen, pos.x, pos.y, root.width, root.height);
     }
   }
 

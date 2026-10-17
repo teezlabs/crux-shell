@@ -289,6 +289,7 @@ PanelWindow {
     host: root
     barPos: root.barPos
     popupName: "controlCenter"
+    alwaysMorph: true
     cardWidth: 436
     cardHeight: controlCenterContent.implicitHeight + contentMargins * 2
 

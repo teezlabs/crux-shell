@@ -24,7 +24,7 @@ Item {
     invertChamfer: root.invertChamfer
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Popups.openAt("clipboard", root.screen, pos.x, pos.y);
+      Popups.openFrom("clipboard", root.screen, pos.x, pos.y, root.width, root.height);
     }
 
     // Geometric clipboard glyph — a small rectangle with a clip notch.

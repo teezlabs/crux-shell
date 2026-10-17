@@ -29,7 +29,7 @@ Item {
     attention: root.lit
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Popups.openAt("hue", root.screen, pos.x, pos.y);
+      Popups.openFrom("hue", root.screen, pos.x, pos.y, root.width, root.height);
     }
     onSecondaryTapped: {
       if (Hue.paired && root.group)

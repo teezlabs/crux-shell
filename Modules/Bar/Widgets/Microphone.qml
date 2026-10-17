@@ -92,7 +92,7 @@ Item {
     acceptedButtons: Qt.LeftButton
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Popups.openAt("microphone", root.screen, pos.x, pos.y);
+      Popups.openFrom("microphone", root.screen, pos.x, pos.y, root.width, root.height);
     }
   }
   TapHandler {

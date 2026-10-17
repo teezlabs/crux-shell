@@ -46,7 +46,7 @@ Item {
     label: root.connectedNetwork ? (root.connectedNetwork.ssid || "") : (Networking.wifiEnabled ? "Not connected" : "Off")
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Popups.openAt("wifi", root.screen, pos.x, pos.y);
+      Popups.openFrom("wifi", root.screen, pos.x, pos.y, root.width, root.height);
     }
 
     // Standard wifi-fan glyph (three concentric arcs + a dot) drawn on

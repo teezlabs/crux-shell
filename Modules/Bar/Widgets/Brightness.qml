@@ -168,7 +168,7 @@ Item {
     onTapped: {
       TooltipService.hideImmediately();
       var pos = root.mapToItem(null, 0, 0);
-      Popups.openAt("brightness", root.screen, pos.x, pos.y);
+      Popups.openFrom("brightness", root.screen, pos.x, pos.y, root.width, root.height);
     }
   }
 

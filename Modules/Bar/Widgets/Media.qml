@@ -112,7 +112,7 @@ Item {
   TapHandler {
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Popups.openAt("mediaPlayer", root.screen, pos.x, pos.y);
+      Popups.openFrom("mediaPlayer", root.screen, pos.x, pos.y, root.width, root.height);
     }
   }
 }

@@ -34,7 +34,7 @@ Item {
   TapHandler {
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Popups.openAt("calendar", root.screen, pos.x, pos.y);
+      Popups.openFrom("calendar", root.screen, pos.x, pos.y, root.width, root.height);
     }
   }
 

@@ -148,7 +148,7 @@ Item {
   readonly property real _groupMain: (sectionRoot.vertical ? sectionRoot.height : sectionRoot.width) - sectionRoot.trailingSize + sectionRoot.groupInset * 2
 
   Chamfer {
-    visible: sectionRoot.grouped
+    visible: sectionRoot.grouped && !Tokens.barPill
     x: sectionRoot.vertical ? -sectionRoot.groupPadding : -sectionRoot.groupInset
     y: sectionRoot.vertical ? -sectionRoot.groupInset : -sectionRoot.groupPadding
     width: sectionRoot.vertical ? sectionRoot.width + sectionRoot.groupPadding * 2 : sectionRoot._groupMain

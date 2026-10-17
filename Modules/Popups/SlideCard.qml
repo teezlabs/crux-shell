@@ -41,8 +41,11 @@ Item {
   readonly property bool barTop: !root.barLeft && !root.barRight && !root.barBottom
 
   // Docked strip: the card overlaps the bar's inner edge line so the two outlines join.
-  readonly property bool joined: Tokens.barDocked
-  readonly property real barOffset: Tokens.barExtent - (root.joined ? Tokens.borderPanel : 0)
+  readonly property bool joined: Tokens.barDocked || Tokens.barPill
+  // Floating (or no strip): the card stands off the bar by the bar's own margin, fully outlined.
+  readonly property real barOffset: Tokens.barExtent + (root.joined ? -Tokens.borderPanel : Tokens.barMargin)
+  // Keeps the card within a floating bar's ends.
+  readonly property real crossInset: Math.max(8, Tokens.barMargin)
 
   default property alias content: contentLayer.data
 
@@ -78,8 +81,9 @@ Item {
   // the triggering bar module itself unfolding into the panel. -1 disables.
   property real morphExtent: -1
   property real morphCross: 0
-  property real openCross: 0
-  readonly property bool morphing: root.morphExtent >= 0
+  // Morph even on a docked strip; otherwise only a detached bar morphs.
+  property bool alwaysMorph: false
+  readonly property bool morphing: root.morphExtent >= 0 && (root.alwaysMorph || Tokens.barFloating)
 
   // Morph geometry is pushed by the triggering bar module as soon as it is
   // laid out, not on the tap: a closed card holds its full cross-axis size,
@@ -91,30 +95,40 @@ Item {
     const vertical = root.barLeft || root.barRight;
     root.morphExtent = vertical ? h : w;
     root.morphCross = (vertical ? y : x) + Tokens.barMargin;
-    if (!root.shown)
+    if (!root.shown && root.morphing)
       root.crossPos = root.morphCross;
-    // Keeps a plain open() (IPC, a keybind) landing in the same place a tap
-    // would, instead of at the default cross position.
-    root.openCross = root._clampCross(root.morphCross);
   }
 
   function _clampCross(v) {
-    return (root.barLeft || root.barRight) ? Math.max(8, Math.min(v, root.host.height - root.cardHeight - 8)) : Math.max(8, Math.min(v, root.host.width - root.cardWidth - 8));
+    const i = root.crossInset;
+    return (root.barLeft || root.barRight) ? Math.max(i, Math.min(v, root.host.height - root.cardHeight - i)) : Math.max(i, Math.min(v, root.host.width - root.cardWidth - i));
   }
 
-  // Morph-mode entry point. Toggles closed if already open, like openAt.
+  // Centred on the module it unfolds from.
+  function _openCross() {
+    const size = (root.barLeft || root.barRight) ? root.cardHeight : root.cardWidth;
+    return root._clampCross(root.morphCross + root.morphExtent / 2 - size / 2);
+  }
+
+  // Opens out of the bar module at (x, y) sized w x h: morphs when detached,
+  // otherwise lines up with the module like openAt. Toggles closed if open.
   function openFrom(x, y, w, h) {
     if (root.shown) {
       root.shown = false;
       return;
     }
     root.setMorphSource(x, y, w, h);
+    if (!root.morphing) {
+      root.openAt(x, y);
+      return;
+    }
+    root.crossPos = root.morphCross;
     root.shown = true;
   }
 
   onShownChanged: {
     if (root.morphing)
-      root.crossPos = root.shown ? root.openCross : root.morphCross;
+      root.crossPos = root.shown ? Qt.binding(() => root._openCross()) : root.morphCross;
   }
 
   // The axis of travel away from the bar collapses to 0 on close; the
@@ -181,7 +195,7 @@ Item {
     cutTopRight: root.barBottom || root.barLeft
     cutBottomLeft: root.barTop || root.barRight
     cutBottomRight: root.barTop || root.barLeft
-    omitStrokeSide: root.barBottom ? "bottom" : (root.barLeft ? "left" : (root.barRight ? "right" : "top"))
+    omitStrokeSide: !root.joined ? "" : (root.barBottom ? "bottom" : (root.barLeft ? "left" : (root.barRight ? "right" : "top")))
     fillColor: Colors.alpha(Colors.surface, root.joined ? Settings.data.bar.barBackgroundOpacity : Tokens.panelOpacity)
     strokeColor: Colors.outline
     strokeWidth: Tokens.borderPanel

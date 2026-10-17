@@ -333,15 +333,15 @@ ShellRoot {
 
         Chamfer {
           // Real bar-strip background — off by default (showBackground).
-          // Floating, its end corners match the cuts of the groups at each end; square when docked.
+          // Floating, it cuts opposite corners at its two ends; square when docked.
           visible: Settings.data.bar.showBackground
           anchors.fill: parent
-          chamferSize: Settings.data.bar.floating ? Tokens.chamferPanel : 0
-          cutTopLeft: Settings.data.bar.floating
-          cutTopRight: Settings.data.bar.floating && !root.barIsVertical
-          cutBottomLeft: Settings.data.bar.floating && root.barIsVertical
+          chamferSize: Settings.data.bar.floating ? Tokens.chamferBarFloating : 0
+          cutTopRight: Settings.data.bar.floating
+          cutBottomLeft: Settings.data.bar.floating
           fillColor: Colors.alpha(Colors.surface, Settings.data.bar.barBackgroundOpacity)
-          strokeColor: "transparent"
+          strokeColor: Tokens.barPill ? Colors.outline : "transparent"
+          strokeWidth: Tokens.borderPanel
         }
 
         // Solid outline framing all four edges of the bar, following the
@@ -350,10 +350,9 @@ ShellRoot {
         Chamfer {
           visible: Settings.data.bar.showBorder
           anchors.fill: parent
-          chamferSize: Settings.data.bar.floating ? Tokens.chamferPanel : 0
-          cutTopLeft: Settings.data.bar.floating
-          cutTopRight: Settings.data.bar.floating && !root.barIsVertical
-          cutBottomLeft: Settings.data.bar.floating && root.barIsVertical
+          chamferSize: Settings.data.bar.floating ? Tokens.chamferBarFloating : 0
+          cutTopRight: Settings.data.bar.floating
+          cutBottomLeft: Settings.data.bar.floating
           fillColor: "transparent"
           strokeColor: Colors.alpha(Colors.primary, 0.32)
           strokeWidth: Settings.data.bar.borderWidth

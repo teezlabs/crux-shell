@@ -75,6 +75,11 @@ QtObject {
   // Bar geometry everything placed against the bar reads, so `floating` is honoured in one place.
   readonly property bool barDocked: Settings.isLoaded && Settings.data.bar.showBackground && !Settings.data.bar.floating
   readonly property int barMargin: Settings.isLoaded && Settings.data.bar.floating ? Settings.data.bar.floatMargin : 0
+  readonly property bool barFloating: Settings.isLoaded && Settings.data.bar.floating
+  // Floating strip drawn as one outlined pill that drawers join, with no group plates inside.
+  readonly property bool barPill: barFloating && Settings.data.bar.showBackground
+  // Pill: cell cut 7 plus a 5px side inset x (2 - sqrt 2).
+  readonly property int chamferBarFloating: 10
   // Screen edge to the bar's inner edge.
   readonly property int barExtent: (Settings.isLoaded ? Settings.data.bar.thickness : 0) + barMargin + (barDocked ? barJoinGap : 0)
 

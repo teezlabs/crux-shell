@@ -204,7 +204,7 @@ Item {
     onTapped: {
       TooltipService.hideImmediately();
       var pos = root.mapToItem(null, 0, 0);
-      Popups.openAt("systemStats", root.screen, pos.x, pos.y);
+      Popups.openFrom("systemStats", root.screen, pos.x, pos.y, root.width, root.height);
     }
   }
   onCpuPercentChanged: if (TooltipService.anchorItem === root)

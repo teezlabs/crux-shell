@@ -69,7 +69,7 @@ Item {
     attention: root.sessionPercent > 0.85
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
-      Popups.openAt("claudeUsage", root.screen, pos.x, pos.y);
+      Popups.openFrom("claudeUsage", root.screen, pos.x, pos.y, root.width, root.height);
     }
 
     // Geometric robot glyph: rounded head outline + two eye dots + antenna —
