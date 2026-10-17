@@ -702,6 +702,12 @@ got wider and started clipping — "fields" rendered as "fiel". Tracking is a
 per-call-site flag; the 161 blocks that had set `font.letterSpacing` explicitly
 were given `tracking: true` when they were migrated.
 
+## The joined drawer outline
+
+Added 2026-10-17, replacing the fillets below. A drawer read as a separate box because it was outlined and the docked bar strip wasn't, so its strokes just stopped at the bar. Now, when the bar is a docked strip (`showBackground` on, `floating` off), `shell.qml` draws a 1px `Colors.outline` line along the bar's inner edge, and `SlideCard` (`joined`) moves in by `Tokens.borderPanel` so it overlaps that line. The card's fill erases the line along the shared edge, and its open stroke turns into the bar line at both ends, giving one continuous outline. The card also takes the strip's fill and opacity, so the two read as one surface; the grouped sections stay the raised layer on top.
+
+`Chamfer`'s open stroke uses `SquareCap`. Its run starts half a stroke in from the omitted edge, so a flat cap left the corner pixel of the join unpainted, a 1px notch visible in every capture.
+
 ## The drawer fillet (ConcaveCorner)
 
 **Removed 2026-10-14 — the user found the flared joint sloppy.** SlideCard

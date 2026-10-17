@@ -229,7 +229,8 @@ Item {
       }
       strokeWidth: root.strokeWidth
       joinStyle: ShapePath.MiterJoin
-      capStyle: ShapePath.FlatCap
+      // Square caps carry an open run's free ends out to the omitted edge.
+      capStyle: ShapePath.SquareCap
       PathPolyline {
         path: {
           if (root.strokeWidth <= 0)

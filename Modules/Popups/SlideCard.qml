@@ -42,7 +42,9 @@ Item {
 
   // Flush against the bar's own outer edge, same offset the old
   // per-popup _barOffset used.
-  readonly property real barOffset: Settings.data.bar.thickness + Settings.data.bar.floatMargin
+  // Docked strip: the card overlaps the bar's inner edge line so the two outlines join.
+  readonly property bool joined: Settings.data.bar.showBackground && !Settings.data.bar.floating
+  readonly property real barOffset: Settings.data.bar.thickness + (Settings.data.bar.floating ? Settings.data.bar.floatMargin : 0) - (root.joined ? Tokens.borderPanel : 0)
 
   default property alias content: contentLayer.data
 
@@ -181,7 +183,7 @@ Item {
     cutBottomLeft: root.barTop || root.barRight
     cutBottomRight: root.barTop || root.barLeft
     omitStrokeSide: root.barBottom ? "bottom" : (root.barLeft ? "left" : (root.barRight ? "right" : "top"))
-    fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+    fillColor: Colors.alpha(Colors.surface, root.joined ? Settings.data.bar.barBackgroundOpacity : Tokens.panelOpacity)
     strokeColor: Colors.outline
     strokeWidth: Tokens.borderPanel
     // Rim only, no shadow: `body` clips for the collapse animation, so a

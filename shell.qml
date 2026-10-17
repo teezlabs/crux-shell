@@ -357,6 +357,16 @@ ShellRoot {
           strokeWidth: Settings.data.bar.borderWidth
         }
 
+        // Inner edge line that SlideCard drawers overlap and join into.
+        Rectangle {
+          visible: Settings.data.bar.showBackground && !Settings.data.bar.floating && !Settings.data.bar.showBorder
+          x: root.barPosition === "left" ? parent.width - width : 0
+          y: root.barPosition === "top" ? parent.height - height : 0
+          width: root.barIsVertical ? Tokens.borderPanel : parent.width
+          height: root.barIsVertical ? parent.height : Tokens.borderPanel
+          color: Colors.outline
+        }
+
         Bar {
           screen: root.screen
           vertical: root.barIsVertical
