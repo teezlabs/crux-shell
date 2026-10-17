@@ -42,3 +42,7 @@ Each of these has already cost a debugging session on this box (Qt 6.11–6.12, 
 
 - **`PowerProfiles.hasPerformanceProfile` is false for about the first second.** Bind to it. Don't read it once at startup
 - **Scroll Lock always reads "unknown".** `hyprctl devices -j` doesn't report it and this box has no scroll-lock LED in sysfs. Not a crux bug
+
+## Text-input warning on every popup close
+
+`qt.qpa.wayland.textinput: ... Trying to disable <surface> but 0x0 is focused` fires each time a layer surface drops `WlrKeyboardFocus.Exclusive`. It isn't crux: a 20-line config that only toggles keyboard focus reproduces it. Hyprland sends the text-input leave before the keyboard leave, so Qt's disable finds nothing focused. Crux launches with `--log-rules qt.qpa.wayland.textinput.warning=false` (in `exec.lua` and [`dev-loop.md`](../agents/skills/dev-loop.md)). `//@ pragma Env QT_LOGGING_RULES=...` does not work; quickshell's own log filter overrides it.

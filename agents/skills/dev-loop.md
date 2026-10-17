@@ -21,7 +21,7 @@ ps aux | grep "qs -c crux" | grep -v grep
 
 # 3. Launch
 rm -f /tmp/crux-boot.log
-nohup qs -c crux >/tmp/crux-boot.log 2>&1 &
+nohup qs -c crux --log-rules qt.qpa.wayland.textinput.warning=false >/tmp/crux-boot.log 2>&1 &
 disown
 
 # 4. After a couple of seconds, check the log and process
