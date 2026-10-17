@@ -11,7 +11,9 @@ Read this before adding a setting or touching the settings panel.
 
 ## Panel tabs
 
-- `Modules/SettingsPanel/SettingsWindow.qml` holds the `tabs` array (`{id, label}`). It's the authoritative list
+- `Modules/SettingsPanel/SettingsWindow.qml` holds the `tabs` array (`{id, label, section}`). It's the authoritative list, in sidebar order. The sidebar draws a section header wherever `section` changes: Personalize, Shell, System, Session, Advanced
+- Some ids outlived their labels: `general` is the Input tab and `idle` is the Power tab. `openTab` callers and `SettingsSearchIndex.qml` use the id
+- Prefer a subtab on an existing tab over a new top-level tab for anything with only a setting or two (OSD lives under Notifications, the session menu under Power)
 - A new tab is one entry there plus `<Name>Tab.qml`, shown with `visible: root.activeTab === "<id>"`
 - A tab with several pages uses `Widgets/NTabBar.qml` and its own `subTab` property. A one-page tab skips the bar
 - Every tab is built eagerly, so a clean boot log covers every tab's bindings, not just the one on screen
