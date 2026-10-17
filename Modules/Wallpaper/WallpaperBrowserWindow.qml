@@ -205,6 +205,8 @@ NPanelWindow {
 
   // Don't steal focus into searchInput on open, or arrow/Enter/R shortcuts below (gated on !activeFocus) go dead.
   // Column count from the Flickable's real width, not hand-computed from card.width.
+  // Portrait screens stack rail, grid and details instead of laying them side by side.
+  readonly property bool portrait: root.height > root.width
   readonly property int _gridGap: 8
   readonly property int _columns: Math.max(1, Math.floor((gridFlick.width + root._gridGap) / (220 + root._gridGap)))
   // Thumbnails fill their column at 16:9.
@@ -273,7 +275,7 @@ NPanelWindow {
     // narrow monitor is smaller than the 1200x720 default, and nothing
     // was capping it, so the card overflowed straight off the edges there.
     width: Math.min(1560, root.width - 40)
-    height: Math.min(900, root.height - 40)
+    height: Math.min(root.portrait ? 1500 : 900, root.height - 40)
 
     Chamfer {
       anchors.fill: parent
@@ -325,17 +327,20 @@ NPanelWindow {
       }
     }
 
-    RowLayout {
+    GridLayout {
       Layout.fillWidth: true
       Layout.fillHeight: true
-      spacing: 16
+      columns: root.portrait ? 1 : 3
+      rowSpacing: 16
+      columnSpacing: 16
 
       // ---- Left rail: search / sort / directory ----
       ColumnLayout {
-        Layout.preferredWidth: 220
-        Layout.minimumWidth: 220
-        Layout.maximumWidth: 220
-        Layout.fillHeight: true
+        Layout.preferredWidth: root.portrait ? -1 : 220
+        Layout.minimumWidth: root.portrait ? 0 : 220
+        Layout.maximumWidth: root.portrait ? Number.POSITIVE_INFINITY : 220
+        Layout.fillWidth: root.portrait
+        Layout.fillHeight: !root.portrait
         spacing: 14
 
         RowLayout {
@@ -684,10 +689,12 @@ NPanelWindow {
         }
 
         Item {
+          visible: !root.portrait
           Layout.fillHeight: true
         }
 
         NText {
+          visible: !root.portrait
           text: "← → ↑ ↓ MOVE\n⏎ APPLY + THEME\n⇧⏎ WALLPAPER ONLY\n/ SEARCH  R RANDOM\nESC CLOSE"
           color: Colors.labelText
           size: NText.Size.LabelXs
@@ -841,17 +848,22 @@ NPanelWindow {
         }
       }
 
-      // ---- Right detail panel ----
-      ColumnLayout {
-        Layout.preferredWidth: 360
-        Layout.minimumWidth: 360
-        Layout.maximumWidth: 360
-        Layout.fillHeight: true
-        spacing: 12
+      // ---- Right detail panel (bottom strip in portrait: preview beside its controls) ----
+      GridLayout {
+        Layout.preferredWidth: root.portrait ? -1 : 360
+        Layout.minimumWidth: root.portrait ? 0 : 360
+        Layout.maximumWidth: root.portrait ? Number.POSITIVE_INFINITY : 360
+        Layout.fillWidth: root.portrait
+        Layout.fillHeight: !root.portrait
+        columns: root.portrait ? 2 : 1
+        rowSpacing: 12
+        columnSpacing: 16
 
         Item {
-          Layout.fillWidth: true
+          Layout.preferredWidth: root.portrait ? 440 : -1
+          Layout.fillWidth: !root.portrait
           Layout.preferredHeight: Math.round(width * 9 / 16)
+          Layout.alignment: Qt.AlignTop
 
           Chamfer {
             anchors.fill: parent
@@ -913,257 +925,263 @@ NPanelWindow {
 
         ColumnLayout {
           Layout.fillWidth: true
-          spacing: 2
-          visible: root.selectedFile !== null
-          NText {
-            text: root.selectedFile ? root.selectedFile.name : ""
-            color: Colors.surfaceText
-            size: NText.Size.BodySm
-            elide: Text.ElideMiddle
-            Layout.fillWidth: true
-          }
-          NText {
-            text: Settings.data.wallpaper.directory
-            color: Colors.labelText
-            size: NText.Size.Caption
-            elide: Text.ElideMiddle
-            Layout.fillWidth: true
-          }
-        }
+          Layout.fillHeight: true
+          spacing: 12
 
-        Rectangle {
-          Layout.fillWidth: true
-          height: 1
-          color: Colors.surfaceContainerHigh
-        }
-
-        // ---- Monitor targeting ----
-        ColumnLayout {
-          Layout.fillWidth: true
-          spacing: 4
-          NText {
-            tracking: true
-            text: "TARGET"
-            color: Colors.labelText
-            size: NText.Size.LabelXs
+          ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 2
+            visible: root.selectedFile !== null
+            NText {
+              text: root.selectedFile ? root.selectedFile.name : ""
+              color: Colors.surfaceText
+              size: NText.Size.BodySm
+              elide: Text.ElideMiddle
+              Layout.fillWidth: true
+            }
+            NText {
+              text: Settings.data.wallpaper.directory
+              color: Colors.labelText
+              size: NText.Size.Caption
+              elide: Text.ElideMiddle
+              Layout.fillWidth: true
+            }
           }
-          Flow {
+
+          Rectangle {
+            Layout.fillWidth: true
+            height: 1
+            color: Colors.surfaceContainerHigh
+          }
+
+          // ---- Monitor targeting ----
+          ColumnLayout {
             Layout.fillWidth: true
             spacing: 4
-
-            Item {
-              id: allPill
-              readonly property bool selected: root.targetMonitor === ""
-              width: allLabel.implicitWidth + 18
-              height: 24
-              Chamfer {
-                anchors.fill: parent
-                chamferSize: Tokens.chamferIcon
-                cutTopRight: true
-                cutBottomLeft: true
-                fillColor: allPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
-                strokeColor: allPill.selected ? Colors.primary : Colors.outline
-                strokeWidth: Tokens.borderModule
-              }
-              NText {
-                id: allLabel
-                anchors.centerIn: parent
-                text: "ALL"
-                color: allPill.selected ? Colors.primaryContainerText : Colors.surfaceText
-                size: NText.Size.LabelXs
-              }
-              HoverHandler {
-                cursorShape: Qt.PointingHandCursor
-              }
-              TapHandler {
-                onTapped: root.targetMonitor = ""
-              }
+            NText {
+              tracking: true
+              text: "TARGET"
+              color: Colors.labelText
+              size: NText.Size.LabelXs
             }
+            Flow {
+              Layout.fillWidth: true
+              spacing: 4
 
-            Repeater {
-              model: Quickshell.screens
-              delegate: Item {
-                id: monPill
-                required property var modelData
-                readonly property bool selected: root.targetMonitor === modelData.name
-                width: monLabel.implicitWidth + 18
+              Item {
+                id: allPill
+                readonly property bool selected: root.targetMonitor === ""
+                width: allLabel.implicitWidth + 18
                 height: 24
                 Chamfer {
                   anchors.fill: parent
                   chamferSize: Tokens.chamferIcon
                   cutTopRight: true
                   cutBottomLeft: true
-                  fillColor: monPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
-                  strokeColor: monPill.selected ? Colors.primary : Colors.outline
+                  fillColor: allPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                  strokeColor: allPill.selected ? Colors.primary : Colors.outline
                   strokeWidth: Tokens.borderModule
                 }
                 NText {
-                  id: monLabel
+                  id: allLabel
                   anchors.centerIn: parent
-                  text: monPill.modelData.name + (monPill.modelData === Quickshell.screens[0] ? " ★" : "")
-                  color: monPill.selected ? Colors.primaryContainerText : Colors.surfaceText
+                  text: "ALL"
+                  color: allPill.selected ? Colors.primaryContainerText : Colors.surfaceText
                   size: NText.Size.LabelXs
                 }
                 HoverHandler {
                   cursorShape: Qt.PointingHandCursor
                 }
                 TapHandler {
-                  onTapped: root.targetMonitor = monPill.modelData.name
+                  onTapped: root.targetMonitor = ""
                 }
               }
-            }
-          }
-        }
 
-        Rectangle {
-          Layout.fillWidth: true
-          height: 1
-          color: Colors.surfaceContainerHigh
-        }
-
-        // ---- Matugen scheme + templates ----
-        ColumnLayout {
-          Layout.fillWidth: true
-          spacing: 4
-          NText {
-            tracking: true
-            text: "SCHEME"
-            color: Colors.labelText
-            size: NText.Size.LabelXs
-          }
-          Flow {
-            Layout.fillWidth: true
-            spacing: 4
-            Repeater {
-              model: ["scheme-content", "scheme-expressive", "scheme-fidelity", "scheme-fruit-salad", "scheme-monochrome", "scheme-neutral", "scheme-rainbow", "scheme-tonal-spot", "scheme-vibrant"]
-              delegate: Item {
-                id: schemePill
-                required property string modelData
-                readonly property bool selected: Settings.data.wallpaper.matugenScheme === modelData
-                readonly property string label: modelData.replace("scheme-", "")
-                width: schemeLabel.implicitWidth + 14
-                height: 22
-                Chamfer {
-                  anchors.fill: parent
-                  chamferSize: Tokens.chamferIcon
-                  cutTopRight: true
-                  cutBottomLeft: true
-                  fillColor: schemePill.selected ? Colors.primaryContainer : Colors.surfaceContainer
-                  strokeColor: schemePill.selected ? Colors.primary : Colors.outline
-                  strokeWidth: Tokens.borderModule
-                }
-                NText {
-                  id: schemeLabel
-                  anchors.centerIn: parent
-                  text: schemePill.label
-                  color: schemePill.selected ? Colors.primaryContainerText : Colors.surfaceText
-                  font.pixelSize: 8
-                }
-                HoverHandler {
-                  cursorShape: Qt.PointingHandCursor
-                }
-                TapHandler {
-                  onTapped: {
-                    Settings.data.wallpaper.matugenScheme = schemePill.modelData;
-                    // Live preview — matugen needs a real local file, so a
-                    // Wallhaven result not yet downloaded can't regenerate
-                    // until it's actually applied.
-                    if (root.selectedFile && !root.selectedFile.isRemote)
-                      Matugen.generateFrom(root.selectedFile.path);
+              Repeater {
+                model: Quickshell.screens
+                delegate: Item {
+                  id: monPill
+                  required property var modelData
+                  readonly property bool selected: root.targetMonitor === modelData.name
+                  width: monLabel.implicitWidth + 18
+                  height: 24
+                  Chamfer {
+                    anchors.fill: parent
+                    chamferSize: Tokens.chamferIcon
+                    cutTopRight: true
+                    cutBottomLeft: true
+                    fillColor: monPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                    strokeColor: monPill.selected ? Colors.primary : Colors.outline
+                    strokeWidth: Tokens.borderModule
+                  }
+                  NText {
+                    id: monLabel
+                    anchors.centerIn: parent
+                    text: monPill.modelData.name + (monPill.modelData === Quickshell.screens[0] ? " ★" : "")
+                    color: monPill.selected ? Colors.primaryContainerText : Colors.surfaceText
+                    size: NText.Size.LabelXs
+                  }
+                  HoverHandler {
+                    cursorShape: Qt.PointingHandCursor
+                  }
+                  TapHandler {
+                    onTapped: root.targetMonitor = monPill.modelData.name
                   }
                 }
               }
             }
           }
-          NText {
-            readonly property int _enabledCount: {
-              var t = Settings.data.wallpaper.templates;
-              var keys = Object.keys(t);
-              var n = 0;
-              for (var i = 0; i < keys.length; i++)
-                if (t[keys[i]])
-                  n++;
-              return n;
-            }
-            text: "WRITES " + _enabledCount + " TEMPLATES"
-            color: Colors.labelText
-            size: NText.Size.LabelXs
-            Layout.topMargin: 4
-          }
-        }
 
-        Item {
-          Layout.fillHeight: true
-        }
-
-        // ---- Apply buttons ----
-        ColumnLayout {
-          Layout.fillWidth: true
-          spacing: 6
-
-          Item {
+          Rectangle {
             Layout.fillWidth: true
-            height: 32
-            enabled: root.selectedFile !== null && !root.downloading
-            opacity: enabled ? 1 : 0.4
-            Chamfer {
-              anchors.fill: parent
-              chamferSize: Tokens.chamferIcon
-              cutTopRight: true
-              cutBottomLeft: true
-              fillColor: applyThemeHover.hovered ? Colors.primary : Colors.primaryContainer
-              strokeColor: Colors.primary
-              strokeWidth: Tokens.borderModule
+            height: 1
+            color: Colors.surfaceContainerHigh
+          }
+
+          // ---- Matugen scheme + templates ----
+          ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 4
+            NText {
+              tracking: true
+              text: "SCHEME"
+              color: Colors.labelText
+              size: NText.Size.LabelXs
+            }
+            Flow {
+              Layout.fillWidth: true
+              spacing: 4
+              Repeater {
+                model: ["scheme-content", "scheme-expressive", "scheme-fidelity", "scheme-fruit-salad", "scheme-monochrome", "scheme-neutral", "scheme-rainbow", "scheme-tonal-spot", "scheme-vibrant"]
+                delegate: Item {
+                  id: schemePill
+                  required property string modelData
+                  readonly property bool selected: Settings.data.wallpaper.matugenScheme === modelData
+                  readonly property string label: modelData.replace("scheme-", "")
+                  width: schemeLabel.implicitWidth + 14
+                  height: 22
+                  Chamfer {
+                    anchors.fill: parent
+                    chamferSize: Tokens.chamferIcon
+                    cutTopRight: true
+                    cutBottomLeft: true
+                    fillColor: schemePill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                    strokeColor: schemePill.selected ? Colors.primary : Colors.outline
+                    strokeWidth: Tokens.borderModule
+                  }
+                  NText {
+                    id: schemeLabel
+                    anchors.centerIn: parent
+                    text: schemePill.label
+                    color: schemePill.selected ? Colors.primaryContainerText : Colors.surfaceText
+                    font.pixelSize: 8
+                  }
+                  HoverHandler {
+                    cursorShape: Qt.PointingHandCursor
+                  }
+                  TapHandler {
+                    onTapped: {
+                      Settings.data.wallpaper.matugenScheme = schemePill.modelData;
+                      // Live preview — matugen needs a real local file, so a
+                      // Wallhaven result not yet downloaded can't regenerate
+                      // until it's actually applied.
+                      if (root.selectedFile && !root.selectedFile.isRemote)
+                        Matugen.generateFrom(root.selectedFile.path);
+                    }
+                  }
+                }
+              }
             }
             NText {
-              anchors.centerIn: parent
-              text: root.downloading ? "DOWNLOADING…" : "APPLY + THEME"
-              color: applyThemeHover.hovered ? Colors.primaryText : Colors.primaryContainerText
-              size: NText.Size.BodySm
-              font.weight: Font.DemiBold
+              readonly property int _enabledCount: {
+                var t = Settings.data.wallpaper.templates;
+                var keys = Object.keys(t);
+                var n = 0;
+                for (var i = 0; i < keys.length; i++)
+                  if (t[keys[i]])
+                    n++;
+                return n;
+              }
+              text: "WRITES " + _enabledCount + " TEMPLATES"
+              color: Colors.labelText
+              size: NText.Size.LabelXs
+              Layout.topMargin: 4
             }
-            HoverHandler {
-              id: applyThemeHover
-              cursorShape: Qt.PointingHandCursor
-            }
-            TapHandler {
-              onTapped: root.applyWallpaper(true)
-            }
-          }
-
-          NButton {
-            Layout.fillWidth: true
-            enabled: root.selectedFile !== null && !root.downloading
-            text: root.downloading ? "DOWNLOADING…" : "WALLPAPER ONLY"
-            onClicked: root.applyWallpaper(false)
           }
 
           Item {
+            Layout.fillHeight: true
+          }
+
+          // ---- Apply buttons ----
+          ColumnLayout {
             Layout.fillWidth: true
-            height: 28
-            visible: root.selectedFile !== null && !root.selectedFile.isRemote
-            readonly property bool armed: root.selectedFile && root.armedDeletePath === root.selectedFile.path
-            Chamfer {
-              anchors.fill: parent
-              chamferSize: Tokens.chamferIcon
-              cutTopRight: true
-              cutBottomLeft: true
-              fillColor: parent.armed ? Colors.error : (deleteHover.hovered ? Colors.alpha(Colors.error, 0.16) : "transparent")
-              strokeColor: Colors.alpha(Colors.error, parent.armed ? 1 : 0.6)
-              strokeWidth: Tokens.borderModule
+            spacing: 6
+
+            Item {
+              Layout.fillWidth: true
+              height: 32
+              enabled: root.selectedFile !== null && !root.downloading
+              opacity: enabled ? 1 : 0.4
+              Chamfer {
+                anchors.fill: parent
+                chamferSize: Tokens.chamferIcon
+                cutTopRight: true
+                cutBottomLeft: true
+                fillColor: applyThemeHover.hovered ? Colors.primary : Colors.primaryContainer
+                strokeColor: Colors.primary
+                strokeWidth: Tokens.borderModule
+              }
+              NText {
+                anchors.centerIn: parent
+                text: root.downloading ? "DOWNLOADING…" : "APPLY + THEME"
+                color: applyThemeHover.hovered ? Colors.primaryText : Colors.primaryContainerText
+                size: NText.Size.BodySm
+                font.weight: Font.DemiBold
+              }
+              HoverHandler {
+                id: applyThemeHover
+                cursorShape: Qt.PointingHandCursor
+              }
+              TapHandler {
+                onTapped: root.applyWallpaper(true)
+              }
             }
-            NText {
-              anchors.centerIn: parent
-              text: parent.armed ? "CONFIRM DELETE?" : "DELETE"
-              color: parent.armed ? Colors.errorText : Colors.error
-              size: NText.Size.Caption
+
+            NButton {
+              Layout.fillWidth: true
+              enabled: root.selectedFile !== null && !root.downloading
+              text: root.downloading ? "DOWNLOADING…" : "WALLPAPER ONLY"
+              onClicked: root.applyWallpaper(false)
             }
-            HoverHandler {
-              id: deleteHover
-              cursorShape: Qt.PointingHandCursor
-            }
-            TapHandler {
-              onTapped: root.requestDelete()
+
+            Item {
+              Layout.fillWidth: true
+              height: 28
+              visible: root.selectedFile !== null && !root.selectedFile.isRemote
+              readonly property bool armed: root.selectedFile && root.armedDeletePath === root.selectedFile.path
+              Chamfer {
+                anchors.fill: parent
+                chamferSize: Tokens.chamferIcon
+                cutTopRight: true
+                cutBottomLeft: true
+                fillColor: parent.armed ? Colors.error : (deleteHover.hovered ? Colors.alpha(Colors.error, 0.16) : "transparent")
+                strokeColor: Colors.alpha(Colors.error, parent.armed ? 1 : 0.6)
+                strokeWidth: Tokens.borderModule
+              }
+              NText {
+                anchors.centerIn: parent
+                text: parent.armed ? "CONFIRM DELETE?" : "DELETE"
+                color: parent.armed ? Colors.errorText : Colors.error
+                size: NText.Size.Caption
+              }
+              HoverHandler {
+                id: deleteHover
+                cursorShape: Qt.PointingHandCursor
+              }
+              TapHandler {
+                onTapped: root.requestDelete()
+              }
             }
           }
         }
