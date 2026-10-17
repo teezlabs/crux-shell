@@ -33,7 +33,7 @@ Item {
     if (!root.menu || !root.item)
       return;
     const pos = root.mapToItem(null, 0, root.height);
-    root.menu.anchorPos = Qt.point(pos.x + Settings.data.bar.floatMargin, pos.y + Settings.data.bar.floatMargin);
+    root.menu.anchorPos = Qt.point(pos.x + Tokens.barMargin, pos.y + Tokens.barMargin);
     root.menu.trayItem = root.item;
     root.menu.pinLabel = root.pinnable ? (root.pinned ? "Unpin from bar" : "Pin to bar") : "";
     root.menu.menuHandle = root.item.menu;

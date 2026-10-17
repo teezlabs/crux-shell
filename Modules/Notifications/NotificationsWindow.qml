@@ -20,6 +20,15 @@ PanelWindow {
   readonly property var visibleNotifications: notifications.slice(0, visibleCap)
   readonly property int earlierCount: Math.max(0, notifications.length - visibleCap)
   readonly property string pos: Settings.data.notifications.position
+  readonly property string barPos: Settings.isLoaded && root.targetScreen ? Settings.getBarPositionForScreen(root.targetScreen.name) : "top"
+  // Clears the bar only on the edge it actually occupies.
+  function edgeInset(edge: string): int {
+    return root.barPos === edge ? Tokens.barExtent + Tokens.barMargin + 8 : 14;
+  }
+  readonly property int padTop: root.pos.startsWith("top") ? root.edgeInset("top") : 14
+  readonly property int padBottom: root.pos.startsWith("bottom") ? root.edgeInset("bottom") : 14
+  readonly property int padLeft: root.pos.endsWith("left") ? root.edgeInset("left") : 14
+  readonly property int padRight: root.pos.endsWith("right") ? root.edgeInset("right") : 14
 
   readonly property bool shownOnThisScreen: Settings.data.notifications.monitors.length === 0 || (root.targetScreen && Settings.data.notifications.monitors.includes(root.targetScreen.name))
 
@@ -36,8 +45,8 @@ PanelWindow {
     left: root.pos === "top_left" || root.pos === "bottom_left"
     right: root.pos === "top_right" || root.pos === "bottom_right"
   }
-  implicitWidth: 388 + 28
-  implicitHeight: stack.implicitHeight + (root.pos.startsWith("top") ? (Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 8) : 14) + 14
+  implicitWidth: 388 + root.padLeft + root.padRight
+  implicitHeight: stack.implicitHeight + root.padTop + root.padBottom
 
   WlrLayershell.layer: WlrLayer.Overlay
   WlrLayershell.namespace: "crux-notifications"
@@ -47,8 +56,8 @@ PanelWindow {
   ColumnLayout {
     id: stack
     // Plain x/y, not conditional anchors — avoids the anchor-staleness class of bug (see crux skill notes.md).
-    x: 14
-    y: root.pos.startsWith("top") ? (Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 8) : 14
+    x: root.padLeft
+    y: root.padTop
     width: 388
     spacing: 8
 

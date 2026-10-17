@@ -54,7 +54,7 @@ Variants {
     // otherwise.
     readonly property string _barPos: Settings.isLoaded ? Settings.getBarPositionForScreen(screen?.name) : "top"
     readonly property int _baseMargin: 20
-    readonly property int _barGap: Settings.data.bar.thickness + Settings.data.bar.floatMargin * 2 + 12
+    readonly property int _barGap: Tokens.barExtent + Tokens.barMargin + 12
     readonly property int _marginBottom: _baseMargin + (_barPos === "bottom" ? _barGap : 0)
     readonly property int _marginLeft: _baseMargin + (_barPos === "left" ? _barGap : 0)
     readonly property int _marginRight: _baseMargin + (_barPos === "right" ? _barGap : 0)

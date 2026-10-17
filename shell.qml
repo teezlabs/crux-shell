@@ -285,7 +285,7 @@ ShellRoot {
         left: barPosition === "left" || !barIsVertical
         right: barPosition === "right" || !barIsVertical
       }
-      readonly property int effectiveFloatMargin: Settings.data.bar.floating ? Settings.data.bar.floatMargin : 0
+      readonly property int effectiveFloatMargin: Tokens.barMargin
       margins {
         top: root.effectiveFloatMargin
         bottom: root.effectiveFloatMargin
@@ -293,7 +293,7 @@ ShellRoot {
         right: root.effectiveFloatMargin
       }
       // When vertical, top+bottom anchors fill height and only implicitWidth matters (and vice versa).
-      readonly property int joinGap: Settings.data.bar.showBackground && !Settings.data.bar.floating ? Tokens.barJoinGap : 0
+      readonly property int joinGap: Tokens.barDocked ? Tokens.barJoinGap : 0
       implicitWidth: root.effectiveThickness + root.joinGap
       implicitHeight: root.effectiveThickness + root.joinGap
       // Transparent so the margins above actually read as a floating gap
@@ -360,7 +360,7 @@ ShellRoot {
 
         // Inner edge line that SlideCard drawers overlap and join into.
         Rectangle {
-          visible: Settings.data.bar.showBackground && !Settings.data.bar.floating && !Settings.data.bar.showBorder
+          visible: Tokens.barDocked && !Settings.data.bar.showBorder
           x: root.barPosition === "left" ? parent.width - width : 0
           y: root.barPosition === "top" ? parent.height - height : 0
           width: root.barIsVertical ? Tokens.borderPanel : parent.width

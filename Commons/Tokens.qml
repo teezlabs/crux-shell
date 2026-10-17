@@ -72,6 +72,12 @@ QtObject {
   // Docked bar: space between the modules and the strip's inner edge line.
   readonly property int barJoinGap: spaceSm
 
+  // Bar geometry everything placed against the bar reads, so `floating` is honoured in one place.
+  readonly property bool barDocked: Settings.isLoaded && Settings.data.bar.showBackground && !Settings.data.bar.floating
+  readonly property int barMargin: Settings.isLoaded && Settings.data.bar.floating ? Settings.data.bar.floatMargin : 0
+  // Screen edge to the bar's inner edge.
+  readonly property int barExtent: (Settings.isLoaded ? Settings.data.bar.thickness : 0) + barMargin + (barDocked ? barJoinGap : 0)
+
   // Corner radius for the few surfaces that are rounded rather than
   // chamfered (the polkit dialog) — crux's own language is chamfers.
   readonly property int radiusXXS: 2

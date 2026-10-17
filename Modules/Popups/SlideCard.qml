@@ -40,11 +40,9 @@ Item {
   readonly property bool barBottom: root.barPos === "bottom"
   readonly property bool barTop: !root.barLeft && !root.barRight && !root.barBottom
 
-  // Flush against the bar's own outer edge, same offset the old
-  // per-popup _barOffset used.
   // Docked strip: the card overlaps the bar's inner edge line so the two outlines join.
-  readonly property bool joined: Settings.data.bar.showBackground && !Settings.data.bar.floating
-  readonly property real barOffset: Settings.data.bar.thickness + (Settings.data.bar.floating ? Settings.data.bar.floatMargin : 0) + (root.joined ? Tokens.barJoinGap - Tokens.borderPanel : 0)
+  readonly property bool joined: Tokens.barDocked
+  readonly property real barOffset: Tokens.barExtent - (root.joined ? Tokens.borderPanel : 0)
 
   default property alias content: contentLayer.data
 
@@ -68,7 +66,8 @@ Item {
       root.shown = false;
       return;
     }
-    const anchor = (root.barLeft || root.barRight) ? y : x;
+    // Bar widgets map into the bar window, which a floating bar insets by its margin.
+    const anchor = ((root.barLeft || root.barRight) ? y : x) + Tokens.barMargin;
     // A binding, so content that fills in after opening re-clamps the card.
     root.crossPos = Qt.binding(() => root._clampCross(anchor));
     root.shown = true;
@@ -91,7 +90,7 @@ Item {
   function setMorphSource(x, y, w, h) {
     const vertical = root.barLeft || root.barRight;
     root.morphExtent = vertical ? h : w;
-    root.morphCross = vertical ? y : x;
+    root.morphCross = (vertical ? y : x) + Tokens.barMargin;
     if (!root.shown)
       root.crossPos = root.morphCross;
     // Keeps a plain open() (IPC, a keybind) landing in the same place a tap
