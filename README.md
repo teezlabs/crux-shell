@@ -16,7 +16,7 @@
 > This is my personal daily driver. It changes under me without warning, and every corner gets chamfered whether you like it or not.
 
 > [!TIP]
-> Everything's configurable from the settings panel: 20 tabs in five sections, plus a search box so you don't have to remember where anything lives.
+> Everything's configurable from the settings panel: a home page with your theme, quick toggles and shortcuts, 20 tabs in five sections, and a search box so you don't have to remember where anything lives.
 
 ## Features
 
@@ -25,6 +25,7 @@
 - 37 widgets: workspaces, clock, media, tray, audio, network, Bluetooth, battery, system stats, updates and more
 - Long-press and drag to reorder widgets, including between sections
 - Click a widget and its drawer opens joined to the bar's outline; on a floating bar it unfolds straight out of the widget
+- A wallpaper backdrop behind the bar hides windows that a scrolling layout parks off-screen, fading out toward the work area
 
 **Desktop**
 - Control Center with quick toggles, audio sliders, weather, system gauges, and capture, record and color-pick actions
@@ -34,10 +35,11 @@
 - Night light, clipboard history and Philips Hue control
 
 **Theming**
-- Wallpaper browser for your local folder, with Wallhaven search
+- Wallpaper browser: your local folder as a strip of slanted slices, Wallhaven search as a grid
 - Pick a wallpaper and crux generates a palette from it with matugen, in light or dark
 - Or pick a preset: Ayu, Catppuccin, Dracula, Eldritch, Everforest, Gruvbox, Kanagawa, Mocha, Nord, Rosé Pine, Tokyo Night
 - The palette is pushed into Hyprland, kitty, GTK, Qt, yazi, btop, starship and Discord (Vesktop)
+- Windows get chamfered corners to match, through Hyprland shader overrides. Pick which corners are cut in Appearance settings
 
 ## Requirements
 
@@ -102,6 +104,8 @@ Settings live in `~/.config/crux/settings.json`, but you shouldn't need to touch
 **Color presets:** drop a JSON file into `Assets/ColorSchemes/` and it shows up in the picker. Copy one of the existing files to see the format.
 
 **kitty:** add `include themes/crux.conf` to `~/.config/kitty/kitty.conf`, after any other theme include. Open kitty windows reload when the wallpaper changes.
+
+**Window corners:** the size of the cut follows Hyprland's `decoration:rounding` (`rounding = 30` cuts about 14px), so set it above 0. Turning window corners off in Appearance settings restores Hyprland's stock shaders.
 
 **Plugins:** put a `manifest.json` and a `Widget.qml` in `~/.config/crux/plugins/<name>/`. That's it, no marketplace.
 
