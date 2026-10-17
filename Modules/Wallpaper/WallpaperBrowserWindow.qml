@@ -81,6 +81,8 @@ NPanelWindow {
     Wallhaven.search(page, append);
   }
 
+  // A Wallhaven pick is downloading.
+  property bool downloading: false
   property string _downloadDest: ""
   property bool _pendingWithTheme: false
 

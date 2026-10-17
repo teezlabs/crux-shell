@@ -46,3 +46,8 @@ Each of these has already cost a debugging session on this box (Qt 6.11–6.12, 
 ## Text-input warning on every popup close
 
 `qt.qpa.wayland.textinput: ... Trying to disable <surface> but 0x0 is focused` fires each time a layer surface drops `WlrKeyboardFocus.Exclusive`. It isn't crux: a 20-line config that only toggles keyboard focus reproduces it. Hyprland sends the text-input leave before the keyboard leave, so Qt's disable finds nothing focused. Crux launches with `--log-rules qt.qpa.wayland.textinput.warning=false` (in `exec.lua` and [`dev-loop.md`](../agents/skills/dev-loop.md)). `//@ pragma Env QT_LOGGING_RULES=...` does not work; quickshell's own log filter overrides it.
+
+## Assigning an undeclared property throws, but only when it runs
+
+Reading `root.foo` when `foo` was never declared gives `undefined` with no warning, so bindings that read it look fine and the boot log stays clean. Assigning `root.foo = true` throws `Cannot assign to non-existent property "foo"` and aborts the rest of the function. When a refactor moves a property out of a file, grep for every remaining `root.<name>` in it. This silently broke Wallhaven downloads from 2026-09-10 to 2026-10-17: `_downloadAndApply` threw on `root.downloading = true`, one line before it would have started curl.
+
