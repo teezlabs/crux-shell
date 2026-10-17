@@ -2,9 +2,10 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import qs.Commons
+import qs.Services
 
 // Wallpaper strip under the floating bar, hiding scrolled-off windows that
-// the scrolling layout still draws in the bar's reserved area.
+// the scrolling layout still draws in the bar's reserved area and gaps_out.
 PanelWindow {
   id: root
 
@@ -20,8 +21,9 @@ PanelWindow {
     left: root.barPosition === "left" || !root.vertical
     right: root.barPosition === "right" || !root.vertical
   }
-  implicitWidth: Tokens.barExtent + Tokens.barMargin
-  implicitHeight: Tokens.barExtent + Tokens.barMargin
+  readonly property int extent: Tokens.barExtent + Tokens.barMargin + HyprGaps.forEdge(barPosition)
+  implicitWidth: extent
+  implicitHeight: extent
   color: "transparent"
 
   WlrLayershell.layer: WlrLayer.Top
