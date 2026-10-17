@@ -41,6 +41,10 @@
 - The palette is pushed into Hyprland, kitty, GTK, Qt, yazi, btop, starship and Discord (Vesktop)
 - Windows get chamfered corners to match, through Hyprland shader overrides. Pick which corners are cut in Appearance settings
 
+<div align="center">
+<img src=".github/screenshot-2.png" alt="the wallpaper browser's slice strip, and the settings panel's home page" width="800">
+</div>
+
 ## Requirements
 
 - [Hyprland](https://hyprland.org) with a **Lua config** (`hyprland.lua`). crux talks to Hyprland in Lua dispatch syntax, so a classic `hyprland.conf` setup can't switch workspaces from the bar
