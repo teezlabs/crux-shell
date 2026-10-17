@@ -28,7 +28,7 @@ Item {
 
   visible: _anyVisible
   implicitWidth: visible ? module.implicitWidth : 0
-  implicitHeight: 32
+  implicitHeight: Tokens.barCell
   width: implicitWidth
   height: implicitHeight
 

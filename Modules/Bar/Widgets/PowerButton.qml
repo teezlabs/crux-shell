@@ -6,7 +6,7 @@ import qs.Modules.Bar.Extras
 
 // v2 spec §6.1 Power module: "32px cell, error border, ⏻." Distinct from
 // the generic BarModule treatment (error border instead of outlineVariant,
-// fixed 32px square instead of content-sized) since it's the one
+// a square bar cell instead of content-sized) since it's the one
 // permanently-destructive action living in the bar.
 Item {
   id: root
@@ -16,8 +16,8 @@ Item {
   property int sectionWidgetIndex: -1
   property bool invertChamfer: false
 
-  implicitWidth: 32
-  implicitHeight: 32
+  implicitWidth: Tokens.barCell
+  implicitHeight: Tokens.barCell
   width: implicitWidth
   height: implicitHeight
 

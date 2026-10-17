@@ -19,7 +19,7 @@ Item {
 
   visible: ethernetPresent
   implicitWidth: visible ? 32 : 0
-  implicitHeight: 32
+  implicitHeight: Tokens.barCell
   width: implicitWidth
   height: implicitHeight
 

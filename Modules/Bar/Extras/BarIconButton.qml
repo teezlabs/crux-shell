@@ -13,8 +13,8 @@ Item {
   signal tapped
   signal secondaryTapped
 
-  implicitWidth: 32
-  implicitHeight: 32
+  implicitWidth: Tokens.barCell
+  implicitHeight: Tokens.barCell
   width: implicitWidth
   height: implicitHeight
 

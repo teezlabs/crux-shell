@@ -36,7 +36,7 @@ Item {
 
   visible: hasVpn
   implicitWidth: visible ? btn.implicitWidth : 0
-  implicitHeight: 32
+  implicitHeight: Tokens.barCell
   width: implicitWidth
   height: implicitHeight
 

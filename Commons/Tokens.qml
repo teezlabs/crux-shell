@@ -204,7 +204,10 @@ QtObject {
 
   // §6.1 Bar geometry
   readonly property int barHeight: 42
-  readonly property int barModuleHeight: 30
+  // Bar cells follow the bar's thickness, keeping 5px clear on each side, so their
+  // hover, press and outline boxes scale with it (32 / 30 at the default 42).
+  readonly property int barCell: Math.max(20, (Settings.isLoaded ? Settings.data.bar.thickness : 42) - 10)
+  readonly property int barModuleHeight: barCell - 2
   readonly property int barModuleSpacing: 6
   readonly property int barSidePadding: 10
 }

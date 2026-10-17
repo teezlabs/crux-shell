@@ -22,7 +22,7 @@ Item {
   signal secondaryTapped
 
   readonly property bool revealed: root.label !== "" && (root.forceOpen || hover.hovered)
-  readonly property int cell: 32
+  readonly property int cell: Tokens.barCell
   readonly property int gap: 6
   readonly property real labelWidth: Math.min(labelText.implicitWidth, root.maxLabelWidth)
 
