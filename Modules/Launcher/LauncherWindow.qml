@@ -7,6 +7,7 @@ import Quickshell.Hyprland
 import Quickshell.Widgets
 import qs.Commons
 import qs.Widgets
+import "Calculator.js" as Calculator
 
 // App launcher popup. Uses Quickshell's DesktopEntries singleton rather than scanning .desktop files by hand.
 NPanelWindow {
@@ -39,10 +40,12 @@ NPanelWindow {
   readonly property string _execPrefix: Settings.isLoaded ? Settings.data.launcher.execPrefix : ""
   readonly property bool execMode: root._execPrefix !== "" && query.indexOf(root._execPrefix) === 0
   readonly property string execCommand: root.execMode ? query.slice(root._execPrefix.length) : ""
+  readonly property string calcResult: root.execMode ? "" : Calculator.evaluate(query)
+  readonly property bool calcMode: root.calcResult !== ""
   readonly property int _resultLimit: Settings.isLoaded ? Settings.data.launcher.resultLimit : 30
 
   readonly property var results: {
-    if (root.execMode)
+    if (root.execMode || root.calcMode)
       return [];
     var q = query.trim().toLowerCase();
     var list = allApps;
@@ -113,6 +116,12 @@ NPanelWindow {
     root.query = "";
   }
 
+  function copyCalcResult() {
+    Quickshell.execDetached(["wl-copy", root.calcResult]);
+    Toast.show("Copied " + root.calcResult);
+    root.visible = false;
+  }
+
   onQueryChanged: selectedIndex = 0
   onResultsChanged: if (selectedIndex >= results.length)
     selectedIndex = Math.max(0, results.length - 1)
@@ -132,7 +141,7 @@ NPanelWindow {
     });
   }
 
-  // 660 wide, centred; apps-only launcher today (no run/windows/calc modes, so no EXEC/FOCUS distinction).
+  // 660 wide, centred; apps, run-command and inline calculator; no windows mode.
   Item {
     id: card
     anchors.centerIn: parent
@@ -237,14 +246,14 @@ NPanelWindow {
 
             Keys.onDownPressed: root.selectedIndex = Math.min(root.results.length - 1, root.selectedIndex + 1)
             Keys.onUpPressed: root.selectedIndex = Math.max(0, root.selectedIndex - 1)
-            Keys.onReturnPressed: root.execMode ? root.runExecCommand() : root.launch(root.results[root.selectedIndex])
+            Keys.onReturnPressed: root.execMode ? root.runExecCommand() : root.calcMode ? root.copyCalcResult() : root.launch(root.results[root.selectedIndex])
           }
         }
 
         NText {
           tracking: true
-          text: root.execMode ? "RUN" : String(root.results.length).padStart(2, "0") + " MATCHES"
-          color: root.execMode ? Colors.primary : Colors.labelText
+          text: root.execMode ? "RUN" : root.calcMode ? "CALC" : String(root.results.length).padStart(2, "0") + " MATCHES"
+          color: root.execMode || root.calcMode ? Colors.primary : Colors.labelText
           size: NText.Size.LabelXs
         }
       }
@@ -272,13 +281,58 @@ NPanelWindow {
         }
       }
 
+      // ---- Calculator result (shown instead of the results list) ----
+      Item {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        visible: root.calcMode
+
+        Rectangle {
+          id: calcRow
+          anchors.left: parent.left
+          anchors.right: parent.right
+          height: 64
+          color: Colors.primaryContainer
+
+          RowLayout {
+            anchors.fill: parent
+            anchors.leftMargin: 18
+            anchors.rightMargin: 18
+            spacing: 14
+
+            NText {
+              text: "= " + root.calcResult
+              color: Colors.primaryContainerText
+              size: NText.Size.BodyLg
+              font.weight: Font.DemiBold
+              elide: Text.ElideRight
+              Layout.fillWidth: true
+            }
+
+            NText {
+              tracking: true
+              text: "⏎ COPY"
+              color: Colors.primaryContainerText
+              size: NText.Size.LabelXs
+            }
+          }
+
+          HoverHandler {
+            cursorShape: Qt.PointingHandCursor
+          }
+          TapHandler {
+            onTapped: root.copyCalcResult()
+          }
+        }
+      }
+
       // ---- Results ----
       ListView {
         id: list
         Layout.fillWidth: true
         Layout.fillHeight: true
         clip: true
-        visible: !root.execMode
+        visible: !root.execMode && !root.calcMode
         model: root.results
         currentIndex: root.selectedIndex
 
