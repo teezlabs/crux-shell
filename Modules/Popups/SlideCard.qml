@@ -100,9 +100,14 @@ Item {
       root.crossPos = root.morphCross;
   }
 
+  // The pill cuts top-right and bottom-left; where that cut lands on the joining side, stop short of it.
+  readonly property real _startCut: Tokens.barPill && (root.barTop || root.barLeft) ? Tokens.chamferBarFloating : 0
+  readonly property real _endCut: Tokens.barPill && (root.barBottom || root.barRight) ? Tokens.chamferBarFloating : 0
+
   function _clampCross(v) {
-    const i = root.crossInset;
-    return (root.barLeft || root.barRight) ? Math.max(i, Math.min(v, root.host.height - root.cardHeight - i)) : Math.max(i, Math.min(v, root.host.width - root.cardWidth - i));
+    const lo = root.crossInset + root._startCut;
+    const hi = (root.barLeft || root.barRight) ? root.host.height - root.cardHeight - root.crossInset - root._endCut : root.host.width - root.cardWidth - root.crossInset - root._endCut;
+    return Math.max(lo, Math.min(v, hi));
   }
 
   // Centred on the module it unfolds from.
