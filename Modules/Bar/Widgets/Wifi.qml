@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Networking
 import qs.Modules.Popups
 import qs.Commons
+import qs.Widgets
 import qs.Modules.Bar.Extras
 
 // Wi-Fi status icon on the bar; the real network list/connect UI lives in
@@ -49,36 +50,9 @@ Item {
       Popups.openFrom("wifi", root.screen, pos.x, pos.y, root.width, root.height);
     }
 
-    // Standard wifi-fan glyph (three concentric arcs + a dot) drawn on
-    // Canvas — no font/emoji glyph dependency.
-    Canvas {
-      id: wifiCanvas
+    WifiGlyph {
       anchors.centerIn: parent
-      width: 16
-      height: 12
-      readonly property color drawColor: !Networking.wifiEnabled ? Colors.disabledText : (root.connectedNetwork ? Colors.primary : Colors.surfaceTextMuted)
-      onDrawColorChanged: requestPaint()
-      onPaint: {
-        var ctx = getContext("2d");
-        ctx.reset();
-        ctx.strokeStyle = drawColor;
-        ctx.fillStyle = drawColor;
-        ctx.lineWidth = 1.6;
-        ctx.lineCap = "round";
-        var cx = width / 2;
-        var cy = height - 1;
-
-        for (var i = 0; i < 3; i++) {
-          var radius = 3 + i * 4;
-          ctx.beginPath();
-          ctx.arc(cx, cy, radius, Math.PI * 1.25, Math.PI * 1.75);
-          ctx.stroke();
-        }
-
-        ctx.beginPath();
-        ctx.arc(cx, cy, 1.3, 0, Math.PI * 2);
-        ctx.fill();
-      }
+      color: !Networking.wifiEnabled ? Colors.disabledText : (root.connectedNetwork ? Colors.primary : Colors.surfaceTextMuted)
     }
   }
 }
