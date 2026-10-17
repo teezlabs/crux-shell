@@ -33,7 +33,7 @@ Check any ported script that calls `hyprctl dispatch` for this.
 ## Workspace state
 
 - `Hyprland.workspaces.onValuesChanged` fires only when workspaces are created or destroyed, not on a focus switch. Refresh from `Connections { target: Hyprland; function onRawEvent(event) {...} }`
-- `ws.active` is per monitor (several can be true). `ws.focused` is the single workspace with keyboard focus. Crux highlights `focused`
+- `ws.active` is per monitor (several can be true). `ws.focused` is the single workspace with keyboard focus. Crux fills the `focused` cell and edge-marks each monitor's `active` one
 
 ## Config gotchas
 
