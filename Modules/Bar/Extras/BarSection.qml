@@ -256,8 +256,9 @@ Item {
             // flip every shape to its own mirror-image, so the end-cap
             // there is now the one NON-inverted module and everything
             // else in the right section inverts.
-            // Grouped cells cut the same diagonal as the group surface around them.
-            invertChamfer: sectionRoot.grouped ? sectionRoot.section === "left" : (sectionRoot.section === "left" && wrapper.index === 0) || (sectionRoot.section === "right" && wrapper.index !== sectionRoot._lastVisibleIndex)
+            // Grouped cells cut the same diagonal as the surface around them: their group's,
+            // or on a floating pill (no group plates) the pill's top-right / bottom-left.
+            invertChamfer: sectionRoot.grouped ? (sectionRoot.section === "left" && !Tokens.barPill) : (sectionRoot.section === "left" && wrapper.index === 0) || (sectionRoot.section === "right" && wrapper.index !== sectionRoot._lastVisibleIndex)
           }
 
           // Non-exclusive: a passive grab that watches for a long press

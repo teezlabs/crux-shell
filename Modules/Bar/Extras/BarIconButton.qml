@@ -46,7 +46,8 @@ Item {
   NPressFeedback {
     id: press
     scaleTarget: root
-    chamferSize: Tokens.chamferModule
+    // Same shape as the hover fill, so a press doesn't change the outline.
+    chamferSize: root.grouped ? Tokens.chamferGroupedCell : Tokens.chamferModule
     invertChamfer: root.invertChamfer
   }
 
