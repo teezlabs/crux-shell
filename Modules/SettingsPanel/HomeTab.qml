@@ -62,7 +62,7 @@ NScrollView {
         }
         NText {
           tracking: true
-          text: "A HYPRLAND SHELL · " + root.commit.toUpperCase()
+          text: "SHARP BY DESIGN · " + root.commit.toUpperCase()
           size: NText.Size.LabelXs
           color: Colors.labelText
         }
