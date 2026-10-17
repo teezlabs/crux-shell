@@ -78,7 +78,9 @@ Item {
     chamferSize: Tokens.chamferIcon
     cutTopRight: true
     cutBottomLeft: true
-    fillColor: hover.hovered || popup.opened ? Qt.lighter(Colors.surfaceContainerHigh, 1.3) : Colors.surfaceContainerHigh
+    fillColor: hover.hovered || popup.opened ? Colors.surfaceContainerHigh : Colors.surfaceContainer
+    strokeColor: popup.opened ? Colors.primary : Colors.outline
+    strokeWidth: Tokens.borderModule
   }
 
   NText {
@@ -141,6 +143,8 @@ Item {
       cutTopRight: true
       cutBottomLeft: true
       fillColor: Colors.surfaceContainerHigh
+      strokeColor: Colors.outline
+      strokeWidth: Tokens.borderModule
     }
 
     NTextInput {

@@ -505,6 +505,8 @@ Loader {
               cutTopRight: true
               cutBottomLeft: true
               fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+              strokeColor: Colors.outline
+              strokeWidth: Tokens.borderPanel
             }
 
             Row {

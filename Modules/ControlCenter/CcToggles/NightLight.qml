@@ -7,7 +7,7 @@ import qs.Widgets
 import qs.Services
 
 // Night light quick toggle: off -> on -> forced -> off.
-CcToggleButton {
+CcCircleToggle {
   id: tile
   signal expandRequested(string which)
 

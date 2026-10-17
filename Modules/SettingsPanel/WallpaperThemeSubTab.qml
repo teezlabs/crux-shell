@@ -104,7 +104,9 @@ NScrollView {
                 chamferSize: Tokens.chamferIcon
                 cutTopRight: true
                 cutBottomLeft: true
-                fillColor: schemePill.selected ? Colors.primary : Colors.surfaceContainer
+                fillColor: schemePill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                strokeColor: schemePill.selected ? Colors.primary : Colors.outline
+                strokeWidth: Tokens.borderModule
               }
 
               NText {
@@ -112,7 +114,7 @@ NScrollView {
                 id: schemeLabel
                 anchors.centerIn: parent
                 text: schemePill.modelData.label
-                color: schemePill.selected ? Colors.primaryText : Colors.surfaceText
+                color: schemePill.selected ? Colors.primaryContainerText : Colors.surfaceText
                 size: NText.Size.LabelXs
               }
 
@@ -225,7 +227,9 @@ NScrollView {
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: tplPill.selected ? Colors.primary : Colors.surfaceContainer
+              fillColor: tplPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+              strokeColor: tplPill.selected ? Colors.primary : Colors.outline
+              strokeWidth: Tokens.borderModule
             }
 
             NText {
@@ -233,7 +237,7 @@ NScrollView {
               id: tplLabel
               anchors.centerIn: parent
               text: tplPill.modelData.label
-              color: tplPill.selected ? Colors.primaryText : Colors.surfaceText
+              color: tplPill.selected ? Colors.primaryContainerText : Colors.surfaceText
               size: NText.Size.LabelXs
             }
 

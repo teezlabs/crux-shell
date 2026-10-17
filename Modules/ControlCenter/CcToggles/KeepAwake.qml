@@ -8,7 +8,7 @@ import qs.Services
 //
 // Open/closed eye drawn on Canvas rather than an icon-theme name, matching
 // the bar widget and avoiding a theme that may not carry a caffeine icon.
-CcToggleButton {
+CcCircleToggle {
   id: tile
   signal expandRequested(string which)
 

@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
 
-// One Control Center section as its own card. Height comes from
+// One Control Center section as its own chamfered card. Height comes from
 // the inner ColumnLayout, not the wrapper — an Item doesn't inherit
 // implicitHeight from its children.
 Item {
@@ -16,10 +16,20 @@ Item {
   Layout.fillWidth: true
   implicitHeight: inner.implicitHeight + root.padding * 2
 
-  // Inner surface: square and fill-only — chamfers are for outer shapes.
   Chamfer {
     anchors.fill: parent
+    chamferSize: Tokens.chamferModule
+    cutTopRight: true
+    cutBottomLeft: true
     fillColor: Colors.surfaceContainer
+    strokeColor: Colors.outline
+    strokeWidth: Tokens.borderModule
+    shadow: true
+    shadowBlur: Tokens.shadowBlurCard
+    shadowOpacity: Tokens.shadowOpacityCard
+    shadowOffset: Tokens.shadowOffsetCard
+    rimLight: true
+    rimOpacity: Tokens.rimOpacityCard
   }
 
   ColumnLayout {

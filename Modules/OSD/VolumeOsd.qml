@@ -94,6 +94,8 @@ PanelWindow {
       cutBottomLeft: true
       cutBottomRight: false
       fillColor: Colors.alpha(Colors.surface, Settings.data.osd.backgroundOpacity)
+      strokeColor: root.muted ? Colors.alpha(Colors.error, Tokens.destructiveBorderAlpha) : Colors.outline
+      strokeWidth: Tokens.borderPanel
     }
 
     Row {

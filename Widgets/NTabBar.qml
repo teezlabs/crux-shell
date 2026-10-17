@@ -31,7 +31,9 @@ RowLayout {
         chamferSize: Tokens.chamferIcon
         cutTopRight: true
         cutBottomLeft: true
-        fillColor: pill.active ? Colors.primary : (pillHover.hovered ? Qt.lighter(Colors.surfaceContainerHigh, 1.3) : Colors.surfaceContainerHigh)
+        fillColor: pill.active ? Colors.primaryContainer : (pillHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer)
+        strokeColor: pill.active ? Colors.primary : Colors.outline
+        strokeWidth: Tokens.borderModule
       }
 
       NText {
@@ -40,7 +42,7 @@ RowLayout {
         text: pill.modelData.label.toUpperCase()
         size: NText.Size.LabelXs
         tracking: true
-        color: pill.active ? Colors.primaryText : Colors.surfaceText
+        color: pill.active ? Colors.primaryContainerText : Colors.surfaceText
       }
 
       HoverHandler {

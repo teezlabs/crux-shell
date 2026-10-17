@@ -265,6 +265,8 @@ NPanelWindow {
       cutTopRight: true
       cutBottomLeft: true
       fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+      strokeColor: Colors.outline
+      strokeWidth: Tokens.borderPanel
       shadow: true
       rimLight: true
     }
@@ -345,12 +347,14 @@ NPanelWindow {
                 chamferSize: Tokens.chamferIcon
                 cutTopRight: true
                 cutBottomLeft: true
-                fillColor: srcPill.selected ? Colors.primary : Colors.surfaceContainer
+                fillColor: srcPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                strokeColor: srcPill.selected ? Colors.primary : Colors.outline
+                strokeWidth: Tokens.borderModule
               }
               NText {
                 anchors.centerIn: parent
                 text: srcPill.modelData.label
-                color: srcPill.selected ? Colors.primaryText : Colors.surfaceText
+                color: srcPill.selected ? Colors.primaryContainerText : Colors.surfaceText
                 font.pixelSize: 8
                 font.weight: Font.DemiBold
               }
@@ -379,8 +383,8 @@ NPanelWindow {
             cutTopRight: true
             cutBottomLeft: true
             fillColor: Colors.surface
-            strokeColor: Colors.primary
-            strokeWidth: searchInput.activeFocus ? Tokens.borderModule : 0
+            strokeColor: searchInput.activeFocus ? Colors.primary : Colors.outline
+            strokeWidth: Tokens.borderModule
           }
 
           TextInput {
@@ -461,13 +465,15 @@ NPanelWindow {
                   chamferSize: Tokens.chamferIcon
                   cutTopRight: true
                   cutBottomLeft: true
-                  fillColor: sortPill.selected ? Colors.primary : Colors.surfaceContainer
+                  fillColor: sortPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                  strokeColor: sortPill.selected ? Colors.primary : Colors.outline
+                  strokeWidth: Tokens.borderModule
                 }
                 NText {
                   id: sortLabel
                   anchors.centerIn: parent
                   text: sortPill.modelData.label
-                  color: sortPill.selected ? Colors.primaryText : Colors.surfaceText
+                  color: sortPill.selected ? Colors.primaryContainerText : Colors.surfaceText
                   size: NText.Size.LabelXs
                 }
                 HoverHandler {
@@ -526,13 +532,15 @@ NPanelWindow {
                   chamferSize: Tokens.chamferIcon
                   cutTopRight: true
                   cutBottomLeft: true
-                  fillColor: purityPill.selected ? Colors.primary : Colors.surfaceContainer
+                  fillColor: purityPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                  strokeColor: purityPill.selected ? Colors.primary : Colors.outline
+                  strokeWidth: Tokens.borderModule
                 }
                 NText {
                   id: purityLabel
                   anchors.centerIn: parent
                   text: purityPill.modelData.label
-                  color: purityPill.selected ? Colors.primaryText : Colors.surfaceText
+                  color: purityPill.selected ? Colors.primaryContainerText : Colors.surfaceText
                   size: NText.Size.LabelXs
                 }
                 HoverHandler {
@@ -637,8 +645,8 @@ NPanelWindow {
               cutTopRight: true
               cutBottomLeft: true
               fillColor: Colors.surface
-              strokeColor: Colors.primary
-              strokeWidth: dirInput.activeFocus ? Tokens.borderModule : 0
+              strokeColor: dirInput.activeFocus ? Colors.primary : Colors.outline
+              strokeWidth: Tokens.borderModule
             }
             TextInput {
               id: dirInput
@@ -710,8 +718,8 @@ NPanelWindow {
                 cutTopRight: true
                 cutBottomLeft: true
                 fillColor: Colors.surfaceContainer
-                strokeColor: Colors.primary
-                strokeWidth: thumb.isSelected ? 2 : 0
+                strokeColor: thumb.isSelected ? Colors.primary : Colors.outline
+                strokeWidth: thumb.isSelected ? 2 : Tokens.borderModule
               }
 
               Image {
@@ -797,6 +805,8 @@ NPanelWindow {
               cutTopRight: true
               cutBottomLeft: true
               fillColor: loadMoreHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
+              strokeColor: Colors.outline
+              strokeWidth: Tokens.borderModule
             }
             NText {
               anchors.centerIn: parent
@@ -833,6 +843,8 @@ NPanelWindow {
             cutTopRight: true
             cutBottomLeft: true
             fillColor: Colors.surfaceContainer
+            strokeColor: Colors.outline
+            strokeWidth: Tokens.borderModule
           }
 
           Image {
@@ -933,13 +945,15 @@ NPanelWindow {
                 chamferSize: Tokens.chamferIcon
                 cutTopRight: true
                 cutBottomLeft: true
-                fillColor: allPill.selected ? Colors.primary : Colors.surfaceContainer
+                fillColor: allPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                strokeColor: allPill.selected ? Colors.primary : Colors.outline
+                strokeWidth: Tokens.borderModule
               }
               NText {
                 id: allLabel
                 anchors.centerIn: parent
                 text: "ALL"
-                color: allPill.selected ? Colors.primaryText : Colors.surfaceText
+                color: allPill.selected ? Colors.primaryContainerText : Colors.surfaceText
                 size: NText.Size.LabelXs
               }
               HoverHandler {
@@ -963,13 +977,15 @@ NPanelWindow {
                   chamferSize: Tokens.chamferIcon
                   cutTopRight: true
                   cutBottomLeft: true
-                  fillColor: monPill.selected ? Colors.primary : Colors.surfaceContainer
+                  fillColor: monPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                  strokeColor: monPill.selected ? Colors.primary : Colors.outline
+                  strokeWidth: Tokens.borderModule
                 }
                 NText {
                   id: monLabel
                   anchors.centerIn: parent
                   text: monPill.modelData.name + (monPill.modelData === Quickshell.screens[0] ? " ★" : "")
-                  color: monPill.selected ? Colors.primaryText : Colors.surfaceText
+                  color: monPill.selected ? Colors.primaryContainerText : Colors.surfaceText
                   size: NText.Size.LabelXs
                 }
                 HoverHandler {
@@ -1016,13 +1032,15 @@ NPanelWindow {
                   chamferSize: Tokens.chamferIcon
                   cutTopRight: true
                   cutBottomLeft: true
-                  fillColor: schemePill.selected ? Colors.primary : Colors.surfaceContainer
+                  fillColor: schemePill.selected ? Colors.primaryContainer : Colors.surfaceContainer
+                  strokeColor: schemePill.selected ? Colors.primary : Colors.outline
+                  strokeWidth: Tokens.borderModule
                 }
                 NText {
                   id: schemeLabel
                   anchors.centerIn: parent
                   text: schemePill.label
-                  color: schemePill.selected ? Colors.primaryText : Colors.surfaceText
+                  color: schemePill.selected ? Colors.primaryContainerText : Colors.surfaceText
                   font.pixelSize: 8
                 }
                 HoverHandler {

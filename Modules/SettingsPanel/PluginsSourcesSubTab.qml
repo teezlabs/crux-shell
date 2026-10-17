@@ -38,8 +38,8 @@ NScrollView {
             cutTopRight: true
             cutBottomLeft: true
             fillColor: Colors.surface
-            strokeColor: Colors.primary
-            strokeWidth: urlInput.activeFocus ? Tokens.borderModule : 0
+            strokeColor: urlInput.activeFocus ? Colors.primary : Colors.outline
+            strokeWidth: Tokens.borderModule
           }
 
           NText {
@@ -78,8 +78,8 @@ NScrollView {
               cutTopRight: true
               cutBottomLeft: true
               fillColor: Colors.surface
-              strokeColor: Colors.primary
-              strokeWidth: nameInput.activeFocus ? Tokens.borderModule : 0
+              strokeColor: nameInput.activeFocus ? Colors.primary : Colors.outline
+              strokeWidth: Tokens.borderModule
             }
 
             NText {

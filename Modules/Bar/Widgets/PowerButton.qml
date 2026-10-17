@@ -38,6 +38,8 @@ Item {
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
     fillColor: root.grouped ? Colors.alpha(Colors.primary, hoverHandler.hovered ? 0.16 : 0) : Colors.alpha(hoverHandler.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, Tokens.barModuleOpacity)
+    strokeColor: Colors.alpha(Colors.error, Tokens.destructiveBorderAlpha)
+    strokeWidth: Tokens.borderModule
   }
 
   // Geometric ⏻ glyph (circle + top tick), not a font glyph — the real

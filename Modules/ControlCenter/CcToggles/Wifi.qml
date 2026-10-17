@@ -8,7 +8,7 @@ import qs.Widgets
 
 // Wi-Fi quick toggle. Tapping asks the Control Center to expand the network
 // list inline rather than opening a separate popup.
-CcToggleButton {
+CcCircleToggle {
   id: tile
   signal expandRequested(string which)
 

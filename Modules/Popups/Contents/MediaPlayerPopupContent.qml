@@ -82,6 +82,8 @@ ColumnLayout {
         cutTopRight: true
         cutBottomLeft: true
         fillColor: Colors.surfaceContainer
+        strokeColor: Colors.outline
+        strokeWidth: Tokens.borderModule
       }
 
       Image {

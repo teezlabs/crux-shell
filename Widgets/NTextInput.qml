@@ -36,9 +36,8 @@ Item {
     cutTopRight: true
     cutBottomLeft: true
     fillColor: root.fillColor
-    // Outline only as the focus indicator.
-    strokeColor: Colors.primary
-    strokeWidth: input.activeFocus ? Tokens.borderModule : 0
+    strokeColor: input.activeFocus ? Colors.primary : Colors.outline
+    strokeWidth: Tokens.borderModule
   }
 
   NText {

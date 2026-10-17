@@ -332,6 +332,9 @@ ColumnLayout {
 
 
   // ---- Header: Arch logo avatar + user/uptime + gear/power/close ----
+  // Circular avatar/buttons here are a deliberate one-off departure
+  // from the rest of the app's "no radius" rule — explicitly requested
+  // to match a specific reference look, scoped to this one panel.
   CcCard {
     RowLayout {
       Layout.fillWidth: true
@@ -341,15 +344,13 @@ ColumnLayout {
         Layout.preferredWidth: 40
         Layout.preferredHeight: 40
 
-        Chamfer {
+        Rectangle {
           anchors.fill: parent
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Colors.surfaceContainerHigh
-        }
-        Item {
-          anchors.fill: parent
+          radius: width / 2
+          color: Colors.surfaceContainer
+          border.color: Colors.outline
+          border.width: Tokens.borderModule
+          clip: true
 
           Image {
             anchors.fill: parent
@@ -386,7 +387,7 @@ ColumnLayout {
         Layout.fillWidth: true
       }
 
-      CcToggleButton {
+      CcCircleToggle {
         implicitWidth: 32
         implicitHeight: 32
         onTapped: {
@@ -403,7 +404,7 @@ ColumnLayout {
         }
       }
 
-      CcToggleButton {
+      CcCircleToggle {
         implicitWidth: 32
         implicitHeight: 32
         onTapped: {
@@ -420,7 +421,7 @@ ColumnLayout {
         }
       }
 
-      CcToggleButton {
+      CcCircleToggle {
         implicitWidth: 32
         implicitHeight: 32
         onTapped: root.requestClose()
@@ -441,21 +442,23 @@ ColumnLayout {
   CcCard {
     RowLayout {
       Layout.fillWidth: true
-      spacing: Tokens.spaceMd
+      spacing: 10
 
       Repeater {
         model: Settings.data.controlCenter.toggles
 
-        // Each toggle fills an equal share of the row.
+        // Each toggle centered in an equal share of the row.
         delegate: Item {
           id: toggleSlot
           required property string modelData
           Layout.fillWidth: true
-          Layout.preferredHeight: 44
+          Layout.preferredHeight: 40
 
           Loader {
             id: toggleLoader
-            anchors.fill: parent
+            anchors.centerIn: parent
+            width: 40
+            height: 40
             active: CcToggleRegistry.has(toggleSlot.modelData)
             source: CcToggleRegistry.sourceFor(toggleSlot.modelData)
           }
@@ -688,12 +691,10 @@ ColumnLayout {
           Layout.preferredHeight: 30
           Layout.alignment: Qt.AlignHCenter
 
-          Chamfer {
+          Rectangle {
             anchors.fill: parent
-            chamferSize: Tokens.chamferIcon
-            cutTopRight: true
-            cutBottomLeft: true
-            fillColor: root.isPlaying ? Colors.primary : Colors.surfaceContainerHigh
+            radius: height / 2
+            color: root.isPlaying ? Colors.primary : Colors.surfaceContainer
           }
           Text {
             anchors.centerIn: parent
@@ -717,26 +718,26 @@ ColumnLayout {
         id: gauges
         Layout.fillWidth: !root.activePlayer
         columns: root.activePlayer ? 2 : 4
-        rowSpacing: Tokens.spaceMd
-        columnSpacing: root.activePlayer ? Tokens.spaceMd : Math.max(Tokens.spaceMd, (parent.width - 4 * 64) / 3)
+        rowSpacing: 4
+        columnSpacing: root.activePlayer ? 4 : Math.max(4, (parent.width - 4 * 52) / 3)
 
-        StatMeter {
+        CircularGauge {
           percent: root.cpuPercent
           value: Math.round(root.cpuPercent) + "%"
           label: "CPU"
         }
-        StatMeter {
+        CircularGauge {
           percent: Math.min(100, root.tempC)
           fillColor: Colors.tertiary
           value: Math.round(root.tempC) + "°"
           label: "TEMP"
         }
-        StatMeter {
+        CircularGauge {
           percent: root.memPercent
           value: root.memUsedGb.toFixed(1) + "G"
           label: "MEM"
         }
-        StatMeter {
+        CircularGauge {
           percent: root.diskPercent
           value: Math.round(root.diskPercent) + "%"
           label: "DISK"

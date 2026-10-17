@@ -123,18 +123,23 @@ ColumnLayout {
         Layout.preferredWidth: 36
         Layout.preferredHeight: 36
 
-        Chamfer {
+        Rectangle {
           anchors.fill: parent
           visible: cell.modelData.isToday
-          chamferSize: Tokens.chamferIcon
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Colors.primary
+          color: Colors.primaryContainer
+        }
+        Rectangle {
+          visible: cell.modelData.isToday
+          anchors.bottom: parent.bottom
+          anchors.left: parent.left
+          anchors.right: parent.right
+          height: Tokens.borderMarker
+          color: Colors.primary
         }
         NText {
           anchors.centerIn: parent
           text: String(cell.modelData.day)
-          color: cell.modelData.isToday ? Colors.primaryText : (cell.modelData.inMonth ? Colors.surfaceText : Colors.calendarOutOfMonth)
+          color: cell.modelData.isToday ? Colors.primaryContainerText : (cell.modelData.inMonth ? Colors.surfaceText : Colors.calendarOutOfMonth)
         }
       }
     }

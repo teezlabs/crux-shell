@@ -7,7 +7,7 @@ import qs.Modules.ControlCenter
 import qs.Widgets
 
 // Bluetooth quick toggle. Tapping expands the device list inline.
-CcToggleButton {
+CcCircleToggle {
   id: tile
   signal expandRequested(string which)
 

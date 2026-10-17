@@ -1,8 +1,9 @@
 import QtQuick
 import qs.Commons
 
-// Toggle switch: chamfered fill-only track, primary when on, sliding
-// square thumb.
+// v2-styled toggle switch: chamfered track (radius: 0 per hard rule 1,
+// same two-opposite-corner convention as every other chamfered element),
+// primaryContainer fill + primary border when on, sliding square thumb.
 Item {
   id: root
 
@@ -17,7 +18,9 @@ Item {
     chamferSize: Tokens.chamferIcon
     cutTopRight: true
     cutBottomLeft: true
-    fillColor: root.checked ? Colors.primary : Colors.surfaceContainerHigh
+    fillColor: root.checked ? Colors.primaryContainer : Colors.surfaceContainerHigh
+    strokeColor: root.checked ? Colors.primary : Colors.outline
+    strokeWidth: Tokens.borderModule
   }
 
   Rectangle {
@@ -26,7 +29,7 @@ Item {
     height: parent.height - 6
     anchors.verticalCenter: parent.verticalCenter
     x: root.checked ? parent.width - width - 3 : 3
-    color: root.checked ? Colors.primaryText : Colors.labelText
+    color: root.checked ? Colors.primary : Colors.labelText
 
     Behavior on x {
       NumberAnimation {

@@ -131,8 +131,11 @@ NPanelWindow {
     cutTopRight: true
     cutBottomLeft: true
     fillColor: Colors.alpha(Colors.surface, 0.18)
-    // No shadow here: its soft pixels fall outside the shape and, past the
+    strokeColor: Colors.alpha(Colors.outline, 0.4)
+    strokeWidth: Tokens.borderModule
+    // No shadow here: its soft pixels fall outside the outline and, past the
     // low blur threshold this namespace uses, get blurred into a halo.
+    rimLight: true
   }
 
   ColumnLayout {
@@ -166,13 +169,17 @@ NPanelWindow {
             chamferSize: 10 // spec §6.9: "each chamfered 10px" (an explicit override of the shared 8-10px tier)
             cutTopRight: true
             cutBottomLeft: true
-            // State is carried by fill, not outline: armed reads as error,
-            // selected as the tile's own accent.
-            fillColor: tile.armed ? Colors.alpha(Colors.error, 0.26) : (tile.selected ? Colors.alpha(tile.accentColor, 0.24) : Colors.alpha(Colors.surfaceContainer, Tokens.barModuleOpacity))
+            // Spec: "LOCK is default-focused: primary_container fill,
+            // accent border" — a flat role fill, not an alpha-blended tint.
+            fillColor: Colors.alpha(tile.selected ? Colors.primaryContainer : Colors.surfaceContainer, Tokens.barModuleOpacity)
             shadow: true
             shadowBlur: Tokens.shadowBlurCard
             shadowOpacity: Tokens.shadowOpacityCard
             shadowOffset: Tokens.shadowOffsetCard
+            rimLight: true
+            rimOpacity: Tokens.rimOpacityCard
+            strokeColor: tile.armed ? Colors.error : (tile.hasPermanentTint ? tile.permanentTint : (tile.selected ? Colors.primary : Colors.outline))
+            strokeWidth: tile.selected || tile.armed ? 2 : Tokens.borderModule
           }
 
           Column {

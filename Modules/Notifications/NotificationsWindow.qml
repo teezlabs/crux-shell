@@ -107,10 +107,14 @@ PanelWindow {
           cutTopRight: true
           cutBottomLeft: true
           fillColor: Colors.alpha(Colors.surfaceContainer, Settings.data.notifications.backgroundOpacity)
+          strokeColor: Colors.outlineVariant
+          strokeWidth: Tokens.borderModule
           shadow: true
           shadowBlur: Tokens.shadowBlurCard
           shadowOpacity: Tokens.shadowOpacityCard
           shadowOffset: Tokens.shadowOffsetCard
+          rimLight: true
+          rimOpacity: Tokens.rimOpacityCard
         }
 
         Rectangle {

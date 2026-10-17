@@ -81,7 +81,9 @@ NScrollView {
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: swatch.applied ? Colors.alpha(Colors.primary, 0.2) : (swatchHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer)
+            fillColor: swatch.applied ? Colors.primaryContainer : (swatchHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer)
+            strokeColor: swatch.applied ? Colors.primary : Colors.outline
+            strokeWidth: Tokens.borderModule
           }
 
           RowLayout {
@@ -165,8 +167,8 @@ NScrollView {
               cutTopRight: true
               cutBottomLeft: true
               fillColor: Colors.surface
-              strokeColor: Colors.primary
-              strokeWidth: fieldInput.activeFocus ? Tokens.borderModule : 0
+              strokeColor: fieldInput.activeFocus ? Colors.primary : Colors.outline
+              strokeWidth: Tokens.borderModule
             }
 
             TextInput {
