@@ -1,6 +1,4 @@
 import QtQuick
-import QtQuick.Controls
-import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
@@ -10,7 +8,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Services
 
-// Wallpaper browser: centered floating card (not the spec's fullscreen mockup). Local library only. See crux skill's notes.md.
+// Wallpaper browser: a floating card around a skwd-wall-style slice strip, local library or Wallhaven.
 NPanelWindow {
   id: root
 
@@ -117,17 +115,12 @@ NPanelWindow {
   }
 
   property int selectedIndex: 0
-  // Keeps keyboard nav from moving the highlight below/above the visible
-  // viewport with no way to see where it went.
   onSelectedIndexChanged: {
-    var row = Math.floor(selectedIndex / _columns);
-    var cellH = root._thumbH + root._gridGap;
-    var top = row * cellH;
-    var bottom = top + cellH;
-    if (top < gridFlick.contentY)
-      gridFlick.contentY = top;
-    else if (bottom > gridFlick.contentY + gridFlick.height)
-      gridFlick.contentY = bottom - gridFlick.height;
+    if (strip.currentIndex !== root.selectedIndex)
+      strip.currentIndex = root.selectedIndex;
+    // Wallhaven pages in as the strip nears its end.
+    if (root.sourceMode === "wallhaven" && !Wallhaven.loading && Wallhaven.page < Wallhaven.lastPage && root.selectedIndex >= root.filteredFiles.length - 3)
+      root.whSearch(Wallhaven.page + 1, true);
   }
   readonly property var selectedFile: root.filteredFiles.length > 0 ? root.filteredFiles[Math.min(root.selectedIndex, root.filteredFiles.length - 1)] : null
   readonly property bool selectedIsVideo: root.selectedFile && !root.selectedFile.isRemote ? (root.selectedFile.ext === "mp4" || root.selectedFile.ext === "webm") : false
@@ -149,12 +142,8 @@ NPanelWindow {
       root.close();
   }
 
-  // Arm-then-confirm (same convention as the session menu's destructive
-  // actions) — the delete button reads "DELETE" once, "CONFIRM DELETE?" for
-  // a few seconds after, and only actually removes the file on that second
-  // click. Armed state is keyed by path so switching selection disarms it.
   // The service resets nothing UI-side; a fresh result set means the
-  // selection has to go back to the top.
+  // selection has to go back to the start.
   Connections {
     target: Wallhaven
     function onResultsReplaced() {
@@ -162,6 +151,8 @@ NPanelWindow {
     }
   }
 
+  // Arm-then-confirm, like the session menu's destructive actions: the first
+  // press arms, a second within 3s deletes. Keyed by path, so moving disarms it.
   property string armedDeletePath: ""
 
   Timer {
@@ -191,7 +182,7 @@ NPanelWindow {
 
   onSelectedFileChanged: root.armedDeletePath = ""
 
-  // Opens on the wallpaper in use, so the theme controls act on it rather than the grid's first file.
+  // Opens on the wallpaper in use, so the theme controls act on it rather than the first file.
   property bool _selectCurrentOnScan: false
   function selectCurrent() {
     const current = Settings.getWallpaperForScreen(root.targetMonitor);
@@ -205,43 +196,31 @@ NPanelWindow {
     root.rescan();
   }
 
-  // Don't steal focus into searchInput on open, or arrow/Enter/R shortcuts below (gated on !activeFocus) go dead.
-  // Column count from the Flickable's real width, not hand-computed from card.width.
-  // Portrait screens stack rail, grid and details instead of laying them side by side.
   readonly property bool portrait: root.height > root.width
-  readonly property int _gridGap: 8
-  readonly property int _columns: Math.max(1, Math.floor((gridFlick.width + root._gridGap) / (220 + root._gridGap)))
-  // Thumbnails fill their column at 16:9.
-  readonly property real _thumbW: Math.floor((gridFlick.width - (root._columns - 1) * root._gridGap) / root._columns)
-  readonly property real _thumbH: Math.round(root._thumbW * 9 / 16)
 
-  function _moveSelection(dx, dy) {
+  // Strip geometry, after skwd-wall's slice view: one wide focused card, narrow slices either side.
+  readonly property real _expandedWidth: Math.min(768, Math.round(strip.width * 0.62))
+  readonly property real _sliceHeight: Math.round(root._expandedWidth * 0.68)
+  readonly property real _sliceWidth: root.portrait ? 96 : 135
+  readonly property real _skew: 28
+  readonly property real _sliceGap: 6
+
+  function _moveSelection(d) {
     if (root.filteredFiles.length === 0)
       return;
-    var idx = root.selectedIndex + dx + dy * root._columns;
-    idx = Math.max(0, Math.min(root.filteredFiles.length - 1, idx));
-    root.selectedIndex = idx;
+    root.selectedIndex = Math.max(0, Math.min(root.filteredFiles.length - 1, root.selectedIndex + d));
   }
 
+  // Don't steal focus into searchInput on open, or these shortcuts (gated on !activeFocus) go dead.
   Shortcut {
     sequence: "Left"
     enabled: root.visible && !searchInput.activeFocus
-    onActivated: root._moveSelection(-1, 0)
+    onActivated: root._moveSelection(-1)
   }
   Shortcut {
     sequence: "Right"
     enabled: root.visible && !searchInput.activeFocus
-    onActivated: root._moveSelection(1, 0)
-  }
-  Shortcut {
-    sequence: "Up"
-    enabled: root.visible && !searchInput.activeFocus
-    onActivated: root._moveSelection(0, -1)
-  }
-  Shortcut {
-    sequence: "Down"
-    enabled: root.visible && !searchInput.activeFocus
-    onActivated: root._moveSelection(0, 1)
+    onActivated: root._moveSelection(1)
   }
   Shortcut {
     sequence: "Return"
@@ -273,11 +252,8 @@ NPanelWindow {
   Item {
     id: card
     anchors.centerIn: parent
-    // Clamped to the actual screen size (minus a margin) — a portrait/
-    // narrow monitor is smaller than the 1200x720 default, and nothing
-    // was capping it, so the card overflowed straight off the edges there.
     width: Math.min(1560, root.width - 40)
-    height: Math.min(root.portrait ? 1500 : 900, root.height - 40)
+    height: Math.min(layout.implicitHeight + 40, root.height - 40)
 
     Chamfer {
       anchors.fill: parent
@@ -297,108 +273,78 @@ NPanelWindow {
     }
 
     ColumnLayout {
+      id: layout
       anchors.fill: parent
       anchors.margins: 20
-      spacing: 12
+      spacing: 14
 
-    // ---- Header ----
-    RowLayout {
-      Layout.fillWidth: true
-      spacing: 10
-
-      Rectangle {
-        width: 3
-        height: 20
-        color: Colors.primary
-      }
-      NText {
-        tracking: true
-        text: "WALLPAPER BROWSER"
-        color: Colors.surfaceText
-        size: NText.Size.BodyLg
-        font.weight: Font.DemiBold
-        font.letterSpacing: 1
-      }
-      Item {
+      // ---- Header ----
+      RowLayout {
         Layout.fillWidth: true
-      }
-      NText {
-        text: root.sourceMode === "wallhaven" ? (Wallhaven.loading ? "SEARCHING…" : Wallhaven.results.length + " RESULTS" + (Wallhaven.error ? " · " + Wallhaven.error : "")) : root.filteredFiles.length + " OF " + root.files.length
-        color: Colors.labelText
-        size: NText.Size.Caption
-      }
-    }
+        spacing: 10
 
-    GridLayout {
-      Layout.fillWidth: true
-      Layout.fillHeight: true
-      columns: root.portrait ? 1 : 3
-      rowSpacing: 16
-      columnSpacing: 16
-
-      // ---- Left rail: search / sort / directory ----
-      ColumnLayout {
-        Layout.preferredWidth: root.portrait ? -1 : 220
-        Layout.minimumWidth: root.portrait ? 0 : 220
-        Layout.maximumWidth: root.portrait ? Number.POSITIVE_INFINITY : 220
-        Layout.fillWidth: root.portrait
-        Layout.fillHeight: !root.portrait
-        spacing: 14
-
-        RowLayout {
+        Rectangle {
+          width: 3
+          height: 20
+          color: Colors.primary
+        }
+        NText {
+          tracking: true
+          text: "WALLPAPER"
+          color: Colors.surfaceText
+          size: NText.Size.BodyLg
+          font.weight: Font.DemiBold
+        }
+        Item {
           Layout.fillWidth: true
-          spacing: 4
-          Repeater {
-            model: [
-              {
-                "key": "local",
-                "label": "LOCAL"
-              },
-              {
-                "key": "wallhaven",
-                "label": "WALLHAVEN"
-              }
-            ]
-            delegate: Item {
-              id: srcPill
-              required property var modelData
-              readonly property bool selected: root.sourceMode === modelData.key
-              Layout.fillWidth: true
-              height: 26
-              Chamfer {
-                anchors.fill: parent
-                chamferSize: Tokens.chamferIcon
-                cutTopRight: true
-                cutBottomLeft: true
-                fillColor: srcPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
-                strokeColor: srcPill.selected ? Colors.primary : Colors.outline
-                strokeWidth: Tokens.borderModule
-              }
-              NText {
-                anchors.centerIn: parent
-                text: srcPill.modelData.label
-                color: srcPill.selected ? Colors.primaryContainerText : Colors.surfaceText
-                font.pixelSize: 8
-                font.weight: Font.DemiBold
-              }
-              HoverHandler {
-                cursorShape: Qt.PointingHandCursor
-              }
-              TapHandler {
-                onTapped: {
-                  root.sourceMode = srcPill.modelData.key;
-                  root.selectedIndex = 0;
-                  if (root.sourceMode === "wallhaven" && Wallhaven.results.length === 0)
-                    root.whSearch(1, false);
-                }
-              }
+        }
+        NText {
+          visible: !root.portrait
+          tracking: true
+          text: "← → MOVE · ⏎ APPLY + THEME · ⇧⏎ WALLPAPER ONLY · / SEARCH · R RANDOM"
+          color: Colors.labelText
+          size: NText.Size.LabelXs
+        }
+        NText {
+          tracking: true
+          text: root.sourceMode === "wallhaven" ? (Wallhaven.loading ? "SEARCHING…" : (root.selectedIndex + 1) + " / " + Wallhaven.results.length + (Wallhaven.error ? " · " + Wallhaven.error.toUpperCase() : "")) : (root.filteredFiles.length > 0 ? (root.selectedIndex + 1) + " / " + root.filteredFiles.length : "0 / " + root.files.length)
+          color: Colors.labelText
+          size: NText.Size.LabelXs
+        }
+      }
+
+      // ---- Filter bar ----
+      Flow {
+        Layout.fillWidth: true
+        spacing: 8
+
+        Repeater {
+          model: [
+            {
+              "key": "local",
+              "label": "LOCAL"
+            },
+            {
+              "key": "wallhaven",
+              "label": "WALLHAVEN"
+            }
+          ]
+          delegate: BrowserPill {
+            required property var modelData
+            text: modelData.label
+            selected: root.sourceMode === modelData.key
+            onTapped: {
+              root.sourceMode = modelData.key;
+              root.selectedIndex = 0;
+              if (root.sourceMode === "wallhaven" && Wallhaven.results.length === 0)
+                root.whSearch(1, false);
             }
           }
         }
 
         Item {
-          Layout.fillWidth: true
-          height: 30
+          width: 260
+          height: 24
 
           Chamfer {
             anchors.fill: parent
@@ -420,6 +366,7 @@ NPanelWindow {
             font.family: Tokens.fontFamily
             font.pixelSize: Tokens.bodySmSize
             selectByMouse: true
+            clip: true
             onTextChanged: {
               root.searchText = text;
               if (root.sourceMode === "local")
@@ -429,767 +376,352 @@ NPanelWindow {
               root.whSearch(1, false)
 
             NText {
-              anchors.centerIn: parent
+              anchors.verticalCenter: parent.verticalCenter
               visible: parent.text === "" && !parent.activeFocus
-              text: root.sourceMode === "wallhaven" ? "/ SEARCH WALLHAVEN ⏎" : "/ SEARCH"
+              text: root.sourceMode === "wallhaven" ? "/ Search Wallhaven ⏎" : "/ Search"
               color: Colors.labelText
               size: NText.Size.BodySm
             }
           }
         }
 
-        ColumnLayout {
-          Layout.fillWidth: true
-          spacing: 4
-          NText {
-            tracking: true
-            text: "SORT"
-            color: Colors.labelText
-            size: NText.Size.LabelXs
-          }
-          RowLayout {
-            spacing: 4
-            Repeater {
-              model: root.sourceMode === "wallhaven" ? [
-                {
-                  "key": "toplist",
-                  "label": "Top"
-                },
-                {
-                  "key": "date_added",
-                  "label": "Latest"
-                },
-                {
-                  "key": "views",
-                  "label": "Views"
-                },
-                {
-                  "key": "favorites",
-                  "label": "Faves"
-                }
-              ] : [
-                {
-                  "key": "name",
-                  "label": "Name"
-                },
-                {
-                  "key": "date",
-                  "label": "Recent"
-                }
-              ]
-              delegate: Item {
-                id: sortPill
-                required property var modelData
-                readonly property bool selected: root.sourceMode === "wallhaven" ? Wallhaven.sorting === modelData.key : root.sortMode === modelData.key
-                width: sortLabel.implicitWidth + 18
-                height: 24
-                Chamfer {
-                  anchors.fill: parent
-                  chamferSize: Tokens.chamferIcon
-                  cutTopRight: true
-                  cutBottomLeft: true
-                  fillColor: sortPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
-                  strokeColor: sortPill.selected ? Colors.primary : Colors.outline
-                  strokeWidth: Tokens.borderModule
-                }
-                NText {
-                  id: sortLabel
-                  anchors.centerIn: parent
-                  text: sortPill.modelData.label
-                  color: sortPill.selected ? Colors.primaryContainerText : Colors.surfaceText
-                  size: NText.Size.LabelXs
-                }
-                HoverHandler {
-                  cursorShape: Qt.PointingHandCursor
-                }
-                TapHandler {
-                  onTapped: {
-                    if (root.sourceMode === "wallhaven") {
-                      Wallhaven.sorting = sortPill.modelData.key;
-                      root.whSearch(1, false);
-                    } else {
-                      root.sortMode = sortPill.modelData.key;
-                    }
-                  }
-                }
+        Repeater {
+          model: root.sourceMode === "wallhaven" ? [
+            {
+              "key": "toplist",
+              "label": "TOP"
+            },
+            {
+              "key": "date_added",
+              "label": "LATEST"
+            },
+            {
+              "key": "views",
+              "label": "VIEWS"
+            },
+            {
+              "key": "favorites",
+              "label": "FAVES"
+            }
+          ] : [
+            {
+              "key": "name",
+              "label": "NAME"
+            },
+            {
+              "key": "date",
+              "label": "RECENT"
+            }
+          ]
+          delegate: BrowserPill {
+            required property var modelData
+            text: modelData.label
+            selected: root.sourceMode === "wallhaven" ? Wallhaven.sorting === modelData.key : root.sortMode === modelData.key
+            onTapped: {
+              if (root.sourceMode === "wallhaven") {
+                Wallhaven.sorting = modelData.key;
+                root.whSearch(1, false);
+              } else {
+                root.sortMode = modelData.key;
               }
             }
           }
         }
 
-        ColumnLayout {
-          Layout.fillWidth: true
-          spacing: 4
-          visible: root.sourceMode === "wallhaven"
-          NText {
-            tracking: true
-            text: "PURITY"
-            color: Colors.labelText
-            size: NText.Size.LabelXs
-          }
-          RowLayout {
-            spacing: 4
-            Repeater {
-              model: [
-                {
-                  "key": "wallhavenSfw",
-                  "label": "SFW"
-                },
-                {
-                  "key": "wallhavenSketchy",
-                  "label": "Sketchy"
-                },
-                {
-                  "key": "wallhavenNsfw",
-                  "label": "NSFW"
-                }
-              ]
-              delegate: Item {
-                id: purityPill
-                required property var modelData
-                readonly property bool selected: Settings.data.wallpaper[modelData.key]
-                width: purityLabel.implicitWidth + 18
-                height: 24
-                Chamfer {
-                  anchors.fill: parent
-                  chamferSize: Tokens.chamferIcon
-                  cutTopRight: true
-                  cutBottomLeft: true
-                  fillColor: purityPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
-                  strokeColor: purityPill.selected ? Colors.primary : Colors.outline
-                  strokeWidth: Tokens.borderModule
-                }
-                NText {
-                  id: purityLabel
-                  anchors.centerIn: parent
-                  text: purityPill.modelData.label
-                  color: purityPill.selected ? Colors.primaryContainerText : Colors.surfaceText
-                  size: NText.Size.LabelXs
-                }
-                HoverHandler {
-                  cursorShape: Qt.PointingHandCursor
-                }
-                TapHandler {
-                  onTapped: {
-                    Settings.data.wallpaper[purityPill.modelData.key] = !purityPill.selected;
-                    root.whSearch(1, false);
-                  }
-                }
-              }
+        Repeater {
+          model: root.sourceMode === "wallhaven" ? [
+            {
+              "key": "wallhavenSfw",
+              "label": "SFW"
+            },
+            {
+              "key": "wallhavenSketchy",
+              "label": "SKETCHY"
+            },
+            {
+              "key": "wallhavenNsfw",
+              "label": "NSFW"
             }
-          }
-        }
-
-        ColumnLayout {
-          Layout.fillWidth: true
-          spacing: 4
-          visible: root.sourceMode === "wallhaven"
-          NText {
-            tracking: true
-            text: "QUALITY / RATIO"
-            color: Colors.labelText
-            size: NText.Size.LabelXs
-          }
-          NComboBox {
-            Layout.fillWidth: true
-            implicitHeight: 24
-            textSize: NText.Size.Caption
-            label: "QUALITY"
-            currentKey: Settings.data.wallpaper.wallhavenAtLeast
-            model: [
-              {
-                "key": "",
-                "label": "Any"
-              },
-              {
-                "key": "1920x1080",
-                "label": "1080p+"
-              },
-              {
-                "key": "2560x1440",
-                "label": "1440p+"
-              },
-              {
-                "key": "3840x2160",
-                "label": "4K+"
-              }
-            ]
-            onSelected: key => {
-              Settings.data.wallpaper.wallhavenAtLeast = key;
-              root.whSearch(1, false);
-            }
-          }
-          NComboBox {
-            Layout.fillWidth: true
-            implicitHeight: 24
-            textSize: NText.Size.Caption
-            label: "RATIO"
-            currentKey: Settings.data.wallpaper.wallhavenRatio
-            model: [
-              {
-                "key": "",
-                "label": "Any"
-              },
-              {
-                "key": "16x9",
-                "label": "16:9"
-              },
-              {
-                "key": "21x9",
-                "label": "21:9"
-              },
-              {
-                "key": "9x16",
-                "label": "Portrait"
-              }
-            ]
-            onSelected: key => {
-              Settings.data.wallpaper.wallhavenRatio = key;
+          ] : []
+          delegate: BrowserPill {
+            required property var modelData
+            text: modelData.label
+            selected: Settings.data.wallpaper[modelData.key]
+            onTapped: {
+              Settings.data.wallpaper[modelData.key] = !selected;
               root.whSearch(1, false);
             }
           }
         }
 
-        ColumnLayout {
-          Layout.fillWidth: true
-          spacing: 4
-          NText {
-            tracking: true
-            text: "DIRECTORY"
-            color: Colors.labelText
-            size: NText.Size.LabelXs
+        NComboBox {
+          visible: root.sourceMode === "wallhaven"
+          width: 150
+          implicitHeight: 24
+          textSize: NText.Size.Caption
+          label: "QUALITY"
+          currentKey: Settings.data.wallpaper.wallhavenAtLeast
+          model: [
+            {
+              "key": "",
+              "label": "Any"
+            },
+            {
+              "key": "1920x1080",
+              "label": "1080p+"
+            },
+            {
+              "key": "2560x1440",
+              "label": "1440p+"
+            },
+            {
+              "key": "3840x2160",
+              "label": "4K+"
+            }
+          ]
+          onSelected: key => {
+            Settings.data.wallpaper.wallhavenAtLeast = key;
+            root.whSearch(1, false);
           }
-          Item {
-            Layout.fillWidth: true
-            height: 26
-            Chamfer {
-              anchors.fill: parent
-              chamferSize: Tokens.chamferIcon
-              cutTopRight: true
-              cutBottomLeft: true
-              fillColor: Colors.surface
-              strokeColor: dirInput.activeFocus ? Colors.primary : Colors.outline
-              strokeWidth: Tokens.borderModule
+        }
+
+        NComboBox {
+          visible: root.sourceMode === "wallhaven"
+          width: 150
+          implicitHeight: 24
+          textSize: NText.Size.Caption
+          label: "RATIO"
+          currentKey: Settings.data.wallpaper.wallhavenRatio
+          model: [
+            {
+              "key": "",
+              "label": "Any"
+            },
+            {
+              "key": "16x9",
+              "label": "16:9"
+            },
+            {
+              "key": "21x9",
+              "label": "21:9"
+            },
+            {
+              "key": "9x16",
+              "label": "Portrait"
             }
-            TextInput {
-              id: dirInput
-              anchors.fill: parent
-              anchors.leftMargin: 8
-              anchors.rightMargin: 8
-              verticalAlignment: Text.AlignVCenter
-              text: Settings.data.wallpaper.directory
-              color: Colors.surfaceText
-              font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.captionSize
-              selectByMouse: true
-              onEditingFinished: {
-                Settings.data.wallpaper.directory = text;
-                root.rescan();
-              }
-            }
+          ]
+          onSelected: key => {
+            Settings.data.wallpaper.wallhavenRatio = key;
+            root.whSearch(1, false);
           }
         }
 
         Item {
-          visible: !root.portrait
-          Layout.fillHeight: true
+          visible: root.sourceMode === "local"
+          width: 300
+          height: 24
+          Chamfer {
+            anchors.fill: parent
+            chamferSize: Tokens.chamferIcon
+            cutTopRight: true
+            cutBottomLeft: true
+            fillColor: Colors.surface
+            strokeColor: dirInput.activeFocus ? Colors.primary : Colors.outline
+            strokeWidth: Tokens.borderModule
+          }
+          TextInput {
+            id: dirInput
+            anchors.fill: parent
+            anchors.leftMargin: 8
+            anchors.rightMargin: 8
+            verticalAlignment: Text.AlignVCenter
+            text: Settings.data.wallpaper.directory
+            color: Colors.surfaceText
+            font.family: Tokens.fontFamily
+            font.pixelSize: Tokens.captionSize
+            selectByMouse: true
+            clip: true
+            onEditingFinished: {
+              Settings.data.wallpaper.directory = text;
+              root.rescan();
+            }
+          }
+        }
+      }
+
+      // ---- Slice strip ----
+      ListView {
+        id: strip
+        Layout.fillWidth: true
+        Layout.preferredHeight: root._sliceHeight
+        orientation: ListView.Horizontal
+        model: root.filteredFiles
+        // Negative spacing lets neighbouring slants run parallel with a small gap.
+        spacing: root._sliceGap - root._skew
+        clip: true
+        boundsBehavior: Flickable.StopAtBounds
+        highlightRangeMode: ListView.StrictlyEnforceRange
+        preferredHighlightBegin: (width - root._expandedWidth) / 2
+        preferredHighlightEnd: (width + root._expandedWidth) / 2
+        highlightMoveDuration: Tokens.durationSidebarSlide
+        cacheBuffer: root._expandedWidth
+        header: Item {
+          width: (strip.width - root._expandedWidth) / 2
+          height: 1
+        }
+        footer: Item {
+          width: (strip.width - root._expandedWidth) / 2
+          height: 1
+        }
+
+        onCurrentIndexChanged: if (root.selectedIndex !== currentIndex && currentIndex >= 0)
+          root.selectedIndex = currentIndex
+
+        delegate: WallpaperSlice {
+          sliceWidth: root._sliceWidth
+          expandedWidth: root._expandedWidth
+          skew: root._skew
+          onPicked: i => root.selectedIndex = i
+          onApplyRequested: root.applyWallpaper(true)
+        }
+
+        // A vertical wheel steps through the strip one slice per notch.
+        WheelHandler {
+          acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+          onWheel: event => root._moveSelection(event.angleDelta.y > 0 || event.angleDelta.x > 0 ? -1 : 1)
         }
 
         NText {
-          visible: !root.portrait
-          text: "← → ↑ ↓ MOVE\n⏎ APPLY + THEME\n⇧⏎ WALLPAPER ONLY\n/ SEARCH  R RANDOM\nESC CLOSE"
+          anchors.centerIn: parent
+          visible: root.filteredFiles.length === 0
+          tracking: true
+          text: root.sourceMode === "wallhaven" && Wallhaven.loading ? "SEARCHING…" : "NOTHING HERE"
           color: Colors.labelText
           size: NText.Size.LabelXs
-          lineHeight: 1.6
         }
       }
 
-      // ---- Grid ----
-      Flickable {
-        id: gridFlick
+      // ---- Footer: what's focused, where it goes, how it's themed ----
+      GridLayout {
         Layout.fillWidth: true
-        Layout.fillHeight: true
-        contentWidth: width
-        contentHeight: grid.implicitHeight
-        clip: true
-        boundsBehavior: Flickable.StopAtBounds
-        ScrollBar.vertical: ScrollBar {
-          policy: gridFlick.contentHeight > gridFlick.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
-        }
+        columns: root.portrait ? 1 : 2
+        rowSpacing: 10
+        columnSpacing: 20
 
-        GridLayout {
-          id: grid
-          width: gridFlick.width
-          height: implicitHeight
-          columns: root._columns
-          rowSpacing: root._gridGap
-          columnSpacing: root._gridGap
+        Flow {
+          Layout.fillWidth: true
+          spacing: 8
 
+          NText {
+            width: Math.min(implicitWidth, 320)
+            height: 24
+            verticalAlignment: Text.AlignVCenter
+            text: root.selectedFile ? root.selectedFile.name : ""
+            color: Colors.surfaceText
+            size: NText.Size.BodySm
+            elide: Text.ElideMiddle
+          }
+
+          NText {
+            height: 24
+            verticalAlignment: Text.AlignVCenter
+            tracking: true
+            text: "TARGET"
+            color: Colors.labelText
+            size: NText.Size.LabelXs
+          }
+          BrowserPill {
+            text: "ALL"
+            selected: root.targetMonitor === ""
+            onTapped: root.targetMonitor = ""
+          }
           Repeater {
-            model: root.filteredFiles
-            delegate: Item {
-              id: thumb
+            model: Quickshell.screens
+            delegate: BrowserPill {
               required property var modelData
-              required property int index
-              readonly property bool isSelected: index === root.selectedIndex
-              readonly property bool isVideo: !modelData.isRemote && (modelData.ext === "mp4" || modelData.ext === "webm")
-              readonly property bool isRemote: !!modelData.isRemote
-              Layout.preferredWidth: root._thumbW
-              Layout.preferredHeight: root._thumbH
-
-              Chamfer {
-                anchors.fill: parent
-                chamferSize: Tokens.chamferIcon
-                cutTopRight: true
-                cutBottomLeft: true
-                fillColor: Colors.surfaceContainer
-                strokeColor: thumb.isSelected ? Colors.primary : Colors.outline
-                strokeWidth: thumb.isSelected ? 2 : Tokens.borderModule
-              }
-
-              Image {
-                id: thumbImage
-                anchors.fill: parent
-                anchors.margins: thumb.isSelected ? 2 : 1
-                source: thumb.isVideo ? "" : thumb.isRemote ? thumb.modelData.thumb : "file://" + thumb.modelData.path
-                fillMode: Image.PreserveAspectCrop
-                asynchronous: true
-                cache: true
-                // Decode at the size actually drawn. Without this a 4K
-                // wallpaper is decoded whole to fill a ~220px cell; the
-                // library here is 141 MPix across 26 files.
-                sourceSize.width: Math.max(1, Math.round(width))
-                sourceSize.height: Math.max(1, Math.round(height))
-                visible: false
-              }
-
-              // Chamfer.qml only draws the border/fill behind the image —
-              // clip the image itself to the same cut-corner shape via
-              // MultiEffect's mask, or it just sits as a plain rectangle
-              // poking out past the cut corners.
-              Chamfer {
-                id: thumbMask
-                anchors.fill: thumbImage
-                chamferSize: Tokens.chamferIcon
-                cutTopRight: true
-                cutBottomLeft: true
-                fillColor: "white"
-                visible: false
-                layer.enabled: true
-              }
-
-              MultiEffect {
-                anchors.fill: thumbImage
-                source: thumbImage
-                maskEnabled: true
-                maskSource: thumbMask
-                maskThresholdMin: 0.5
-                maskSpreadAtMin: 1.0
-              }
-
-              // Type badge, top-left corner.
-              Item {
-                x: 3
-                y: 3
-                width: badgeLabel.implicitWidth + 8
-                height: 15
-                Rectangle {
-                  anchors.fill: parent
-                  color: thumb.isVideo ? Colors.alpha(Colors.tertiary, 0.85) : thumb.isRemote ? Colors.alpha(Colors.primary, 0.85) : Colors.alpha(Colors.surface, 0.75)
-                }
-                NText {
-                  id: badgeLabel
-                  anchors.centerIn: parent
-                  text: thumb.isVideo ? "VID" : thumb.isRemote ? "WEB" : "IMG"
-                  color: (thumb.isVideo || thumb.isRemote) ? Colors.primaryText : Colors.labelText
-                  font.pixelSize: 8
-                  font.weight: Font.DemiBold
-                }
-              }
-
-              HoverHandler {
-                cursorShape: Qt.PointingHandCursor
-              }
-              TapHandler {
-                onTapped: root.selectedIndex = thumb.index
-                onDoubleTapped: root.applyWallpaper(true)
-              }
+              text: modelData.name
+              selected: root.targetMonitor === modelData.name
+              onTapped: root.targetMonitor = modelData.name
             }
           }
 
-          Item {
-            visible: root.sourceMode === "wallhaven" && Wallhaven.page < Wallhaven.lastPage
-            Layout.columnSpan: root._columns
-            Layout.fillWidth: true
-            Layout.preferredHeight: 30
-            Layout.topMargin: 4
+          NText {
+            height: 24
+            verticalAlignment: Text.AlignVCenter
+            tracking: true
+            text: "SCHEME"
+            color: Colors.labelText
+            size: NText.Size.LabelXs
+          }
+          NComboBox {
+            width: 150
+            implicitHeight: 24
+            textSize: NText.Size.Caption
+            currentKey: Settings.data.wallpaper.matugenScheme
+            model: ["scheme-content", "scheme-expressive", "scheme-fidelity", "scheme-fruit-salad", "scheme-monochrome", "scheme-neutral", "scheme-rainbow", "scheme-tonal-spot", "scheme-vibrant"].map(s => ({
+                                                                                                                                                                                                  "key": s,
+                                                                                                                                                                                                  "label": s.replace("scheme-", "")
+                                                                                                                                                                                                }))
+            onSelected: key => {
+              Settings.data.wallpaper.matugenScheme = key;
+              // Live preview; a Wallhaven pick has no local file until it's applied.
+              if (root.selectedFile && !root.selectedFile.isRemote)
+                Matugen.generateFrom(root.selectedFile.path);
+            }
+          }
+        }
 
+        RowLayout {
+          Layout.alignment: root.portrait ? Qt.AlignLeft : Qt.AlignRight
+          spacing: 8
+
+          Item {
+            visible: root.selectedFile !== null && !root.selectedFile.isRemote
+            readonly property bool armed: root.selectedFile && root.armedDeletePath === root.selectedFile.path
+            implicitWidth: deleteLabel.implicitWidth + 24
+            implicitHeight: 30
             Chamfer {
               anchors.fill: parent
               chamferSize: Tokens.chamferIcon
               cutTopRight: true
               cutBottomLeft: true
-              fillColor: loadMoreHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
-              strokeColor: Colors.outline
+              fillColor: parent.armed ? Colors.error : (deleteHover.hovered ? Colors.alpha(Colors.error, 0.16) : "transparent")
+              strokeColor: Colors.alpha(Colors.error, parent.armed ? 1 : 0.6)
               strokeWidth: Tokens.borderModule
             }
             NText {
+              id: deleteLabel
               anchors.centerIn: parent
-              text: Wallhaven.loading ? "LOADING…" : "LOAD MORE"
-              color: Colors.surfaceText
+              tracking: true
+              text: parent.armed ? "CONFIRM DELETE?" : "DELETE"
+              color: parent.armed ? Colors.errorText : Colors.error
               size: NText.Size.LabelXs
             }
             HoverHandler {
-              id: loadMoreHover
+              id: deleteHover
               cursorShape: Qt.PointingHandCursor
             }
             TapHandler {
-              onTapped: root.whSearch(Wallhaven.page + 1, true)
-            }
-          }
-        }
-      }
-
-      // ---- Right detail panel (bottom strip in portrait: preview beside its controls) ----
-      GridLayout {
-        Layout.preferredWidth: root.portrait ? -1 : 360
-        Layout.minimumWidth: root.portrait ? 0 : 360
-        Layout.maximumWidth: root.portrait ? Number.POSITIVE_INFINITY : 360
-        Layout.fillWidth: root.portrait
-        Layout.fillHeight: !root.portrait
-        columns: root.portrait ? 2 : 1
-        rowSpacing: 12
-        columnSpacing: 16
-
-        Item {
-          Layout.preferredWidth: root.portrait ? 440 : -1
-          Layout.fillWidth: !root.portrait
-          Layout.preferredHeight: Math.round(width * 9 / 16)
-          Layout.alignment: Qt.AlignTop
-
-          Chamfer {
-            anchors.fill: parent
-            chamferSize: Tokens.chamferPanel
-            cutTopRight: true
-            cutBottomLeft: true
-            fillColor: Colors.surfaceContainer
-            strokeColor: Colors.outline
-            strokeWidth: Tokens.borderModule
-          }
-
-          Image {
-            id: previewImage
-            anchors.fill: parent
-            anchors.margins: 2
-            visible: false
-            source: {
-              if (!root.selectedFile || root.selectedIsVideo)
-                return "";
-              return root.selectedFile.isRemote ? root.selectedFile.thumb : "file://" + root.selectedFile.path;
-            }
-            fillMode: Image.PreserveAspectCrop
-            asynchronous: true
-            cache: true
-
-            readonly property int imgW: sourceSize.width
-            readonly property int imgH: sourceSize.height
-          }
-
-          Chamfer {
-            id: previewMask
-            anchors.fill: previewImage
-            chamferSize: Tokens.chamferPanel
-            cutTopRight: true
-            cutBottomLeft: true
-            fillColor: "white"
-            visible: false
-            layer.enabled: true
-          }
-
-          MultiEffect {
-            anchors.fill: previewImage
-            visible: root.selectedFile && !root.selectedIsVideo
-            source: previewImage
-            maskEnabled: true
-            maskSource: previewMask
-            maskThresholdMin: 0.5
-            maskSpreadAtMin: 1.0
-          }
-
-          NText {
-            visible: !root.selectedFile
-            anchors.centerIn: parent
-            text: "NO SELECTION"
-            color: Colors.labelText
-            size: NText.Size.LabelXs
-          }
-        }
-
-        ColumnLayout {
-          Layout.fillWidth: true
-          Layout.fillHeight: true
-          spacing: 12
-
-          ColumnLayout {
-            Layout.fillWidth: true
-            spacing: 2
-            visible: root.selectedFile !== null
-            NText {
-              text: root.selectedFile ? root.selectedFile.name : ""
-              color: Colors.surfaceText
-              size: NText.Size.BodySm
-              elide: Text.ElideMiddle
-              Layout.fillWidth: true
-            }
-            NText {
-              text: Settings.data.wallpaper.directory
-              color: Colors.labelText
-              size: NText.Size.Caption
-              elide: Text.ElideMiddle
-              Layout.fillWidth: true
+              onTapped: root.requestDelete()
             }
           }
 
-          Rectangle {
-            Layout.fillWidth: true
-            height: 1
-            color: Colors.surfaceContainerHigh
+          NButton {
+            enabled: root.selectedFile !== null && !root.downloading
+            opacity: enabled ? 1 : 0.4
+            text: root.downloading ? "DOWNLOADING…" : "WALLPAPER ONLY"
+            onClicked: root.applyWallpaper(false)
           }
 
-          // ---- Monitor targeting ----
-          ColumnLayout {
-            Layout.fillWidth: true
-            spacing: 4
-            NText {
-              tracking: true
-              text: "TARGET"
-              color: Colors.labelText
-              size: NText.Size.LabelXs
-            }
-            Flow {
-              Layout.fillWidth: true
-              spacing: 4
-
-              Item {
-                id: allPill
-                readonly property bool selected: root.targetMonitor === ""
-                width: allLabel.implicitWidth + 18
-                height: 24
-                Chamfer {
-                  anchors.fill: parent
-                  chamferSize: Tokens.chamferIcon
-                  cutTopRight: true
-                  cutBottomLeft: true
-                  fillColor: allPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
-                  strokeColor: allPill.selected ? Colors.primary : Colors.outline
-                  strokeWidth: Tokens.borderModule
-                }
-                NText {
-                  id: allLabel
-                  anchors.centerIn: parent
-                  text: "ALL"
-                  color: allPill.selected ? Colors.primaryContainerText : Colors.surfaceText
-                  size: NText.Size.LabelXs
-                }
-                HoverHandler {
-                  cursorShape: Qt.PointingHandCursor
-                }
-                TapHandler {
-                  onTapped: root.targetMonitor = ""
-                }
-              }
-
-              Repeater {
-                model: Quickshell.screens
-                delegate: Item {
-                  id: monPill
-                  required property var modelData
-                  readonly property bool selected: root.targetMonitor === modelData.name
-                  width: monLabel.implicitWidth + 18
-                  height: 24
-                  Chamfer {
-                    anchors.fill: parent
-                    chamferSize: Tokens.chamferIcon
-                    cutTopRight: true
-                    cutBottomLeft: true
-                    fillColor: monPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
-                    strokeColor: monPill.selected ? Colors.primary : Colors.outline
-                    strokeWidth: Tokens.borderModule
-                  }
-                  NText {
-                    id: monLabel
-                    anchors.centerIn: parent
-                    text: monPill.modelData.name + (monPill.modelData === Quickshell.screens[0] ? " ★" : "")
-                    color: monPill.selected ? Colors.primaryContainerText : Colors.surfaceText
-                    size: NText.Size.LabelXs
-                  }
-                  HoverHandler {
-                    cursorShape: Qt.PointingHandCursor
-                  }
-                  TapHandler {
-                    onTapped: root.targetMonitor = monPill.modelData.name
-                  }
-                }
-              }
-            }
-          }
-
-          Rectangle {
-            Layout.fillWidth: true
-            height: 1
-            color: Colors.surfaceContainerHigh
-          }
-
-          // ---- Matugen scheme + templates ----
-          ColumnLayout {
-            Layout.fillWidth: true
-            spacing: 4
-            NText {
-              tracking: true
-              text: "SCHEME"
-              color: Colors.labelText
-              size: NText.Size.LabelXs
-            }
-            Flow {
-              Layout.fillWidth: true
-              spacing: 4
-              Repeater {
-                model: ["scheme-content", "scheme-expressive", "scheme-fidelity", "scheme-fruit-salad", "scheme-monochrome", "scheme-neutral", "scheme-rainbow", "scheme-tonal-spot", "scheme-vibrant"]
-                delegate: Item {
-                  id: schemePill
-                  required property string modelData
-                  readonly property bool selected: Settings.data.wallpaper.matugenScheme === modelData
-                  readonly property string label: modelData.replace("scheme-", "")
-                  width: schemeLabel.implicitWidth + 14
-                  height: 22
-                  Chamfer {
-                    anchors.fill: parent
-                    chamferSize: Tokens.chamferIcon
-                    cutTopRight: true
-                    cutBottomLeft: true
-                    fillColor: schemePill.selected ? Colors.primaryContainer : Colors.surfaceContainer
-                    strokeColor: schemePill.selected ? Colors.primary : Colors.outline
-                    strokeWidth: Tokens.borderModule
-                  }
-                  NText {
-                    id: schemeLabel
-                    anchors.centerIn: parent
-                    text: schemePill.label
-                    color: schemePill.selected ? Colors.primaryContainerText : Colors.surfaceText
-                    font.pixelSize: 8
-                  }
-                  HoverHandler {
-                    cursorShape: Qt.PointingHandCursor
-                  }
-                  TapHandler {
-                    onTapped: {
-                      Settings.data.wallpaper.matugenScheme = schemePill.modelData;
-                      // Live preview — matugen needs a real local file, so a
-                      // Wallhaven result not yet downloaded can't regenerate
-                      // until it's actually applied.
-                      if (root.selectedFile && !root.selectedFile.isRemote)
-                        Matugen.generateFrom(root.selectedFile.path);
-                    }
-                  }
-                }
-              }
-            }
-            NText {
-              readonly property int _enabledCount: {
-                var t = Settings.data.wallpaper.templates;
-                var keys = Object.keys(t);
-                var n = 0;
-                for (var i = 0; i < keys.length; i++)
-                  if (t[keys[i]])
-                    n++;
-                return n;
-              }
-              text: "WRITES " + _enabledCount + " TEMPLATES"
-              color: Colors.labelText
-              size: NText.Size.LabelXs
-              Layout.topMargin: 4
-            }
-          }
-
-          Item {
-            Layout.fillHeight: true
-          }
-
-          // ---- Apply buttons ----
-          ColumnLayout {
-            Layout.fillWidth: true
-            spacing: 6
-
-            Item {
-              Layout.fillWidth: true
-              height: 32
-              enabled: root.selectedFile !== null && !root.downloading
-              opacity: enabled ? 1 : 0.4
-              Chamfer {
-                anchors.fill: parent
-                chamferSize: Tokens.chamferIcon
-                cutTopRight: true
-                cutBottomLeft: true
-                fillColor: applyThemeHover.hovered ? Colors.primary : Colors.primaryContainer
-                strokeColor: Colors.primary
-                strokeWidth: Tokens.borderModule
-              }
-              NText {
-                anchors.centerIn: parent
-                text: root.downloading ? "DOWNLOADING…" : "APPLY + THEME"
-                color: applyThemeHover.hovered ? Colors.primaryText : Colors.primaryContainerText
-                size: NText.Size.BodySm
-                font.weight: Font.DemiBold
-              }
-              HoverHandler {
-                id: applyThemeHover
-                cursorShape: Qt.PointingHandCursor
-              }
-              TapHandler {
-                onTapped: root.applyWallpaper(true)
-              }
-            }
-
-            NButton {
-              Layout.fillWidth: true
-              enabled: root.selectedFile !== null && !root.downloading
-              text: root.downloading ? "DOWNLOADING…" : "WALLPAPER ONLY"
-              onClicked: root.applyWallpaper(false)
-            }
-
-            Item {
-              Layout.fillWidth: true
-              height: 28
-              visible: root.selectedFile !== null && !root.selectedFile.isRemote
-              readonly property bool armed: root.selectedFile && root.armedDeletePath === root.selectedFile.path
-              Chamfer {
-                anchors.fill: parent
-                chamferSize: Tokens.chamferIcon
-                cutTopRight: true
-                cutBottomLeft: true
-                fillColor: parent.armed ? Colors.error : (deleteHover.hovered ? Colors.alpha(Colors.error, 0.16) : "transparent")
-                strokeColor: Colors.alpha(Colors.error, parent.armed ? 1 : 0.6)
-                strokeWidth: Tokens.borderModule
-              }
-              NText {
-                anchors.centerIn: parent
-                text: parent.armed ? "CONFIRM DELETE?" : "DELETE"
-                color: parent.armed ? Colors.errorText : Colors.error
-                size: NText.Size.Caption
-              }
-              HoverHandler {
-                id: deleteHover
-                cursorShape: Qt.PointingHandCursor
-              }
-              TapHandler {
-                onTapped: root.requestDelete()
-              }
-            }
+          NButton {
+            variant: "accent"
+            enabled: root.selectedFile !== null && !root.downloading
+            opacity: enabled ? 1 : 0.4
+            text: root.downloading ? "DOWNLOADING…" : "APPLY + THEME"
+            onClicked: root.applyWallpaper(true)
           }
         }
       }
     }
   }
 }
-}
-
