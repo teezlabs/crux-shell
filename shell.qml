@@ -304,7 +304,8 @@ ShellRoot {
       // Monitors list excludes — Settings.data.bar.monitors was previously
       // written by the settings panel's checkboxes but never actually read
       // anywhere, so toggling a monitor off did nothing.
-      visible: root.shownOnThisScreen
+      // Mapping before settings load locks in the schema-default margins.
+      visible: root.shownOnThisScreen && Settings.isLoaded
 
       WlrLayershell.layer: WlrLayer.Top
       WlrLayershell.namespace: "crux-bar"
