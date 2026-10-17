@@ -44,9 +44,6 @@ Item {
     }
   }
 
-  // Same opacity source BarIconButton and BarModule read.
-  readonly property real effectiveOpacity: Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity
-
   // Inside a grouped section the section itself carries the surface, so
   // this one keeps only hover and the attention stroke.
   readonly property bool grouped: Settings.isLoaded && Settings.data.bar.groupSections
@@ -58,7 +55,7 @@ Item {
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: root.grouped ? Colors.alpha(Colors.primary, hover.hovered ? 0.16 : 0) : Colors.alpha(hover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, root.effectiveOpacity)
+    fillColor: root.grouped ? Colors.alpha(Colors.primary, hover.hovered ? 0.16 : 0) : Colors.alpha(hover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, Tokens.barModuleAlpha)
     strokeColor: root.attention ? Colors.tertiary : Colors.outlineVariant
     strokeWidth: root.grouped && !root.attention ? 0 : Tokens.borderModule
   }

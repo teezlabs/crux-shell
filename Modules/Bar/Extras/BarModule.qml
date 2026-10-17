@@ -26,9 +26,6 @@ Item {
   height: implicitHeight
   width: implicitWidth
 
-  // Picks user-configurable opacity source; was hardcoded before, making both sliders no-ops.
-  readonly property real effectiveOpacity: Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity
-
   // Grouped sections draw one surface for the whole section, so a module
   // inside one carries no chamfer, stroke or rim of its own — only its
   // hover state.
@@ -42,7 +39,7 @@ Item {
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: Colors.alpha(root.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, root.effectiveOpacity)
+    fillColor: Colors.alpha(root.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, Tokens.barModuleAlpha)
     strokeColor: Colors.outlineVariant
     strokeWidth: Tokens.borderModule
     // Rim only: the bar window is exactly the bar's thickness, so a

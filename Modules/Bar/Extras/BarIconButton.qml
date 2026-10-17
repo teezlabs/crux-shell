@@ -18,11 +18,6 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  // Same user-configurable opacity BarModule.qml reads — see its own
-  // comment for the bug this fixes (was hardcoded to Tokens.barModuleOpacity,
-  // so neither Settings opacity slider ever did anything here either).
-  readonly property real effectiveOpacity: Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity
-
   // Inside a grouped section the section itself carries the surface, so
   // this one keeps only hover and the attention stroke.
   readonly property bool grouped: Settings.isLoaded && Settings.data.bar.groupSections
@@ -34,7 +29,7 @@ Item {
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: root.grouped ? Colors.alpha(Colors.primary, hoverHandler.hovered ? 0.16 : 0) : Colors.alpha(hoverHandler.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, root.effectiveOpacity)
+    fillColor: root.grouped ? Colors.alpha(Colors.primary, hoverHandler.hovered ? 0.16 : 0) : Colors.alpha(hoverHandler.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, Tokens.barModuleAlpha)
     strokeColor: root.attention ? Colors.tertiary : Colors.outlineVariant
     strokeWidth: root.grouped && !root.attention ? 0 : Tokens.borderModule
     // Rim only: the bar window is exactly the bar's thickness, so a

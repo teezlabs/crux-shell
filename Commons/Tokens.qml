@@ -97,6 +97,8 @@ QtObject {
   // §1 Panel opacity / blur
   readonly property real panelOpacity: 0.95
   readonly property real barModuleOpacity: 0.88
+  // Fill alpha of the bar's module plates and group surfaces, from the user's settings.
+  readonly property real barModuleAlpha: !Settings.isLoaded ? 1 : (Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity)
   readonly property int blurBar: 16
   readonly property int blurOsd: 20
   readonly property int blurNotifications: 16

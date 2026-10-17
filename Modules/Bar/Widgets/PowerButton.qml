@@ -37,7 +37,7 @@ Item {
     cutBottomRight: root.invertChamfer
     cutTopRight: !root.invertChamfer
     cutBottomLeft: !root.invertChamfer
-    fillColor: root.grouped ? Colors.alpha(Colors.primary, hoverHandler.hovered ? 0.16 : 0) : Colors.alpha(hoverHandler.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, Tokens.barModuleOpacity)
+    fillColor: root.grouped ? Colors.alpha(Colors.primary, hoverHandler.hovered ? 0.16 : 0) : Colors.alpha(hoverHandler.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, Tokens.barModuleAlpha)
     strokeColor: Colors.alpha(Colors.error, Tokens.destructiveBorderAlpha)
     strokeWidth: Tokens.borderModule
   }

@@ -163,7 +163,7 @@ Item {
     // A step lighter than the bar strip it sits on, which is plain surface —
     // surfaceContainer is too close to read as a raised plinth once the
     // strip background is on.
-    fillColor: Colors.alpha(Colors.surfaceContainerHigh, Settings.data.bar.useSeparateOpacity ? Settings.data.bar.backgroundOpacity : Settings.data.theme.barOpacity)
+    fillColor: Colors.alpha(Colors.surfaceContainerHigh, Tokens.barModuleAlpha)
     strokeColor: Colors.outlineVariant
     strokeWidth: Tokens.borderModule
     rimLight: true
