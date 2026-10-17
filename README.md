@@ -101,6 +101,8 @@ Settings live in `~/.config/crux/settings.json`, but you shouldn't need to touch
 
 **Color presets:** drop a JSON file into `Assets/ColorSchemes/` and it shows up in the picker. Copy one of the existing files to see the format.
 
+**kitty:** add `include themes/crux.conf` to `~/.config/kitty/kitty.conf`, after any other theme include. Open kitty windows reload when the wallpaper changes.
+
 **Plugins:** put a `manifest.json` and a `Widget.qml` in `~/.config/crux/plugins/<name>/`. That's it, no marketplace.
 
 <div align="center">

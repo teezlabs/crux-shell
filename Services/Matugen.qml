@@ -154,6 +154,8 @@ Singleton {
       cmds.push("hyprctl reload");
     if (t.pywalfox)
       cmds.push("pywalfox update");
+    if (t.kitty)
+      cmds.push("pkill -USR1 -x kitty");
     if (t.qt)
       // qt6ct only reads whichever file its own color_scheme_path points
       // at — point it at crux's output once (idempotent, cheap to redo on
