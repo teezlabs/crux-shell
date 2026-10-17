@@ -116,11 +116,10 @@ NPanelWindow {
 
   property int selectedIndex: 0
   // Keeps keyboard nav from moving the highlight below/above the visible
-  // viewport with no way to see where it went — cell height (88) + spacing
-  // (8) matches the delegate's own Layout.preferredHeight below.
+  // viewport with no way to see where it went.
   onSelectedIndexChanged: {
     var row = Math.floor(selectedIndex / _columns);
-    var cellH = 96;
+    var cellH = root._thumbH + root._gridGap;
     var top = row * cellH;
     var bottom = top + cellH;
     if (top < gridFlick.contentY)
@@ -206,7 +205,11 @@ NPanelWindow {
 
   // Don't steal focus into searchInput on open, or arrow/Enter/R shortcuts below (gated on !activeFocus) go dead.
   // Column count from the Flickable's real width, not hand-computed from card.width.
-  readonly property int _columns: Math.max(1, Math.floor(gridFlick.width / 150))
+  readonly property int _gridGap: 8
+  readonly property int _columns: Math.max(1, Math.floor((gridFlick.width + root._gridGap) / (220 + root._gridGap)))
+  // Thumbnails fill their column at 16:9.
+  readonly property real _thumbW: Math.floor((gridFlick.width - (root._columns - 1) * root._gridGap) / root._columns)
+  readonly property real _thumbH: Math.round(root._thumbW * 9 / 16)
 
   function _moveSelection(dx, dy) {
     if (root.filteredFiles.length === 0)
@@ -269,8 +272,8 @@ NPanelWindow {
     // Clamped to the actual screen size (minus a margin) — a portrait/
     // narrow monitor is smaller than the 1200x720 default, and nothing
     // was capping it, so the card overflowed straight off the edges there.
-    width: Math.min(1200, root.width - 40)
-    height: Math.min(720, root.height - 40)
+    width: Math.min(1560, root.width - 40)
+    height: Math.min(900, root.height - 40)
 
     Chamfer {
       anchors.fill: parent
@@ -710,8 +713,8 @@ NPanelWindow {
           width: gridFlick.width
           height: implicitHeight
           columns: root._columns
-          rowSpacing: 8
-          columnSpacing: 8
+          rowSpacing: root._gridGap
+          columnSpacing: root._gridGap
 
           Repeater {
             model: root.filteredFiles
@@ -722,8 +725,8 @@ NPanelWindow {
               readonly property bool isSelected: index === root.selectedIndex
               readonly property bool isVideo: !modelData.isRemote && (modelData.ext === "mp4" || modelData.ext === "webm")
               readonly property bool isRemote: !!modelData.isRemote
-              Layout.preferredWidth: 140
-              Layout.preferredHeight: 88
+              Layout.preferredWidth: root._thumbW
+              Layout.preferredHeight: root._thumbH
 
               Chamfer {
                 anchors.fill: parent
@@ -840,15 +843,15 @@ NPanelWindow {
 
       // ---- Right detail panel ----
       ColumnLayout {
-        Layout.preferredWidth: 300
-        Layout.minimumWidth: 300
-        Layout.maximumWidth: 300
+        Layout.preferredWidth: 360
+        Layout.minimumWidth: 360
+        Layout.maximumWidth: 360
         Layout.fillHeight: true
         spacing: 12
 
         Item {
           Layout.fillWidth: true
-          Layout.preferredHeight: 170
+          Layout.preferredHeight: Math.round(width * 9 / 16)
 
           Chamfer {
             anchors.fill: parent
