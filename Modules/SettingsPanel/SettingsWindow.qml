@@ -17,7 +17,7 @@ NPanelWindow {
   popupName: "settings"
 
   readonly property string screenName: screen ? screen.name : ""
-  property string activeTab: "general"
+  property string activeTab: "appearance"
 
   // Fuzzy-search sidebar state. jumpSubTab is read once (onChanged, not a
   // binding) so later manual NTabBar clicks aren't fought by a stale hit.
@@ -48,94 +48,117 @@ NPanelWindow {
     id: searchIndex
   }
 
+  // Sidebar order; a header is drawn wherever `section` changes.
   readonly property var tabs: [
     {
-      "id": "general",
-      "label": "General"
-    },
-    {
-      "id": "bar",
-      "label": "Bar"
-    },
-    {
       "id": "appearance",
-      "label": "Appearance"
-    },
-    {
-      "id": "audio",
-      "label": "Audio"
-    },
-    {
-      "id": "hue",
-      "label": "Hue"
-    },
-    {
-      "id": "display",
-      "label": "Display"
-    },
-    {
-      "id": "systemMonitor",
-      "label": "System Monitor"
-    },
-    {
-      "id": "updates",
-      "label": "Updates"
+      "label": "Appearance",
+      "section": "Personalize"
     },
     {
       "id": "wallpaper",
-      "label": "Wallpaper"
+      "label": "Wallpaper",
+      "section": "Personalize"
     },
     {
-      "id": "controlCenter",
-      "label": "Control Center"
-    },
-    {
-      "id": "launcher",
-      "label": "Launcher"
+      "id": "bar",
+      "label": "Bar",
+      "section": "Personalize"
     },
     {
       "id": "desktopWidgets",
-      "label": "Desktop Widgets"
+      "label": "Desktop Widgets",
+      "section": "Personalize"
     },
     {
-      "id": "osd",
-      "label": "OSD"
+      "id": "controlCenter",
+      "label": "Control Center",
+      "section": "Shell"
     },
     {
-      "id": "sessionMenu",
-      "label": "Session Menu"
-    },
-    {
-      "id": "lockScreen",
-      "label": "Lock Screen"
-    },
-    {
-      "id": "idle",
-      "label": "Idle"
+      "id": "launcher",
+      "label": "Launcher",
+      "section": "Shell"
     },
     {
       "id": "notifications",
-      "label": "Notifications"
+      "label": "Notifications",
+      "section": "Shell"
     },
     {
-      "id": "peripherals",
-      "label": "Peripherals"
+      "id": "osd",
+      "label": "OSD",
+      "section": "Shell"
+    },
+    {
+      "id": "audio",
+      "label": "Audio",
+      "section": "System"
+    },
+    {
+      "id": "display",
+      "label": "Display",
+      "section": "System"
     },
     {
       "id": "connections",
-      "label": "Connections"
+      "label": "Connections",
+      "section": "System"
+    },
+    {
+      "id": "peripherals",
+      "label": "Peripherals",
+      "section": "System"
+    },
+    {
+      "id": "hue",
+      "label": "Hue",
+      "section": "System"
+    },
+    {
+      "id": "systemMonitor",
+      "label": "System Monitor",
+      "section": "System"
+    },
+    {
+      "id": "updates",
+      "label": "Updates",
+      "section": "System"
+    },
+    {
+      "id": "lockScreen",
+      "label": "Lock Screen",
+      "section": "Session"
+    },
+    {
+      "id": "idle",
+      "label": "Idle",
+      "section": "Session"
+    },
+    {
+      "id": "sessionMenu",
+      "label": "Session Menu",
+      "section": "Session"
+    },
+    {
+      "id": "general",
+      "label": "General",
+      "section": "Advanced"
     },
     {
       "id": "hooks",
-      "label": "Hooks"
+      "label": "Hooks",
+      "section": "Advanced"
     },
     {
       "id": "plugins",
-      "label": "Plugins"
+      "label": "Plugins",
+      "section": "Advanced"
     },
     {
       "id": "about",
-      "label": "About"
+      "label": "About",
+      "section": "Advanced"
     }
   ]
 
@@ -150,7 +173,7 @@ NPanelWindow {
     id: card
     anchors.centerIn: parent
     width: 860
-    height: 620
+    height: 720
 
     Chamfer {
       anchors.fill: parent

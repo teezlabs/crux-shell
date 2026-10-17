@@ -89,62 +89,72 @@ ColumnLayout {
         ColumnLayout {
           id: sidebarCol
           width: parent.width
-          spacing: 4
+          spacing: 2
           visible: panel.searchQuery.trim() === ""
-
-          NText {
-            tracking: true
-            text: "SETTINGS"
-            color: Colors.labelText
-            size: NText.Size.LabelXs
-            font.weight: Font.DemiBold
-            Layout.bottomMargin: 10
-            Layout.topMargin: 2
-            Layout.leftMargin: 4
-          }
 
           Repeater {
             model: panel.tabs
 
-            delegate: Item {
-              id: sidebarItem
+            delegate: ColumnLayout {
+              id: sidebarEntry
               required property var modelData
-              readonly property bool active: panel.activeTab === modelData.id
+              required property int index
+              readonly property bool startsSection: index === 0 || panel.tabs[index - 1].section !== modelData.section
               Layout.fillWidth: true
-              height: 32
-
-              Rectangle {
-                anchors.fill: parent
-                color: sidebarItem.active ? Colors.primaryContainer : (tabHover.hovered ? Colors.surfaceContainerHigh : "transparent")
-              }
-              Rectangle {
-                visible: sidebarItem.active
-                anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                width: Tokens.borderMarker
-                color: Colors.primary
-              }
+              spacing: 0
 
               NText {
-                anchors.left: parent.left
-                anchors.leftMargin: 10
-                anchors.right: parent.right
-                anchors.rightMargin: 6
-                anchors.verticalCenter: parent.verticalCenter
-                text: sidebarItem.modelData.label
-                color: sidebarItem.active ? Colors.primaryContainerText : Colors.surfaceText
-                size: NText.Size.BodySm
-                font.weight: sidebarItem.active ? Font.DemiBold : Font.Normal
-                elide: Text.ElideRight
+                visible: sidebarEntry.startsSection
+                tracking: true
+                text: sidebarEntry.modelData.section.toUpperCase()
+                color: Colors.labelText
+                size: NText.Size.LabelXs
+                font.weight: Font.DemiBold
+                Layout.topMargin: sidebarEntry.index === 0 ? 2 : Tokens.spaceLg
+                Layout.bottomMargin: Tokens.spaceSm
+                Layout.leftMargin: 4
               }
 
-              HoverHandler {
-                id: tabHover
-                cursorShape: Qt.PointingHandCursor
-              }
-              TapHandler {
-                onTapped: panel.tabSelected(sidebarItem.modelData.id)
+              Item {
+                id: sidebarItem
+                readonly property var modelData: sidebarEntry.modelData
+                readonly property bool active: panel.activeTab === modelData.id
+                Layout.fillWidth: true
+                Layout.preferredHeight: 28
+
+                Rectangle {
+                  anchors.fill: parent
+                  color: sidebarItem.active ? Colors.primaryContainer : (tabHover.hovered ? Colors.surfaceContainerHigh : "transparent")
+                }
+                Rectangle {
+                  visible: sidebarItem.active
+                  anchors.left: parent.left
+                  anchors.top: parent.top
+                  anchors.bottom: parent.bottom
+                  width: Tokens.borderMarker
+                  color: Colors.primary
+                }
+
+                NText {
+                  anchors.left: parent.left
+                  anchors.leftMargin: 10
+                  anchors.right: parent.right
+                  anchors.rightMargin: 6
+                  anchors.verticalCenter: parent.verticalCenter
+                  text: sidebarItem.modelData.label
+                  color: sidebarItem.active ? Colors.primaryContainerText : Colors.surfaceText
+                  size: NText.Size.BodySm
+                  font.weight: sidebarItem.active ? Font.DemiBold : Font.Normal
+                  elide: Text.ElideRight
+                }
+
+                HoverHandler {
+                  id: tabHover
+                  cursorShape: Qt.PointingHandCursor
+                }
+                TapHandler {
+                  onTapped: panel.tabSelected(sidebarItem.modelData.id)
+                }
               }
             }
           }
