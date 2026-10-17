@@ -86,11 +86,6 @@ NPanelWindow {
       "section": "Shell"
     },
     {
-      "id": "osd",
-      "label": "OSD",
-      "section": "Shell"
-    },
-    {
       "id": "audio",
       "label": "Audio",
       "section": "System"

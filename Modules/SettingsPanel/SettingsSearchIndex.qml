@@ -104,7 +104,7 @@ Item {
     { "label": "Media card", "description": "Show/hide and position of the now-playing card", "tab": "desktopWidgets", "subTab": "", "keywords": "now playing" },
 
     // ---- OSD ----
-    { "label": "Volume OSD", "description": "Volume overlay — enabled, position, duration", "tab": "osd", "subTab": "", "keywords": "overlay popup" },
+    { "label": "Volume OSD", "description": "Volume overlay — enabled, position, duration", "tab": "notifications", "subTab": "osd", "keywords": "overlay popup" },
 
     // ---- Session Menu ----
     { "label": "Session menu actions", "description": "Which power actions show and which need a confirm tap", "tab": "sessionMenu", "subTab": "", "keywords": "power lock suspend logout reboot shutdown confirm" },

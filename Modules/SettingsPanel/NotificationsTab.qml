@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Widgets
 
-// Top-level Notifications tab: General/Duration/History subtabs.
+// Top-level Notifications tab: General/Duration/History/OSD subtabs.
 ColumnLayout {
   id: root
   spacing: 14
@@ -27,6 +27,10 @@ ColumnLayout {
       {
         "id": "history",
         "label": "History"
+      },
+      {
+        "id": "osd",
+        "label": "OSD"
       }
     ]
     activeId: root.subTab
@@ -49,5 +53,11 @@ ColumnLayout {
     Layout.fillWidth: true
     Layout.fillHeight: true
     visible: root.subTab === "history"
+  }
+
+  OsdTab {
+    Layout.fillWidth: true
+    Layout.fillHeight: true
+    visible: root.subTab === "osd"
   }
 }

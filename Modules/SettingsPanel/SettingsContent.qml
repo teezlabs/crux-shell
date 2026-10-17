@@ -181,11 +181,6 @@ ColumnLayout {
       visible: panel.activeTab === "desktopWidgets"
     }
 
-    OsdTab {
-      anchors.fill: parent
-      visible: panel.activeTab === "osd"
-    }
-
     SessionMenuTab {
       anchors.fill: parent
       visible: panel.activeTab === "sessionMenu"
