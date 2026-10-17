@@ -24,7 +24,8 @@ Item {
     { "label": "Floating gap", "description": "Gap between the bar and the screen edge", "tab": "bar", "subTab": "layout", "keywords": "float margin" },
     { "label": "Auto-hide bar", "description": "Hide until the pointer touches the bar's screen edge", "tab": "bar", "subTab": "layout", "keywords": "autohide hide" },
     { "label": "Bar border", "description": "Show/hide and width of the bar's border", "tab": "bar", "subTab": "layout", "keywords": "outline stroke" },
-    { "label": "Separate bar opacity", "description": "Use a dedicated background opacity instead of the theme's", "tab": "bar", "subTab": "layout", "keywords": "transparency alpha" },
+    { "label": "Bar background opacity", "description": "Opacity of the bar strip and the drawers joined to it", "tab": "bar", "subTab": "layout", "keywords": "transparency alpha strip" },
+    { "label": "Bar module opacity", "description": "Opacity of the module plates and group surfaces", "tab": "bar", "subTab": "layout", "keywords": "transparency alpha plates" },
     { "label": "Per-monitor bar overrides", "description": "Position and widgets per screen", "tab": "bar", "subTab": "layout", "keywords": "monitor screens dp-1 dp-2 override" },
     { "label": "Bar widgets", "description": "Add, remove and drag-reorder widgets on the bar", "tab": "bar", "subTab": "widgets", "keywords": "add remove reorder drag" },
     { "label": "Widget settings", "description": "Per-instance config for widgets like CustomButton and Spacer", "tab": "bar", "subTab": "widgets", "keywords": "edit custom button spacer" },
@@ -32,7 +33,6 @@ Item {
     // ---- Appearance > General / Colors ----
     { "label": "Avatar image", "description": "Picture in the Control Center header", "tab": "appearance", "subTab": "general", "keywords": "profile picture user" },
     { "label": "Restart crux", "description": "Reload every widget and settings page", "tab": "about", "subTab": "", "keywords": "reload relaunch" },
-    { "label": "Bar opacity", "description": "Background transparency of the bar and popups", "tab": "appearance", "subTab": "general", "keywords": "transparency alpha" },
     { "label": "Color presets", "description": "Built-in palette presets for the theme", "tab": "appearance", "subTab": "colors", "keywords": "palette scheme" },
     { "label": "Manual colors", "description": "Hand-pick individual theme role colors", "tab": "appearance", "subTab": "colors", "keywords": "palette hex" },
     { "label": "Dark mode", "description": "Switch between the cached dark and light theme branches", "tab": "appearance", "subTab": "colors", "keywords": "light theme" },

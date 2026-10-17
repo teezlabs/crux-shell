@@ -16,7 +16,7 @@ JsonObject {
     property string mError: "#f38ba8"
     property string mOnError: "#1e1e2e"
 
-    property real barOpacity: 1.0 // 0..1, bar + popup background alpha
+    property real barOpacity: 1.0 // legacy: read once by Settings' migration into bar.backgroundOpacity
 
     // v2 spec's tonal-spot role set — additive alongside the m-prefixed
     // roles above (those stay live on widgets not yet migrated). Reference

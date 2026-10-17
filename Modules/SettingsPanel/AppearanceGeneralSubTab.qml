@@ -95,30 +95,5 @@ NScrollView {
       }
     }
   }
-
-  SettingsSection {
-    title: "Transparency"
-    description: "How see-through the bar's modules are by default."
-
-    SettingRow {
-      label: "Bar opacity"
-      NValueSlider {
-        enabled: !Settings.data.bar.useSeparateOpacity
-        from: 0.2
-        to: 1
-        stepSize: 0.05
-        value: Settings.data.theme.barOpacity
-        sliderWidth: 200
-        readoutText: Math.round(Settings.data.theme.barOpacity * 100) + "%"
-        onMoved: value => Settings.data.theme.barOpacity = value
-      }
-      NText {
-        visible: Settings.data.bar.useSeparateOpacity
-        text: "Overridden by Bar → Layout → Separate opacity"
-        color: Colors.labelText
-        size: NText.Size.Caption
-      }
-    }
-  }
   }
 }

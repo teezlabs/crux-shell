@@ -184,7 +184,7 @@ NScrollView {
 
     SettingsSection {
       title: "Appearance"
-      description: "Border, auto-hide, and background/opacity for the bar."
+      description: "Border, auto-hide, and the opacity of the bar strip and its module plates."
 
       SettingRow {
         label: "Border"
@@ -250,15 +250,11 @@ NScrollView {
       }
 
       SettingRow {
-        label: "Separate opacity"
-        NToggle {
-          checked: Settings.data.bar.useSeparateOpacity
-          onToggled: checked => Settings.data.bar.useSeparateOpacity = checked
-        }
+        label: "Module opacity"
         NSlider {
           Layout.preferredWidth: 140
-          Layout.leftMargin: 10
-          enabled: Settings.data.bar.useSeparateOpacity
+          // Floating pill hides the group plates, so there is nothing for this to tint.
+          enabled: !(Tokens.barPill && Settings.data.bar.groupSections)
           opacity: enabled ? 1 : 0.4
           from: 0.1
           to: 1
@@ -270,7 +266,13 @@ NScrollView {
           text: Math.round(Settings.data.bar.backgroundOpacity * 100) + "%"
           color: Colors.labelText
           size: NText.Size.BodySm
-          opacity: Settings.data.bar.useSeparateOpacity ? 1 : 0.4
+          opacity: Tokens.barPill && Settings.data.bar.groupSections ? 0.4 : 1
+        }
+        NText {
+          visible: Tokens.barPill && Settings.data.bar.groupSections
+          text: "No module plates while floating"
+          color: Colors.labelText
+          size: NText.Size.Caption
         }
       }
     }

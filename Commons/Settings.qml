@@ -47,6 +47,11 @@ Singleton {
     onPathChanged: if (path !== undefined) reload()
 
     onLoaded: {
+      // One-time: module opacity used to follow theme.barOpacity unless overridden; it lives in bar.backgroundOpacity now.
+      if (!adapter.bar.useSeparateOpacity) {
+        adapter.bar.backgroundOpacity = adapter.theme.barOpacity;
+        adapter.bar.useSeparateOpacity = true;
+      }
       if (!root.isLoaded) {
         root.isLoaded = true;
         root.settingsLoaded();

@@ -13,8 +13,8 @@ JsonObject {
     property bool showBorder: true
     property real borderWidth: 1
     property bool autoHide: false // hide until the pointer touches the bar's screen edge
-    property bool useSeparateOpacity: false // false = follow theme.barOpacity
-    property real backgroundOpacity: 1.0 // used only when useSeparateOpacity is true
+    property bool useSeparateOpacity: false // migration flag: true once theme.barOpacity has been copied into backgroundOpacity
+    property real backgroundOpacity: 1.0 // module plates and group surfaces
 
     // One chamfered surface per section with the widgets flat inside it,
     // split by hairlines, instead of an outlined module per widget.
