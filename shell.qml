@@ -333,13 +333,13 @@ ShellRoot {
 
         Chamfer {
           // Real bar-strip background — off by default (showBackground).
-          // Same two-opposite-corner convention as every other chamfered
-          // surface in crux while floating; square (flush) when docked.
+          // Floating, its end corners match the cuts of the groups at each end; square when docked.
           visible: Settings.data.bar.showBackground
           anchors.fill: parent
           chamferSize: Settings.data.bar.floating ? Tokens.chamferPanel : 0
-          cutTopRight: Settings.data.bar.floating
-          cutBottomLeft: Settings.data.bar.floating
+          cutTopLeft: Settings.data.bar.floating
+          cutTopRight: Settings.data.bar.floating && !root.barIsVertical
+          cutBottomLeft: Settings.data.bar.floating && root.barIsVertical
           fillColor: Colors.alpha(Colors.surface, Settings.data.bar.barBackgroundOpacity)
           strokeColor: "transparent"
         }
@@ -351,8 +351,9 @@ ShellRoot {
           visible: Settings.data.bar.showBorder
           anchors.fill: parent
           chamferSize: Settings.data.bar.floating ? Tokens.chamferPanel : 0
-          cutTopRight: Settings.data.bar.floating
-          cutBottomLeft: Settings.data.bar.floating
+          cutTopLeft: Settings.data.bar.floating
+          cutTopRight: Settings.data.bar.floating && !root.barIsVertical
+          cutBottomLeft: Settings.data.bar.floating && root.barIsVertical
           fillColor: "transparent"
           strokeColor: Colors.alpha(Colors.primary, 0.32)
           strokeWidth: Settings.data.bar.borderWidth
