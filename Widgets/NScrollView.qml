@@ -23,6 +23,10 @@ Flickable {
 
   readonly property bool scrollable: contentHeight > height
 
+  // A page shown again starts at the top, not wherever it was last left.
+  onVisibleChanged: if (visible)
+    root.contentY = 0
+
   ScrollBar.vertical: ScrollBar {
     id: bar
     policy: root.scrollable ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff

@@ -3,16 +3,15 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
+import qs.Modules.SettingsPanel.Controls
 import qs.Services
 
-// Add/remove widgets per section as a list — complements the live
-// drag-and-drop reordering directly on the bar (BarSection.qml), which
-// already handles moving widgets between sections; this handles adding a
-// new one or getting rid of one entirely.
-RowLayout {
+// Add, remove and reorder the bar's widgets per section. Long-press dragging
+// on the bar itself (BarSection.qml) does the same moves live.
+NScrollView {
   id: root
   property string screenName: ""
-  spacing: 16
+  contentHeight: col.implicitHeight
 
   readonly property var barWidgets: Settings.isLoaded ? Settings.getBarWidgetsForScreen(screenName) : ({
                                                                                                           "left": [],
@@ -22,159 +21,150 @@ RowLayout {
   readonly property var sections: [
     {
       "id": "left",
-      "list": barWidgets.left
+      "title": "Start",
+      "description": "Left on a horizontal bar, top on a vertical one."
     },
     {
       "id": "center",
-      "list": barWidgets.center
+      "title": "Center",
+      "description": "Centred on the bar, and pushed aside if the ends grow into it."
     },
     {
       "id": "right",
-      "list": barWidgets.right
+      "title": "End",
+      "description": "Right on a horizontal bar, bottom on a vertical one."
     }
   ]
 
-  Repeater {
-    model: root.sections
+  property string addId: ""
+  property string addSection: "left"
 
-    delegate: ColumnLayout {
-      id: sectionColumn
-      required property var modelData
-      readonly property string section: modelData.id
-      readonly property var widgetsList: modelData.list
-      Layout.fillWidth: true
-      Layout.fillHeight: true
-      spacing: 6
+  // "NotificationHistory" -> "Notification History"; acronyms like VPN stay whole.
+  function displayName(id: string): string {
+    return id.replace(/([a-z])([A-Z])/g, "$1 $2");
+  }
 
-      NText {
-        tracking: true
-        text: sectionColumn.section.toUpperCase()
-        color: Colors.labelText
-        size: NText.Size.LabelXs
-        font.weight: Font.DemiBold
-      }
+  readonly property var addModel: BarWidgetRegistry.ids.concat(Plugins.ids).map(id => ({
+                                                                                         "key": id,
+                                                                                         "label": root.displayName(id)
+                                                                                       }))
 
-      Item {
-        Layout.fillWidth: true
-        Layout.preferredHeight: 160
+  ColumnLayout {
+    id: col
+    width: parent.width - 4
+    spacing: 20
 
-        Chamfer {
-          anchors.fill: parent
-          chamferSize: Tokens.chamferModule
-          cutTopRight: true
-          cutBottomLeft: true
-          fillColor: Colors.surfaceContainer
-          strokeColor: Colors.outline
-          strokeWidth: Tokens.borderModule
+    SettingsSection {
+      title: "Add a widget"
+      description: "Pick a widget and the section it goes in. Long-press and drag on the bar to move widgets around live."
+
+      RowLayout {
+        spacing: Tokens.spaceMd
+
+        NComboBox {
+          Layout.preferredWidth: 220
+          height: 28
+          searchable: true
+          popupMaxHeight: 260
+          model: root.addModel
+          currentKey: root.addId
+          placeholder: "Choose a widget"
+          onSelected: key => root.addId = key
         }
 
-        ListView {
-          anchors.fill: parent
-          anchors.margins: 4
-          clip: true
-          spacing: 2
-          model: sectionColumn.widgetsList
+        NSegmented {
+          model: root.sections.map(s => ({
+                                           "key": s.id,
+                                           "label": s.title
+                                         }))
+          currentKey: root.addSection
+          onSelected: key => root.addSection = key
+        }
+
+        NButton {
+          text: "Add"
+          variant: "accent"
+          enabled: root.addId !== ""
+          opacity: enabled ? 1 : 0.4
+          onClicked: Settings.addBarWidget(root.screenName, root.addSection, root.addId)
+        }
+      }
+    }
+
+    Repeater {
+      model: root.sections
+
+      delegate: SettingsSection {
+        id: sectionBlock
+        required property var modelData
+        readonly property var widgets: root.barWidgets[modelData.id] || []
+        Layout.fillWidth: true
+        title: modelData.title + " · " + widgets.length
+        description: modelData.description
+
+        NText {
+          visible: sectionBlock.widgets.length === 0
+          text: "Nothing here yet."
+          color: Colors.labelText
+          size: NText.Size.BodySm
+        }
+
+        Repeater {
+          model: sectionBlock.widgets
 
           delegate: Item {
-            id: rowItem
+            id: row
             required property var modelData
             required property int index
-            width: ListView.view.width
-            height: 26
+            Layout.fillWidth: true
+            Layout.preferredHeight: 34
+
+            Rectangle {
+              anchors.fill: parent
+              color: rowHover.hovered ? Colors.surfaceContainerHigh : "transparent"
+            }
 
             RowLayout {
               anchors.fill: parent
-              anchors.leftMargin: 4
-              anchors.rightMargin: 4
+              anchors.leftMargin: Tokens.spaceMd
+              anchors.rightMargin: Tokens.spaceXs
+              spacing: Tokens.spaceSm
 
               NText {
-                text: rowItem.modelData.id || ""
+                text: root.displayName(row.modelData.id || "")
                 color: Colors.surfaceText
                 size: NText.Size.BodySm
+                elide: Text.ElideRight
                 Layout.fillWidth: true
               }
 
-              Item {
-                width: 18
-                height: 18
-
-                Rectangle {
-                  anchors.fill: parent
-                  color: removeHover.hovered ? Colors.alpha(Colors.error, 0.2) : "transparent"
-                }
-
-                Text {
-                  anchors.centerIn: parent
-                  text: "×"
-                  color: Colors.error
-                  font.pixelSize: Tokens.bodySize
-                }
-
-                HoverHandler {
-                  id: removeHover
-                  cursorShape: Qt.PointingHandCursor
-                }
-                TapHandler {
-                  onTapped: Settings.removeBarWidget(root.screenName, sectionColumn.section, rowItem.index)
-                }
+              NButton {
+                text: "Up"
+                textSize: NText.Size.LabelXs
+                enabled: row.index > 0
+                opacity: enabled ? 1 : 0.35
+                onClicked: Settings.reorderBarWidget(root.screenName, sectionBlock.modelData.id, row.index, row.index - 1)
               }
-            }
-          }
-        }
-      }
-
-      NText {
-        tracking: true
-        text: "ADD"
-        color: Colors.labelText
-        size: NText.Size.LabelXs
-        Layout.topMargin: 4
-      }
-
-      Flow {
-        Layout.fillWidth: true
-        spacing: 4
-
-        Repeater {
-          model: BarWidgetRegistry.ids.concat(Plugins.ids)
-
-          delegate: Item {
-            id: addChip
-            required property string modelData
-            width: addLabel.implicitWidth + 12
-            height: 20
-
-            Chamfer {
-              anchors.fill: parent
-              chamferSize: Tokens.chamferIcon
-              cutTopRight: true
-              cutBottomLeft: true
-              fillColor: addHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer
-              strokeColor: Colors.outline
-              strokeWidth: Tokens.borderModule
-            }
-
-            NText {
-              id: addLabel
-              anchors.centerIn: parent
-              text: addChip.modelData
-              color: Colors.labelText
-              size: NText.Size.LabelXs
+              NButton {
+                text: "Down"
+                textSize: NText.Size.LabelXs
+                enabled: row.index < sectionBlock.widgets.length - 1
+                opacity: enabled ? 1 : 0.35
+                onClicked: Settings.reorderBarWidget(root.screenName, sectionBlock.modelData.id, row.index, row.index + 1)
+              }
+              NButton {
+                text: "Remove"
+                variant: "destructive"
+                textSize: NText.Size.LabelXs
+                onClicked: Settings.removeBarWidget(root.screenName, sectionBlock.modelData.id, row.index)
+              }
             }
 
             HoverHandler {
-              id: addHover
-              cursorShape: Qt.PointingHandCursor
-            }
-            TapHandler {
-              onTapped: Settings.addBarWidget(root.screenName, sectionColumn.section, addChip.modelData)
+              id: rowHover
             }
           }
         }
-      }
-
-      Item {
-        Layout.fillHeight: true
       }
     }
   }
