@@ -110,10 +110,22 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
+  // On the floating pill the group plates are hidden; workspaces keep an outline of their own instead of a hover fill.
+  Chamfer {
+    anchors.fill: module
+    visible: Tokens.barPill
+    chamferSize: Tokens.chamferGroupedCell
+    cutTopRight: true
+    cutBottomLeft: true
+    strokeColor: Colors.outlineVariant
+    strokeWidth: Tokens.borderModule
+  }
+
   BarModule {
     id: module
     invertChamfer: root.invertChamfer
     vertical: root.vertical
+    hoverable: !Tokens.barPill
     leftPadding: 4
     rightPadding: 4
     topPadding: 4
