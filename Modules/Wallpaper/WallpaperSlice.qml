@@ -4,8 +4,7 @@ import qs.Commons
 import qs.Widgets
 
 // One parallelogram slice of the wallpaper strip, after skwd-wall's slice view.
-// The slant comes from shearing a clipping container and counter-shearing the image
-// inside it: Qt clips that with the stencil buffer, so a slice needs no layer or mask
+// The image is the fill of one anti-aliased Shape, so a slice needs no layer, clip or mask
 // effect, which is what made the per-slice MultiEffect version lag.
 Item {
   id: slice
@@ -24,7 +23,6 @@ Item {
   readonly property bool current: ListView.isCurrentItem
   readonly property bool isVideo: !modelData.isRemote && (modelData.ext === "mp4" || modelData.ext === "webm")
   readonly property bool isRemote: !!modelData.isRemote
-  readonly property real _shear: slice.skew / Math.max(1, slice.height)
 
   width: slice.current ? slice.expandedWidth : slice.sliceWidth
   height: view ? view.height : 0
@@ -42,93 +40,68 @@ Item {
     }
   }
 
-  // Sheared clip: its own rect maps to the parallelogram (skew,0) (w,0) (w-skew,h) (0,h).
-  Item {
-    id: clipper
-    width: slice.width - slice.skew
-    height: slice.height
-    clip: true
-    transform: Matrix4x4 {
-      matrix: Qt.matrix4x4(1, -slice._shear, 0, slice.skew, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-    }
+  // Texture sources for the shape below; never drawn themselves. Sized to their decoded
+  // pixels so the texture maps 1:1, then centred over the slice by fillTransform.
+  Image {
+    id: thumb
+    visible: false
+    source: slice.isVideo ? "" : slice.isRemote ? slice.modelData.thumb : "file://" + slice.modelData.path
+    fillMode: Image.PreserveAspectCrop
+    asynchronous: true
+    cache: true
+    // Decoded once at the expanded size, so focusing a slice never re-decodes it.
+    sourceSize: Qt.size(slice.expandedWidth, slice.height)
+  }
+  // A Wallhaven thumb is small; the focused card swaps in the full image once loaded.
+  Image {
+    id: full
+    visible: false
+    source: slice.current && slice.isRemote ? slice.modelData.path : ""
+    fillMode: Image.PreserveAspectCrop
+    asynchronous: true
+    sourceSize: Qt.size(slice.expandedWidth, slice.height)
+  }
+  readonly property Image _source: full.status === Image.Ready ? full : thumb
 
-    Rectangle {
-      width: slice.width
-      height: slice.height
-      color: Colors.surfaceContainer
-    }
-
-    // Counter-sheared, so the picture itself stays upright inside the slant.
-    Item {
-      width: slice.width
-      height: slice.height
-      transform: Matrix4x4 {
-        matrix: Qt.matrix4x4(1, slice._shear, 0, -slice.skew, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-      }
-
-      Image {
-        id: thumb
-        anchors.fill: parent
-        source: slice.isVideo ? "" : slice.isRemote ? slice.modelData.thumb : "file://" + slice.modelData.path
-        fillMode: Image.PreserveAspectCrop
-        asynchronous: true
-        cache: true
-        // Decoded once at the expanded size, so focusing a slice never re-decodes it.
-        sourceSize: Qt.size(slice.expandedWidth, slice.height)
-        opacity: status === Image.Ready ? 1 : 0
-        Behavior on opacity {
-          NumberAnimation {
-            duration: Tokens.durationPanel
-          }
-        }
-      }
-
-      // A Wallhaven thumb is small; the focused card loads the full image over it.
-      Image {
-        anchors.fill: parent
-        visible: slice.current && slice.isRemote && status === Image.Ready
-        source: slice.current && slice.isRemote ? slice.modelData.path : ""
-        fillMode: Image.PreserveAspectCrop
-        asynchronous: true
-        sourceSize: Qt.size(slice.expandedWidth, slice.height)
-      }
-
-      NText {
-        visible: slice.isVideo && slice.current
-        anchors.centerIn: parent
-        tracking: true
-        text: "VIDEO"
-        color: Colors.labelText
-        size: NText.Size.LabelXs
-      }
-    }
-
-    Rectangle {
-      width: slice.width
-      height: slice.height
-      color: Qt.rgba(0, 0, 0, slice.current ? 0 : (hover.hovered ? 0.2 : 0.5))
-      Behavior on color {
-        ColorAnimation {
-          duration: Tokens.durationPanel
-        }
-      }
-    }
+  readonly property var _outline: {
+    const i = slice.current ? 1 : 0.5;
+    return [Qt.point(slice.skew + i, i), Qt.point(slice.width - i, i), Qt.point(slice.width - slice.skew - i, slice.height - i), Qt.point(i, slice.height - i), Qt.point(slice.skew + i, i)];
   }
 
-  // Anti-aliased, and drawn over the stencil clip's stepped edge to hide it.
+  // The image fills the parallelogram itself, so the curve renderer anti-aliases its slanted
+  // edges; no clip, layer or mask effect.
   Shape {
     anchors.fill: parent
     preferredRendererType: Shape.CurveRenderer
+
     ShapePath {
-      fillColor: "transparent"
+      strokeColor: "transparent"
+      fillColor: Colors.surfaceContainer
+      fillItem: slice._source.status === Image.Ready ? slice._source : null
+      fillTransform: PlanarTransform.fromTranslate((slice.width - slice._source.width) / 2, (slice.height - slice._source.height) / 2)
+      PathPolyline {
+        path: [Qt.point(slice.skew, 0), Qt.point(slice.width, 0), Qt.point(slice.width - slice.skew, slice.height), Qt.point(0, slice.height), Qt.point(slice.skew, 0)]
+      }
+    }
+
+    ShapePath {
+      fillColor: Qt.rgba(0, 0, 0, slice.current ? 0 : (hover.hovered ? 0.2 : 0.5))
       strokeColor: slice.current ? Colors.primary : (hover.hovered ? Colors.alpha(Colors.primary, 0.5) : Colors.outline)
       strokeWidth: slice.current ? 2 : Tokens.borderModule
       joinStyle: ShapePath.MiterJoin
       PathPolyline {
-        readonly property real i: slice.current ? 1 : 0.5
-        path: [Qt.point(slice.skew + i, i), Qt.point(slice.width - i, i), Qt.point(slice.width - slice.skew - i, slice.height - i), Qt.point(i, slice.height - i), Qt.point(slice.skew + i, i)]
+        path: slice._outline
       }
     }
+  }
+
+  NText {
+    visible: slice.isVideo && slice.current
+    anchors.centerIn: parent
+    tracking: true
+    text: "VIDEO"
+    color: Colors.labelText
+    size: NText.Size.LabelXs
   }
 
   // Type badge on the focused slice.
