@@ -10,7 +10,7 @@ float distanceWithRounding(vec2 coords, float roundingPower) {
     return pow(pow(coords.x, roundingPower) + pow(coords.y, roundingPower), 1.0 / roundingPower);
 }
 
-// Corner bits: TL=1 TR=2 BR=4 BL=8. Crux cuts top-right and bottom-left.
+// Corner bits: TL=1 TR=2 BR=4 BL=8. Services/WindowCorners.qml rewrites the mask from settings.
 #define CRUX_DEFAULT_MASK 10
 
 // rounding_power in [3, 4) carries a mask as 3 + mask / 16; anything else uses the default.

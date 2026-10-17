@@ -31,6 +31,7 @@ Item {
     { "label": "Widget settings", "description": "Per-instance config for widgets like CustomButton and Spacer", "tab": "bar", "subTab": "widgets", "keywords": "edit custom button spacer" },
 
     // ---- Appearance > General / Colors ----
+    { "label": "Window corners", "description": "Which corners Hyprland chamfers on every window", "tab": "appearance", "subTab": "general", "keywords": "chamfer rounding border hyprland cut" },
     { "label": "Avatar image", "description": "Picture in the Control Center header", "tab": "appearance", "subTab": "general", "keywords": "profile picture user" },
     { "label": "Home", "description": "crux overview: theme, quick settings and shortcuts", "tab": "home", "subTab": "", "keywords": "overview start dashboard github" },
     { "label": "Restart crux", "description": "Reload every widget and settings page", "tab": "home", "subTab": "", "keywords": "reload relaunch" },

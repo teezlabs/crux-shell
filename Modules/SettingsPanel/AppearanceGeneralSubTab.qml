@@ -95,5 +95,69 @@ NScrollView {
       }
     }
   }
+
+  SettingsSection {
+    title: "Window corners"
+    description: "Which corners Hyprland cuts on every window. Off goes back to Hyprland's own rounding."
+
+    SettingRow {
+      label: "Chamfer windows"
+
+      NToggle {
+        checked: Settings.data.windowCorners.enabled
+        onToggled: checked => Settings.data.windowCorners.enabled = checked
+      }
+    }
+
+    SettingRow {
+      label: "Cut corners"
+
+      Item {
+        id: cornerPicker
+        enabled: Settings.data.windowCorners.enabled
+        implicitWidth: 72
+        implicitHeight: 48
+
+        Chamfer {
+          anchors.fill: parent
+          chamferSize: Tokens.chamferPanel
+          cutTopLeft: Settings.data.windowCorners.cutTopLeft
+          cutTopRight: Settings.data.windowCorners.cutTopRight
+          cutBottomRight: Settings.data.windowCorners.cutBottomRight
+          cutBottomLeft: Settings.data.windowCorners.cutBottomLeft
+          fillColor: Colors.surfaceContainerHigh
+          strokeColor: cornerPicker.enabled ? Colors.primary : Colors.outline
+          strokeWidth: Tokens.borderModule
+        }
+
+        Repeater {
+          model: ["cutTopLeft", "cutTopRight", "cutBottomLeft", "cutBottomRight"]
+
+          Item {
+            required property string modelData
+            required property int index
+            x: index % 2 === 0 ? 0 : cornerPicker.width / 2
+            y: index < 2 ? 0 : cornerPicker.height / 2
+            width: cornerPicker.width / 2
+            height: cornerPicker.height / 2
+
+            HoverHandler {
+              cursorShape: Qt.PointingHandCursor
+            }
+
+            TapHandler {
+              onTapped: Settings.data.windowCorners[modelData] = !Settings.data.windowCorners[modelData]
+            }
+          }
+        }
+      }
+
+      NText {
+        text: "Click a corner to cut or square it"
+        color: Colors.labelText
+        size: NText.Size.Caption
+      }
+    }
+  }
   }
 }

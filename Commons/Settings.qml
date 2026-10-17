@@ -138,6 +138,8 @@ Singleton {
     // a registry.json at its root listing {id, label, description, ...}
     // per plugin. Local-folder plugins (no source) still work as before.
     property JsonObject plugins: PluginsSettings {}
+
+    property JsonObject windowCorners: WindowCornersSettings {}
   }
 
   // -----------------------------------------------------
