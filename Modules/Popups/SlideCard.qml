@@ -83,6 +83,7 @@ Item {
   property real morphCross: 0
   // Morph even on a docked strip; otherwise only a detached bar morphs.
   property bool alwaysMorph: false
+  property bool _snap: false
   readonly property bool morphing: root.morphExtent >= 0 && (root.alwaysMorph || Tokens.barFloating)
 
   // Morph geometry is pushed by the triggering bar module as soon as it is
@@ -117,12 +118,16 @@ Item {
       root.shown = false;
       return;
     }
+    // Fold onto the module instantly first; a card never tapped before rests at full width.
+    root._snap = true;
     root.setMorphSource(x, y, w, h);
+    if (root.morphing)
+      root.crossPos = root.morphCross;
+    root._snap = false;
     if (!root.morphing) {
       root.openAt(x, y);
       return;
     }
-    root.crossPos = root.morphCross;
     root.shown = true;
   }
 
@@ -144,19 +149,21 @@ Item {
   clip: false
 
   Behavior on width {
+    enabled: !root._snap
     NumberAnimation {
       duration: Tokens.durationSidebarSlide
       easing.type: Tokens.easingSidebarSlide
     }
   }
   Behavior on height {
+    enabled: !root._snap
     NumberAnimation {
       duration: Tokens.durationSidebarSlide
       easing.type: Tokens.easingSidebarSlide
     }
   }
   Behavior on crossPos {
-    enabled: root.morphing
+    enabled: root.morphing && !root._snap
     NumberAnimation {
       duration: Tokens.durationSidebarSlide
       easing.type: Tokens.easingSidebarSlide
