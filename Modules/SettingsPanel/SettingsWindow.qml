@@ -37,10 +37,10 @@ NPanelWindow {
     return out;
   }
 
+  // The sub-tab is set first: SettingsContent resets a tab to its first page when it opens with none.
   function jumpToSearchHit(entry) {
+    root.jumpSubTab = entry.subTab || "";
     root.activeTab = entry.tab;
-    if (entry.subTab)
-      root.jumpSubTab = entry.subTab;
     root.searchQuery = "";
   }
 
@@ -205,7 +205,10 @@ NPanelWindow {
         searchQuery: root.searchQuery
         activeTab: root.activeTab
         onSearchQueryEdited: text => root.searchQuery = text
-        onTabSelected: id => root.activeTab = id
+        onTabSelected: id => {
+          root.jumpSubTab = "";
+          root.activeTab = id;
+        }
         onJumpToSearchHit: entry => root.jumpToSearchHit(entry)
       }
 

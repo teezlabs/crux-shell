@@ -50,10 +50,8 @@ RowLayout {
         cursorShape: Qt.PointingHandCursor
       }
       TapHandler {
-        onTapped: {
-          root.activeId = pill.modelData.id;
-          root.activated(pill.modelData.id);
-        }
+        // Reports the click instead of assigning activeId, which would break the owner's binding to it.
+        onTapped: root.activated(pill.modelData.id)
       }
     }
   }

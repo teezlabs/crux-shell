@@ -25,6 +25,24 @@ ColumnLayout {
 
   signal navigate(string tab, string subTab)
 
+  // Each tab's opening sub-tab, so a visit without a target starts on its first page again.
+  property var _firstSubTabs: []
+  Component.onCompleted: {
+    const first = [];
+    for (let i = 0; i < tabContentArea.children.length; i++)
+      first.push(tabContentArea.children[i].subTab);
+    panel._firstSubTabs = first;
+  }
+  onActiveTabChanged: {
+    if (panel.jumpSubTab !== "")
+      return;
+    for (let i = 0; i < tabContentArea.children.length; i++) {
+      const tab = tabContentArea.children[i];
+      if (panel._firstSubTabs[i] !== undefined)
+        tab.subTab = panel._firstSubTabs[i];
+    }
+  }
+
   Layout.margins: 16
   spacing: 12
 

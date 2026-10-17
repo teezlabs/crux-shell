@@ -27,7 +27,7 @@ ColumnLayout {
       }
     ]
     activeId: root.subTab
-    onActiveIdChanged: root.subTab = activeId
+    onActivated: id => root.subTab = id
   }
 
   AppearanceGeneralSubTab {
