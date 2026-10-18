@@ -60,4 +60,3 @@ A `Commons` singleton importing `Modules` or `Widgets` is a bug.
 - A smooth-scrolling setting
 - Notification exit animation
 - `Modules/Wallpaper/WallpaperBrowserWindow.qml` is ~1,150 lines. The rail, grid and detail panel are still inline
-- Border logic is bugged (reported 2026-10-18): a border draws as a plain square instead of following the chamfer. Suspects are the `Rectangle { border.* }` outlines that sit on chamfered surfaces (`SettingsSidebar.qml`, `SidebarWindow.qml`, the armed tile in `PowerMenuWindow.qml`, `TrayCell.qml`); chamfer-following strokes must come from `Chamfer.qml`'s own stroke
