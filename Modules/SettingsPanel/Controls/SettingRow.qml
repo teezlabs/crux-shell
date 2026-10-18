@@ -3,8 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
 
-// Label + control row with a fixed-width label column so every row's
-// control starts at the same x.
+// Label and control with a fixed-width label column, so every control starts at the same x.
 RowLayout {
   id: root
 
@@ -15,12 +14,7 @@ RowLayout {
   spacing: 10
   Layout.fillWidth: true
 
-  // Pinned with minimum and maximum, not preferredWidth alone. preferred is
-  // only a hint: next to a fillWidth sibling the label was treated as the
-  // flexible item and got whatever the controls left over, measured at 254,
-  // 0, 91 and 343 across four rows of one section — so no two rows started
-  // their control at the same x. Same trap as the sidebar in
-  // SettingsWindow; see the crux skill.
+  // Pinned with minimum and maximum, not preferredWidth alone (docs/qml-gotchas.md).
   NLabel {
     label: root.label
     labelColor: Colors.labelText
@@ -35,12 +29,7 @@ RowLayout {
     spacing: 10
     Layout.fillWidth: true
 
-    // Rows are control-then-description. Once the label column stopped
-    // collapsing to absorb the overflow, a long description pushed the row
-    // past the card's right edge and got clipped instead of elided, because
-    // nothing in the row was allowed to shrink. Marking the trailing text
-    // as the flexible one fixes every row at once rather than needing
-    // Layout.fillWidth added at two dozen call sites.
+    // The trailing description is the flexible item, so a long one elides instead of pushing the row past the card.
     Component.onCompleted: {
       const kids = contentRow.children;
       if (kids.length < 2)
@@ -50,10 +39,7 @@ RowLayout {
       if (!last || last.elide === undefined)
         return;
       last.Layout.fillWidth = true;
-      // Wrap onto another line rather than truncating. NText defaults to
-      // NoWrap + ElideRight, which is right for a bar widget with a fixed
-      // strip to live in, and wrong for a settings description that simply
-      // needs to be readable.
+      // Descriptions wrap; NText's NoWrap + ElideRight default is for fixed strips.
       last.wrapMode = Text.WordWrap;
       last.elide = Text.ElideNone;
     }

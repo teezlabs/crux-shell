@@ -7,8 +7,7 @@ import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 import qs.Services
 
-// Matugen-driven theme generation, plus the per-app config templates it
-// regenerates on every wallpaper change.
+// Matugen theme generation and the app templates it regenerates.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

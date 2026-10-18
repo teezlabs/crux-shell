@@ -6,8 +6,7 @@ import qs.Commons
 import qs.Modules.SessionMenu
 import qs.Widgets
 
-// Modal command-editor popup for a single hook (PanelWindow scrim + card,
-// like PowerMenuWindow). Caller (HooksListSubTab) drives it via openFor().
+// Modal editor for one hook, opened by HooksListSubTab via openFor().
 PanelWindow {
   id: root
 
@@ -135,8 +134,7 @@ PanelWindow {
         Layout.fillWidth: true
         spacing: 8
 
-        // Test runs the hook's runner with sample values — safe to fire
-        // from here (it's exactly what a real event would run).
+        // Test runs the edited command with sample placeholder values.
         Item {
           width: testLabel.implicitWidth + 24
           height: 28

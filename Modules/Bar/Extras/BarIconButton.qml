@@ -7,7 +7,7 @@ Item {
   id: root
 
   property bool attention: false
-  // Mirrors the two chamfered corners — see crux skill's notes.md.
+  // Mirrors the two chamfered corners (docs/design-notes.md, "Chamfer inversion accent").
   property bool invertChamfer: false
   default property alias content: contentItem.data
   signal tapped

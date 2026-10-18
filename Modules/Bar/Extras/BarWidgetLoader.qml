@@ -18,7 +18,7 @@ Item {
   // Compact stacked-text layout: true for a real vertical bar, or a horizontal bar on a portrait screen.
   property bool contentVertical: vertical
 
-  // Set by BarSection.qml — see crux skill's notes.md.
+  // Set by BarSection.qml (docs/design-notes.md, "Chamfer inversion accent").
   property bool invertChamfer: false
 
   // Widgets that fit a compact stack within a horizontal bar's thickness on a portrait screen.

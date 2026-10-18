@@ -4,10 +4,7 @@ import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
-// Controls for Modules/Background/DesktopWidgets.qml's two desktop-layer
-// cards (weather, now-playing media): master on/off, per-card on/off, and a
-// per-card "reset position" action (clears the saved drag position back to
-// -1, which makes the card fall back to its built-in default corner).
+// Desktop cards: master and per-card switches, and a reset that returns a card to its default corner.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

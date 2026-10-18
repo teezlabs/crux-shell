@@ -5,8 +5,7 @@ import qs.Modules.ControlCenter
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
-// Control Center settings: only the rows that are real hardcoded
-// constants, not live system state (Wifi/Bluetooth/audio/brightness).
+// Control Center configuration; live system state stays in the panel itself.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

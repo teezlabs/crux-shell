@@ -51,7 +51,7 @@ PanelWindow {
 
   ColumnLayout {
     id: stack
-    // Plain x/y, not conditional anchors — avoids the anchor-staleness class of bug (see crux skill notes.md).
+    // Plain x/y, not conditional anchors, which go stale (docs/qml-gotchas.md).
     x: root.padLeft
     y: root.padTop
     width: 388

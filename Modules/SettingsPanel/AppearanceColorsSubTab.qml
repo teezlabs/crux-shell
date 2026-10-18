@@ -4,8 +4,7 @@ import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
-// Edits the v2 tonal-spot roles (theme.primary/.surface/...) directly —
-// editing the legacy mPrimary/mSurface roles here was silently inert.
+// Edits the tonal-spot theme roles directly.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

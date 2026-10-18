@@ -14,7 +14,7 @@ Item {
   property real rightPadding: 10
   property real topPadding: 6
   property real bottomPadding: 6
-  // Mirrors the two chamfered corners — see crux skill's notes.md.
+  // Mirrors the two chamfered corners (docs/design-notes.md, "Chamfer inversion accent").
   property bool invertChamfer: false
 
   // Vertical bar: fixed cross-axis, content-driven length.

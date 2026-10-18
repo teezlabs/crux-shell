@@ -6,8 +6,7 @@ import qs.Services
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
-// Not a full network-manager UI — just autoconnect priority and Bluetooth
-// discoverability, the two things the Wifi/Bluetooth popups don't expose.
+// Wi-Fi autoconnect priority and Bluetooth discoverability, the parts the popups don't expose.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

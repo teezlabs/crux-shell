@@ -4,10 +4,7 @@ import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
-// Git repos to pull plugin registries from -- each needs a registry.json
-// at its root ({"plugins": [{"id","label","description",...}]}). Adding
-// or enabling a source doesn't fetch anything by itself; the Available
-// tab's own Refresh does that.
+// Registry sources; adding one fetches nothing until Available's Refresh.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

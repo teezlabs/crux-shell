@@ -5,10 +5,7 @@ import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 import qs.Services
 
-// Arbitrary user-defined idle commands, each with its own timeout and an
-// optional resume command — noctalia's CustomSubTab.qml equivalent. Backed
-// by Settings.data.idle.customCommands (a JSON-encoded array), applied live
-// by Commons/Idle.qml's own dynamically-created IdleMonitor per entry.
+// User idle commands with their own timeout and optional resume command, applied live by Services/Idle.qml.
 NScrollView {
   id: root
   enabled: Settings.data.idle.enabled

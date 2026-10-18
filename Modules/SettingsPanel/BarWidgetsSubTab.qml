@@ -6,8 +6,7 @@ import qs.Modules.Bar.Extras
 import qs.Modules.SettingsPanel.Controls
 import qs.Services
 
-// Add, remove and reorder the bar's widgets per section. Long-press dragging
-// on the bar itself (BarSection.qml) does the same moves live.
+// Add, remove and reorder bar widgets per section; long-press dragging on the bar does the same live.
 NScrollView {
   id: root
   property string screenName: ""

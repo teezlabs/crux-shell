@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Widgets
 
-// Top-level "Appearance" settings tab: General (font/radius/opacity) and
-// Colors (the theme token grid) as subtabs.
+// Appearance tab: General and Colors subtabs.
 ColumnLayout {
   id: root
   spacing: 14

@@ -6,10 +6,7 @@ import qs.Modules.ControlCenter
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
-// Settings panel content pane. Every tab instantiates and binds eagerly
-// and is shown by `visible` rather than loaded lazily — which is why a
-// warning-free boot is real evidence that all of them are sound, not just
-// whichever one was open.
+// Every tab binds eagerly and is shown by visible, so a warning-free boot covers all of them.
 ColumnLayout {
   id: panel
 
@@ -17,8 +14,7 @@ ColumnLayout {
   property var tabs: []
   property string activeTab: ""
   property string jumpSubTab: ""
-  // The window's own visible, renamed: a plain `visible` here would collide
-  // with this item's.
+  // The window's visible, renamed to avoid colliding with this item's.
   property bool panelVisible: false
   property var targetScreen: null
   property string screenName: ""
@@ -73,8 +69,7 @@ ColumnLayout {
         Layout.fillWidth: true
       }
 
-      // Chamfered close tile with a Canvas-drawn X — no font-glyph
-      // dependency (same reasoning as every bar icon).
+      // Chamfered close tile with a drawn X.
       Item {
         id: closeBtn
         width: 26
@@ -133,7 +128,7 @@ ColumnLayout {
     id: tabContentArea
     Layout.fillWidth: true
     Layout.fillHeight: true
-    // Defensive: clips tabs taller than the card (see notes.md).
+    // Defensive: clips tabs taller than the card.
     clip: true
 
     HomeTab {

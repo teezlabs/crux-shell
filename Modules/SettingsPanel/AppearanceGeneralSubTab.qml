@@ -47,8 +47,7 @@ NScrollView {
         height: 28
         searchable: true
         popupMaxHeight: 260
-        // Only fixed-pitch faces — the list is built on first open, since
-        // detecting them walks every installed family.
+        // Fixed-pitch faces only; built on first open, since detection walks every family.
         model: FontService.monoFamilies
         currentKey: Settings.data.ui.monoFontFamily
         placeholder: "Pick a font"

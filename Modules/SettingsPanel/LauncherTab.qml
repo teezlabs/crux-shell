@@ -4,10 +4,7 @@ import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
-// Settings for the app Launcher (SUPER+A) and Clipboard history (SUPER+V)
-// popups — both already work with hardcoded behavior; this exposes what
-// was actually constant before (result count, match style, run-command
-// prefix, history size).
+// Launcher and clipboard history settings.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

@@ -3,8 +3,7 @@ import QtQuick.Layouts
 import qs.Widgets
 import qs.Services
 
-// Top-level Power tab: idle Behavior/Custom and the Session Menu as subtabs.
-// Idle backend is Commons/Idle.qml (ext-idle-notify-v1), not hypridle.conf.
+// Power tab: idle Behavior and Custom, and the Session Menu.
 ColumnLayout {
   id: root
   spacing: 14

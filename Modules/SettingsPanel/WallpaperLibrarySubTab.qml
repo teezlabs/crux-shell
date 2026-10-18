@@ -7,8 +7,7 @@ import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 import qs.Services
 
-// Wallpaper library: the picker grid, the auto-cycle automation that drives
-// it, and the Wallhaven API key the browser needs.
+// Picker grid, auto-cycle and the Wallhaven API key.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight
@@ -71,11 +70,7 @@ NScrollView {
           }
         }
 
-        // Column count comes from the width available, not a fixed 5. Five
-        // 130px cells plus their gaps need 682px and the content pane is
-        // about 660, so the last column used to render past the card's
-        // right edge. Driven off the enclosing column's width rather than
-        // the grid's own, which would be a binding loop.
+        // Columns from the enclosing column's width (the grid's own would loop), so the grid never overflows the card.
         GridLayout {
           id: thumbGrid
           Layout.fillWidth: true

@@ -4,8 +4,7 @@ import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
-// General subtab: the master enable switch + documentation of the
-// placeholder scheme. Ported from noctalia's Hooks GeneralSubTab.
+// Master switch and the placeholder reference, ported from noctalia.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

@@ -200,7 +200,7 @@ cards. Sits on `WlrLayer.Bottom` (above the wallpaper's `WlrLayer.
 Background`, below real app windows), `ExclusionMode.Ignore`, with an
 explicit `Region` mask so only the two card rectangles are hit-testable —
 everything else passes mouse input through to whatever's behind it.
-Reuses `Commons/Weather.qml` (same ip-api.com/open-meteo.com data already
+Reuses `Services/Weather.qml` (same ip-api.com/open-meteo.com data already
 fetched for the Control Center card) and the same MPRIS pattern
 `MediaPlayerWindow.qml`/`ControlCenterWindow.qml` use, rather than
 standing up new data sources.
@@ -600,11 +600,11 @@ Two bugs of the same shape, both fixed by extracting a singleton:
 a Wayland `IdleInhibitor` off `Settings.data.general.keepAwake`, while the
 KeepAwake bar widget ran its own `systemd-inhibit` subprocess against a local
 bool nothing else could see. Toggling either left the other showing the opposite
-state. `Commons/IdleInhibitorService.qml` owns it; state lives in Settings so it
+state. `Services/IdleInhibitorService.qml` owns it; state lives in Settings so it
 survives a restart. Two layers back it because they stop different things: the
 compositor's idle notifications (the `IdleInhibitor` stays in
 ControlCenterWindow, which has the window it needs to attach to) and logind's
-own idle/sleep handling (`systemd-inhibit`). `Commons/Idle.qml` additionally
+own idle/sleep handling (`systemd-inhibit`). `Services/Idle.qml` additionally
 refuses to schedule a stage while inhibited — it never consulted keepAwake at
 all, so crux's own screenOff/lock/suspend could fire while the UI insisted the
 machine was held awake.
@@ -614,7 +614,7 @@ gated on "am I the instance on `Quickshell.screens[0]`" because bar widgets exis
 once per monitor. Night light therefore only worked when that widget happened to
 be on the bar — the Control Center's own toggle was a dead placeholder, and
 flipping the setting by hand did nothing either. A singleton is single by
-construction, so `Commons/NightLightService.qml` drops the primary-instance
+construction, so `Services/NightLightService.qml` drops the primary-instance
 handling entirely along with the workaround for `screen` arriving after
 `Component.onCompleted`.
 
@@ -813,7 +813,7 @@ keys back with the same screen-override rule as the reorder functions.
 ## Updates: promoted from plugin to built-in widget
 
 The update counter started as a local plugin under
-`~/.config/crux/plugins/updates/` (see `Commons/Plugins.qml`) on the
+`~/.config/crux/plugins/updates/` (see `Services/Plugins.qml`) on the
 reasoning that it was optional and package-manager-specific. It is now
 `Modules/Bar/Widgets/Updates.qml`, registered in `BarWidgetRegistry` like
 any other widget. What changed with the move:

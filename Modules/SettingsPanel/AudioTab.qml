@@ -19,9 +19,7 @@ NScrollView {
       return n && n.isSink && !n.isStream;
     });
   }
-  // A "source" (mic/input) is any non-stream, non-sink node that still has
-  // an .audio property — same filter noctalia's AudioService.qml uses,
-  // since Pipewire doesn't expose a plain isSource flag.
+  // A source is any non-stream, non-sink node with audio; Pipewire has no isSource flag.
   readonly property var allSources: {
     if (!Pipewire.ready || !Pipewire.nodes)
       return [];

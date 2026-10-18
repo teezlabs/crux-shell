@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Widgets
 
-// Top-level "Wallpaper" settings tab. Was one 637-line page; the three
-// subtabs below match the split every other multi-page tab already uses.
+// Wallpaper tab with three subtabs.
 ColumnLayout {
   id: root
   spacing: 14

@@ -3,9 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
 
-// Grouped-card section wrapper, v2 style: chamfered card (radius: 0, no
-// gradient/glow per hard rules 1/4), accent tick + uppercase label-tier
-// title — same visual language as every other panel's section headers.
+// Section card: chamfered, with an accent tick and an uppercase title.
 ColumnLayout {
   id: root
 
@@ -53,8 +51,7 @@ ColumnLayout {
 
   NBox {
     Layout.fillWidth: true
-    // 26 rather than the box's own 28px of padding: the card has always
-    // been 2px tighter than its margins, keep it that way.
+    // 26, not the box's 28px padding: the card has always sat 2px tighter.
     Layout.preferredHeight: inner.implicitHeight + 26
 
     ColumnLayout {

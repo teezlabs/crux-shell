@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Widgets
 
-// Top-level "Bar" settings tab: Layout (position/spacing/monitors) and
-// Widgets (per-section add/remove) as subtabs.
+// Bar tab: Layout and Widgets subtabs.
 ColumnLayout {
   id: root
   property string screenName: ""

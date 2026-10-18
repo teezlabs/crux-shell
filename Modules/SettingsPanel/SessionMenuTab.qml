@@ -5,10 +5,7 @@ import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 import qs.Modules.SessionMenu
 
-// Settings for the power-button's existing PowerMenuWindow.qml popup — no
-// new UI surface, just exposing what was previously hardcoded: which
-// actions show, and which need a second tap ("arm-then-confirm") before
-// they actually run.
+// Which power menu actions show, and which need a confirming second tap.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

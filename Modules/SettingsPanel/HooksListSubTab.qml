@@ -5,10 +5,7 @@ import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
-// The hook list — one HookRow per Settings.data.hooks.* field, each with an
-// EDIT button opening the shared HookEditPopup. TEST in the popup runs the
-// currently-edited command with sample placeholder values (same semantics
-// as noctalia's HooksListSubTab test handlers).
+// One row per hook, each editing through the shared HookEditPopup.
 NScrollView {
   id: root
 

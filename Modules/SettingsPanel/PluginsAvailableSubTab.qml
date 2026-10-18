@@ -5,9 +5,7 @@ import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 import qs.Services
 
-// Plugins fetched from every enabled source's registry.json (see
-// Commons/Plugins.qml) -- install copies just that plugin's own
-// subdirectory out of its source repo into pluginsDir.
+// Plugins from every enabled source's registry; install copies the plugin's subdirectory into pluginsDir.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

@@ -28,7 +28,7 @@ Item {
     property int targetIndex: -1
   }
 
-  // Plain x/y, not anchors — see crux skill's notes.md.
+  // Plain x/y, not anchors (docs/qml-gotchas.md, "Bindings that don't re-run").
   BarSection {
     id: leftSection
     x: root.vertical ? (root.width - width) / 2 : Settings.data.bar.contentPadding + leftSection.groupInset

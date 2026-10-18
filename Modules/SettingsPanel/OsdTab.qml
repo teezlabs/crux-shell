@@ -5,9 +5,7 @@ import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
-// On-screen-display settings: crux's VolumeOsd.qml already runs reacting to
-// live Pipewire state with no settings tab at all (position/duration were
-// hardcoded). This is purely exposing what already exists.
+// Volume OSD placement and duration.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

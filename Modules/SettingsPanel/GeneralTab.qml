@@ -2,17 +2,14 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Widgets
 
-// Top-level "Input" settings tab: General (region, input) and Keybinds
-// (read-only reference) as subtabs.
+// Input tab: General and Keybinds subtabs.
 ColumnLayout {
   id: root
   spacing: 14
 
   property string subTab: "basics"
 
-  // Set by SettingsWindow's search jump — reacting to onChanged (not a
-  // binding) means the NTabBar's own onActivated can still drive
-  // subTab normally afterward, instead of a one-way lock to the search hit.
+  // Set by a search jump and applied on change, so the tab bar still drives subTab afterwards.
   property string initialSubTab: ""
   onInitialSubTabChanged: if (initialSubTab !== "")
                              root.subTab = initialSubTab

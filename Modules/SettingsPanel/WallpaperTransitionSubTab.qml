@@ -7,8 +7,7 @@ import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 import qs.Services
 
-// Which shader transition plays when the wallpaper changes. The shaders
-// themselves live in Assets/Shaders as compiled .qsb bytecode.
+// Which shader transition plays; shaders are compiled .qsb files in Assets/Shaders.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

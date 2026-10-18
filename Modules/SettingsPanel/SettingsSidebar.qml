@@ -4,9 +4,7 @@ import Quickshell
 import qs.Commons
 import qs.Widgets
 
-// Settings panel sidebar: fuzzy search box on top, tab list underneath.
-// Typing swaps the tab list for matched entries; picking one emits
-// jumpToSearchHit, which the window acts on.
+// Search box over the tab list; typing swaps in matches, and picking one emits jumpToSearchHit.
 ColumnLayout {
   id: panel
 
@@ -15,9 +13,7 @@ ColumnLayout {
   property var searchResults: []
   property string searchQuery: ""
   property string activeTab: ""
-  // Writes go out as signals rather than assignments back into a bound
-  // property — an imperative write would destroy the binding from the
-  // window and the two would silently stop tracking each other.
+  // Signals rather than writes, which would break the window's bindings.
   signal jumpToSearchHit(var entry)
   signal searchQueryEdited(string text)
   signal tabSelected(string id)

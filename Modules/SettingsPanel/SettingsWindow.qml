@@ -9,8 +9,7 @@ import qs.Modules.ControlCenter
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
-// Settings panel: top-level tabs in the sidebar, some split into subtabs
-// via NTabBar (Widgets/). New top-level tabs go in the `tabs` model below.
+// Settings panel; new top-level tabs go in the `tabs` model below.
 NPanelWindow {
   id: root
 
@@ -19,8 +18,7 @@ NPanelWindow {
   readonly property string screenName: screen ? screen.name : ""
   property string activeTab: "home"
 
-  // Fuzzy-search sidebar state. jumpSubTab is read once (onChanged, not a
-  // binding) so later manual NTabBar clicks aren't fought by a stale hit.
+  // Search state. jumpSubTab is applied on change so later tab clicks aren't fought by a stale hit.
   property string searchQuery: ""
   property string jumpSubTab: ""
   readonly property var searchResults: {
@@ -157,8 +155,7 @@ NPanelWindow {
     }
   ]
 
-  // The one entry point deeper than open() — NPanelWindow's per-screen IPC
-  // target forwards to it, and so does Popups.openTab.
+  // NPanelWindow's IPC target and Popups.openTab both forward here.
   function openTab(tab) {
     activeTab = tab;
     visible = true;
@@ -191,9 +188,8 @@ NPanelWindow {
       anchors.fill: parent
       spacing: 0
 
-      // ---------------- Sidebar ----------------      // 150px pinned with min and max, not preferredWidth alone: that's
-      // only a hint, and next to a fillWidth sibling it has been seen to
-      // let the sidebar claim nearly the whole card. See crux skill's SKILL.md.
+      // ---------------- Sidebar ----------------
+      // 150px pinned with min and max (docs/qml-gotchas.md).
       SettingsSidebar {
         Layout.preferredWidth: 150
         Layout.minimumWidth: 150

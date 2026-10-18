@@ -5,10 +5,7 @@ import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 import qs.Services
 
-// Night Light (wlsunset) settings: night/day color temperature, a real
-// geolocation-driven auto-schedule (reusing Commons/Weather.qml's own
-// IP-geolocated lat/lon — see NightLight.qml), and a manual sunset/sunrise
-// fallback for when that's off or hasn't resolved yet.
+// Night Light: temperatures, the geolocated sun schedule and the manual fallback.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

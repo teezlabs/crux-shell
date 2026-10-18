@@ -5,9 +5,7 @@ import qs.Services
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
-// Settings for the KeyboardLayout, LockKeys, and VPN bar widgets — grouped
-// here rather than three near-empty tabs, matching how Audio already
-// groups everything Pipewire-related into one tab.
+// Keyboard device and VPN settings for the KeyboardLayout, LockKeys and VPN widgets.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight

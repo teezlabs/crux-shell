@@ -5,8 +5,7 @@ import Quickshell.Io
 import qs.Commons
 import qs.Widgets
 
-// Read-only reference view of the live keybinds.lua — not parsed/editable,
-// the Lua mixes too many call shapes to reliably summarize. Edit the file directly.
+// Read-only view of keybinds.lua; the Lua mixes too many call shapes to parse reliably.
 ColumnLayout {
   id: root
   spacing: 8

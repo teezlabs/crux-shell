@@ -2,9 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Widgets
 
-// Top-level "Display" settings tab: Brightness and Night Light as
-// subtabs — mirrors noctalia's Display tab, minus the pages crux has
-// nothing behind yet (multi-monitor DDC calibration, geolocation).
+// Display tab: Brightness and Night Light subtabs.
 ColumnLayout {
   id: root
   spacing: 14

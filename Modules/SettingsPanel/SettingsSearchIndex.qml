@@ -1,7 +1,6 @@
 import QtQuick
 
-// Static search index for the settings panel's fuzzy-search sidebar.
-// Keep entries in sync when settings move or new tabs/subtabs land.
+// Static index for the settings search. Keep it in sync when settings move.
 Item {
   id: root
 

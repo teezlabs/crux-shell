@@ -5,10 +5,7 @@ import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 import qs.Services
 
-// Local-folder plugin discovery status — no marketplace, no install flow:
-// a plugin is a directory you drop under Plugins.pluginsDir yourself (see
-// Commons/Plugins.qml). This tab just shows what got found, so a bad
-// manifest or a missing Widget.qml doesn't fail silently.
+// Plugins found in pluginsDir, with load errors, so a bad manifest doesn't fail silently.
 NScrollView {
   id: root
   contentHeight: col.implicitHeight
