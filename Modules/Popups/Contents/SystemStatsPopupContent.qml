@@ -25,7 +25,7 @@ ColumnLayout {
   readonly property real memTotalGb: SystemStats.memTotalGb
   readonly property real tempC: SystemStats.tempC
   readonly property var disks: SystemStats.disks
-  readonly property string uptimeText: SystemStats.formatUptime("d")
+  readonly property string uptimeText: SystemStats.uptimeText
   readonly property real loadAvg1: SystemStats.loadAvg1
   readonly property real loadAvg5: SystemStats.loadAvg5
   readonly property real loadAvg15: SystemStats.loadAvg15

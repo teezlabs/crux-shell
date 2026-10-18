@@ -119,7 +119,7 @@ ColumnLayout {
 
   // ---- User@host + uptime ----
   property string whoHost: "…"
-  readonly property string uptimeText: SystemStats.formatUptime("D")
+  readonly property string uptimeText: SystemStats.uptimeText.toUpperCase()
 
   Process {
     id: whoProc

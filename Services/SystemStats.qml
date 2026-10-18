@@ -25,20 +25,18 @@ Singleton {
     return d ? d.percent : 0;
   }
   property real uptimeSeconds: 0
+  readonly property string uptimeText: {
+    var d = Math.floor(uptimeSeconds / 86400);
+    var h = Math.floor((uptimeSeconds % 86400) / 3600);
+    var m = Math.floor((uptimeSeconds % 3600) / 60);
+    return (d > 0 ? d + "d " : "") + String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
+  }
   property real loadAvg1: 0
   property real loadAvg5: 0
   property real loadAvg15: 0
 
   property var _prevCpu: null
   property var _prevCores: []
-
-  function formatUptime(dayUnit: string): string {
-    var s = uptimeSeconds;
-    var d = Math.floor(s / 86400);
-    var h = Math.floor((s % 86400) / 3600);
-    var m = Math.floor((s % 3600) / 60);
-    return (d > 0 ? d + dayUnit + " " : "") + String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
-  }
 
   function refresh(): void {
     statFile.reload();
