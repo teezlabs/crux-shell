@@ -16,7 +16,7 @@ NScrollView {
 
     SettingsSection {
       title: "Retention"
-    description: "How many past notifications Commons/Notifs.qml keeps for the history popup (SUPER-equivalent bar icon). Session-only, not written to disk."
+      description: "How many past notifications the history popup keeps. Session-only, not written to disk."
 
     SettingRow {
       label: "History limit"
