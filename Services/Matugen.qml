@@ -250,6 +250,7 @@ Singleton {
         theme.colorScheme = "";
 
         root._runPostHooks();
+        Hooks.runColorGenerationHook();
         Toast.show("Theme updated");
       } catch (e) {
         root.lastError = "Couldn't parse matugen output: " + e;

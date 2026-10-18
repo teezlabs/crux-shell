@@ -5,6 +5,7 @@ import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import qs.Commons
+import qs.Services
 import qs.Widgets
 
 // Power menu: fullscreen scrim, row of 5 chamfered tiles. Keys L/S/E/R/P select; ←→ move selection; ⏎ confirms.
@@ -79,7 +80,7 @@ NPanelWindow {
       return;
     }
     root.visible = false;
-    Quickshell.execDetached(action.run);
+    Hooks.runSessionHook(action.label.toLowerCase(), () => Quickshell.execDetached(action.run));
   }
 
   onVisibleChanged: {

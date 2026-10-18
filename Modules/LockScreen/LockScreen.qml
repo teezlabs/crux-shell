@@ -25,6 +25,7 @@ Loader {
   onActiveChanged: if (active) {
     failedAttempts = 0;
     lockedOut = false;
+    Hooks.runLockHook();
   }
 
   // Delays the actual lock engagement — e.g. "give me a few seconds after
@@ -86,6 +87,7 @@ Loader {
       LockContext {
         id: lockContext
         onUnlocked: {
+          Hooks.runUnlockHook();
           lockSession.locked = false;
           unloadTimer.restart();
           lockContext.currentText = "";

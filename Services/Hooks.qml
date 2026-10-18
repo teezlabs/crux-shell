@@ -24,7 +24,13 @@ Singleton {
     }
   }
 
-  // runDarkModeHook isn't called anywhere yet.
+  Connections {
+    target: Settings.data.theme
+    function onDarkModeChanged() {
+      if (root._ready)
+        root.runDarkModeHook(Settings.data.theme.darkMode);
+    }
+  }
 
   Connections {
     target: Settings
@@ -36,14 +42,14 @@ Singleton {
   // ---- Helpers ----
 
   function _themeName() {
-    return "dark";
+    return Settings.data.theme.darkMode ? "dark" : "light";
   }
 
   function _enabled() {
     return Settings.data.hooks.enabled;
   }
 
-  // ---- Hook runners, called by the wiring above and the settings panel's Test buttons ----
+  // ---- Hook runners: wallpaper and dark mode fire above; Matugen, LockScreen and PowerMenuWindow call the rest ----
 
   function runWallpaperHook(wallpaperPath, screenName) {
     if (!root._enabled())
