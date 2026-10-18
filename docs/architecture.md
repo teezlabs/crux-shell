@@ -60,3 +60,4 @@ A `Commons` singleton importing `Modules` or `Widgets` is a bug.
 - A smooth-scrolling setting
 - Notification exit animation
 - `Modules/Wallpaper/WallpaperBrowserWindow.qml` is ~1,150 lines. The rail, grid and detail panel are still inline
+- Lock screen polish (from captures on 2026-10-18): the SUSPEND/RESTART/SHUT DOWN labels are too small to read, portrait DP-1 leaves a large empty gap between the clock and the password field, the password field doesn't show which user is unlocking, and the mouse cursor stays visible
