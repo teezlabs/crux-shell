@@ -1,10 +1,9 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
 import qs.Commons
+import qs.Services
 import qs.Modules.Bar.Extras
 
-// Wired-ethernet status via `nmcli device status`. Wifi.qml already covers wifi (Quickshell.Networking has no Ethernet type), so this fills the wired gap only; hidden entirely on machines with no ethernet interface.
+// Wired-ethernet status from NetworkManager. Wifi.qml already covers wifi (Quickshell.Networking has no Ethernet type), so this fills the wired gap only; hidden entirely on machines with no ethernet interface.
 Item {
   id: root
 
@@ -13,53 +12,15 @@ Item {
   property int sectionWidgetIndex: -1
   property bool invertChamfer: false
 
-  property bool ethernetPresent: false
-  property bool ethernetConnected: false
-  property string ethernetDevice: ""
+  readonly property bool ethernetPresent: NetworkManager.ethernetPresent
+  readonly property bool ethernetConnected: NetworkManager.ethernetConnected
+  readonly property string ethernetDevice: NetworkManager.ethernetDevice
 
   visible: ethernetPresent
   implicitWidth: visible ? 32 : 0
   implicitHeight: Tokens.barCell
   width: implicitWidth
   height: implicitHeight
-
-  Process {
-    id: statusProc
-    command: ["nmcli", "-t", "-f", "DEVICE,TYPE,STATE", "device", "status"]
-    stdout: StdioCollector {
-      onStreamFinished: {
-        var present = false;
-        var connected = false;
-        var device = "";
-        var lines = text.split("\n");
-        for (var i = 0; i < lines.length; i++) {
-          var parts = lines[i].split(":");
-          if (parts.length < 3)
-            continue;
-          var dev = parts[0], type = parts[1], state = parts[2];
-          if (type !== "ethernet")
-            continue;
-          present = true;
-          if (state.indexOf("connected") === 0) {
-            connected = true;
-            device = dev;
-          }
-        }
-        root.ethernetPresent = present;
-        root.ethernetConnected = connected;
-        root.ethernetDevice = device;
-      }
-    }
-  }
-
-  Timer {
-    interval: 5000
-    running: true
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: if (!statusProc.running)
-      statusProc.running = true
-  }
 
   BarIconButton {
     id: btn

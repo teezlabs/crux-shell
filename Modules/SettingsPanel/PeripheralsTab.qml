@@ -1,7 +1,5 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
-import Quickshell.Io
 import qs.Commons
 import qs.Services
 import qs.Modules.SettingsPanel.Controls
@@ -20,74 +18,7 @@ NScrollView {
   Component.onCompleted: Keyboard.refresh()
 
   // -------------------- VPN --------------------
-  property var vpnConnections: ({})
-  readonly property var vpnList: {
-    var l = [];
-    for (var uuid in root.vpnConnections)
-      l.push(root.vpnConnections[uuid]);
-    return l;
-  }
-
-  Process {
-    id: vpnProc
-    command: ["nmcli", "-t", "-f", "NAME,UUID,TYPE,DEVICE", "connection", "show"]
-    stdout: StdioCollector {
-      onStreamFinished: {
-        var map = {};
-        var lines = text.split("\n");
-        for (var i = 0; i < lines.length; i++) {
-          var line = lines[i].trim();
-          if (!line)
-            continue;
-          var lastColon = line.lastIndexOf(":");
-          if (lastColon === -1)
-            continue;
-          var device = line.substring(lastColon + 1);
-          var rest = line.substring(0, lastColon);
-          var c2 = rest.lastIndexOf(":");
-          if (c2 === -1)
-            continue;
-          var type = rest.substring(c2 + 1);
-          if (type !== "vpn" && type !== "wireguard")
-            continue;
-          var rest2 = rest.substring(0, c2);
-          var c3 = rest2.lastIndexOf(":");
-          if (c3 === -1)
-            continue;
-          var uuid = rest2.substring(c3 + 1);
-          var name = rest2.substring(0, c3);
-          if (!uuid || !name)
-            continue;
-          map[uuid] = {
-            "uuid": uuid,
-            "name": name,
-            "device": device,
-            "active": !!device && device !== "--"
-          };
-        }
-        root.vpnConnections = map;
-      }
-    }
-  }
-
-  Timer {
-    interval: 5000
-    running: true
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: if (!vpnProc.running)
-      vpnProc.running = true
-  }
-
-  Process {
-    id: vpnToggleProc
-    property string mode: "up"
-    property string uuid: ""
-    command: ["nmcli", "connection", mode, "uuid", uuid]
-    stdout: StdioCollector {
-      onStreamFinished: vpnProc.running = true
-    }
-  }
+  readonly property var vpnList: NetworkManager.vpnConnections
 
   ColumnLayout {
     id: col
@@ -250,9 +181,7 @@ NScrollView {
             }
             TapHandler {
               onTapped: {
-                vpnToggleProc.mode = vpnRow.modelData.active ? "down" : "up";
-                vpnToggleProc.uuid = vpnRow.modelData.uuid;
-                vpnToggleProc.running = true;
+                NetworkManager.setVpn(vpnRow.modelData.uuid, !vpnRow.modelData.active);
               }
             }
           }

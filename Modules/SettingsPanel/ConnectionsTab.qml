@@ -1,9 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
-import Quickshell.Io
 import Quickshell.Bluetooth
 import qs.Commons
+import qs.Services
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
@@ -13,83 +12,7 @@ NScrollView {
   id: root
   contentHeight: col.implicitHeight
 
-  property var savedNetworks: []
-
-  function rescanSaved() {
-    savedProc.running = true;
-  }
-
-  Process {
-    id: savedProc
-    command: ["nmcli", "-t", "-f", "NAME,UUID,TYPE,DEVICE,AUTOCONNECT,AUTOCONNECT-PRIORITY", "connection", "show"]
-    stdout: StdioCollector {
-      waitForEnd: true
-      onStreamFinished: {
-        var rows = [];
-        var lines = text.split("\n");
-        for (var i = 0; i < lines.length; i++) {
-          var line = lines[i].trim();
-          if (!line)
-            continue;
-          // Fields are colon-separated but NAME can itself contain colons,
-          // so parse from the right — same approach PeripheralsTab.qml's
-          // VPN list already uses for the same reason.
-          var parts = line.split(":");
-          if (parts.length < 6)
-            continue;
-          var priority = parts[parts.length - 1];
-          var autoconnect = parts[parts.length - 2];
-          var device = parts[parts.length - 3];
-          var type = parts[parts.length - 4];
-          var name = parts.slice(0, parts.length - 4).join(":");
-          if (type !== "802-11-wireless")
-            continue;
-          rows.push({
-            "name": name,
-            "device": device,
-            "active": !!device && device !== "--",
-            "autoconnect": autoconnect === "yes",
-            "priority": parseInt(priority) || 0
-          });
-        }
-        rows.sort(function (a, b) {
-          if (a.active !== b.active)
-            return a.active ? -1 : 1;
-          return a.name.localeCompare(b.name);
-        });
-        root.savedNetworks = rows;
-      }
-    }
-  }
-
-  Process {
-    id: modifyProc
-    onExited: root.rescanSaved()
-  }
-
-  function setAutoconnect(name, enabled) {
-    modifyProc.command = ["nmcli", "connection", "modify", "id", name, "connection.autoconnect", enabled ? "yes" : "no"];
-    modifyProc.running = true;
-  }
-
-  function setPriority(name, priority) {
-    modifyProc.command = ["nmcli", "connection", "modify", "id", name, "connection.autoconnect-priority", String(priority)];
-    modifyProc.running = true;
-  }
-
-  function forgetSaved(name) {
-    modifyProc.command = ["nmcli", "connection", "delete", "id", name];
-    modifyProc.running = true;
-  }
-
-  Timer {
-    interval: 5000
-    running: root.visible
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: if (!savedProc.running)
-      root.rescanSaved()
-  }
+  readonly property var savedNetworks: NetworkManager.wifiConnections.slice().sort((a, b) => a.active !== b.active ? (a.active ? -1 : 1) : a.name.localeCompare(b.name))
 
   readonly property var btAdapter: Bluetooth.defaultAdapter
 
@@ -142,7 +65,7 @@ NScrollView {
 
             NToggle {
               checked: netRow.modelData.autoconnect
-              onToggled: checked => root.setAutoconnect(netRow.modelData.name, checked)
+              onToggled: checked => NetworkManager.setAutoconnect(netRow.modelData.uuid, checked)
             }
             NText {
               tracking: true
@@ -159,7 +82,7 @@ NScrollView {
               sliderWidth: 100
               readoutWidth: 26
               readoutText: (netRow.modelData.priority > 0 ? "+" : "") + netRow.modelData.priority
-              onMoved: value => root.setPriority(netRow.modelData.name, Math.round(value))
+              onMoved: value => NetworkManager.setPriority(netRow.modelData.uuid, Math.round(value))
             }
 
             Item {
@@ -178,7 +101,7 @@ NScrollView {
                 anchors.fill: parent
                 anchors.margins: -4
                 cursorShape: Qt.PointingHandCursor
-                onClicked: root.forgetSaved(netRow.modelData.name)
+                onClicked: NetworkManager.forget(netRow.modelData.uuid)
               }
             }
           }
