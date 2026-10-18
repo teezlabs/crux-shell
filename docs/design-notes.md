@@ -821,7 +821,7 @@ any other widget. What changed with the move:
   and entries in `SettingsSearchIndex`. The bespoke right-click
   `SettingsWindow.qml` is gone — right-click now does
   `Popups.openTab("settings", screen, "updates")` like the rest of crux.
-- The IPC target went from `pluginUpdates_<screen>` to `updates_<screen>`.
+- The IPC target went from `pluginUpdates_<screen>` to `updates_<screen>`, and later to one global `updates` target (see below).
 - The old plugin dir was moved to
   `~/.local/share/crux/retired-plugins/updates`, not deleted. A built-in
   shadows a plugin of the same id (`BarWidgetLoader` checks `_isBuiltin`
@@ -832,14 +832,9 @@ The settings-json key and the default values match what the plugin's
 
 ## Updates: post-update recheck across monitors
 
-`~/.config/crux/plugins/updates/Widget.qml` chained
-`qs ipc call pluginUpdates_<screen> check` onto the update command, which
-only rechecks the bar the update was launched from — there is one instance
-per monitor, so every other bar kept showing a stale count (and stayed
-visible at 0) until its own 5-300 minute timer came round. It now writes
-`~/.cache/crux/update-count-stamp` instead, which every instance watches
-with a `FileView`, so one write fans the recheck out to all of them.
+`~/.config/crux/plugins/updates/Widget.qml` chained `qs ipc call pluginUpdates_<screen> check` onto the update command, which only rechecked the bar the update was launched from. There was one instance per monitor, so every other bar kept showing a stale count (and stayed visible at 0) until its own 5-300 minute timer came round.
 
+The count now lives in `Services/UpdatesService.qml`, so there is one check for all bars and one global `updates` IPC target. The update itself runs in a terminal crux can't watch, so the command still ends by writing `~/.cache/crux/update-count-stamp`, and the service rechecks when that file changes. `checkupdates` is a read-only sync that never touches the live pacman database or lock; AUR updates come from `yay -Qua`, a local query, when yay is installed.
 
 ## The chamfer end-cap rule only worked on 8 of 36 widgets
 
