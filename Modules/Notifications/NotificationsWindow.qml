@@ -7,8 +7,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Services
 
-// Notifications: persistent top-right stack, appears whenever Commons/Notifs.qml has tracked notifications.
-// Auto-expiry via a real per-notification dismiss() timer (6s normal, 12s critical, never for resident), not a visual-only fade.
+// Notification stack; cards dismiss on per-urgency timeouts from settings, never for resident ones.
 PanelWindow {
   id: root
 
@@ -35,10 +34,7 @@ PanelWindow {
   visible: Settings.data.notifications.enabled && !Settings.data.notifications.doNotDisturb && notifications.length > 0 && root.shownOnThisScreen
   color: "transparent"
 
-  // Sized to content, not full-screen, corner-anchored per `pos` — a
-  // full-screen window here would need a mask to keep the empty space
-  // around the card stack from blocking clicks to whatever's underneath;
-  // sizing to content sidesteps that entirely (the window *is* the stack).
+  // Sized to the stack and corner-anchored, so empty space never blocks clicks and no mask is needed.
   anchors {
     top: root.pos === "top_left" || root.pos === "top_right"
     bottom: root.pos === "bottom_left" || root.pos === "bottom_right"
@@ -70,9 +66,7 @@ PanelWindow {
         Layout.fillWidth: true
         Layout.preferredHeight: cardColumn.implicitHeight + 24
 
-        // Cards fade and settle in rather than appearing outright. Scale
-        // rather than position, because a ColumnLayout owns x and y here
-        // and animating those would fight it.
+        // Fade and scale in; position is owned by the ColumnLayout.
         opacity: 0
         scale: 0.96
         Component.onCompleted: enterAnim.start()
@@ -100,9 +94,7 @@ PanelWindow {
 
         Timer {
           readonly property int _urgencySec: card.urgencyLevel === NotificationUrgency.Critical ? Settings.data.notifications.criticalUrgencyDurationSec : (card.urgencyLevel === NotificationUrgency.Low ? Settings.data.notifications.lowUrgencyDurationSec : Settings.data.notifications.normalUrgencyDurationSec)
-          // App-specified expireTimeout (DBus spec: ms, 0 = never, -1 =
-          // server default) wins when respectAppExpireTimeout is on and
-          // the app actually set a real positive value.
+          // An app's own positive expireTimeout wins when respectAppExpireTimeout is on.
           readonly property int _effectiveMs: (Settings.data.notifications.respectAppExpireTimeout && card.modelData && card.modelData.expireTimeout > 0) ? card.modelData.expireTimeout : _urgencySec * 1000
           running: card.modelData && !card.modelData.resident && _effectiveMs > 0
           interval: _effectiveMs

@@ -11,10 +11,7 @@ import qs.Modules.LockScreen
 import qs.Widgets
 import qs.Services
 
-// Spec §6.10: fullscreen blurred wallpaper, clock top-left, password field
-// bottom-left, NET/BAT/VOL top-right, notification summaries bottom-right.
-// Single WlSessionLock instantiates its `surface` per screen automatically.
-// Real ext-session-lock-v1 lock (same protocol swaylock uses), not a popup.
+// ext-session-lock-v1 lock screen (spec §6.10); WlSessionLock creates a surface per screen.
 Loader {
   id: root
   active: false
@@ -28,8 +25,7 @@ Loader {
     Hooks.runLockHook();
   }
 
-  // Delays the actual lock engagement — e.g. "give me a few seconds after
-  // hitting the keybind before the screen really locks".
+  // Optional grace period before the lock engages.
   function lock() {
     var grace = Settings.data.lockScreen.gracePeriodSec;
     if (grace > 0) {
@@ -46,9 +42,7 @@ Loader {
     onTriggered: root.active = true
   }
 
-  // crux's own UI-level lockout (disables the password field for a bit
-  // after too many failures) — unrelated to and doesn't touch pam_faillock
-  // at the OS level, since it never attempts auth itself.
+  // crux's own field lockout after repeated failures; separate from pam_faillock.
   Timer {
     id: lockoutTimer
     interval: 1000
@@ -63,18 +57,14 @@ Loader {
     }
   }
 
-  // Only unloads once the surface has actually unlocked — see
-  // LockContext.onUnlocked below. There's no exposed IPC "unlock": the
-  // only path to leaving this screen unauthenticated would defeat the
-  // point of a lock screen.
+  // Unloads only after a real unlock; there is deliberately no IPC unlock.
   Timer {
     id: unloadTimer
     interval: 200
     onTriggered: root.active = false
   }
 
-  // Single global instance (unlike the bar's per-screen popups) — no
-  // enabled gate needed, there's only ever one of these registering.
+  // Single global instance, so no enabled gate.
   IpcHandler {
     target: "lockscreen"
     function lock(): void {
@@ -126,17 +116,14 @@ Loader {
           }
           readonly property string netLabel: !Networking.wifiEnabled ? "OFF" : (wifiConnected ? "WLAN" : "SRCH")
 
-          // Password field stays visible/interactable on every monitor
-          // regardless (auth must always be reachable) — this only gates
-          // the informational chrome (clock/status/power/notifications).
+          // Gates only the informational chrome; the password field is on every monitor.
           readonly property bool shownHere: Settings.data.lockScreen.monitors.length === 0 || Settings.data.lockScreen.monitors.includes(surface.screen.name)
 
           readonly property var sink: Pipewire.ready ? Pipewire.defaultAudioSink : null
           readonly property real volume: sink && sink.audio ? sink.audio.volume : 0
           readonly property bool muted: sink && sink.audio ? sink.audio.muted : false
 
-          // Read-only "now playing" line, not interactive controls — the
-          // lock screen isn't the place to add a new tappable surface.
+          // Read-only now-playing line; no new tappable surface on the lock screen.
           readonly property var activeMprisPlayer: MediaService.activePlayer
 
           PwObjectTracker {
@@ -222,8 +209,7 @@ Loader {
           }
 
           Rectangle {
-            // Darkens the blurred wallpaper enough that on_surface text stays
-            // legible regardless of the source image's own brightness.
+            // Darkens the blurred wallpaper so text stays legible on any image.
             anchors.fill: parent
             color: Colors.alpha(Colors.surface, Settings.data.lockScreen.dimAmount)
           }
@@ -236,8 +222,7 @@ Loader {
               passwordInput.forceActiveFocus()
           }
 
-          // Clock — spec: 132px weight 200 at (96, 80); 52x2 primary rule;
-          // "WEDNESDAY 25 AUGUST 2026" at 14px / 0.26em tracking below it.
+          // Clock: 132px weight 200 at (96, 80), a 52x2 rule, then the date at 14px / 0.26em.
           Column {
             x: 96
             y: 80
@@ -342,8 +327,7 @@ Loader {
             }
           }
 
-          // Power options: Suspend/Reboot/Shutdown, arm-then-confirm like
-          // PowerMenuWindow.qml. No Logout/Lock entry — redundant here.
+          // Suspend, reboot and shutdown, arm-then-confirm like the power menu.
           property string armedPowerAction: ""
           Timer {
             id: powerArmTimer
@@ -602,9 +586,7 @@ Loader {
             }
           }
 
-          // Notification summaries — bottom-right, 400 wide, 2px gaps, left
-          // urgency border. Real Notifs.qml data (§ crux skill: "not a
-          // stub"), not a lock-screen-only mock list.
+          // Notification summaries from Notifs, bottom-right with an urgency border.
           Column {
             anchors.bottom: parent.bottom
             anchors.right: parent.right

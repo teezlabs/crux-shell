@@ -84,14 +84,11 @@ PanelWindow {
   readonly property var recentNotifications: notifications.slice(0, 4)
 
   function nowLabel() {
-    // 24-hour, matching the bar clock's own "14:32" example in spec §6.1 —
-    // no reason for the sidebar to be the one 12-hour clock in the app.
+    // 24-hour, matching the bar clock (spec §6.1).
     return Qt.formatDateTime(new Date(), "HH:mm");
   }
   function dateLabel() {
-    // Spec §6.8 exact format: "WEDNESDAY 25 AUGUST" (day-name day month, no
-    // year, no comma) — rendered uppercase at the call site per §2's "all
-    // label-tier text is uppercase" rule.
+    // Spec §6.8: "WEDNESDAY 25 AUGUST", uppercased at the call site.
     return Qt.formatDateTime(new Date(), "dddd d MMMM");
   }
   property string _clockNow: nowLabel()
@@ -365,10 +362,7 @@ PanelWindow {
         Repeater {
           model: root.recentNotifications
 
-          // Spec §6.8 explicitly wants "compact single-line cards" here —
-          // distinct from the full Notifications popover's richer
-          // summary+body layout (NotificationsWindow.qml), which is the
-          // right place for the fuller treatment.
+          // Compact single-line cards per spec §6.8.
           delegate: Item {
             id: card
             required property var modelData
@@ -408,9 +402,7 @@ PanelWindow {
         color: Colors.surfaceContainerHigh
       }
 
-      // Workspaces — 5-up previews. No live window-thumbnail source exists
-      // via Quickshell, so each slot is an honest occupied/active chip
-      // (16:9 aspect) rather than a fabricated screenshot.
+      // Workspace chips, not thumbnails: Quickshell has no live window-thumbnail source.
       ColumnLayout {
         Layout.fillWidth: true
         spacing: 8
@@ -435,9 +427,7 @@ PanelWindow {
               Layout.fillWidth: true
               Layout.preferredHeight: (root.width - 40 - 24) / 5 * 9 / 16
 
-              // Spec §6.8: "active gets primary_container + 2px primary
-              // bottom border" — a flat fill plus an underline, not the
-              // full-outline treatment other selected states in the app use.
+              // Spec §6.8: active gets a primary_container fill and a 2px primary underline.
               Chamfer {
                 anchors.fill: parent
                 chamferSize: Tokens.chamferIcon

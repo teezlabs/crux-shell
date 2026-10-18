@@ -5,11 +5,7 @@ import Quickshell.Services.Pipewire
 import qs.Commons
 import qs.Widgets
 
-// Volume OSD: shows briefly on any default-sink volume/mute change, from
-// any source. Reacts to real Pipewire state (PwObjectTracker required —
-// nodes don't reliably push updates unless tracked), not IPC-triggered.
-// Uses the app's standard two-opposite-corner chamfer, not spec §6.5's
-// all-four-corners text — confirmed deliberate, for visual consistency.
+// Shows on any default-sink volume or mute change; PwObjectTracker is needed for nodes to push updates.
 PanelWindow {
   id: root
 

@@ -6,9 +6,7 @@ import qs.Commons
 import qs.Modules.Notifications
 import qs.Widgets
 
-// Toast overlay: renders Commons/Toast.qml's queue as a chamfered pill,
-// bottom-center of the focused monitor. One global instance (not per-screen like
-// VolumeOsd), plus a small FIFO queue so rapid Toast.show() calls don't clobber each other.
+// Renders Toast's FIFO queue as a pill at the bottom centre of the focused monitor. One global instance.
 PanelWindow {
   id: root
 
@@ -56,8 +54,7 @@ PanelWindow {
     onTriggered: root.opened = false
   }
 
-  // Small gap after a toast finishes fading out before the next queued
-  // one starts fading in — avoids two toasts visually overlapping.
+  // Short gap between toasts so they never overlap.
   Timer {
     id: nextTimer
     interval: Tokens.durationOsdFade + 40
@@ -110,10 +107,7 @@ PanelWindow {
       }
     }
 
-    // Opposite diagonal from VolumeOsd/NotificationsWindow's
-    // top-right+bottom-left chamfer — keeps the same chamfer language
-    // but reads as a visually distinct, lighter-weight surface rather
-    // than a clone of either.
+    // Opposite diagonal to the OSD and notifications, so a toast reads as a lighter surface.
     Chamfer {
       anchors.fill: parent
       chamferSize: Tokens.chamferModule

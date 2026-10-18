@@ -3,9 +3,7 @@ import QtQuick.Shapes
 import qs.Commons
 import qs.Widgets
 
-// One parallelogram slice of the wallpaper strip, after skwd-wall's slice view.
-// The image is the fill of one anti-aliased Shape, so a slice needs no layer, clip or mask
-// effect, which is what made the per-slice MultiEffect version lag.
+// One parallelogram slice of the wallpaper strip (after skwd-wall), filled by an anti-aliased Shape (docs/design-notes.md).
 Item {
   id: slice
 
@@ -42,8 +40,7 @@ Item {
     }
   }
 
-  // Texture sources for the shape below; never drawn themselves. Sized to their decoded
-  // pixels so the texture maps 1:1, then centred over the slice by fillTransform.
+  // Texture sources only, sized to their decoded pixels and centred by fillTransform.
   Image {
     id: thumb
     visible: false
@@ -70,8 +67,7 @@ Item {
     return [Qt.point(slice.skew + i, i), Qt.point(slice.width - i, i), Qt.point(slice.width - slice.skew - i, slice.height - i), Qt.point(i, slice.height - i), Qt.point(slice.skew + i, i)];
   }
 
-  // The image fills the parallelogram itself, so the curve renderer anti-aliases its slanted
-  // edges; no clip, layer or mask effect.
+  // The image fills the parallelogram, so the curve renderer anti-aliases its edges.
   Shape {
     anchors.fill: parent
     preferredRendererType: Shape.CurveRenderer

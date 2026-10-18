@@ -1,7 +1,5 @@
 //@ pragma UseQApplication
-// crux shell entry point. Launch with `qs -c crux`.
-// UseQApplication is required for Tray.qml's right-click DBusMenu popups
-// (QsMenuAnchor.open() fails without it) — don't remove.
+// crux shell entry point (`qs -c crux`). UseQApplication is required for the tray's DBusMenu popups.
 
 import QtQuick
 import QtQuick.Effects
@@ -21,10 +19,7 @@ import qs.Modules.LockScreen
 import qs.Modules.OSD
 import qs.Modules.Polkit
 import qs.Modules.Tooltip
-// Not instantiated here. Every module directory reachable only from a
-// dynamically Loader-loaded bar widget has to be statically imported once
-// from shell.qml or its qs.* namespace never gets registered with the
-// engine. See crux skill's SKILL.md.
+// Imported, not instantiated: a module reached only from a Loader-loaded bar widget needs one static import to register.
 import qs.Modules.Launcher
 import qs.Modules.Popups.Contents
 import qs.Modules.SessionMenu
@@ -44,9 +39,7 @@ ShellRoot {
 
   LockScreen {}
 
-  // Crux's own fullscreen wallpaper browser — one instance per screen (see
-  // WallpaperSelectorWindow.qml). The shared "wallpaperBrowser" IPC target
-  // routes to whichever instance is on the currently-focused monitor.
+  // Wallpaper browser, one per screen; "wallpaperBrowser" routes to the focused monitor's instance.
   WallpaperSelectorWindow {}
 
   // Flat, screen-agnostic IPC target — wallpaper.path/theme aren't per-screen concepts.
@@ -65,9 +58,7 @@ ShellRoot {
     }
   }
 
-  // Boot init for singletons whose logic must not run at import time
-  // (Hooks/Idle self-handle Settings not being loaded yet via their own
-  // init()), so this can fire immediately.
+  // Boot init for singletons that must not run at import time.
   Timer {
     id: bootTimer
     interval: 0
@@ -83,9 +74,7 @@ ShellRoot {
     }
   }
 
-  // input:natural_scroll is a runtime Hyprland keyword, not something
-  // hyprland.lua sets once at compositor startup — needs re-applying on
-  // every boot, plus live on toggle (see the Connections below).
+  // natural_scroll is a runtime Hyprland keyword, so it's applied on every boot and live on toggle.
   Process {
     id: reverseScrollProc
   }
@@ -125,8 +114,7 @@ ShellRoot {
         var idx = files.indexOf(Settings.data.wallpaper.path);
         next = files[(idx + 1) % files.length];
       } else {
-        // Random, but avoid picking the same wallpaper twice in a row when
-        // there's more than one candidate to choose from.
+        // Random, but never the same wallpaper twice in a row when there's a choice.
         do {
           next = files[Math.floor(Math.random() * files.length)];
         } while (files.length > 1 && next === Settings.data.wallpaper.path);
@@ -137,10 +125,7 @@ ShellRoot {
     }
   }
 
-  // Backs both the physical volume keys (see keybinds.lua) and anything
-  // else that wants to nudge the default sink without going through the
-  // Sound popup's own UI — same Pipewire read/write pattern as
-  // Modules/Bar/Widgets/Sound.qml and Modules/OSD/VolumeOsd.qml.
+  // Volume IPC for the media keys (keybinds.lua) and anything else nudging the default sink.
   IpcHandler {
     target: "volume"
     function increase(): void {
@@ -167,8 +152,7 @@ ShellRoot {
   // Screen-agnostic popup IPC targets, once for the whole shell.
   PopupAliases {}
 
-  // Night light from a keybind; drives the same service the bar widget and
-  // the Control Center toggle use.
+  // Night light from a keybind, through the same service as the bar widget and Control Center.
   IpcHandler {
     target: "nightLight"
     function status(): string {
@@ -188,8 +172,7 @@ ShellRoot {
     }
   }
 
-  // Keep-awake from a keybind; same state the bar widget and the Control
-  // Center tile show.
+  // Keep-awake from a keybind, sharing the bar widget's and Control Center's state.
   IpcHandler {
     target: "keepAwake"
     function status(): string {
@@ -266,19 +249,13 @@ ShellRoot {
       readonly property string barPosition: Settings.isLoaded ? Settings.getBarPositionForScreen(screen.name) : "top"
       readonly property bool barIsVertical: barPosition === "left" || barPosition === "right"
       readonly property bool screenIsPortrait: screen.height > screen.width
-      // See crux skill's notes.md (Portrait-monitor bar section) — not
-      // blanket-applied to every widget, only ones confirmed safe.
+      // docs/design-notes.md, "Portrait-monitor bar"; only widgets confirmed safe use it.
       readonly property bool contentVertical: barIsVertical || screenIsPortrait
-      // Used to be floored at 56px here for portrait-screen horizontal
-      // bars, because Sound/ControlCenter grew taller in that case and
-      // overflowed a thinner bar. Both are fixed to stay standard-height
-      // now (see crux skill's notes.md), so the floor no longer applies.
       readonly property int effectiveThickness: Settings.data.bar.thickness
       readonly property bool autoHide: Settings.data.bar.autoHide
       readonly property bool shownOnThisScreen: Settings.data.bar.monitors.length === 0 || Settings.data.bar.monitors.includes(screen.name)
       property bool hovered: false
-      // PanelWindow stays mapped even when auto-hidden (layer-shell surfaces
-      // aren't display:none-reactive), so hover detection still works.
+      // Stays mapped while auto-hidden so hover detection keeps working.
       readonly property bool barShown: !autoHide || hovered
 
       anchors {
@@ -298,17 +275,10 @@ ShellRoot {
       readonly property int joinGap: Tokens.barDocked ? Tokens.barJoinGap : 0
       implicitWidth: root.effectiveThickness + root.joinGap
       implicitHeight: root.effectiveThickness + root.joinGap
-      // Transparent so the margins above actually read as a floating gap
-      // around a rounded pill (the Rectangle below), not a plain inset
-      // rectangle on a same-colored background.
+      // Transparent so the margins read as a gap around the floating pill.
       color: "transparent"
 
-      // Fully unmapped (not just faded/transparent) on a screen the
-      // Monitors list excludes — Settings.data.bar.monitors was previously
-      // written by the settings panel's checkboxes but never actually read
-      // anywhere, so toggling a monitor off did nothing.
-      // Mapping before settings load locks in the schema-default margins.
-      // Waits on the backdrop so it maps first and stacks below the bar.
+      // Unmapped on screens the Monitors list excludes. Waits for Settings (or margins lock in at defaults) and for the backdrop, so it maps first and stacks below.
       visible: root.shownOnThisScreen && Settings.isLoaded && (root.autoHide || backdrop.visible)
 
       BarBackdrop {
@@ -320,17 +290,14 @@ ShellRoot {
 
       WlrLayershell.layer: WlrLayer.Top
       WlrLayershell.namespace: "crux-bar"
-      // Auto-hide doesn't reserve screen space — that's the point of it;
-      // windows can use the strip the bar only occupies while shown.
+      // Auto-hide reserves no space; windows get the strip back while the bar is hidden.
       WlrLayershell.exclusionMode: root.autoHide ? ExclusionMode.Ignore : ExclusionMode.Auto
 
       HoverHandler {
         onHoveredChanged: root.hovered = hovered
       }
 
-      // Transparent bar + edge-glow line by default; a real bar-strip
-      // background is opt-in via Settings.data.bar.showBackground — see
-      // crux skill's notes.md for why this is a toggle, not the default.
+      // Transparent bar with an edge-glow line by default; the strip background is opt-in (docs/design-notes.md).
       Item {
         id: barRect
         anchors.fill: parent
@@ -342,8 +309,7 @@ ShellRoot {
         }
 
         Chamfer {
-          // Real bar-strip background — off by default (showBackground).
-          // Floating, it cuts opposite corners at its two ends; square when docked.
+          // Bar-strip background: floating, it cuts opposite corners at its ends; square when docked.
           visible: Settings.data.bar.showBackground
           anchors.fill: parent
           chamferSize: Settings.data.bar.floating ? Tokens.chamferBarFloating : 0
@@ -354,9 +320,7 @@ ShellRoot {
           strokeWidth: Tokens.borderPanel
         }
 
-        // Solid outline framing all four edges of the bar, following the
-        // same chamfered shape as the background above it instead of a
-        // plain square-cornered Rectangle border.
+        // Outline following the background's chamfered shape.
         Chamfer {
           visible: Settings.data.bar.showBorder
           anchors.fill: parent
@@ -409,12 +373,7 @@ ShellRoot {
         targetScreen: root.screen
       }
 
-      // Always-mapped overlay hosting every bar-flush popup as a SlideCard,
-      // the Control Center included. One instance per screen, so each
-      // monitor's bar icon reaches its own — and it exists regardless of
-      // which widgets are configured, which is what stopped the Control
-      // Center from silently having no IPC target at all on a bar layout
-      // without StatusGroup. See crux skill's notes.md.
+      // Always-mapped popup overlay, one per screen, independent of which bar widgets are configured.
       PopupHost {
         targetScreen: root.screen
       }

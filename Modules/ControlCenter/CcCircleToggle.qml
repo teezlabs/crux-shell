@@ -1,13 +1,8 @@
 import QtQuick
 import qs.Commons
 
-// Circular icon toggle for Control Center's top row — deliberate one-off
-// departure from the app's "no radius" rule.
-//
-// The inactive fill is one step above the card it sits on, not
-// surfaceContainer: once each section became its own surfaceContainer card,
-// an inactive toggle painted the same colour as its background and read as
-// a bare floating icon.
+// Round icon toggle for Control Center's top row, a deliberate exception to the no-radius rule.
+// Inactive fill is a step above the card, or the toggle reads as a bare floating icon.
 Item {
   id: root
 

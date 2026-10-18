@@ -3,11 +3,7 @@ import qs.Commons
 import qs.Modules.ControlCenter
 import qs.Services
 
-// Keep-awake quick toggle, sharing state with the bar widget of the same
-// name via Commons/IdleInhibitorService.qml.
-//
-// Open/closed eye drawn on Canvas rather than an icon-theme name, matching
-// the bar widget and avoiding a theme that may not carry a caffeine icon.
+// Keep-awake toggle sharing IdleInhibitorService with the bar widget; the eye is drawn, not themed.
 CcCircleToggle {
   id: tile
   signal expandRequested(string which)

@@ -13,8 +13,7 @@ NPanelWindow {
   id: root
 
   popupName: "wallpaperBrowser"
-  // Not derived from popupName: Hyprland's blur rule matches this exact
-  // string (see windowrules.lua).
+  // Not derived from popupName: Hyprland's blur rule matches this exact string.
   surfaceNamespace: "crux-wallpaper-browser"
 
   // "local" | "wallhaven"
@@ -75,8 +74,7 @@ NPanelWindow {
     }
   }
 
-  // path -> cached thumbnail, so slices decode a small JPEG instead of a full-size
-  // original every time the browser opens. Falls back to the original without ImageMagick.
+  // path -> cached thumbnail, so slices decode a small JPEG; falls back to the original without ImageMagick.
   property var thumbs: ({})
 
   Process {
@@ -130,9 +128,7 @@ NPanelWindow {
       Settings.setWallpaperForScreen(root.targetMonitor, root._downloadDest);
       if (root._pendingWithTheme && Settings.data.wallpaper.autoTheme)
         Matugen.generateFrom(root._downloadDest);
-      // Closes here, not when the button was pressed: a wallhaven pick has
-      // to finish downloading first, and closing early would hide the
-      // "Download failed" the branch above sets.
+      // Closes only now: a wallhaven pick must finish downloading, or its failure message would be hidden.
       if (Settings.data.wallpaper.closeOnSelect)
         root.close();
     }
@@ -170,8 +166,7 @@ NPanelWindow {
       root.close();
   }
 
-  // The service resets nothing UI-side; a fresh result set means the
-  // selection has to go back to the start.
+  // A fresh result set resets the selection.
   Connections {
     target: Wallhaven
     function onResultsReplaced() {
@@ -179,8 +174,7 @@ NPanelWindow {
     }
   }
 
-  // Arm-then-confirm, like the session menu's destructive actions: the first
-  // press arms, a second within 3s deletes. Keyed by path, so moving disarms it.
+  // Arm-then-confirm delete within 3s, keyed by path so moving disarms it.
   property string armedDeletePath: ""
 
   Timer {
@@ -642,9 +636,7 @@ NPanelWindow {
         }
       }
 
-      // ---- Wallhaven grid ----
-      // Thumbnails sit 3px inside a 5px chamfer, enough for their corners to clear the cut,
-      // so no mask effect is needed.
+      // ---- Wallhaven grid: thumbnails sit 3px inside a 5px chamfer, so no mask is needed ----
       GridView {
         id: whGrid
         visible: root.sourceMode === "wallhaven"

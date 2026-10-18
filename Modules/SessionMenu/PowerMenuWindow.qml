@@ -8,8 +8,7 @@ import qs.Commons
 import qs.Services
 import qs.Widgets
 
-// Power menu: fullscreen scrim, row of 5 chamfered tiles. Keys L/S/E/R/P select; ←→ move selection; ⏎ confirms.
-// All paths go through a confirm step (SessionMenuTab.qml's confirmActions) — no bare single-keypress trigger for destructive actions.
+// Power menu: L/S/E/R/P select, arrows move, Enter confirms; actions in confirmActions need a second press.
 NPanelWindow {
   id: root
 
@@ -24,9 +23,7 @@ NPanelWindow {
       "display": "LOCK",
       "key": "L",
       "tint": "primary",
-      // `loginctl lock-session` alone does nothing unless some session-lock
-      // client is listening for it — crux now is one (Modules/LockScreen),
-      // so trigger it directly over its own IPC target instead.
+      // loginctl lock-session needs a listening client, so call crux's lock screen directly.
       "run": ["qs", "ipc", "-c", "crux", "call", "lockscreen", "lock"]
     },
     {
@@ -120,8 +117,7 @@ NPanelWindow {
     }
   }
 
-  // Content-sized backdrop: nearly transparent on purpose, it exists so
-  // Hyprland has something to blur behind the tiles.
+  // Nearly transparent backdrop that gives Hyprland something to blur behind the tiles.
   Chamfer {
     readonly property int pad: 20
     x: layout.x - pad
@@ -134,8 +130,7 @@ NPanelWindow {
     fillColor: Colors.alpha(Colors.surface, 0.18)
     strokeColor: Colors.alpha(Colors.outline, 0.4)
     strokeWidth: Tokens.borderModule
-    // No shadow here: its soft pixels fall outside the outline and, past the
-    // low blur threshold this namespace uses, get blurred into a halo.
+    // No shadow: its soft pixels get blurred into a halo under this namespace's blur threshold.
     rimLight: true
   }
 
@@ -170,8 +165,7 @@ NPanelWindow {
             chamferSize: 10 // spec §6.9: "each chamfered 10px" (an explicit override of the shared 8-10px tier)
             cutTopRight: true
             cutBottomLeft: true
-            // Spec: "LOCK is default-focused: primary_container fill,
-            // accent border" — a flat role fill, not an alpha-blended tint.
+            // Spec: LOCK is default-focused with a flat primary_container fill.
             fillColor: Colors.alpha(tile.selected ? Colors.primaryContainer : Colors.surfaceContainer, Tokens.barModuleOpacity)
             shadow: true
             shadowBlur: Tokens.shadowBlurCard

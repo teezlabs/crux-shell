@@ -7,8 +7,7 @@ import qs.Widgets
 import qs.Modules.Bar.Extras
 import qs.Services
 
-// Desktop info cards (weather, media), pinned to the wallpaper layer,
-// draggable, individually toggleable. See crux skill's notes.md.
+// Desktop info cards (weather, media) on the wallpaper layer, draggable and individually toggleable.
 Variants {
   model: Quickshell.screens
 
@@ -31,9 +30,7 @@ Variants {
 
     visible: Settings.isLoaded && Settings.data.desktopWidgets.enabled
 
-    // Only the two cards below are ever click-targetable; everywhere else
-    // on this full-screen transparent window passes clicks straight through
-    // to whatever's behind it (desktop, or a window under it).
+    // Only the cards take clicks; the rest of the window passes them through.
     mask: Region {
       regions: [weatherRegion, mediaRegion]
     }
@@ -47,10 +44,7 @@ Variants {
       item: mediaCard.visible ? mediaCard : null
     }
 
-    // Bar-aware corner placement: nudge off whichever screen edge(s) the
-    // bar currently occupies (position + thickness + its own float margin)
-    // so a floating bar never overlaps a card, plus a flat base margin
-    // otherwise.
+    // Corner placement clears whichever edge the bar occupies.
     readonly property string _barPos: Settings.isLoaded ? Settings.getBarPositionForScreen(screen?.name) : "top"
     readonly property int _baseMargin: 20
     readonly property int _barGap: Tokens.barExtent + Tokens.barMargin + 12
@@ -88,11 +82,7 @@ Variants {
         }
       }
 
-      // A DragHandler permanently breaks a bound x/y into a plain value the
-      // moment it moves its target — re-establish the declarative
-      // default-corner binding when Settings.qml's "Reset position" sets
-      // these back to -1, so the card actually returns to its corner
-      // instead of staying stuck at its last dragged spot.
+      // Dragging breaks the x/y binding, so restore it when "Reset position" sets these back to -1 (docs/qml-gotchas.md).
       Connections {
         target: Settings.data.desktopWidgets
         function onWeatherXChanged() {
@@ -203,8 +193,7 @@ Variants {
       }
     }
 
-    // --- Now-playing media card: bottom-right corner by default,
-    // draggable, hidden entirely when there's no active MPRIS player. ---
+    // --- Media card: bottom-right by default, hidden without an MPRIS player ---
     Item {
       id: mediaCard
       visible: window.hasPlayer && Settings.data.desktopWidgets.mediaEnabled

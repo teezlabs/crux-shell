@@ -2,13 +2,7 @@ import QtQuick
 import qs.Commons
 import qs.Widgets
 
-// Continuous level slider with a round thumb, for the Control Center's
-// volume and brightness rows.
-//
-// The rest of crux reads levels as segmented meters (SegMeter, per the
-// spec's §5), and those stay everywhere else. The Control Center follows
-// the reference look instead, same as the circular toggles in its header —
-// a departure scoped to this one panel rather than a change of language.
+// Continuous round-thumb slider for Control Center's volume and brightness; SegMeter stays everywhere else.
 Item {
   id: root
 
@@ -62,8 +56,7 @@ Item {
     anchors.margins: -4
     enabled: root.interactive
     cursorShape: Qt.PointingHandCursor
-    // A slightly off-horizontal drag otherwise lets an ancestor Flickable
-    // steal the grab — same guard NSlider needs.
+    // Keeps an ancestor Flickable from stealing a slightly diagonal drag.
     preventStealing: true
 
     function apply(mx) {

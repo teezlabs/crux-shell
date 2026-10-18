@@ -3,8 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import qs.Commons
 
-// Desktop wallpaper layer, one PanelWindow per screen. Shader-based switch
-// transitions ported from noctalia-shell — see crux skill's notes.md.
+// Wallpaper layer, one window per screen, with shader transitions ported from noctalia (docs/design-notes.md).
 Variants {
   model: Quickshell.screens
 
@@ -81,8 +80,7 @@ Variants {
     }
 
     onTargetUrlChanged: {
-      // Not yet initialized: show it directly, no transition (see notes.md
-      // for why this branch must assign rather than bail).
+      // Not initialized yet: assign directly, no transition. Returning here would never initialize (docs/design-notes.md).
       if (!root.initialized) {
         currentWallpaper.source = targetUrl;
         return;

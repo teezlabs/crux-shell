@@ -6,8 +6,7 @@ import qs.Commons
 import qs.Modules.ControlCenter
 import qs.Widgets
 
-// Wi-Fi quick toggle. Tapping asks the Control Center to expand the network
-// list inline rather than opening a separate popup.
+// Wi-Fi toggle; tapping expands the network list inline.
 CcCircleToggle {
   id: tile
   signal expandRequested(string which)

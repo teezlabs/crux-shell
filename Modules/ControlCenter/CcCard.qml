@@ -3,9 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
 
-// One Control Center section as its own chamfered card. Height comes from
-// the inner ColumnLayout, not the wrapper — an Item doesn't inherit
-// implicitHeight from its children.
+// One Control Center section as its own card; height comes from the inner layout, since an Item doesn't inherit it.
 Item {
   id: root
 

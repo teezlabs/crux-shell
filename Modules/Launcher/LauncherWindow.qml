@@ -15,8 +15,7 @@ NPanelWindow {
 
   popupName: "launcher"
 
-  // Resets on every open, however it was opened — IPC, the Popups registry
-  // or the bar icon — rather than only through toggle().
+  // Resets on every open, whichever way it was opened.
   onVisibleChanged: {
     if (!visible)
       return;
@@ -146,9 +145,7 @@ NPanelWindow {
     id: card
     anchors.centerIn: parent
     width: 660
-    // Fixed height, not content-sized: DesktopEntries loads async, so contentHeight-driven sizing kept
-    // changing after the Chamfer background had already rendered.
-    // Logs a bounded handful of Chamfer "binding loop" warnings at startup (Shape/PathPolyline settling) — harmless.
+    // Fixed height: DesktopEntries loads asynchronously, and content-driven sizing kept resizing the chamfer.
     height: 560
 
     Chamfer {
@@ -205,12 +202,7 @@ NPanelWindow {
             color: Colors.surfaceText
             font.family: Tokens.fontFamily
             font.pixelSize: Tokens.bodyLgSize
-            // The Rectangle below is the spec caret (§6.2: 2px×17px).
-            // cursorVisible: false alone didn't actually suppress
-            // TextInput's own native blinking cursor here (confirmed live:
-            // a second white cursor persisted even with cursorVisible
-            // false) — an empty cursorDelegate forces it to draw nothing
-            // instead, which does.
+            // Spec caret (§6.2) below; an empty cursorDelegate is what actually hides the native cursor (docs/design-notes.md).
             cursorVisible: false
             cursorDelegate: Item {}
 

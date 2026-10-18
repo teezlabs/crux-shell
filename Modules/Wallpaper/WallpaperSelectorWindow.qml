@@ -1,9 +1,6 @@
 import Quickshell
 
-// One WallpaperBrowserWindow per screen. The "wallpaperBrowser" IPC target
-// is claimed only by whichever instance is on the currently-focused
-// monitor; each also has its own "wallpaperBrowser_<screen>" target for
-// same-screen callers (the bar widget) that don't need focus routing.
+// One browser per screen. "wallpaperBrowser" goes to the focused monitor's; "wallpaperBrowser_<screen>" to a specific one.
 Variants {
   model: Quickshell.screens
 

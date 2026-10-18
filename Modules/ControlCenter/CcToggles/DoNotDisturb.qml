@@ -9,9 +9,7 @@ CcCircleToggle {
   active: Settings.data.notifications.doNotDisturb
   onTapped: Settings.data.notifications.doNotDisturb = !Settings.data.notifications.doNotDisturb
 
-  // Same drawn bell NotificationHistory uses — this box's icon theme has no
-  // notification icons at all, so a named icon falls back to a blank tile.
-  // Struck through while silenced.
+  // Drawn bell (the icon theme has none), struck through while silenced.
   Canvas {
     anchors.centerIn: parent
     width: 14

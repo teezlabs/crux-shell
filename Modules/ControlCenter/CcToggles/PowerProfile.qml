@@ -4,8 +4,7 @@ import qs.Commons
 import qs.Modules.ControlCenter
 import qs.Services
 
-// Power profile quick toggle: cycles power-saver -> balanced ->
-// performance. Unavailable where no power-profiles-daemon is running.
+// Cycles saver -> balanced -> performance; unavailable without power-profiles-daemon.
 CcCircleToggle {
   id: tile
   signal expandRequested(string which)

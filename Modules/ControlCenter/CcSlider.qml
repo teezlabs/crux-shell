@@ -3,9 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
 
-// Control Center VOL/BRI slider row: label gutter + continuous slider +
-// value column. The panel follows the reference look rather than the
-// spec's segmented meter — see CcLevelSlider.qml.
+// Control Center VOL/BRI row: label, continuous slider and value column.
 RowLayout {
   id: root
 

@@ -4,8 +4,7 @@ import Quickshell.Io
 import Quickshell.Services.Pam
 import qs.Commons
 
-// Real PAM auth, ported from noctalia-shell's LockContext. Trimmed of
-// noctalia-only features crux lacks yet (i18n, fprintd, auto-start-auth).
+// PAM auth, ported from noctalia's LockContext without i18n, fprintd or auto-start.
 Scope {
   id: root
 
@@ -26,9 +25,7 @@ Scope {
 
   Component.onCompleted: detectPamServiceProc.running = true
 
-  // Probes for whichever real PAM service file exists on this box, same
-  // fallback chain noctalia's own LockContext uses — a hardcoded "login"
-  // config would silently fail to even start on a distro without one.
+  // Probes for whichever PAM service file exists, as noctalia does; a hardcoded one fails on distros without it.
   Process {
     id: detectPamServiceProc
     command: ["sh", "-c", "

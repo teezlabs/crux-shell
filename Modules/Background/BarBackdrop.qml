@@ -5,8 +5,7 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Services
 
-// Wallpaper strip under the floating bar, hiding scrolled-off windows that
-// the scrolling layout still draws in the bar's reserved area and gaps_out.
+// Wallpaper strip under the floating bar, hiding scrolled-off windows the layout still draws there (docs/design-notes.md).
 PanelWindow {
   id: root
 

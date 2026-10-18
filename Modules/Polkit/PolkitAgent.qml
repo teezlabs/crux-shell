@@ -6,12 +6,8 @@ import Quickshell.Services.Polkit
 import qs.Commons
 import qs.Widgets
 
-// Polkit authentication agent. This machine has none running (referenced
-// "hyprpolkitagent" systemd unit doesn't exist — pkexec fails silently
-// with no agent to prompt), so this fills a genuine gap, not a duplicate.
-// API confirmed from Omarchy's real PolkitAgent.qml; UI rebuilt plain.
-// Real PAM auth flow — never trigger it programmatically for testing; see
-// crux skill notes on faillock lockout risk.
+// Polkit authentication agent; this machine has no other, so pkexec would fail silently without it.
+// Real PAM: never trigger it to test (agents/skills/privileged.md).
 Item {
   id: root
 

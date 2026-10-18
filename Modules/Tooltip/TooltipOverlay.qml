@@ -4,18 +4,14 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Widgets
 
-// One per screen (shell.qml's Variants loop). Full-screen, transparent,
-// click-through (mask: Region {}), renders whatever TooltipService says.
+// One per screen: full-screen, click-through, draws whatever TooltipService holds.
 PanelWindow {
   id: root
 
   property var targetScreen: null
   screen: targetScreen
 
-  // Only actually show on the screen the hovered item is physically on —
-  // TooltipService itself is screen-agnostic, it just remembers "which
-  // item, what text". mapToGlobal() plus a containment check against
-  // this window's own screen picks the right screen's coordinate space.
+  // Shows only on the screen the hovered item is on, via mapToGlobal and a containment check.
   readonly property var _anchorItem: TooltipService.anchorItem
   readonly property point _anchorGlobal: _anchorItem ? _anchorItem.mapToGlobal(0, 0) : Qt.point(0, 0)
   readonly property bool _onThisScreen: _anchorItem !== null && targetScreen !== null && _anchorGlobal.x >= targetScreen.x && _anchorGlobal.x < targetScreen.x + targetScreen.width && _anchorGlobal.y >= targetScreen.y && _anchorGlobal.y < targetScreen.y + targetScreen.height
@@ -38,8 +34,7 @@ PanelWindow {
   // Click-through — tooltips are display-only, never eat a click.
   mask: Region {}
 
-  // Bubble position: prefers below the item, falls back above, clamped
-  // to the screen edge.
+  // Below the item if it fits, else above, clamped to the screen.
   readonly property var _pos: {
     const item = _anchorItem;
     if (!item || !targetScreen)
