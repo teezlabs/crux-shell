@@ -185,6 +185,8 @@ section's `DropArea` can read which *other* section the drag started in —
 `Drag.keys`/`DropArea.keys` use one shared key (`"crux-bar-widget"`)
 rather than a per-section one, so drops are accepted across sections too.
 
+Two traps in the release handler. `DragHandler` only toggles `Drag.active`; unlike `MouseArea.onReleased` in the Taskbar pattern this was adapted from, nothing calls `Drag.drop()`, so the handler has to, or the `DropArea` never fires `onDropped`. And `Drag.drop()` commits the move synchronously through `Settings.moveBarWidget`, which rebuilds the section's `Repeater` and destroys the very delegate running the handler. Anything needed afterwards is read from `dragState` (owned by `Bar.qml`) before the call.
+
 ## Desktop widgets: fixed two-card port, not noctalia's full system
 
 `DesktopWidgets.qml` is a deliberately trimmed port of noctalia's

@@ -4,8 +4,7 @@ import qs.Services
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
-// Caps/Num/Scroll lock indicator. capsLock/numLock come from Keyboard; scroll lock has no
-// source on this hardware (not in Hyprland's JSON, no sysfs LED either) so it always shows "unknown", not a bug.
+// Caps/Num/Scroll lock indicator from Keyboard. Scroll Lock has no source on this hardware, so it reads "unavailable".
 Item {
   id: root
 

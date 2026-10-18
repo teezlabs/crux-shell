@@ -4,8 +4,7 @@ import qs.Modules.Popups
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Clipboard icon on the bar; the history list lives in the clipboard
-// popup hosted by PopupHost.qml.
+// Clipboard icon; the history list lives in the clipboard popup.
 Item {
   id: root
 

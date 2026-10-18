@@ -4,9 +4,7 @@ import qs.Widgets
 import qs.Modules.Bar.Extras
 import qs.Services
 
-// Blue-light filter toggle. Click cycles off -> on -> forced -> off.
-// wlsunset itself is owned by Commons/NightLightService.qml, so night light
-// works whether or not this widget is on the bar.
+// Click cycles off -> on -> forced. NightLightService owns wlsunset, so this widget is optional.
 Item {
   id: root
 
@@ -33,9 +31,7 @@ Item {
     attention: root.forced
     onTapped: NightLightService.cycle()
 
-    // Crescent-moon glyph (circle minus an offset circle) — outline when
-    // off, filled primary when on, filled tertiary when forced. No
-    // font/emoji glyph dependency.
+    // Crescent: outline when off, primary fill when on, tertiary when forced.
     Canvas {
       id: moonCanvas
       anchors.centerIn: parent

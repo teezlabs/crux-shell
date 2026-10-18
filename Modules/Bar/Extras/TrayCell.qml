@@ -5,14 +5,12 @@ import qs.Commons
 import qs.Widgets
 import qs.Services
 
-// One tray icon, shared by the bar's inline row and the drawer's grid so
-// both get the same activate/menu/pin behaviour from one place.
+// One tray icon, shared by the inline row and the drawer grid.
 Item {
   id: root
 
   property var item: null
-  // The QsMenuPopup to render this item's DBusMenu in — owned by whichever
-  // surface hosts the cell, since the two live on different windows.
+  // The QsMenuPopup for this item's DBusMenu, owned by the hosting surface's window.
   property var menu: null
   property bool pinned: false
   property bool pinnable: true

@@ -5,8 +5,7 @@ import qs.Modules.Popups
 import qs.Modules.Bar.Extras
 import qs.Services
 
-// Hue bulb status icon on the bar; brightness/color control lives in the
-// hue popup hosted by PopupHost.qml, pairing setup lives in Settings → Hue.
+// Hue bulb icon; control lives in the hue popup, pairing in Settings > Hue.
 Item {
   id: root
 
@@ -35,8 +34,7 @@ Item {
         root.group.setOn(!root.group.on);
     }
 
-    // Geometric bulb glyph: round head + screw-base lines — no font/emoji
-    // glyph dependency.
+    // Bulb glyph: round head and screw-base lines.
     Canvas {
       anchors.centerIn: parent
       width: 12

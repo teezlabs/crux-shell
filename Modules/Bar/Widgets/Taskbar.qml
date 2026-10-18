@@ -15,9 +15,7 @@ Item {
   property bool vertical: false
   property bool invertChamfer: false
 
-  // Only show windows actually present on this widget's monitor — a
-  // taskbar showing every window on every screen would duplicate entries
-  // across a multi-monitor bar.
+  // Only this monitor's windows, so a multi-monitor bar doesn't list each one twice.
   property var windowsList: []
 
   function refresh() {
@@ -52,10 +50,7 @@ Item {
     }
   }
 
-  // A toplevel's own `screens` list can change after creation (window
-  // moved to another monitor) without the toplevels list itself changing —
-  // re-filter on the manager's active-window change too, cheap enough
-  // given typical window counts.
+  // A window can change screen without the toplevel list changing, so re-filter on focus changes too.
   Connections {
     target: ToplevelManager
     function onActiveToplevelChanged() {

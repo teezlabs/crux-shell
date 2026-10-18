@@ -2,8 +2,7 @@ import QtQuick
 import qs.Commons
 import qs.Widgets
 
-// Icon cell that expands to reveal a label. `forceOpen` keeps it out
-// regardless of hover — use sparingly, see the crux skill's notes.md.
+// Icon cell that expands to reveal a label; forceOpen keeps it expanded regardless of hover.
 Item {
   id: root
 
@@ -12,8 +11,7 @@ Item {
   property bool attention: false
   property bool vertical: false
   property bool invertChamfer: false
-  // A pill grows the bar, so its label can't be unbounded — an SSID or a
-  // Bluetooth device name is arbitrary text. Past this it elides.
+  // Labels are arbitrary text (SSIDs, device names) and the pill grows the bar, so it elides past this.
   property real maxLabelWidth: 110
   // Glyph content, same contract as BarIconButton.
   default property alias content: iconSlot.data
@@ -44,8 +42,7 @@ Item {
     }
   }
 
-  // Inside a grouped section the section itself carries the surface, so
-  // this one keeps only hover and the attention stroke.
+  // In a grouped section the section draws the surface; this keeps only hover and the attention stroke.
   readonly property bool grouped: Settings.isLoaded && Settings.data.bar.groupSections
 
   Chamfer {

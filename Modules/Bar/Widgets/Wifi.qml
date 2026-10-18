@@ -6,9 +6,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
-// Wi-Fi status icon on the bar; the real network list/connect UI lives in
-// the wifi popup hosted by PopupHost.qml (StatusGroup's NET segment is a
-// summary-only readout, this owns the actual device list).
+// Wi-Fi status icon; the network list lives in the wifi popup.
 Item {
   id: root
 

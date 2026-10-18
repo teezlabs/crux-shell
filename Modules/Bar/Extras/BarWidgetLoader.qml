@@ -3,16 +3,12 @@ import Quickshell
 import qs.Commons
 import qs.Services
 
-// Loads one bar widget by id — either a built-in from
-// Modules/Bar/Widgets/<id>.qml, or (if no built-in matches) a local plugin's
-// Widget.qml via Commons/Plugins.qml — and hands it the per-instance
-// context (screen, section, position within section).
+// Loads a bar widget by id (built-in Modules/Bar/Widgets/<id>.qml, else a plugin's Widget.qml) and passes its context.
 Item {
   id: root
 
   required property string widgetId
-  // The widget's own settings entry from bar.widgets — its `id` plus any
-  // per-instance keys. Forwarded to widgets that declare `widgetData`.
+  // This instance's bar.widgets entry, forwarded to widgets that declare widgetData.
   property var widgetData: ({})
   required property var widgetScreen
   required property string section
@@ -25,13 +21,7 @@ Item {
   // Set by BarSection.qml — see crux skill's notes.md.
   property bool invertChamfer: false
 
-  // Widgets confirmed to fit a compact 2-3 line stack; Clock deliberately
-  // excluded (always single-line). Sound was here too, but stacking grows
-  // a widget *taller* — right for a real vertical bar (room along its own
-  // long axis), but wrong for a horizontal bar on a portrait screen (the
-  // bar's fixed thickness IS its cross-axis, so a taller module just
-  // overflows it) — confirmed making the whole horizontal bar look
-  // thicker than every other, correctly-sized module next to it.
+  // Widgets that fit a compact stack within a horizontal bar's thickness on a portrait screen.
   readonly property var _compactSafeIds: ["Layout"]
   readonly property bool _effectiveVertical: _compactSafeIds.indexOf(widgetId) !== -1 ? contentVertical : vertical
 
@@ -39,9 +29,7 @@ Item {
   readonly property bool _isBuiltin: BarWidgetRegistry.hasWidget(root.widgetId)
   readonly property bool _isPlugin: !_isBuiltin && Plugins.hasWidget(root.widgetId)
 
-  // No anchors.fill on the Loader: an explicit size on the Loader forces the
-  // loaded item down to that size (0x0 before the first item loads), which
-  // was collapsing every widget's real hit-test area to a point.
+  // No anchors.fill on the Loader: an explicit size forces the item to 0x0 before it loads and kills its hit area.
   implicitWidth: loader.item ? loader.item.implicitWidth : 0
   implicitHeight: loader.item ? loader.item.implicitHeight : 0
   width: implicitWidth
@@ -61,8 +49,7 @@ Item {
         item.vertical = Qt.binding(function () {
           return root._effectiveVertical;
         });
-      // Raw portrait-compact flag, distinct from `vertical` above — see
-      // ControlCenter.qml / crux skill's notes.md.
+      // Raw portrait-compact flag, distinct from vertical.
       if (item.contentVertical !== undefined)
         item.contentVertical = Qt.binding(function () {
           return root.contentVertical;

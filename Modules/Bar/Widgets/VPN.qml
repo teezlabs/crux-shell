@@ -3,8 +3,7 @@ import qs.Commons
 import qs.Services
 import qs.Modules.Bar.Extras
 
-// VPN status/toggle via nmcli, TYPE-filtered to vpn/wireguard only. Left-click toggles the first connection;
-// full multi-connection list lives in Settings > Peripherals.
+// VPN status from NetworkManager; click toggles the first connection. The full list is in Settings > Peripherals.
 Item {
   id: root
 
@@ -43,8 +42,7 @@ Item {
       }
     }
 
-    // Shield glyph: filled + when connected, outline only when disconnected
-    // — no font/emoji glyph dependency.
+    // Shield glyph: filled when connected, outline when not.
     Canvas {
       id: canvas
       anchors.centerIn: parent

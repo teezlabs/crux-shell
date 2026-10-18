@@ -6,10 +6,7 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Services
 
-// Bell icon on the bar; the persistent history list lives in the
-// notificationHistory popup hosted by PopupHost.qml (distinct from the
-// live toast stack in NotificationsWindow.qml). Small dot badge when
-// history has entries — real count, not decorative.
+// Bell icon for the notification history popup; the dot means history has entries.
 Item {
   id: root
 

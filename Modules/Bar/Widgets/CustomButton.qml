@@ -5,8 +5,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
-// User-configurable button: icon, label, left/right click commands, optional refreshed text command.
-// Multi-instance: each button reads its own widgetData entry, not a shared Settings singleton (see BarWidgetRegistry.multiInstanceIds).
+// User-configured button. Multi-instance: each reads its own widgetData entry.
 Item {
   id: root
 
@@ -17,16 +16,12 @@ Item {
   property bool invertChamfer: false
   property var widgetData: ({})
 
-  // Icon is a plain user-typed glyph, not one of crux's own icon-theme
-  // lookups — fine here since it's user-supplied config, not built-in
-  // chrome (which never depends on font/emoji glyph coverage, see other
-  // widgets' Canvas-drawn icons).
+  // A user-typed glyph, so font coverage is the user's call.
   readonly property string icon: widgetData.icon || ""
   readonly property string label: widgetData.label !== undefined ? widgetData.label : ""
   readonly property string leftCommand: widgetData.leftCommand || ""
   readonly property string rightCommand: widgetData.rightCommand || ""
-  // Optional: periodically-run command whose stdout replaces the label —
-  // a lightweight version of noctalia's textCommand (no JSON/streaming).
+  // Optional command whose stdout replaces the label, rerun every refreshMs.
   readonly property string textCommand: widgetData.textCommand || ""
   readonly property int refreshMs: {
     var v = widgetData.refreshMs !== undefined ? parseInt(widgetData.refreshMs) : NaN;
@@ -90,8 +85,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
       }
 
-      // Placeholder so an unconfigured button is still visible/clickable
-      // — plain ASCII, no font/emoji glyph dependency.
+      // Placeholder so an unconfigured button is still visible and clickable.
       NText {
         visible: root.icon === "" && root.displayText === ""
         text: "+"

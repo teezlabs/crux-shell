@@ -70,8 +70,7 @@ Item {
     }
   }
 
-  // Detect the first usable internal backlight device and its current
-  // level in one shot: device basename, current, max — three lines.
+  // First internal backlight: device basename, current and max, one per line.
   Process {
     id: detectProc
     command: ["sh", "-c", "for dev in /sys/class/backlight/*; do if [ -f \"$dev/brightness\" ] && [ -f \"$dev/max_brightness\" ]; then basename \"$dev\"; cat \"$dev/brightness\"; cat \"$dev/max_brightness\"; break; fi; done"]
@@ -96,8 +95,7 @@ Item {
     }
   }
 
-  // Picks up external brightness changes (hardware keys handled outside
-  // this shell, another brightnessctl caller, etc).
+  // Picks up brightness changes made outside crux.
   FileView {
     id: brightnessWatcher
     path: root.backlightDevice !== "" ? "/sys/class/backlight/" + root.backlightDevice + "/brightness" : ""

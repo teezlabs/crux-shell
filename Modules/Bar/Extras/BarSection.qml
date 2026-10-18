@@ -2,58 +2,23 @@ import QtQuick
 import qs.Commons
 import qs.Widgets
 
-// One bar section (left/center/right): lays out its widgets and supports
-// long-press-then-drag reordering, including across sections. See crux
-// skill's notes.md — don't reintroduce a MouseArea in a bar widget, it
-// silently breaks this.
+// One bar section (left/center/right): lays out its widgets and handles long-press drag reordering across sections.
 Item {
   id: sectionRoot
 
   property string section: ""
   property var screen: null
   property bool vertical: false
-  // Distinct from `vertical` above: that one governs the *section's own*
-  // module-to-module arrangement (a true left/right bar stacks modules
-  // top-to-bottom). This one governs each *widget's internal* content
-  // style, and is also true when the bar is nominally "top"/"bottom" but
-  // sitting on a portrait-rotated screen — there the bar is still a
-  // physically horizontal strip of modules, but each module only has a
-  // short screen edge's worth of width to work with, so its content should
-  // render the same compact/stacked style a true vertical bar already
-  // uses. See shell.qml's screenIsPortrait for the detection.
+  // Per-widget content style; also true for a horizontal bar on a portrait screen (see docs/design-notes.md, "Portrait-monitor bar").
   property bool contentVertical: vertical
   readonly property string screenName: screen ? screen.name : ""
   property var widgetsModel: []
   required property QtObject dragState
 
-  // Computed directly from the repeater's own items rather than bound to
-  // sectionRow (the Grid)'s width/height or implicitWidth/implicitHeight —
-  // confirmed via console.log that neither of Grid's own aggregate size
-  // properties reliably emit a change notification with the
-  // rows:1000/columns:1000 forced-overflow trick used below.
-  //
-  // Even so, implicitWidth/implicitHeight below can NOT just call these
-  // directly as `_mainSize()` — confirmed via further console.log that a
-  // QML binding built by looping `repeater.itemAt(i)` and reading each
-  // item's width/height does not reliably register those reads as binding
-  // dependencies (a fresh *manual* call to the exact same function always
-  // returned the correct, up-to-date value; the *binding* using it as its
-  // body stayed stuck at the value from its first evaluation forever,
-  // proving the value was always computable, just never re-triggered).
-  // `_sizeVersion` works around this: every wrapper delegate bumps it on
-  // its own onWidthChanged/onHeightChanged (plain Item property changes,
-  // which — unlike the loop above — always notify correctly), and reading
-  // it here (even though the value itself is unused) is a direct property
-  // read on sectionRoot itself, which QML's dependency tracker always
-  // picks up reliably, forcing the binding to re-run.
+  // Main-axis size summed from the repeater's items; _sizeVersion forces re-evaluation (docs/qml-gotchas.md, "Bindings that don't re-run").
   property int _sizeVersion: 0
 
-  // The end-module chamfer accent (below) must target the last module that
-  // actually renders, not just the last entry in the widgets list — a
-  // trailing widget hidden by its own logic (e.g. Updates at 0 count with
-  // hideOnZero) would otherwise "steal" the accent invisibly, leaving the
-  // real visual end (e.g. Sound) looking unstyled. Reads _sizeVersion so it
-  // re-picks whenever a widget's rendered size changes.
+  // Index of the last module that actually renders, so a hidden trailing widget doesn't take the end-cap accent.
   readonly property int _lastVisibleIndex: {
     _sizeVersion;
     for (var i = repeater.count - 1; i >= 0; i--) {
@@ -96,15 +61,7 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  // The trailing drop-zone exists purely so "append to the end" is always a
-  // real, droppable target — it isn't visible content. It's counted in
-  // implicitWidth/Height (so the Grid actually reserves room for it and
-  // DropArea hit-testing works), but a caller edge-anchoring or centering
-  // this section around its *visible* widgets — not this invisible tail —
-  // needs to subtract it back out, or the last real widget ends up sitting
-  // short of the edge by exactly this much. Confirmed bug: Bar.qml's
-  // right-section edge-anchor used the full width including this zone,
-  // leaving the power button ~30px short of the actual screen edge.
+  // Size of the invisible trailing drop zone; callers aligning to the visible widgets subtract it.
   readonly property real trailingSize: {
     _sizeVersion;
     return (repeater.count > 0 ? sectionRow.spacing : 0) + (vertical ? trailingZone.height : trailingZone.width);
@@ -112,8 +69,7 @@ Item {
 
   readonly property bool isDropTarget: dragState.targetSection === section && dragState.sourceSection !== ""
 
-  // Position of the insertion-point indicator along the layout's main axis
-  // (x when horizontal, y when vertical).
+  // Insertion indicator position along the main axis.
   function indicatorPos() {
     var idx = dragState.targetIndex;
     if (idx <= 0)
@@ -125,16 +81,9 @@ Item {
     return beforeMain + sectionRow.spacing / 2 - 1;
   }
 
-  // ── Grouped-section chrome ───────────────────────────────────────────
-  // One surface behind the whole section instead of one per widget. Sized
-  // from the section's own width/height (which already re-derive through
-  // _sizeVersion) minus the invisible trailing drop zone, and grown by
-  // groupPadding on every side so the widgets sit inside it rather than
-  // flush with its stroke.
+  // Grouped-section plate: one surface behind the whole section, padded by groupPadding.
   readonly property bool grouped: Settings.isLoaded && Settings.data.bar.groupSections && repeater.count > 0
-  // Clamped to the slack the bar actually has around its modules: a plinth
-  // taller than the bar window is silently clipped, stroke and all, and the
-  // grouping just disappears.
+  // Clamped to the bar's slack, or the plate is clipped by the bar window.
   readonly property real groupPadding: {
     sectionRoot._sizeVersion;
     const p = sectionRoot.parent;
@@ -154,15 +103,12 @@ Item {
     width: sectionRoot.vertical ? sectionRoot.width + sectionRoot.groupPadding * 2 : sectionRoot._groupMain
     height: sectionRoot.vertical ? sectionRoot._groupMain : sectionRoot.height + sectionRoot.groupPadding * 2
     chamferSize: Tokens.chamferModule
-    // The end-cap accent applied at section scale: the left section is the
-    // mirrored one, same rule the per-module chamfers followed.
+    // End-cap accent at section scale; the left section is the mirrored one.
     cutTopLeft: sectionRoot.section === "left"
     cutBottomRight: sectionRoot.section === "left"
     cutTopRight: sectionRoot.section !== "left"
     cutBottomLeft: sectionRoot.section !== "left"
-    // A step lighter than the bar strip it sits on, which is plain surface —
-    // surfaceContainer is too close to read as a raised plinth once the
-    // strip background is on.
+    // One step lighter than the bar strip so the plate reads as raised.
     fillColor: Colors.alpha(Colors.surfaceContainerHigh, Tokens.barModuleAlpha)
     strokeColor: Colors.outlineVariant
     strokeWidth: Tokens.borderModule
@@ -170,10 +116,7 @@ Item {
     rimOpacity: Tokens.rimOpacityCard
   }
 
-  // Grid rather than Row/Column so one type covers both bar orientations —
-  // with columns/rows forced past the item count, Grid.LeftToRight with
-  // rows:1 behaves exactly like Row (never wraps to a second row), and
-  // Grid.TopToBottom with columns:1 behaves exactly like Column.
+  // Grid with rows/columns forced past the item count acts as a Row or Column without wrapping.
   Grid {
     id: sectionRow
     spacing: Settings.data.bar.widgetSpacing
@@ -249,21 +192,12 @@ Item {
             sectionWidgetIndex: wrapper.index
             vertical: sectionRoot.vertical
             contentVertical: sectionRoot.contentVertical
-            // v5 of this rule (see crux skill's notes.md for the full
-            // history — v1-v4 are all superseded, don't resurrect them):
-            // left keeps the original "only the end-cap inverts" rule;
-            // right is the true mirror of that — reverse the sequence AND
-            // flip every shape to its own mirror-image, so the end-cap
-            // there is now the one NON-inverted module and everything
-            // else in the right section inverts.
-            // Grouped cells cut the same diagonal as the surface around them: their group's,
-            // or on a floating pill (no group plates) the pill's top-right / bottom-left.
+            // End-cap rule v5 (docs/design-notes.md, "Chamfer inversion accent"): left inverts only the end-cap, right mirrors that.
+            // Grouped cells cut the same diagonal as their group, or as the floating pill when there are no group plates.
             invertChamfer: sectionRoot.grouped ? (sectionRoot.section === "left" && !Tokens.barPill) : (sectionRoot.section === "left" && wrapper.index === 0) || (sectionRoot.section === "right" && wrapper.index !== sectionRoot._lastVisibleIndex)
           }
 
-          // Non-exclusive: a passive grab that watches for a long press
-          // without blocking the widget's own MouseArea from receiving
-          // the same press.
+          // Passive, so the widget's own TapHandler still gets the press.
           TapHandler {
             id: tapHandler
             acceptedButtons: Qt.LeftButton
@@ -276,10 +210,7 @@ Item {
             }
           }
 
-          // Only takes over the in-progress press once armed by the long
-          // press above — a plain click never reaches drag distance/
-          // duration, so this handler never activates and never touches
-          // the event.
+          // Only activates once the long press has armed it, so plain clicks pass through untouched.
           DragHandler {
             id: dragHandler
             target: draggableContent
@@ -287,23 +218,13 @@ Item {
             grabPermissions: PointerHandler.CanTakeOverFromItems | PointerHandler.CanTakeOverFromHandlersOfDifferentType
             onActiveChanged: {
               if (!active && sectionRoot.dragState.sourceSection === sectionRoot.section && sectionRoot.dragState.sourceIndex === wrapper.index) {
-                // Capture the shared dragState reference and whether we're
-                // over a valid drop target *before* calling Drag.drop() —
-                // that call synchronously commits the move via
-                // Settings.moveBarWidget, which rebuilds this section's
-                // Repeater and destroys this very delegate (sectionRoot,
-                // wrapper) mid-handler. Anything read after drop() must not
-                // touch sectionRoot/wrapper, only the dragState object
-                // itself (owned by Bar.qml, so it outlives the delegate).
+                // Drag.drop() rebuilds this Repeater and destroys this delegate; read everything from dragState first.
                 var st = sectionRoot.dragState;
                 var droppedOnValidTarget = st.targetSection !== "";
-                // DragHandler only toggles Drag.active — nothing calls
-                // Drag.drop() on release the way MouseArea.onReleased did
-                // in the Taskbar.qml pattern this was adapted from. Do it
-                // here, or the DropArea underneath never fires onDropped.
+                // DragHandler never calls Drag.drop() on release, so do it here or onDropped never fires.
                 draggableContent.Drag.drop();
                 if (!droppedOnValidTarget) {
-                  // Dropped nowhere valid — reset.
+                  // Dropped nowhere valid.
                   st.sourceSection = "";
                   st.sourceIndex = -1;
                 }
@@ -314,11 +235,7 @@ Item {
       }
     }
 
-    // A trailing drop zone that always exists, sized enough to be a real
-    // target, so a section is never actually undroppable — whether it's
-    // genuinely empty, or (like center with just the Media widget) every
-    // widget in it currently renders at 0×0 because it's conditionally
-    // hidden (nothing playing right now).
+    // Always-present trailing drop zone, so a section whose widgets are all hidden can still take a drop.
     Item {
       id: trailingZone
       readonly property bool sectionEmpty: {
@@ -356,9 +273,7 @@ Item {
     }
   }
 
-  // Insertion-point indicator: a thin bar showing exactly where the
-  // widget will land, positioned between the two widgets it'll sit
-  // between (or at the very start/end).
+  // Insertion-point indicator between the two widgets the drop lands between.
   Rectangle {
     width: sectionRoot.vertical ? (sectionRow.width > 0 ? sectionRow.width : 24) : 2
     height: sectionRoot.vertical ? 2 : (sectionRow.height > 0 ? sectionRow.height : 24)

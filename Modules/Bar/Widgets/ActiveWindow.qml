@@ -18,8 +18,7 @@ Item {
   readonly property var activeToplevel: ToplevelManager.activeToplevel
   readonly property string appId: activeToplevel ? (activeToplevel.appId || "") : ""
   readonly property string windowTitle: activeToplevel ? (activeToplevel.title || "") : ""
-  // Clean app name from a reverse-DNS-ish appId (e.g. "org.kde.dolphin" ->
-  // "Dolphin"), same rule noctalia's CompositorService.getCleanAppName uses.
+  // Clean app name from a reverse-DNS appId ("org.kde.dolphin" -> "Dolphin").
   readonly property string appName: {
     var last = appId.split(".").pop() || "";
     if (last === "")
@@ -49,9 +48,7 @@ Item {
       size: NText.Size.BodySm
     }
 
-    // Vertical bar: no room for a scrolling title — just the app's
-    // initial, same compact-stack philosophy every other text widget uses
-    // once rotated onto a side bar.
+    // Vertical bar: just the app's initial.
     Column {
       visible: root.vertical
       spacing: 8

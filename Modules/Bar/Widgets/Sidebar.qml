@@ -3,8 +3,7 @@ import Quickshell
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Bar icon toggling the Sidebar Dashboard (§6.8) — previously only
-// reachable via `qs ipc call sidebar toggle`, no bar entry point existed.
+// Toggles the Sidebar dashboard (§6.8).
 Item {
   id: root
 

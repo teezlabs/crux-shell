@@ -45,9 +45,7 @@ Item {
         var cy = height / 2;
 
         if (isDark) {
-          // Crescent moon: full circle minus an offset circle, via an
-          // even-odd fill rule (no compositing needed on a transparent
-          // canvas backdrop).
+          // Crescent: a circle minus an offset circle, via the even-odd fill rule.
           ctx.beginPath();
           ctx.arc(cx, cy, 6, 0, Math.PI * 2);
           ctx.arc(cx + 3.2, cy - 2, 6, 0, Math.PI * 2, true);

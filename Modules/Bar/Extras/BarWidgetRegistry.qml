@@ -2,11 +2,7 @@ pragma Singleton
 
 import QtQuick
 
-// The list of widget ids the bar is allowed to load. Each id maps to
-// Modules/Bar/Widgets/<id>.qml by convention. Keep this in sync when
-// adding a widget file — an unlisted file is silently unreachable: it
-// can't be added from the settings panel and won't load if hand-seeded
-// into settings.json.
+// Widget ids the bar may load, each mapping to Modules/Bar/Widgets/<id>.qml. An unlisted file is unreachable.
 
 QtObject {
   readonly property var ids: ["ActiveWindow", "AudioVisualizer", "Battery", "Bluetooth", "Brightness", "ClaudeUsage", "Clipboard", "Clock", "ControlCenter", "CustomButton", "DarkMode", "Hue", "KeepAwake", "KeyboardLayout", "Launcher", "Layout", "LockKeys", "Media", "Microphone", "Network", "NightLight", "NotificationHistory", "PowerButton", "PowerProfile", "Settings", "Sidebar", "Sound", "Spacer", "StatusGroup", "SystemMonitor", "Taskbar", "Tray", "Updates", "VPN", "Wallpaper", "Wifi", "Workspaces"]

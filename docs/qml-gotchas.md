@@ -17,6 +17,7 @@ Each of these has already cost a debugging session on this box (Qt 6.11–6.12, 
 ## Bindings that don't re-run
 
 - **`Grid` implicit size goes stale** with the `rows: 1000`/`columns: 1000` trick. Don't bind to it
+- **A binding whose body calls a singleton function doesn't reliably re-run** when the function's inputs change, even though a direct call returns the right answer. Inline the logic so every dependency is a plain property read (`Tray.qml`'s inline/drawer split)
 - **Sums over `repeater.itemAt(i)` don't register dependencies.** Add an `int` counter, bump it in each item's `onWidthChanged`/`onHeightChanged`, and read it at the top of the binding
 - **Anchors built from a size that changed that way go stale too.** Use plain `x`/`y` bindings (`x: (parent.width - width) / 2`)
 - **Conditional anchors don't re-resolve after `Settings` loads.** Same fix

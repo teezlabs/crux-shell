@@ -4,8 +4,7 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Services
 
-// Current power profile; click cycles power-saver -> balanced ->
-// performance. Hidden entirely on a machine with no power-profiles-daemon.
+// Current power profile; click cycles saver -> balanced -> performance. Hidden without power-profiles-daemon.
 Item {
   id: root
 
@@ -28,14 +27,12 @@ Item {
     invertChamfer: root.invertChamfer
     attention: PowerProfileService.degraded
     vertical: root.vertical
-    // Name the profile while hovered, and stay out while it's a state the
-    // user chose rather than the default.
+    // Labels the profile on hover, and stays open while a non-default profile is active.
     label: PowerProfileService.name()
     forceOpen: PowerProfileService.profile !== PowerProfile.Balanced
     onTapped: PowerProfileService.cycle()
 
-    // Leaf / gauge / bolt for power-saver / balanced / performance, drawn
-    // geometrically — no glyph font dependency.
+    // Leaf / gauge / bolt for saver / balanced / performance.
     Canvas {
       anchors.centerIn: parent
       width: 16

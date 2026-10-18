@@ -27,9 +27,7 @@ Item {
   Component.onCompleted: UpdatesService.watchers++
   Component.onDestruction: UpdatesService.watchers--
 
-  // BarSection sizes each slot off implicitWidth/implicitHeight, not
-  // `visible` — QML's visible hides rendering without collapsing layout
-  // size, so these must go to 0 too or the bar keeps a dead gap.
+  // Size goes to 0 too: BarSection lays out by implicit size, and visible alone leaves a gap.
   implicitWidth: root.shouldHide ? 0 : module.implicitWidth
   implicitHeight: root.shouldHide ? 0 : module.implicitHeight
   width: implicitWidth
@@ -96,8 +94,6 @@ Item {
     }
   }
 
-  // Left click runs the real update in a terminal when there's something to
-  // install, otherwise just re-checks.
   TapHandler {
     acceptedButtons: Qt.LeftButton
     onTapped: root.hasUpdates ? UpdatesService.runUpdate() : UpdatesService.check()

@@ -5,8 +5,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
-// Volume control: click opens the volume popup, scroll adjusts, right-click toggles mute.
-// Styled as "LABEL value" (StatText) per spec §3's "status is text, not glyphs".
+// Volume: click opens the popup, scroll adjusts, right-click mutes. "LABEL value" per spec §3.
 Item {
   id: root
 

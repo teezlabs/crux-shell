@@ -4,9 +4,7 @@ import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Services
 
-// Toggles the shared idle inhibitor. State lives in
-// Commons/IdleInhibitorService.qml, so this and the Control Center's IDLE
-// tile always agree.
+// Toggles IdleInhibitorService, shared with the Control Center IDLE tile.
 Item {
   id: root
 

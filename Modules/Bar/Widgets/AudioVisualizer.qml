@@ -4,8 +4,7 @@ import qs.Widgets
 import qs.Modules.Bar.Extras
 import qs.Services
 
-// Live FFT bars for whatever the default sink is playing. Capture is
-// ref-counted in SpectrumService, so it only runs while this is on screen.
+// Live FFT bars for the default sink; SpectrumService only captures while this is on screen.
 Item {
   id: root
 
@@ -15,8 +14,7 @@ Item {
   property bool vertical: false
   property bool invertChamfer: false
 
-  // How many of the service's bands to draw. Fewer, wider bars read better
-  // at bar height than all 32.
+  // Fewer, wider bars read better at bar height than all 32 bands.
   property int barCount: 14
   property real barWidth: 2
   property real barGap: 2
@@ -50,8 +48,7 @@ Item {
           id: bar
           required property int index
 
-          // Spread the picked bands across the service's range so the
-          // drawn bars still cover the whole spectrum, not just the bass.
+          // Spread the picked bands across the whole range, not just the bass.
           readonly property real level: {
             const v = SpectrumService.values;
             if (!v || v.length === 0)
@@ -68,8 +65,7 @@ Item {
           width: root.vertical ? Math.max(2, parent.width * bar.level) : root.barWidth
           height: root.vertical ? root.barWidth : Math.max(2, parent.height * bar.level)
 
-          // Falls faster than it rises, so peaks read as peaks instead of
-          // the whole row shimmering.
+          // Falls faster than it rises, so peaks read as peaks.
           Behavior on height {
             enabled: !root.vertical
             NumberAnimation {

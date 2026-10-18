@@ -5,9 +5,7 @@ import qs.Services
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
-// v2 spec §6.1 Media module: 4-bar equaliser (2px wide, heights 5/11/7/9,
-// primary) + truncated "Title — Artist", max width 210. Click opens the
-// media popover (MediaPlayerPopupContent.qml, §6.6).
+// Media module (spec §6.1): 4-bar equaliser plus truncated "Artist — Title"; click opens the media popup.
 Item {
   id: root
 
@@ -37,9 +35,7 @@ Item {
     vertical: root.vertical
     invertChamfer: root.invertChamfer
 
-    // Vertical bar: just the equaliser, no title/artist text — nothing
-    // resembling "Title — Artist" fits a ~30px-wide column, and eliding it
-    // down to nothing would just be noise. Horizontal: bars + truncated text.
+    // Vertical bar: equaliser only.
     Row {
       visible: !root.vertical
       spacing: 8

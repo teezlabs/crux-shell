@@ -5,10 +5,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
-// Microphone input volume/mute on the bar — exact structural mirror of
-// Sound.qml (output) but bound to Pipewire.defaultAudioSource instead of
-// defaultAudioSink. Click opens the mic popup, scroll adjusts input volume
-// directly, right-click toggles mute.
+// Mirror of Sound.qml for the default source: click opens the mic popup, scroll adjusts, right-click mutes.
 Item {
   id: root
 

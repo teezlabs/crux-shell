@@ -4,8 +4,7 @@ import qs.Commons
 import qs.Modules.Wallpaper
 import qs.Modules.Bar.Extras
 
-// Picture-frame icon on the bar — opens this screen's own
-// WallpaperBrowserWindow instance via its per-screen IPC target.
+// Opens this screen's WallpaperBrowserWindow.
 Item {
   id: root
 
@@ -37,8 +36,7 @@ Item {
       }
     }
 
-    // Geometric picture-frame glyph: an outline with a small mountain/sun
-    // icon inside — no font/emoji glyph dependency.
+    // Picture-frame glyph with a mountain and sun inside.
     Canvas {
       anchors.centerIn: parent
       width: 16

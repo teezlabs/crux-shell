@@ -49,8 +49,7 @@ Item {
     return root.charging ? "Charging" : "On battery";
   }
 
-  // Not present on a desktop with no battery at all — collapse to nothing
-  // rather than showing a permanently-empty/broken readout.
+  // Collapses on machines without a battery.
   visible: root.present
   opacity: root.present ? 1.0 : 0.0
 

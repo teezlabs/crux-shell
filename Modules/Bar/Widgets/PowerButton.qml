@@ -4,10 +4,7 @@ import qs.Modules.SessionMenu
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
-// v2 spec §6.1 Power module: "32px cell, error border, ⏻." Distinct from
-// the generic BarModule treatment (error border instead of outlineVariant,
-// a square bar cell instead of content-sized) since it's the one
-// permanently-destructive action living in the bar.
+// Power module (spec §6.1): a square cell with the error border, the bar's one destructive action.
 Item {
   id: root
 
@@ -26,8 +23,7 @@ Item {
     targetScreen: root.screen
   }
 
-  // Inside a grouped section the surface belongs to the section, but the
-  // destructive stroke stays — it is the one accent the bar keeps.
+  // In a grouped section the surface belongs to the section, but the destructive stroke stays.
   readonly property bool grouped: Settings.isLoaded && Settings.data.bar.groupSections
 
   Chamfer {
@@ -42,10 +38,7 @@ Item {
     strokeWidth: Tokens.borderModule
   }
 
-  // Geometric ⏻ glyph (circle + top tick), not a font glyph — the real
-  // Unicode "⏻" character centers unevenly depending on the active font's
-  // own ink metrics for that symbol (confirmed visually off-center after
-  // a font change). Same shape the crux-themed SDDM greeter draws.
+  // Drawn rather than the Unicode glyph, which centres unevenly depending on the font. Matches the SDDM greeter.
   Canvas {
     id: glyphCanvas
     anchors.centerIn: parent
@@ -60,9 +53,7 @@ Item {
       ctx.lineWidth = 1.4;
       ctx.lineCap = "round";
       var cx = width / 2, cy = height / 2;
-      // Canvas angle 0 is 3 o'clock, not 12 — the gap needs to be centered
-      // on -PI/2 (top) to line up with the vertical tick below, not on PI
-      // (left), which is what a plain 1.2PI-2.8PI sweep actually gives.
+      // Canvas angle 0 is 3 o'clock, so the gap centres on -PI/2 to sit over the tick.
       var top = -Math.PI / 2;
       var gap = 0.7;
       ctx.beginPath();

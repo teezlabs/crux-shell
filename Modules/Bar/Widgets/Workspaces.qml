@@ -6,8 +6,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
-// Workspaces module (spec §6.1): fixed 28px cells, active/occupied/empty color states.
-// Per-monitor workspace IDs read from `hyprctl workspacerules -j`, not hardcoded 1-5; falls back to 1-5 if no rule.
+// Workspaces (spec §6.1). Per-monitor ids come from `hyprctl workspacerules -j`, falling back to 1-5.
 Item {
   id: root
 
@@ -131,9 +130,7 @@ Item {
     topPadding: 4
     bottomPadding: 4
 
-    // Grid rather than a fixed Row/Column so one delegate set covers both
-    // bar orientations — same Grid.TopToBottom/columns:1 <-> Grid.LeftToRight
-    // /rows:1 trick BarSection.qml itself uses for the same reason.
+    // Grid covers both bar orientations, as in BarSection.
     Grid {
       flow: root.vertical ? Grid.TopToBottom : Grid.LeftToRight
       rows: root.vertical ? 1000 : 1
@@ -159,12 +156,7 @@ Item {
           width: root.vertical ? shortSide : longSide
           height: root.vertical ? longSide : shortSide
 
-          // Only first/last cells chamfer, matching the module's outer corners. Which corner goes with
-          // "first" flips with orientation (requested after the un-flipped version looked wrong on a vertical bar).
-          // Faded rather than toggled, so switching workspace cross-fades
-          // the highlight from the old cell to the new one instead of
-          // cutting. visible follows opacity so a fully faded cell still
-          // costs nothing to draw.
+          // Only the end cells chamfer, matching the module's corners; the highlight cross-fades between cells.
           Chamfer {
             anchors.fill: parent
             opacity: cell.active && (cell.isFirst || cell.isLast) ? 1 : 0
@@ -195,9 +187,7 @@ Item {
             }
           }
 
-          // Active marker: bottom edge inset for a horizontal bar, side
-          // edge inset for a vertical one — same "underline" idea rotated
-          // onto whichever edge faces the direction workspaces read in.
+          // Active marker on the edge facing the reading direction.
           Rectangle {
             anchors.bottom: parent.bottom
             anchors.left: parent.left

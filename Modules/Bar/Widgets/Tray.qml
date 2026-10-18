@@ -7,16 +7,7 @@ import qs.Widgets
 import qs.Modules.Bar.Extras
 import qs.Services
 
-// Real systray protocol integration (Quickshell.Services.SystemTray), real
-// per-app icons (not spec §3's abstract rotated-square glyph — confirmed
-// deliberate). Most tray items that matter (NetworkManager, Bluetooth
-// applets) are "onlyMenu" — real functionality lives behind their DBusMenu,
-// rendered here via QsMenuPopup (crux-styled, not the native QMenu),
-// not a bare activate().
-//
-// Pinned items stay in the bar; the rest live in a drawer that slides open
-// along the bar itself rather than into a popup. See the crux skill's
-// notes.md.
+// System tray: pinned items stay inline, the rest live in a drawer that slides along the bar (docs/design-notes.md, "The tray drawer").
 Item {
   id: root
 
@@ -37,11 +28,7 @@ Item {
     const hide = root.hidePassive;
     return root.rawItems.filter(i => i && !(hide && i.status === SystemTray.Passive));
   }
-  // Split inline rather than through TrayModel: a binding whose body is a
-  // call into a singleton doesn't reliably re-run when its arguments change
-  // (confirmed live — the filtered lists stayed empty while a direct call
-  // with the same inputs returned the right answer). Every dependency here
-  // is a plain property read, which QML always tracks.
+  // Split inline, not via TrayModel: a binding that calls into a singleton doesn't re-run reliably (docs/qml-gotchas.md).
   readonly property var inlineItems: {
     if (!root.drawerEnabled)
       return root.allItems;
@@ -62,23 +49,19 @@ Item {
 
   readonly property int cell: 24
 
-  // Hover anywhere on the widget holds the drawer open; the countdown
-  // restarts from full when the pointer leaves, because `running` going
-  // false and back true resets a Timer.
+  // Hover holds the drawer open; leaving restarts the countdown, because toggling running resets a Timer.
   HoverHandler {
     id: hover
   }
 
   Timer {
     interval: root.autoCollapseMs
-    // An open DBusMenu belongs to a drawer icon — collapsing out from
-    // under it would leave the menu anchored to nothing.
+    // An open DBusMenu would be left anchored to nothing if the drawer collapsed under it.
     running: root.expanded && !hover.hovered && trayMenu.menuHandle === null
     onTriggered: root.expanded = false
   }
 
-  // Nothing to reveal means nothing to toggle — collapse rather than leave
-  // an open drawer that can't be closed once its last item goes away.
+  // Collapse once nothing is left in the drawer, or it can't be closed.
   onDrawerItemsChanged: {
     if (root.drawerItems.length === 0)
       root.expanded = false;
@@ -127,8 +110,7 @@ Item {
         }
       }
 
-      // The drawer: collapses along the bar's own axis, so the widget
-      // shrinks back into itself instead of the icons just disappearing.
+      // Collapses along the bar's axis, so the widget shrinks back into itself.
       Item {
         id: drawer
         clip: true
@@ -155,8 +137,7 @@ Item {
 
         Grid {
           id: drawerGrid
-          // Pinned against the chevron end so the icons are revealed from
-          // under it, not pushed out from behind the pinned ones.
+          // Pinned to the chevron end so icons are revealed from under it.
           x: root.vertical ? 0 : drawer.width - width
           y: root.vertical ? drawer.height - height : 0
           flow: root.vertical ? Grid.TopToBottom : Grid.LeftToRight
@@ -179,16 +160,13 @@ Item {
               widgetSection: root.section
               widgetIndex: root.sectionWidgetIndex
               pinnable: root.drawerEnabled
-              // Acting on a drawer item is the end of what the drawer was
-              // open for.
               onActioned: root.expanded = false
             }
           }
         }
       }
 
-      // Points along the drawer's travel: outward to open, back toward the
-      // pinned icons to close.
+      // Points outward to open, back toward the pinned icons to close.
       Item {
         id: chevron
         width: root.cell

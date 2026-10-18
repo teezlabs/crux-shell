@@ -4,9 +4,7 @@ import qs.Services
 import qs.Modules.Popups
 import qs.Modules.Bar.Extras
 
-// Compact session-usage readout on the bar; full detail (session + weekly,
-// reset times, today's tokens) lives in the claudeUsage popup hosted by
-// PopupHost.qml.
+// Compact session-usage readout; full detail lives in the claudeUsage popup.
 Item {
   id: root
 
@@ -37,10 +35,7 @@ Item {
       Popups.openFrom("claudeUsage", root.screen, pos.x, pos.y, root.width, root.height);
     }
 
-    // Geometric robot glyph: rounded head outline + two eye dots + antenna —
-    // no font/emoji glyph dependency (the bundled Tabler font was fine, but
-    // moving off it keeps this widget consistent with the rest of the v2
-    // bar's "no icon font" rule).
+    // Robot glyph drawn on a Canvas: head outline, two eyes, antenna.
     Canvas {
       anchors.centerIn: parent
       width: 14

@@ -18,8 +18,7 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  // Inside a grouped section the section itself carries the surface, so
-  // this one keeps only hover and the attention stroke.
+  // In a grouped section the section draws the surface; this keeps only hover and the attention stroke.
   readonly property bool grouped: Settings.isLoaded && Settings.data.bar.groupSections
 
   Chamfer {
@@ -32,8 +31,7 @@ Item {
     fillColor: root.grouped ? Colors.alpha(Colors.primary, hoverHandler.hovered ? 0.16 : 0) : Colors.alpha(hoverHandler.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, Tokens.barModuleAlpha)
     strokeColor: root.attention ? Colors.tertiary : Colors.outlineVariant
     strokeWidth: root.grouped && !root.attention ? 0 : Tokens.borderModule
-    // Rim only: the bar window is exactly the bar's thickness, so a
-    // shadow has nowhere to fall.
+    // Rim only: the bar window is exactly the bar's thickness, so a shadow has nowhere to fall.
     rimLight: !root.grouped
     rimOpacity: Tokens.rimOpacityCard
   }

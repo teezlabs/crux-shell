@@ -17,18 +17,13 @@ Item {
   // Mirrors the two chamfered corners — see crux skill's notes.md.
   property bool invertChamfer: false
 
-  // Vertical bar: fixed cross-axis (matches the module's usual 30px
-  // thickness), content-driven length instead of the other way around —
-  // same swap Clock.qml/Workspaces.qml already do internally, just hoisted
-  // to the shared container so every module gets it for free.
+  // Vertical bar: fixed cross-axis, content-driven length.
   implicitHeight: root.vertical ? (contentRow.implicitHeight + topPadding + bottomPadding) : Tokens.barModuleHeight
   implicitWidth: root.vertical ? Tokens.barModuleHeight : (contentRow.implicitWidth + leftPadding + rightPadding)
   height: implicitHeight
   width: implicitWidth
 
-  // Grouped sections draw one surface for the whole section, so a module
-  // inside one carries no chamfer, stroke or rim of its own — only its
-  // hover state.
+  // In a grouped section the section draws the surface; a module keeps only its hover state.
   readonly property bool grouped: Settings.isLoaded && Settings.data.bar.groupSections
 
   Chamfer {
@@ -42,8 +37,7 @@ Item {
     fillColor: Colors.alpha(root.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainer, Tokens.barModuleAlpha)
     strokeColor: Colors.outlineVariant
     strokeWidth: Tokens.borderModule
-    // Rim only: the bar window is exactly the bar's thickness, so a
-    // shadow has nowhere to fall.
+    // Rim only: the bar window is exactly the bar's thickness, so a shadow has nowhere to fall.
     rimLight: true
     rimOpacity: Tokens.rimOpacityCard
   }

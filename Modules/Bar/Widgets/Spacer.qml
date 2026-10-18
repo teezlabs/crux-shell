@@ -2,8 +2,7 @@ import QtQuick
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// Configurable-width blank gap for manual bar layout. Multi-instance: width lives on this widget's own
-// widgetData entry, not a shared Settings singleton (see BarWidgetRegistry.multiInstanceIds).
+// Configurable blank gap. Multi-instance: width comes from this instance's widgetData.
 Item {
   id: root
 
@@ -19,9 +18,7 @@ Item {
     return isNaN(w) || w < 0 ? defaultSize : w;
   }
 
-  // Cross-axis matches every other widget's module height so BarSection's
-  // Grid cross-centers it the same as everything else; main-axis is the
-  // configurable size.
+  // Cross-axis matches other modules so the Grid centres it the same way.
   implicitWidth: root.vertical ? Tokens.barModuleHeight : root.size
   implicitHeight: root.vertical ? root.size : Tokens.barModuleHeight
   width: implicitWidth

@@ -22,9 +22,6 @@ Item {
 
   BarModule {
     id: module
-    // Standard-sized like every other module — no longer growing to match
-    // Sound's portrait-compact stacked height (was making the whole
-    // horizontal bar look thicker than intended on a portrait screen).
     vertical: root.vertical
     topPadding: 8
     bottomPadding: 8
@@ -67,8 +64,7 @@ Item {
     }
   }
 
-  // Keep the popup's folded size in sync with this module, so it can rest
-  // collapsed onto it — the bar reorders and resizes at runtime.
+  // Keeps the popup's folded size in sync with this module so it can collapse onto it.
   function pushMorphSource(): void {
     if (!root.screen)
       return;
@@ -76,8 +72,7 @@ Item {
     Popups.setMorphSource("controlCenter", root.screen, pos.x, pos.y, root.width, root.height);
   }
 
-  // `screen` is assigned by the loader after construction, so completion
-  // alone is too early — push on every input the position depends on.
+  // screen is assigned after construction, so push on every input the position depends on.
   Component.onCompleted: root.pushMorphSource()
   onScreenChanged: root.pushMorphSource()
   onWidthChanged: root.pushMorphSource()

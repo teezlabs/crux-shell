@@ -37,9 +37,7 @@ Item {
       }
     }
 
-    // Ethernet plug glyph: a small jack body + two prongs, no font/emoji
-    // glyph dependency. Solid when connected, outline/dim when the
-    // interface exists but the cable is unplugged.
+    // Ethernet jack glyph: solid when connected, dim outline when unplugged.
     Canvas {
       id: canvas
       anchors.centerIn: parent

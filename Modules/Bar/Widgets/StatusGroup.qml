@@ -7,8 +7,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
-// Merged NET/VOL/BAT status module (spec §6.1), split by 1px dividers. Click opens Control Center.
-// BAT segment only shows when UPower reports a system battery — no fake 100% on battery-less desktops.
+// Merged NET/VOL/BAT module (spec §6.1); click opens Control Center. BAT shows only with a UPower system battery.
 Item {
   id: root
 
@@ -197,10 +196,7 @@ Item {
     }
   }
 
-  // Scroll-to-adjust volume — this module (not the standalone Sound.qml
-  // widget, which isn't in the default bar layout) is what's actually on
-  // the bar, so this is where users expect to be able to scroll to change
-  // volume. Same step-size convention Sound.qml/VolumeOsd's IPC already use.
+  // Scroll adjusts volume by the same step as Sound.qml.
   WheelHandler {
     acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
     onWheel: function (event) {

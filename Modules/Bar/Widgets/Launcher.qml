@@ -3,8 +3,7 @@ import qs.Modules.Launcher
 import qs.Commons
 import qs.Modules.Bar.Extras
 
-// App-launcher icon on the bar; the search UI lives in the separate
-// LauncherWindow popup.
+// App-launcher icon; the search UI is LauncherWindow.
 Item {
   id: root
 
