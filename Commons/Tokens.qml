@@ -134,6 +134,11 @@ QtObject {
   readonly property int durationBarFade: 200
   readonly property int durationSidebarSlide: 200
   readonly property int easingSidebarSlide: Easing.OutCubic
+  readonly property int durationCaretBlink: 500
+  readonly property int durationDragLift: 120
+  readonly property int durationDropPulse: 400
+  readonly property int easingDropPulse: Easing.InOutQuad
+  readonly property int easingWallpaperTransition: Easing.InOutCubic
 
   // Color transitions. Every surface, label and icon that changes color on
   // hover, on state, or when matugen regenerates the palette eases through

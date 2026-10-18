@@ -235,11 +235,11 @@ NPanelWindow {
                 loops: Animation.Infinite
                 NumberAnimation {
                   to: 0
-                  duration: 500
+                  duration: Tokens.durationCaretBlink
                 }
                 NumberAnimation {
                   to: 1
-                  duration: 500
+                  duration: Tokens.durationCaretBlink
                 }
               }
             }

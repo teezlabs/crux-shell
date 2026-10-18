@@ -306,7 +306,7 @@ Variants {
       from: 0.0
       to: 1.0
       duration: Settings.data.wallpaper.transitionDuration
-      easing.type: Easing.InOutCubic
+      easing.type: Tokens.easingWallpaperTransition
       onFinished: {
         currentWallpaper.source = nextWallpaper.source;
         root.transitionProgress = 0;

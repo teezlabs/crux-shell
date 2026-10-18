@@ -236,7 +236,7 @@ Item {
           scale: dragHandler.active ? 1.05 : 1.0
           Behavior on scale {
             NumberAnimation {
-              duration: 120
+              duration: Tokens.durationDragLift
             }
           }
 
@@ -374,13 +374,13 @@ Item {
       loops: Animation.Infinite
       NumberAnimation {
         to: 1
-        duration: 400
-        easing.type: Easing.InOutQuad
+        duration: Tokens.durationDropPulse
+        easing.type: Tokens.easingDropPulse
       }
       NumberAnimation {
         to: 0.4
-        duration: 400
-        easing.type: Easing.InOutQuad
+        duration: Tokens.durationDropPulse
+        easing.type: Tokens.easingDropPulse
       }
     }
   }
