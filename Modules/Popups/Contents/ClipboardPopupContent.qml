@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
 import qs.Commons
+import qs.Services
 import qs.Widgets
 import qs.Modules.Popups
 
@@ -23,49 +24,8 @@ ColumnLayout {
   // content has no window of its own to set visible on directly anymore.
   signal requestClose
 
-  property bool cliphistAvailable: false
+  readonly property bool cliphistAvailable: ClipboardService.available
   property var entries: []
-
-  Process {
-    id: checkProc
-    command: ["sh", "-c", "command -v cliphist"]
-    onExited: function (exitCode) {
-      root.cliphistAvailable = exitCode === 0;
-      if (root.cliphistAvailable)
-        startWatchers();
-    }
-  }
-
-  Process {
-    id: watchText
-    command: ["wl-paste", "--type", "text", "--watch", "cliphist", "store"]
-    onExited: watchTextRestart.restart()
-  }
-  Timer {
-    id: watchTextRestart
-    interval: 1000
-    onTriggered: if (root.cliphistAvailable)
-      watchText.running = true
-  }
-
-  Process {
-    id: watchImage
-    command: ["wl-paste", "--type", "image", "--watch", "cliphist", "store"]
-    onExited: watchImageRestart.restart()
-  }
-  Timer {
-    id: watchImageRestart
-    interval: 1000
-    onTriggered: if (root.cliphistAvailable)
-      watchImage.running = true
-  }
-
-  function startWatchers() {
-    watchText.running = true;
-    watchImage.running = true;
-  }
-
-  Component.onCompleted: checkProc.running = true
 
   function refresh() {
     if (!cliphistAvailable || listProc.running)
