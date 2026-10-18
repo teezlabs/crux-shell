@@ -11,10 +11,7 @@ import qs.Modules.ControlCenter
 import qs.Services
 import qs.Widgets
 
-// Control Center content: cards for the quick toggles, audio and brightness
-// sliders, weather, media and telemetry. The card layout follows noctalia's,
-// the chamfers are crux's own — see the crux skill's notes.md for why that
-// deliberately diverges from the spec PDF.
+// Control Center: toggles, audio and brightness, weather, media and telemetry cards, laid out after noctalia's.
 ColumnLayout {
   id: root
 
@@ -25,15 +22,12 @@ ColumnLayout {
   onActiveChanged: SystemStats.fullWatchers += active ? 1 : -1
   Component.onDestruction: if (active)
     SystemStats.fullWatchers--
-  // Which monitor this card is on, for the Popups calls that open another
-  // surface on the same screen.
+  // This card's monitor, for opening other surfaces on the same screen.
   property var targetScreen: null
-  // PopupHost closes the card; the content can't reach a window's visible
-  // any more.
+  // Asks PopupHost to close the card.
   signal requestClose
 
-  // WIFI/BLUETOOTH tiles' right-click "expand" state; renders the shared
-  // panel content inline instead of opening a separate popup.
+  // Right-click on the WIFI/BLUETOOTH tiles expands their list inline.
   property bool wifiExpanded: false
   property bool btExpanded: false
 
@@ -109,9 +103,7 @@ ColumnLayout {
     Quickshell.execDetached(["brightnessctl", "set", clamped + "%"]);
   }
 
-  // ---- Idle inhibit ----
-  // Needs a window to attach to, so it lives here rather than in the
-  // service; the service still owns the state.
+  // ---- Idle inhibit: needs a window, so it lives here; IdleInhibitorService owns the state ----
   IdleInhibitor {
     window: root
     enabled: IdleInhibitorService.active
@@ -168,10 +160,7 @@ ColumnLayout {
   }
 
 
-  // ---- Header: Arch logo avatar + user/uptime + gear/power/close ----
-  // Circular avatar/buttons here are a deliberate one-off departure
-  // from the rest of the app's "no radius" rule — explicitly requested
-  // to match a specific reference look, scoped to this one panel.
+  // ---- Header. The round avatar and buttons are a deliberate exception to the no-radius rule ----
   CcCard {
     RowLayout {
       Layout.fillWidth: true
@@ -274,8 +263,7 @@ ColumnLayout {
     }
   }
 
-  // ---- Toggle row: configurable, from Settings.data.controlCenter.toggles
-  // (ids in CcToggleRegistry, files in CcToggles/) ----
+  // ---- Toggle row from Settings.data.controlCenter.toggles (CcToggleRegistry) ----
   CcCard {
     RowLayout {
       Layout.fillWidth: true
@@ -304,8 +292,7 @@ ColumnLayout {
             target: toggleLoader.item
             ignoreUnknownSignals: true
             function onExpandRequested(which) {
-              // Only one list can be open at a time, and tapping the
-              // same toggle again closes it.
+              // One list open at a time; tapping the same toggle again closes it.
               if (which === "wifi") {
                 root.btExpanded = false;
                 root.wifiExpanded = !root.wifiExpanded;
@@ -320,10 +307,7 @@ ColumnLayout {
     }
   }
 
-  // ---- Inline WIFI/BLUETOOTH expand (right-click a toggle above) —
-  // full network/device list rendered right here instead of opening a
-  // separate popup window, sharing the exact same components the
-  // standalone Wifi.qml/Bluetooth.qml bar widgets use. ----
+  // ---- Inline WIFI/BLUETOOTH lists, the same content the standalone popups use ----
   WifiPanelContent {
     Layout.fillWidth: true
     visible: root.wifiExpanded
@@ -399,8 +383,7 @@ ColumnLayout {
       onMoved: pct => root.setBrightness(pct)
     }
   }
-  // ---- Weather (real: ip-api.com geolocation + open-meteo forecast,
-  // see Commons/Weather.qml) ----
+  // ---- Weather from Services/Weather.qml ----
   CcCard {
     ColumnLayout {
       Layout.fillWidth: true

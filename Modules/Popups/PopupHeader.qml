@@ -3,8 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
 
-// Title row shared by every bar-flush popup: tracked label, optional
-// caption meta, optional text action, then any trailing controls.
+// Popup title row: tracked label, optional meta, optional action, trailing controls.
 RowLayout {
   id: root
 

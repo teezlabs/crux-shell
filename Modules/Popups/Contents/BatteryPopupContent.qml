@@ -5,12 +5,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Modules.Popups
 
-// Battery detail popup content: percent/status, health, and a
-// power-profile switcher via PowerProfiles (no-op if the daemon isn't
-// running). Hosted inside a SlideCard by PopupHost.qml — no
-// window/positioning of its own. Self-derived from UPower directly
-// (same data Battery.qml's bar widget computes), not passed in, since
-// content and widget now live in separate window trees.
+// Battery detail: percent, status, health and a power-profile switcher, read from UPower directly.
 ColumnLayout {
   id: root
 

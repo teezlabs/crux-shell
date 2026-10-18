@@ -80,11 +80,7 @@ function sortedByLabel(devices) {
   return list
 }
 
-// Primitives-only projection of a BlueZ device for list-model rows. Holding
-// the Device QObject in model data puts a live wrapper into every delegate's
-// var property, and BlueZ churn (discovery timeouts, unpair) can destroy the
-// object while a delegate is still incubating, which segfaults quickshell.
-// Actions resolve the backend object via Panel.deviceFor().
+// Primitives only: a live Device in model data can be destroyed mid-incubation and segfault quickshell (docs/qml-gotchas.md).
 function deviceRow(d) {
   if (!d) return null
   return {

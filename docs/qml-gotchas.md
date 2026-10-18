@@ -31,6 +31,7 @@ Each of these has already cost a debugging session on this box (Qt 6.11–6.12, 
 
 ## Repeaters and delegates
 
+- **Keep live QObjects out of list-model rows.** A `WifiNetwork` or BlueZ `Device` in a row puts a wrapper in every delegate's `var` property, and NetworkManager or BlueZ churn can destroy the object while a delegate is still incubating, which segfaults quickshell. Store primitives and resolve the object on action (`NetworkModel.js`, `BluetoothModel.js`)
 - **A call that rebuilds a `Repeater` destroys the delegate running the handler.** Capture what you need before the call
 - **A `Repeater` removes delegates instantly,** so there's no exit animation. Use a `ListView` with a `remove` transition
 

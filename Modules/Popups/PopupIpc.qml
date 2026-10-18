@@ -1,11 +1,7 @@
 import QtQuick
 import Quickshell.Io
 
-// The per-screen IPC target a PopupHost card exposes:
-// "<name>_<screen>" always resolves to this screen's own instance — what a
-// bar icon calls, since it already knows which screen it's on and where
-// the icon sits. The screen-agnostic "<name>" alias is owned by
-// PopupAliases, once for the whole shell rather than once per monitor.
+// The "<name>_<screen>" IPC target for a card; the bare "<name>" alias lives in PopupAliases.
 QtObject {
   id: root
 

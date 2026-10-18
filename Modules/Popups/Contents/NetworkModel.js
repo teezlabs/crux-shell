@@ -40,8 +40,7 @@ function formatHeaderFreq(mhz) {
   return ghz.toFixed(ghz % 1 === 0 ? 0 : 1) + "ghz"
 }
 
-// Wi-Fi band state belongs in the selector section, not beside the hero name.
-// Ethernet has no equivalent selector, so keep its negotiated link speed here.
+// Ethernet shows its link speed here; Wi-Fi band lives in the selector section.
 function headerDetail(info) {
   var value = info || {}
   if (value.type === "ethernet") return formatHeaderSpeed(value.speed || "")
@@ -54,9 +53,7 @@ function bandLabel(band) {
   return band + "ghz"
 }
 
-// Under Automatic the pills are hidden, so the header carries the live band
-// instead -- "WI-FI BAND: 2.4GHZ". Once a band is pinned the pills are on
-// screen and say it themselves, so the header drops back to a plain label.
+// Under Automatic the band pills are hidden, so the title carries the live band instead.
 function bandSectionTitle(selected, current) {
   if (selected !== "auto") return "WI-FI BAND"
 
@@ -250,9 +247,7 @@ function formatRate(bytesPerSec) {
   return formatBytes(bytesPerSec) + "/s"
 }
 
-// `hasSamples` false means no probe has come back yet, which is different from
-// a probe that timed out. The rows stay mounted through that gap and read "--"
-// so the grid doesn't reflow a second after the panel opens.
+// No samples yet reads "--" (not a timeout), so the rows don't reflow a second after opening.
 function formatPingLatency(ms, hasSamples) {
   if (hasSamples === false) return "--"
 
@@ -263,11 +258,7 @@ function formatPingLatency(ms, hasSamples) {
 
 function wifiRow(network) {
   if (!network) return null
-  // Primitives only: rows become list-model data, so a WifiNetwork here puts a
-  // live QObject wrapper in every delegate's var property. NetworkManager churn
-  // (scans, AP removals) can destroy the object while a delegate is still
-  // incubating, which segfaults quickshell in wrap_slowPath on the dangling
-  // wrapper. Callers that need the object resolve it via networkForSsid().
+  // Primitives only: a live WifiNetwork in model data can be destroyed mid-incubation and segfault quickshell (docs/qml-gotchas.md).
   return {
     connected: !!network.connected,
     known: !!network.known,
@@ -299,12 +290,9 @@ function wifiSectionTitle(wifiNetworks, index) {
   return ""
 }
 
-// OWE (Enhanced Open) encrypts traffic without authenticating the user, so it
-// has no credentials to collect. The panel's lock is a credentials-required
-// affordance, so OWE should neither show it nor open its attached prompt.
+// OWE encrypts without user credentials, so it gets no lock and no prompt.
 function requiresCredentials(security, openSecurity, oweSecurity) {
-  // Only explicit passwordless types bypass the prompt. Unknown security
-  // stays credentialed as the conservative fallback.
+  // Unknown security types stay credentialed.
   return security !== openSecurity && security !== oweSecurity
 }
 
@@ -312,10 +300,7 @@ function canForgetNetwork(network) {
   return !!(network && network.known && !network.connected)
 }
 
-// The password arrives on stdin and reaches nmcli through the scriptable
-// `connection edit` editor -- argv is world-readable in /proc, so the secret
-// must never be an argument (printf is a bash builtin, so no process spawns
-// with it either).
+// The password goes to nmcli on stdin; argv is world-readable in /proc, and printf is a builtin, so it never spawns.
 var enterpriseConnectScript =
   "u=$(uuidgen); IFS= read -r pw;" +
   " nmcli connection add type wifi con-name \"$1\" ssid \"$1\" connection.uuid \"$u\"" +
@@ -335,12 +320,7 @@ function networkFailureReason(reason, needsCredentials, reasons) {
   return "Failed to connect"
 }
 
-// Whether a failed connect should reopen the passphrase prompt. NoSecrets
-// means credentials are missing only for a network that actually uses them.
-// An auth timeout on such a network means the saved passphrase is wrong (the
-// same profile a first failed attempt leaves behind as "known"), so the user
-// needs a chance to re-enter it -- connectWithPsk overwrites the stored PSK on
-// submit.
+// Reprompt on missing secrets, or on an auth timeout for a credentialed network (a wrong saved passphrase).
 function shouldRepromptPassphrase(reason, needsCredentials, reasons) {
   var r = reasons || {}
   if (!needsCredentials) return false

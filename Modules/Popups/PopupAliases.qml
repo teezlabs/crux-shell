@@ -1,8 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// Every screen-agnostic popup IPC target, instantiated once for the whole
-// shell (not per monitor) — see PopupAlias.qml for why that matters.
+// Every screen-agnostic popup IPC target, instantiated once for the whole shell.
 QtObject {
   id: root
 

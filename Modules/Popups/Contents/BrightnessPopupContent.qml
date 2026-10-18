@@ -6,12 +6,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Modules.Popups
 
-// Brightness popup content — self-contained backlight detection/set,
-// duplicated from Brightness.qml's bar widget rather than shared, since
-// content and widget now live in separate window trees (PopupHost is
-// decoupled from the bar). Two independent brightnessctl probes running
-// is a known, accepted tradeoff here, not an oversight — a real shared
-// service would be the cleaner fix if this needs revisiting.
+// Brightness popup: backlight detection and control.
 ColumnLayout {
   id: root
 

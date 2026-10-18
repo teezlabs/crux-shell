@@ -7,10 +7,7 @@ import qs.Modules.Notifications
 import qs.Modules.Popups
 import qs.Services
 
-// Notification history popup content: persistent log of past
-// notifications, distinct from NotificationsWindow.qml's live toast
-// stack. Hosted inside a SlideCard by PopupHost.qml — no
-// window/positioning of its own.
+// Persistent notification history, separate from NotificationsWindow's live stack.
 ColumnLayout {
   id: root
 
@@ -21,8 +18,7 @@ ColumnLayout {
 
   readonly property var history: Notifs.history
 
-  // Forces relativeTime() text to re-evaluate periodically — Date.now() reads
-  // inside a binding aren't tracked as a dependency on their own.
+  // Date.now() isn't a binding dependency, so the tick re-evaluates relative times.
   property int _tick: 0
   Timer {
     interval: 30000

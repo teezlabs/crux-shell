@@ -5,8 +5,7 @@ import qs.Services
 import qs.Widgets
 import qs.Modules.Popups
 
-// Claude usage popup content. Data from crux-agent-usage-claude. Hosted
-// inside a SlideCard by PopupHost.qml — no window/positioning of its own.
+// Claude Code plan limits and today's usage from ClaudeUsageService.
 ColumnLayout {
   id: root
 

@@ -3,8 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
 
-// Calendar popup content: Monday-start month grid. No agenda list — no real
-// event data source to bind to yet.
+// Monday-start month grid; no agenda, since there is no event source.
 ColumnLayout {
   id: root
 
@@ -13,8 +12,7 @@ ColumnLayout {
   property date viewDate: new Date()
   readonly property date today: new Date()
 
-  // PopupHost calls this when the card opens, so reopening always lands on
-  // the current month rather than wherever the user last paged to.
+  // Called on open, so the card always lands on the current month.
   function reset(): void {
     root.viewDate = new Date();
   }
@@ -33,8 +31,7 @@ ColumnLayout {
     viewDate = d;
   }
 
-  // Monday-start 6-week grid covering the visible month, with a JS Date
-  // per cell so out-of-month/today comparisons are exact.
+  // Six weeks covering the visible month, a Date per cell for exact today/out-of-month checks.
   readonly property var gridDays: {
     var first = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
     // getDay(): 0=Sun..6=Sat -> convert to Monday-start offset (0=Mon..6=Sun)

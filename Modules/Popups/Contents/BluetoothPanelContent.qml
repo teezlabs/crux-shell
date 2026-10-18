@@ -13,9 +13,7 @@ import qs.Widgets
 ColumnLayout {
   id: root
 
-  // Drives discovery/polling — true whenever this content is actually on
-  // screen, whether that's a standalone popup's visible or a Control
-  // Center section's expanded state.
+  // True while this content is on screen, as a popup or inline in Control Center; drives discovery.
   property bool panelActive: false
 
   spacing: Tokens.spaceLg
@@ -110,8 +108,7 @@ ColumnLayout {
     Quickshell.execDetached([root._binDir + "crux-bluetooth-power", adapter.enabled ? "off" : "on"]);
   }
 
-  // Discovery is a BlueZ session other clients may also hold; only stop it if
-  // this panel was the one that started it.
+  // Other clients may hold the discovery session, so only stop discovery this panel started.
   property bool owesDiscoveryStop: false
 
   onPanelActiveChanged: {

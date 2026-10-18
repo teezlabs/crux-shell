@@ -2,8 +2,7 @@ import QtQuick
 import qs.Commons
 import qs.Widgets
 
-// Hover/selection backdrop for a popup list row. Selected = the row's live
-// item (connected network, default sink): a tint plus a left-edge marker.
+// Hover and selection backdrop for a popup row; selected adds a tint and a left-edge marker.
 Item {
   id: root
 

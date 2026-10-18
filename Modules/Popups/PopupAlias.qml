@@ -3,8 +3,7 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import qs.Commons
 
-// The screen-agnostic IPC target for one popup, declared once for the whole
-// shell rather than per monitor — see the crux skill's notes.md.
+// Screen-agnostic IPC target for one popup, declared once per shell (docs/design-notes.md).
 QtObject {
   id: root
 

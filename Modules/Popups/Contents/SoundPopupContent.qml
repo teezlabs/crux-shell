@@ -5,9 +5,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Modules.Popups
 
-// Volume popup content: default-output volume slider + mute toggle, and a
-// list of available output devices to switch the default sink. Hosted
-// inside a SlideCard by PopupHost.qml — no window/positioning of its own.
+// Volume popup: default-output volume, mute and output device list.
 ColumnLayout {
   id: root
 

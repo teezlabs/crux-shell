@@ -6,22 +6,18 @@ import qs.Services
 import qs.Widgets
 import qs.Modules.Popups
 
-// Clipboard history popup content. Backend is cliphist (same as
-// noctalia-shell), not Omarchy's own capture.sh. Hosted inside a
-// SlideCard by PopupHost.qml — no window/positioning of its own.
+// Clipboard history from cliphist.
 ColumnLayout {
   id: root
 
   spacing: Tokens.spaceLg
 
-  // Bound to the owning SlideCard's `open` from PopupHost — refreshes the
-  // list on open, same as the old toggle()-triggered refresh().
+  // Bound to the card's shown state; refreshes the list on open.
   property bool active: false
   onActiveChanged: if (root.active)
     root.refresh()
 
-  // Emitted after copying an entry, so PopupHost closes the card — this
-  // content has no window of its own to set visible on directly anymore.
+  // Asks PopupHost to close the card after copying an entry.
   signal requestClose
 
   readonly property bool cliphistAvailable: ClipboardService.available

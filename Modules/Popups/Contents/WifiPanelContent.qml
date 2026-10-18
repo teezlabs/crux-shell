@@ -13,13 +13,9 @@ import qs.Widgets
 ColumnLayout {
   id: root
 
-  // Drives the scanner/polling — true whenever this content is actually
-  // on screen, whether that's a standalone popup's visible or a Control
-  // Center section's expanded state.
+  // True while this content is on screen, as a popup or inline in Control Center; drives scanning and polling.
   property bool panelActive: false
-  // Emitted when an action should close whatever's hosting this content
-  // (e.g. launching the Custom-DNS terminal) — a standalone popup hides
-  // itself on this, an inline Control Center section collapses.
+  // Asks the host to close: a popup hides, an inline Control Center section collapses.
   signal requestClose
 
   spacing: Tokens.spaceLg
@@ -130,9 +126,7 @@ ColumnLayout {
     if (dnsActionProc.running)
       return;
     if (provider === "Custom") {
-      // Custom takes an arbitrary server list on stdin and can't be
-      // pre-authorized by sudoers, so it runs in a real terminal that can
-      // prompt for both the servers and, if needed, a sudo password.
+      // Custom can't be pre-authorized in sudoers, so it runs in a terminal that can prompt.
       Quickshell.execDetached(["kitty", "--", "bash", "-c", "crux-dns Custom; read -p 'Press enter to close...'"]);
       root.requestClose();
       return;

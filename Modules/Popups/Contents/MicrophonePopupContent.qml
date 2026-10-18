@@ -5,11 +5,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Modules.Popups
 
-// Microphone popup content: default-input volume slider + mute toggle, and
-// a list of available input devices to switch the default source. Exact
-// structural mirror of SoundPopupContent.qml, just bound to
-// defaultAudioSource/allSources. Hosted inside a SlideCard by
-// PopupHost.qml — no window/positioning of its own.
+// Mirror of SoundPopupContent for the default source: volume, mute and input device list.
 ColumnLayout {
   id: root
 

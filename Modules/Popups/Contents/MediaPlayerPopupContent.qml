@@ -6,8 +6,7 @@ import qs.Services
 import qs.Widgets
 import qs.Modules.Popups
 
-// Media player popup content: every control is live MPRIS, gated on the
-// player's own can*/Supported flags. No fabricated "year".
+// Media popup: every control is live MPRIS, gated on the player's own can* flags.
 ColumnLayout {
   id: root
 
@@ -62,9 +61,7 @@ ColumnLayout {
         asynchronous: true
       }
 
-      // Diagonal-stripe placeholder when there's no art — same idea
-      // the spec text calls for ("fall back to the diagonal-stripe
-      // placeholder").
+      // Diagonal-stripe placeholder when there's no art (spec §6.6).
       Canvas {
         anchors.fill: parent
         anchors.margins: Tokens.borderModule
