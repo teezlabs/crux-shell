@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import qs.Commons
+import qs.Services
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
 
@@ -14,24 +15,9 @@ NScrollView {
   contentHeight: col.implicitHeight
 
   // -------------------- Keyboard device --------------------
-  property var keyboards: []
+  readonly property var keyboards: Keyboard.keyboards
 
-  Process {
-    id: devicesProc
-    command: ["hyprctl", "-j", "devices"]
-    stdout: StdioCollector {
-      onStreamFinished: {
-        try {
-          var data = JSON.parse(text);
-          root.keyboards = data.keyboards || [];
-        } catch (e) {
-          root.keyboards = [];
-        }
-      }
-    }
-  }
-
-  Component.onCompleted: devicesProc.running = true
+  Component.onCompleted: Keyboard.refresh()
 
   // -------------------- VPN --------------------
   property var vpnConnections: ({})

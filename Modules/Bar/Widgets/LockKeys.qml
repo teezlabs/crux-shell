@@ -1,11 +1,10 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
 import qs.Commons
+import qs.Services
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
-// Caps/Num/Scroll lock indicator. capsLock/numLock come from `hyprctl devices -j`; scroll lock has no
+// Caps/Num/Scroll lock indicator. capsLock/numLock come from Keyboard; scroll lock has no
 // source on this hardware (not in Hyprland's JSON, no sysfs LED either) so it always shows "unknown", not a bug.
 Item {
   id: root
@@ -16,8 +15,8 @@ Item {
   property bool vertical: false
   property bool invertChamfer: false
 
-  property bool capsLockOn: false
-  property bool numLockOn: false
+  readonly property bool capsLockOn: Keyboard.capsLock
+  readonly property bool numLockOn: Keyboard.numLock
 
   readonly property bool showCaps: Settings.data.lockKeys.showCapsLock
   readonly property bool showNum: Settings.data.lockKeys.showNumLock
@@ -32,54 +31,8 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  Process {
-    id: devicesProc
-    command: ["hyprctl", "-j", "devices"]
-    stdout: StdioCollector {
-      onStreamFinished: {
-        try {
-          var data = JSON.parse(text);
-          var keyboards = data.keyboards || [];
-          var chosen = null;
-          var wanted = Settings.data.keyboard.deviceName;
-          if (wanted) {
-            for (var i = 0; i < keyboards.length; i++) {
-              if (keyboards[i].name === wanted) {
-                chosen = keyboards[i];
-                break;
-              }
-            }
-          }
-          if (!chosen) {
-            for (var j = 0; j < keyboards.length; j++) {
-              if (keyboards[j].main) {
-                chosen = keyboards[j];
-                break;
-              }
-            }
-          }
-          if (!chosen && keyboards.length > 0)
-            chosen = keyboards[0];
-
-          if (chosen) {
-            root.capsLockOn = !!chosen.capsLock;
-            root.numLockOn = !!chosen.numLock;
-          }
-        } catch (e) {
-          // hyprctl not available / malformed JSON — leave last-known state.
-        }
-      }
-    }
-  }
-
-  Timer {
-    interval: 500
-    running: true
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: if (!devicesProc.running)
-      devicesProc.running = true
-  }
+  Component.onCompleted: Keyboard.lockKeyWatchers++
+  Component.onDestruction: Keyboard.lockKeyWatchers--
 
   BarModule {
     id: module
