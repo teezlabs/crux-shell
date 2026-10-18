@@ -33,7 +33,7 @@ Singleton {
 
   Process {
     running: root.refCount > 0
-    command: ["sh", "-c", "printf '%s' \"$1\" | exec cava -p /dev/stdin", "sh", root.config]
+    command: ["setpriv", "--pdeathsig", "TERM", "sh", "-c", "printf '%s' \"$1\" | exec cava -p /dev/stdin", "sh", root.config]
     onRunningChanged: if (!running) root.values = []
 
     stdout: SplitParser {

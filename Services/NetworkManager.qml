@@ -92,7 +92,7 @@ Singleton {
   }
 
   readonly property Process monitorProc: Process {
-    command: ["nmcli", "monitor"]
+    command: ["setpriv", "--pdeathsig", "TERM", "nmcli", "monitor"]
     running: true
     stdout: SplitParser {
       onRead: root.debounce.restart()

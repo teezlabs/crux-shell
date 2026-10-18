@@ -23,8 +23,9 @@ Singleton {
     root.setActive(!root.active);
   }
 
+  // pdeathsig so a crashed crux can't leave the machine inhibited; systemd-inhibit stops sleep on SIGTERM.
   readonly property Process inhibitor: Process {
     running: root.active
-    command: ["systemd-inhibit", "--what=idle:sleep", "--why=crux: keep awake", "--mode=block", "sleep", "infinity"]
+    command: ["setpriv", "--pdeathsig", "TERM", "systemd-inhibit", "--what=idle:sleep", "--why=crux: keep awake", "--mode=block", "sleep", "infinity"]
   }
 }
