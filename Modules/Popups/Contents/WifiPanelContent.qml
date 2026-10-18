@@ -38,7 +38,7 @@ ColumnLayout {
   property string failureSsid: ""
   property string failureReason: ""
 
-  readonly property string _binDir: Quickshell.env("HOME") + "/.config/quickshell/crux/bin/"
+  readonly property string _binDir: Quickshell.shellDir + "/bin/"
 
   // ---------------- Connection details (ported from Omarchy's Panel.qml) ----------------
   property var info: ({})

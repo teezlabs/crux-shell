@@ -20,7 +20,7 @@ ColumnLayout {
   onActiveChanged: if (root.active && !fetchProc.running)
     fetchProc.running = true
 
-  readonly property string _binDir: Quickshell.env("HOME") + "/.config/quickshell/crux/bin/"
+  readonly property string _binDir: Quickshell.shellDir + "/bin/"
 
   property var record: ({})
   readonly property var limits: record.limits || []

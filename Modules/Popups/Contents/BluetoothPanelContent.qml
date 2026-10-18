@@ -30,7 +30,7 @@ ColumnLayout {
   // address -> "connecting" | "disconnecting" | "forgetting"
   property var pendingActions: ({})
 
-  readonly property string _binDir: Quickshell.env("HOME") + "/.config/quickshell/crux/bin/"
+  readonly property string _binDir: Quickshell.shellDir + "/bin/"
 
   function deviceFor(address) {
     for (var i = 0; i < devices.length; i++) {
