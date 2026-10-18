@@ -60,7 +60,7 @@ Item {
     { "label": "Hue rooms & zones", "description": "Pick which Hue group the bar widget controls", "tab": "hue", "subTab": "", "keywords": "group light" },
 
     // ---- System Monitor ----
-    { "label": "System monitor sampling", "description": "How often CPU/RAM stats refresh", "tab": "systemMonitor", "subTab": "", "keywords": "refresh interval cpu ram" },
+    { "label": "System monitor sampling", "description": "How often system stats refresh", "tab": "systemMonitor", "subTab": "", "keywords": "refresh interval cpu ram" },
     { "label": "System monitor warn threshold", "description": "% at which CPU/RAM reads as warning-colored", "tab": "systemMonitor", "subTab": "", "keywords": "warning" },
     { "label": "Battery thresholds", "description": "Low and critical percent for battery color states", "tab": "systemMonitor", "subTab": "", "keywords": "low critical" },
     { "label": "Power profile", "description": "PowerSaver/Balanced/Performance switcher in the battery popup", "tab": "systemMonitor", "subTab": "", "keywords": "powerprofilesctl performance" },
@@ -78,7 +78,6 @@ Item {
     // ---- Control Center ----
     { "label": "Show weather card", "description": "Toggle the forecast card in the Control Center popup", "tab": "controlCenter", "subTab": "", "keywords": "forecast weather" },
     { "label": "Temperature unit", "description": "Fahrenheit or Celsius for the weather card", "tab": "controlCenter", "subTab": "", "keywords": "fahrenheit celsius degrees" },
-    { "label": "Control Center refresh interval", "description": "How often the CPU/MEM/TEMP/DISK gauges refresh", "tab": "controlCenter", "subTab": "", "keywords": "stats gauges cpu mem temp disk" },
     { "label": "Screenshot command", "description": "Command run by the CAPTURE action tile", "tab": "controlCenter", "subTab": "", "keywords": "capture rishot screenshot" },
 
     // ---- Launcher ----

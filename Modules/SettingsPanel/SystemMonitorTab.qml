@@ -15,7 +15,7 @@ NScrollView {
 
   SettingsSection {
     title: "Sampling"
-    description: "How often CPU/RAM are polled, and the usage level that flags them as high."
+    description: "How often system stats are polled for the bar, the stats popup and Control Center, and the usage level that flags them as high."
 
     SettingRow {
       label: "Refresh"

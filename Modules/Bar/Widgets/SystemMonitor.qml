@@ -1,12 +1,11 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
 import qs.Commons
+import qs.Services
 import qs.Modules.Popups
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
-// CPU%/RAM% readout (delta-based /proc/stat, MemTotal-MemAvailable). Click opens the systemStats popup hosted by PopupHost.qml.
+// CPU%/RAM% readout from SystemStats. Click opens the systemStats popup hosted by PopupHost.qml.
 Item {
   id: root
 
@@ -16,91 +15,13 @@ Item {
   property bool vertical: false
   property bool invertChamfer: false
 
-  property real cpuPercent: 0
-  property real memPercent: 0
-  property var prevCpuStats: null
+  readonly property int cpuPercent: Math.round(SystemStats.cpuPercent)
+  readonly property int memPercent: Math.round(SystemStats.memPercent)
   readonly property bool cpuWarn: cpuPercent >= Settings.data.systemMonitor.cpuWarningThreshold
   readonly property bool memWarn: memPercent >= Settings.data.systemMonitor.memWarningThreshold
 
-  function calculateLineUsage(line) {
-    var parts = line.split(/\s+/);
-    return {
-      "user": parseInt(parts[1]) || 0,
-      "nice": parseInt(parts[2]) || 0,
-      "system": parseInt(parts[3]) || 0,
-      "idle": parseInt(parts[4]) || 0,
-      "iowait": parseInt(parts[5]) || 0,
-      "irq": parseInt(parts[6]) || 0,
-      "softirq": parseInt(parts[7]) || 0,
-      "steal": parseInt(parts[8]) || 0,
-      "guest": parseInt(parts[9]) || 0,
-      "guestNice": parseInt(parts[10]) || 0
-    };
-  }
-
-  function totalOf(s) {
-    var t = 0;
-    for (var k in s)
-      t += s[k];
-    return t;
-  }
-
-  function parseCpuStat(text) {
-    if (!text)
-      return;
-    var line = text.split("\n")[0];
-    if (line.indexOf("cpu ") !== 0)
-      return;
-    var curr = calculateLineUsage(line);
-    if (root.prevCpuStats) {
-      var currIdle = curr.idle + curr.iowait;
-      var prevIdle = root.prevCpuStats.idle + root.prevCpuStats.iowait;
-      var diffTotal = totalOf(curr) - totalOf(root.prevCpuStats);
-      var diffIdle = currIdle - prevIdle;
-      if (diffTotal > 0)
-        root.cpuPercent = Math.round(((diffTotal - diffIdle) / diffTotal) * 100);
-    }
-    root.prevCpuStats = curr;
-  }
-
-  function parseMemInfo(text) {
-    if (!text)
-      return;
-    var lines = text.split("\n");
-    var memTotal = 0, memAvailable = 0;
-    for (var i = 0; i < lines.length; i++) {
-      var l = lines[i];
-      if (l.indexOf("MemTotal:") === 0)
-        memTotal = parseInt(l.split(/\s+/)[1]) || 0;
-      else if (l.indexOf("MemAvailable:") === 0)
-        memAvailable = parseInt(l.split(/\s+/)[1]) || 0;
-    }
-    if (memTotal > 0)
-      root.memPercent = Math.round(((memTotal - memAvailable) / memTotal) * 100);
-  }
-
-  FileView {
-    id: cpuStatFile
-    path: "/proc/stat"
-    onLoaded: root.parseCpuStat(text())
-  }
-
-  FileView {
-    id: memInfoFile
-    path: "/proc/meminfo"
-    onLoaded: root.parseMemInfo(text())
-  }
-
-  Timer {
-    interval: Settings.data.systemMonitor.refreshInterval
-    running: true
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: {
-      cpuStatFile.reload();
-      memInfoFile.reload();
-    }
-  }
+  Component.onCompleted: SystemStats.watchers++
+  Component.onDestruction: SystemStats.watchers--
 
   implicitWidth: module.implicitWidth
   implicitHeight: module.implicitHeight

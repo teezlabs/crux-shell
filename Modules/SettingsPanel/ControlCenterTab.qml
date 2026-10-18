@@ -129,25 +129,6 @@ NScrollView {
   }
 
   SettingsSection {
-    title: "System stats"
-    description: "How often the CPU/MEM/TEMP/DISK gauges refresh while the popup is open."
-
-    SettingRow {
-      label: "Refresh interval"
-
-      NValueSlider {
-        from: 500
-        to: 5000
-        stepSize: 100
-        value: Settings.data.controlCenter.statsRefreshInterval
-        sliderWidth: 160
-        readoutText: Settings.data.controlCenter.statsRefreshInterval + " ms"
-        onMoved: value => Settings.data.controlCenter.statsRefreshInterval = Math.round(value)
-      }
-    }
-  }
-
-  SettingsSection {
     title: "Actions"
     description: "The command run by the CAPTURE action tile."
 

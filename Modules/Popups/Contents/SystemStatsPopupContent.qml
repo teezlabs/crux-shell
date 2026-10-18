@@ -1,243 +1,34 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell.Io
 import qs.Commons
+import qs.Services
 import qs.Widgets
 import qs.Modules.ControlCenter
 import qs.Modules.Popups
 
-// Full system-telemetry panel content, fuller than the bar's CPU%/RAM%
-// readout. Metric collection ported 1:1 from ControlCenterPopupContent.qml,
-// plus per-core CPU breakdown, every mounted filesystem, and load
-// average. Hosted inside a SlideCard by PopupHost.qml — no
-// window/positioning of its own.
+// Full system telemetry from SystemStats: per-core CPU, memory, temperature, every real filesystem and load.
 ColumnLayout {
   id: root
 
   spacing: Tokens.spaceLg
 
-  // Bound to the owning SlideCard's `open` from PopupHost — drives the
-  // refresh timer.
+  // Bound to the owning SlideCard's `shown` from PopupHost; samples the full stats only while open.
   property bool active: false
+  onActiveChanged: SystemStats.fullWatchers += active ? 1 : -1
+  Component.onDestruction: if (active)
+    SystemStats.fullWatchers--
 
-  // ---- CPU: aggregate + per-core, delta-based from /proc/stat ----
-  property real cpuPercent: 0
-  property var coresUsage: []
-  property var _prevCpuStats: null
-  property var _prevCoreStats: []
-
-  function _calcUsage(line) {
-    var p = line.split(/\s+/);
-    var s = {
-      "user": parseInt(p[1]) || 0,
-      "nice": parseInt(p[2]) || 0,
-      "system": parseInt(p[3]) || 0,
-      "idle": parseInt(p[4]) || 0,
-      "iowait": parseInt(p[5]) || 0,
-      "irq": parseInt(p[6]) || 0,
-      "softirq": parseInt(p[7]) || 0,
-      "steal": parseInt(p[8]) || 0
-    };
-    var total = 0;
-    for (var k in s)
-      total += s[k];
-    return {
-      "total": total,
-      "idle": s.idle + s.iowait
-    };
-  }
-
-  function _usagePercent(prev, cur) {
-    if (!prev)
-      return -1;
-    var dTotal = cur.total - prev.total;
-    var dIdle = cur.idle - prev.idle;
-    return dTotal > 0 ? Math.max(0, Math.min(100, 100 * (1 - dIdle / dTotal))) : -1;
-  }
-
-  // ---- Memory ----
-  property real memPercent: 0
-  property real memUsedGb: 0
-  property real memTotalGb: 0
-
-  // ---- Temperature (k10temp Tctl, falls back to first temp1_input) ----
-  property real tempC: 0
-
-  // ---- Disk: every real mounted filesystem, not just "/" ----
-  property var disks: [] // [{target, percent, usedGb, sizeGb}]
-
-  // ---- Uptime + load average ----
-  property string uptimeText: "…"
-  property real loadAvg1: 0
-  property real loadAvg5: 0
-  property real loadAvg15: 0
-
-  function refreshStats() {
-    cpuMemProc.running = true;
-    sensorsProc.running = true;
-    diskProc.running = true;
-    uptimeProc.running = true;
-  }
-
-  Timer {
-    interval: 2000
-    running: root.active
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: root.refreshStats()
-  }
-
-  // All "cpu"/"cpuN" lines from /proc/stat plus MemTotal/MemAvailable.
-  Process {
-    id: cpuMemProc
-    command: ["sh", "-c", "grep '^cpu' /proc/stat; echo '---MEM---'; grep -E 'MemTotal|MemAvailable' /proc/meminfo"]
-    stdout: StdioCollector {
-      id: cpuMemCollector
-      waitForEnd: true
-    }
-    onExited: exitCode => {
-      var parts = cpuMemCollector.text.split("---MEM---");
-      var cpuLines = (parts[0] || "").trim().split("\n").filter(l => l.length > 0);
-      var memLines = (parts[1] || "").trim().split("\n");
-
-      if (cpuLines.length > 0) {
-        // First line is the aggregate "cpu " line.
-        var curAgg = root._calcUsage(cpuLines[0]);
-        var aggPct = root._usagePercent(root._prevCpuStats, curAgg);
-        if (aggPct >= 0)
-          root.cpuPercent = aggPct;
-        root._prevCpuStats = curAgg;
-
-        // Remaining lines are per-core "cpu0", "cpu1", ...
-        var coreLines = cpuLines.slice(1);
-        var newCoreStats = [];
-        var newCoresUsage = root.coresUsage.slice();
-        if (newCoresUsage.length !== coreLines.length)
-          newCoresUsage = new Array(coreLines.length).fill(0);
-        for (var i = 0; i < coreLines.length; i++) {
-          var cur = root._calcUsage(coreLines[i]);
-          var pct = root._usagePercent(root._prevCoreStats[i], cur);
-          if (pct >= 0)
-            newCoresUsage[i] = pct;
-          newCoreStats.push(cur);
-        }
-        root.coresUsage = newCoresUsage;
-        root._prevCoreStats = newCoreStats;
-      }
-
-      var memTotal = 0, memAvail = 0;
-      for (var j = 0; j < memLines.length; j++) {
-        var m = memLines[j].match(/(\d+)/);
-        if (!m)
-          continue;
-        if (memLines[j].indexOf("MemTotal") === 0)
-          memTotal = parseInt(m[1]);
-        else if (memLines[j].indexOf("MemAvailable") === 0)
-          memAvail = parseInt(m[1]);
-      }
-      if (memTotal > 0) {
-        root.memPercent = Math.max(0, Math.min(100, 100 * (1 - memAvail / memTotal)));
-        root.memUsedGb = (memTotal - memAvail) / (1024 * 1024);
-        root.memTotalGb = memTotal / (1024 * 1024);
-      }
-    }
-  }
-
-  // k10temp's Tctl is the standard AMD CPU control-temp sensor; falls back
-  // to the first temp1_input `sensors -j` reports on non-AMD boxes.
-  Process {
-    id: sensorsProc
-    command: ["sh", "-c", "sensors -j 2>/dev/null"]
-    stdout: StdioCollector {
-      id: sensorsCollector
-      waitForEnd: true
-    }
-    onExited: exitCode => {
-      try {
-        var data = JSON.parse(sensorsCollector.text);
-        var t = null;
-        for (var chip in data) {
-          if (chip.indexOf("k10temp") === 0 && data[chip].Tctl) {
-            t = data[chip].Tctl.temp1_input;
-            break;
-          }
-        }
-        if (t === null) {
-          for (var chip2 in data) {
-            for (var sensor in data[chip2]) {
-              if (data[chip2][sensor] && data[chip2][sensor].temp1_input !== undefined) {
-                t = data[chip2][sensor].temp1_input;
-                break;
-              }
-            }
-            if (t !== null)
-              break;
-          }
-        }
-        if (t !== null)
-          root.tempC = t;
-      } catch (e) {}
-    }
-  }
-
-  // Every real mounted filesystem, excluding tmpfs/overlay/pseudo mounts —
-  // same idea as noctalia's SystemStatService df call ("-x efivarfs"),
-  // extended to skip the usual noise so only genuine backing filesystems
-  // show up.
-  Process {
-    id: diskProc
-    command: ["sh", "-c", "df --output=target,pcent,used,size -x tmpfs -x devtmpfs -x overlay -x squashfs -x proc -x sysfs -x cgroup -x cgroup2 -x tracefs -x debugfs -x securityfs -x pstore -x autofs -x mqueue -x hugetlbfs -x devpts -x rpc_pipefs -x nsfs -x efivarfs --block-size=1 2>/dev/null"]
-    stdout: StdioCollector {
-      id: diskCollector
-      waitForEnd: true
-    }
-    onExited: exitCode => {
-      var lines = diskCollector.text.trim().split("\n");
-      var out = [];
-      for (var i = 1; i < lines.length; i++) {
-        var parts = lines[i].trim().split(/\s+/);
-        if (parts.length < 4)
-          continue;
-        var target = parts[0];
-        var percent = parseInt(parts[1].replace(/[^0-9]/g, "")) || 0;
-        var usedBytes = parseFloat(parts[2]) || 0;
-        var sizeBytes = parseFloat(parts[3]) || 0;
-        out.push({
-                    "target": target,
-                    "percent": percent,
-                    "usedGb": usedBytes / 1e9,
-                    "sizeGb": sizeBytes / 1e9
-                  });
-      }
-      root.disks = out;
-    }
-  }
-
-  Process {
-    id: uptimeProc
-    command: ["sh", "-c", "cat /proc/uptime; cat /proc/loadavg"]
-    stdout: StdioCollector {
-      id: uptimeCollector
-      waitForEnd: true
-    }
-    onExited: exitCode => {
-      var lines = uptimeCollector.text.trim().split("\n");
-      var seconds = parseFloat((lines[0] || "0").split(" ")[0]) || 0;
-      var d = Math.floor(seconds / 86400);
-      var h = Math.floor((seconds % 86400) / 3600);
-      var mi = Math.floor((seconds % 3600) / 60);
-      root.uptimeText = (d > 0 ? d + "d " : "") + String(h).padStart(2, "0") + ":" + String(mi).padStart(2, "0");
-
-      var loadParts = (lines[1] || "").trim().split(/\s+/);
-      if (loadParts.length >= 3) {
-        root.loadAvg1 = parseFloat(loadParts[0]) || 0;
-        root.loadAvg5 = parseFloat(loadParts[1]) || 0;
-        root.loadAvg15 = parseFloat(loadParts[2]) || 0;
-      }
-    }
-  }
-
-  Component.onCompleted: root.refreshStats()
+  readonly property real cpuPercent: SystemStats.cpuPercent
+  readonly property var coresUsage: SystemStats.coresUsage
+  readonly property real memPercent: SystemStats.memPercent
+  readonly property real memUsedGb: SystemStats.memUsedGb
+  readonly property real memTotalGb: SystemStats.memTotalGb
+  readonly property real tempC: SystemStats.tempC
+  readonly property var disks: SystemStats.disks
+  readonly property string uptimeText: SystemStats.formatUptime("d")
+  readonly property real loadAvg1: SystemStats.loadAvg1
+  readonly property real loadAvg5: SystemStats.loadAvg5
+  readonly property real loadAvg15: SystemStats.loadAvg15
 
   // ---- Header ----
   PopupHeader {

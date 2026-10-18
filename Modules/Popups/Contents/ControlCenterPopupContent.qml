@@ -20,9 +20,11 @@ ColumnLayout {
 
   spacing: Tokens.spaceLg
 
-  // Set from the card's shown state: the stats timer and the media position
-  // ticker only run while the panel is actually open.
+  // Set from the card's shown state; system stats are sampled only while open.
   property bool active: false
+  onActiveChanged: SystemStats.fullWatchers += active ? 1 : -1
+  Component.onDestruction: if (active)
+    SystemStats.fullWatchers--
   // Which monitor this card is on, for the Popups calls that open another
   // surface on the same screen.
   property var targetScreen: null
@@ -117,7 +119,7 @@ ColumnLayout {
 
   // ---- User@host + uptime ----
   property string whoHost: "…"
-  property string uptimeText: "…"
+  readonly property string uptimeText: SystemStats.formatUptime("D")
 
   Process {
     id: whoProc
@@ -129,150 +131,12 @@ ColumnLayout {
     onExited: exitCode => root.whoHost = whoCollector.text.trim()
   }
 
-  Process {
-    id: uptimeProc
-    command: ["cat", "/proc/uptime"]
-    stdout: StdioCollector {
-      id: uptimeCollector
-      waitForEnd: true
-    }
-    onExited: exitCode => {
-      var seconds = parseFloat(uptimeCollector.text.split(" ")[0]) || 0;
-      var d = Math.floor(seconds / 86400);
-      var h = Math.floor((seconds % 86400) / 3600);
-      var m = Math.floor((seconds % 3600) / 60);
-      root.uptimeText = (d > 0 ? d + "D " : "") + String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
-    }
-  }
-
   // ---- Telemetry: CPU / MEM / TEMP / DISK ----
-  property real cpuPercent: 0
-  property real memPercent: 0
-  property real memUsedGb: 0
-  property real tempC: 0
-  property real diskPercent: 0
-  property var _prevCpuStats: null
-
-  function _calcUsage(line) {
-    var p = line.split(/\s+/);
-    var s = {
-      "user": parseInt(p[1]) || 0,
-      "nice": parseInt(p[2]) || 0,
-      "system": parseInt(p[3]) || 0,
-      "idle": parseInt(p[4]) || 0,
-      "iowait": parseInt(p[5]) || 0,
-      "irq": parseInt(p[6]) || 0,
-      "softirq": parseInt(p[7]) || 0,
-      "steal": parseInt(p[8]) || 0
-    };
-    var total = 0;
-    for (var k in s)
-      total += s[k];
-    return {
-      "total": total,
-      "idle": s.idle + s.iowait
-    };
-  }
-
-  function refreshStats() {
-    statProc.running = true;
-    sensorsProc.running = true;
-    diskProc.running = true;
-  }
-
-  Timer {
-    interval: Settings.data.controlCenter.statsRefreshInterval
-    running: root.active
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: {
-      root.refreshStats();
-      uptimeProc.running = true;
-    }
-  }
-
-  Process {
-    id: statProc
-    command: ["sh", "-c", "head -1 /proc/stat; grep -E 'MemTotal|MemAvailable' /proc/meminfo"]
-    stdout: StdioCollector {
-      id: statCollector
-      waitForEnd: true
-    }
-    onExited: exitCode => {
-      var lines = statCollector.text.split("\n");
-      var cur = root._calcUsage(lines[0] || "");
-      if (root._prevCpuStats) {
-        var dTotal = cur.total - root._prevCpuStats.total;
-        var dIdle = cur.idle - root._prevCpuStats.idle;
-        root.cpuPercent = dTotal > 0 ? Math.max(0, Math.min(100, 100 * (1 - dIdle / dTotal))) : root.cpuPercent;
-      }
-      root._prevCpuStats = cur;
-
-      var memTotal = 0, memAvail = 0;
-      for (var i = 1; i < lines.length; i++) {
-        var m = lines[i].match(/(\d+)/);
-        if (!m)
-          continue;
-        if (lines[i].indexOf("MemTotal") === 0)
-          memTotal = parseInt(m[1]);
-        else if (lines[i].indexOf("MemAvailable") === 0)
-          memAvail = parseInt(m[1]);
-      }
-      root.memPercent = memTotal > 0 ? Math.max(0, Math.min(100, 100 * (1 - memAvail / memTotal))) : root.memPercent;
-      root.memUsedGb = (memTotal - memAvail) / (1024 * 1024);
-    }
-  }
-
-  // k10temp's Tctl is the standard AMD CPU control-temp sensor; falls back
-  // to the first temp1_input `sensors -j` reports on non-AMD boxes.
-  Process {
-    id: sensorsProc
-    command: ["sh", "-c", "sensors -j 2>/dev/null"]
-    stdout: StdioCollector {
-      id: sensorsCollector
-      waitForEnd: true
-    }
-    onExited: exitCode => {
-      try {
-        var data = JSON.parse(sensorsCollector.text);
-        var t = null;
-        for (var chip in data) {
-          if (chip.indexOf("k10temp") === 0 && data[chip].Tctl) {
-            t = data[chip].Tctl.temp1_input;
-            break;
-          }
-        }
-        if (t === null) {
-          for (var chip2 in data) {
-            for (var sensor in data[chip2]) {
-              if (data[chip2][sensor] && data[chip2][sensor].temp1_input !== undefined) {
-                t = data[chip2][sensor].temp1_input;
-                break;
-              }
-            }
-            if (t !== null)
-              break;
-          }
-        }
-        if (t !== null)
-          root.tempC = t;
-      } catch (e) {}
-    }
-  }
-
-  Process {
-    id: diskProc
-    command: ["sh", "-c", "df --output=pcent / | tail -1"]
-    stdout: StdioCollector {
-      id: diskCollector
-      waitForEnd: true
-    }
-    onExited: exitCode => {
-      var m = diskCollector.text.match(/(\d+)/);
-      if (m)
-        root.diskPercent = parseInt(m[1]);
-    }
-  }
+  readonly property real cpuPercent: SystemStats.cpuPercent
+  readonly property real memPercent: SystemStats.memPercent
+  readonly property real memUsedGb: SystemStats.memUsedGb
+  readonly property real tempC: SystemStats.tempC
+  readonly property real diskPercent: SystemStats.rootDiskPercent
 
   // ---- Media ----
   readonly property var activePlayer: MediaService.activePlayer
@@ -299,9 +163,7 @@ ColumnLayout {
 
   Component.onCompleted: {
     whoProc.running = true;
-    uptimeProc.running = true;
     root.refreshBrightness();
-    root.refreshStats();
     toolCheckProc.running = true;
   }
 
