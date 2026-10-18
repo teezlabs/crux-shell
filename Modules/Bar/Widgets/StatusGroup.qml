@@ -1,14 +1,14 @@
 import QtQuick
 import Quickshell
-import Quickshell.Io
 import Quickshell.Networking
 import Quickshell.Services.Pipewire
+import Quickshell.Services.UPower
 import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
 // Merged NET/VOL/BAT status module (spec §6.1), split by 1px dividers. Click opens Control Center.
-// BAT segment only shows if a power_supply device is present — no fake 100% on battery-less desktops.
+// BAT segment only shows when UPower reports a system battery — no fake 100% on battery-less desktops.
 Item {
   id: root
 
@@ -43,30 +43,8 @@ Item {
     objects: root.sink ? [root.sink] : []
   }
 
-  property bool hasBattery: false
-  property int batteryPercent: 0
-
-  Process {
-    id: batProc
-    command: ["sh", "-c", "cat /sys/class/power_supply/*/capacity 2>/dev/null | head -1"]
-    stdout: StdioCollector {
-      id: batCollector
-      waitForEnd: true
-    }
-    onExited: exitCode => {
-      var text = batCollector.text.trim();
-      root.hasBattery = text !== "";
-      root.batteryPercent = parseInt(text) || 0;
-    }
-  }
-
-  Timer {
-    interval: 30000
-    running: true
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: batProc.running = true
-  }
+  readonly property bool hasBattery: !!UPower.displayDevice && UPower.displayDevice.isPresent === true
+  readonly property int batteryPercent: hasBattery ? Math.round((UPower.displayDevice.percentage || 0) * 100) : 0
 
   implicitWidth: module.implicitWidth
   implicitHeight: module.implicitHeight
