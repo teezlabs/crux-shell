@@ -289,7 +289,6 @@ PanelWindow {
     MediaPlayerPopupContent {
       id: mediaPlayerContent
       anchors.fill: parent
-      active: mediaPlayerCard.shown
     }
   }
 

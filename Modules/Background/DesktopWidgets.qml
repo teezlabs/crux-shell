@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Services.Mpris
 import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
@@ -60,33 +59,11 @@ Variants {
     readonly property int _marginRight: _baseMargin + (_barPos === "right" ? _barGap : 0)
 
     readonly property bool weatherReady: Weather.ready
-    readonly property var players: Mpris.players ? Mpris.players.values : []
-    readonly property var activePlayer: {
-      for (var i = 0; i < players.length; i++) {
-        if (players[i] && players[i].playbackState === MprisPlaybackState.Playing)
-          return players[i];
-      }
-      return players.length > 0 ? players[0] : null;
-    }
+    readonly property var activePlayer: MediaService.activePlayer
     readonly property bool hasPlayer: !!activePlayer
-    readonly property bool isPlaying: activePlayer ? activePlayer.playbackState === MprisPlaybackState.Playing : false
-
-    // MPRIS position doesn't reliably push updates during playback — same
-    // "read your own tick property to force a stale binding to re-run"
-    // trick MediaPlayerWindow.qml already uses.
-    property int _positionTick: 0
-    readonly property real _position: {
-      _positionTick;
-      return activePlayer ? activePlayer.position : 0;
-    }
-    readonly property real _length: activePlayer ? activePlayer.length : 0
-
-    Timer {
-      interval: 1000
-      running: window.visible && window.isPlaying
-      repeat: true
-      onTriggered: window._positionTick++
-    }
+    readonly property bool isPlaying: MediaService.isPlaying
+    readonly property real _position: MediaService.position
+    readonly property real _length: MediaService.length
 
     // --- Weather card: bottom-left corner by default, draggable ---
     Item {

@@ -5,7 +5,6 @@ import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Networking
 import Quickshell.Services.Pipewire
-import Quickshell.Services.Mpris
 import qs.Commons
 import qs.Modules.SessionMenu
 import qs.Modules.LockScreen
@@ -136,14 +135,7 @@ Loader {
 
           // Read-only "now playing" line, not interactive controls — the
           // lock screen isn't the place to add a new tappable surface.
-          readonly property var mprisPlayers: Mpris.players ? Mpris.players.values : []
-          readonly property var activeMprisPlayer: {
-            for (var i = 0; i < mprisPlayers.length; i++) {
-              if (mprisPlayers[i] && mprisPlayers[i].playbackState === MprisPlaybackState.Playing)
-                return mprisPlayers[i];
-            }
-            return mprisPlayers.length > 0 ? mprisPlayers[0] : null;
-          }
+          readonly property var activeMprisPlayer: MediaService.activePlayer
 
           PwObjectTracker {
             objects: surface.sink ? [surface.sink] : []

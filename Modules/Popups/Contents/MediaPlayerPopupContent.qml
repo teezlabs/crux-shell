@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Mpris
 import qs.Commons
+import qs.Services
 import qs.Widgets
 import qs.Modules.Popups
 
@@ -12,47 +13,13 @@ ColumnLayout {
 
   spacing: Tokens.spaceLg
 
-  // Set by PopupHost from the card's shown state — the position ticker
-  // only runs while the card is actually open.
-  property bool active: false
-
-  readonly property var players: Mpris.players ? Mpris.players.values : []
-  readonly property var activePlayer: {
-    var preferred = Settings.isLoaded ? Settings.data.audio.preferredMediaPlayer : "";
-    if (preferred !== "") {
-      for (var j = 0; j < players.length; j++)
-        if (players[j] && players[j].identity === preferred)
-          return players[j];
-    }
-    for (var i = 0; i < players.length; i++) {
-      if (players[i] && players[i].playbackState === MprisPlaybackState.Playing)
-        return players[i];
-    }
-    return players.length > 0 ? players[0] : null;
-  }
-  readonly property bool isPlaying: activePlayer ? activePlayer.playbackState === MprisPlaybackState.Playing : false
-
-  // MPRIS doesn't reliably emit positionChanged during playback; _positionTick forces re-evaluation every second.
-  property int _positionTick: 0
-  readonly property real position: {
-    _positionTick;
-    return activePlayer ? activePlayer.position : 0;
-  }
-  readonly property real length: activePlayer ? activePlayer.length : 0
-
-  Timer {
-    interval: 1000
-    running: root.active && root.isPlaying
-    repeat: true
-    onTriggered: root._positionTick++
-  }
+  readonly property var activePlayer: MediaService.activePlayer
+  readonly property bool isPlaying: MediaService.isPlaying
+  readonly property real position: MediaService.position
+  readonly property real length: MediaService.length
 
   function fmtTime(seconds) {
-    if (!seconds || seconds < 0)
-      return "0:00";
-    var m = Math.floor(seconds / 60);
-    var s = Math.floor(seconds % 60);
-    return m + ":" + String(s).padStart(2, "0");
+    return MediaService.fmtTime(seconds);
   }
 
   PopupHeader {

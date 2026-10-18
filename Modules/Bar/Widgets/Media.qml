@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
-import Quickshell.Services.Mpris
 import qs.Commons
+import qs.Services
 import qs.Widgets
 import qs.Modules.Bar.Extras
 
@@ -19,21 +19,8 @@ Item {
   property bool contentVertical: vertical
   property bool invertChamfer: false
 
-  readonly property var players: Mpris.players ? Mpris.players.values : []
-  readonly property var activePlayer: {
-    var preferred = Settings.isLoaded ? Settings.data.audio.preferredMediaPlayer : "";
-    if (preferred !== "") {
-      for (var j = 0; j < players.length; j++)
-        if (players[j] && players[j].identity === preferred)
-          return players[j];
-    }
-    for (var i = 0; i < players.length; i++) {
-      if (players[i] && players[i].playbackState === MprisPlaybackState.Playing)
-        return players[i];
-    }
-    return players.length > 0 ? players[0] : null;
-  }
-  readonly property bool isPlaying: activePlayer ? activePlayer.playbackState === MprisPlaybackState.Playing : false
+  readonly property var activePlayer: MediaService.activePlayer
+  readonly property bool isPlaying: MediaService.isPlaying
   readonly property string trackTitle: activePlayer && activePlayer.trackTitle ? String(activePlayer.trackTitle).replace(/[\r\n]/g, "") : ""
   readonly property string trackArtist: activePlayer && activePlayer.trackArtist ? activePlayer.trackArtist : ""
   readonly property string displayText: trackArtist !== "" ? trackArtist + " — " + trackTitle : trackTitle

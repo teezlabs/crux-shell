@@ -4,7 +4,6 @@ import Quickshell
 import Quickshell.Bluetooth
 import Quickshell.Io
 import Quickshell.Networking
-import Quickshell.Services.Mpris
 import Quickshell.Services.Pipewire
 import Quickshell.Wayland
 import qs.Commons
@@ -275,35 +274,11 @@ ColumnLayout {
     }
   }
 
-  // ---- Media (real MPRIS, same pattern as MediaPlayerWindow.qml) ----
-  readonly property var players: Mpris.players ? Mpris.players.values : []
-  readonly property var activePlayer: {
-    var preferred = Settings.isLoaded ? Settings.data.audio.preferredMediaPlayer : "";
-    if (preferred !== "") {
-      for (var j = 0; j < players.length; j++)
-        if (players[j] && players[j].identity === preferred)
-          return players[j];
-    }
-    for (var i = 0; i < players.length; i++) {
-      if (players[i] && players[i].playbackState === MprisPlaybackState.Playing)
-        return players[i];
-    }
-    return players.length > 0 ? players[0] : null;
-  }
-  readonly property bool isPlaying: activePlayer ? activePlayer.playbackState === MprisPlaybackState.Playing : false
-  property int _positionTick: 0
-  readonly property real mediaPosition: {
-    _positionTick;
-    return activePlayer ? activePlayer.position : 0;
-  }
-  readonly property real mediaLength: activePlayer ? activePlayer.length : 0
-
-  Timer {
-    interval: 1000
-    running: root.active && root.isPlaying
-    repeat: true
-    onTriggered: root._positionTick++
-  }
+  // ---- Media ----
+  readonly property var activePlayer: MediaService.activePlayer
+  readonly property bool isPlaying: MediaService.isPlaying
+  readonly property real mediaPosition: MediaService.position
+  readonly property real mediaLength: MediaService.length
 
   // ---- Action-grid tool availability (shown disabled, never faked) ----
   property bool hasRecorder: false
