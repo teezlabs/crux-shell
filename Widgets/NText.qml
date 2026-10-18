@@ -1,13 +1,8 @@
 import QtQuick
 import qs.Commons
 
-// Base text element for the whole shell. Every Text in crux should be an
-// NText so the type scale, tracking and family come from Tokens rather
-// than being retyped at each call site.
-//
-// `size` picks a tier from the spec's type scale and carries that tier's
-// weight and letter-spacing with it; override font.weight afterwards for
-// the heavier variant of a pair (the tokens hold the lighter one).
+// Base text element: every Text should be an NText so size, weight and tracking come from Tokens.
+// Tiers carry the lighter weight of each pair; override font.weight for the heavier one.
 Text {
   id: root
 
@@ -24,9 +19,7 @@ Text {
 
   property int size: NText.Size.Body
   property bool mono: false
-  // The spec gives each tier a letter-spacing, but most existing layouts
-  // were measured without it and clip if it's applied retroactively — so
-  // it stays opt-in per call site rather than riding on the tier.
+  // Opt-in: older layouts were measured without tracking and clip with it (docs/design-notes.md).
   property bool tracking: false
 
   readonly property int tierSize: {
@@ -90,9 +83,7 @@ Text {
     return Tokens.bodyTracking;
   }
 
-  // Labels ease between colors for the same reason surfaces do: a hover or
-  // a retheme should settle, not cut. Set animateColor false where a label
-  // has to track a value instantly.
+  // Eases colour like surfaces do; false where a label must track a value instantly.
   property bool animateColor: true
 
   opacity: enabled ? 1.0 : 0.6

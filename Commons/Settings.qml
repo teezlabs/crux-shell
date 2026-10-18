@@ -87,10 +87,6 @@ Singleton {
 
     property JsonObject clipboard: ClipboardSettings {}
 
-    // Genuinely missing until now: Battery.qml (bar widget) and
-    // BatteryPopupContent.qml both read Settings.data.battery.* — always a
-    // TypeError on every boot, not something introduced by the popup
-    // rewrite, just never wired into the schema before.
     property JsonObject battery: BatterySettings {}
 
     property JsonObject audio: AudioSettings {}
@@ -101,10 +97,7 @@ Singleton {
 
     property JsonObject osd: OsdSettings {}
 
-    // Which PowerMenuWindow actions are shown, and which require a second
-    // tap within a short window before they actually run (arm-then-confirm,
-    // simpler than a press-and-hold gesture but still catches fat-fingers
-    // on anything destructive).
+    // Visible session actions, and which need a confirming second tap.
     property JsonObject sessionMenu: SessionMenuSettings {}
 
     property JsonObject systemMonitor: SystemMonitorSettings {}
@@ -113,9 +106,7 @@ Singleton {
 
     property JsonObject controlCenter: ControlCenterSettings {}
 
-    // Semantic color tokens ("m" prefix avoids QML reading "onPrimary" as
-    // a signal handler name). Defaults match what every widget already
-    // hardcoded — configurable, not a visual reset.
+    // Semantic colour roles read by Commons/Colors.qml.
     property JsonObject theme: ThemeSettings {}
 
     property JsonObject brightness: BrightnessSettings {}
@@ -134,9 +125,7 @@ Singleton {
 
     property JsonObject lockKeys: LockKeysSettings {}
 
-    // Marketplace sources for Commons/Plugins.qml -- each a git repo with
-    // a registry.json at its root listing {id, label, description, ...}
-    // per plugin. Local-folder plugins (no source) still work as before.
+    // Plugin marketplace sources: git repos with a registry.json at the root.
     property JsonObject plugins: PluginsSettings {}
 
     property JsonObject windowCorners: WindowCornersSettings {}
@@ -166,9 +155,7 @@ Singleton {
     return data.bar.position || "top";
   }
 
-  // True if this screen has its own enabled position override (as opposed
-  // to just following data.bar.position globally) — for the settings
-  // panel's per-monitor override UI to know whether to show it as "custom".
+  // True if this screen has an enabled position override of its own.
   function hasPositionOverride(screenName) {
     var override = _findScreenOverride(screenName);
     return !!(override && override.enabled !== false && override.position !== undefined);
@@ -182,8 +169,7 @@ Singleton {
     return data.bar.widgets;
   }
 
-  // Moves a widget within one section, on whichever list is actually
-  // effective for this screen — same resolution rule getBarWidgetsForScreen() uses.
+  // Moves a widget within one section of the list this screen actually uses.
   function reorderBarWidget(screenName, section, fromIndex, toIndex) {
     if (fromIndex === toIndex)
       return;
@@ -202,17 +188,12 @@ Singleton {
     if (usesOverride) {
       setScreenOverride(screenName, "widgets", widgets);
     } else {
-      // bar.widgets is a JsonObject, not a plain list<var> — reassigning the
-      // whole object (data.bar.widgets = widgets) silently doesn't persist.
-      // Assign directly to the affected list<var> sub-property instead,
-      // same as how screenOverrides (itself a list<var>) is written above.
+      // Assign the list<var> sub-property; reassigning the whole widgets JsonObject doesn't persist.
       data.bar.widgets[section] = list;
     }
   }
 
-  // Moves the widget at fromIndex in fromSection to toIndex in toSection —
-  // the cross-section counterpart to reorderBarWidget above. Same
-  // effective-list resolution rule.
+  // Cross-section counterpart to reorderBarWidget.
   function moveBarWidget(screenName, fromSection, fromIndex, toSection, toIndex) {
     if (fromSection === toSection) {
       reorderBarWidget(screenName, fromSection, fromIndex, toIndex);
@@ -241,15 +222,8 @@ Singleton {
     }
   }
 
-  // Appends a widget id to the end of one section — for the settings
-  // panel's "add widget" control. Same effective-list resolution rule.
-  // Control Center quick toggles. A plain ordered list — no per-screen
-  // overrides, unlike the bar's widgets.
-  //
-  // Reassigning the whole list<string> property is what persists here;
-  // mutating the array in place does not (same trap reorderBarWidget hit).
-  // Unknown ids are the loader's problem to refuse (CcToggleRegistry lives
-  // in Modules, and Commons shouldn't reach up into it).
+  // Control Center toggles are one plain list, with no per-screen overrides.
+  // Reassign the whole list<string>; mutating it in place doesn't persist.
   function addCcToggle(id) {
     const list = data.controlCenter.toggles.slice();
     if (list.indexOf(id) !== -1)
@@ -276,6 +250,7 @@ Singleton {
     data.controlCenter.toggles = list;
   }
 
+  // Appends a widget id to the end of one section.
   function addBarWidget(screenName, section, widgetId) {
     var override = _findScreenOverride(screenName);
     var usesOverride = !!(override && override.enabled !== false && override.widgets !== undefined);
@@ -294,8 +269,7 @@ Singleton {
     }
   }
 
-  // Removes the widget at index from one section — for the settings
-  // panel's per-row remove button.
+  // Removes the widget at index from one section.
   function removeBarWidget(screenName, section, index) {
     var override = _findScreenOverride(screenName);
     var usesOverride = !!(override && override.enabled !== false && override.widgets !== undefined);
@@ -312,10 +286,7 @@ Singleton {
     }
   }
 
-  // Merges `patch`'s keys into one widget's own settings entry — the
-  // per-instance store behind widgetData (Tray's pinned list, a
-  // CustomButton's command). Same effective-list resolution rule as the
-  // reorder/add/remove functions above.
+  // Merges patch into one widget's own entry, the per-instance store behind widgetData.
   function updateBarWidget(screenName, section, index, patch) {
     var override = _findScreenOverride(screenName);
     var usesOverride = !!(override && override.enabled !== false && override.widgets !== undefined);
@@ -374,9 +345,7 @@ Singleton {
     return data.wallpaper.path;
   }
 
-  // screenName === "" (or falsy) sets the global wallpaper and clears every
-  // screen's override, so "apply to all monitors" doesn't leave stale
-  // per-monitor overrides shadowing it.
+  // An empty screenName sets the global wallpaper and clears every per-screen override.
   function setWallpaperForScreen(screenName, path) {
     if (!screenName) {
       data.wallpaper.path = path;

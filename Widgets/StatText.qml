@@ -2,9 +2,7 @@ import QtQuick
 import qs.Commons
 import qs.Widgets
 
-// "LABEL value" pair — §3: "Status is text, not glyphs." e.g. "NET WLAN",
-// "VOL 62", "BAT 87". Label in label-xs grey (uppercase), value in caption
-// on_surface.
+// "LABEL value" pair (§3: status is text, not glyphs), e.g. "VOL 62".
 Row {
   id: root
 

@@ -1,8 +1,6 @@
 import Quickshell.Io
 
 // Lock screen appearance, behavior and per-monitor gating.
-// Split out of Settings.qml; the JsonAdapter serializes this exactly as
-// it did when the block was inline.
 JsonObject {
     property string clockFormat: "HH:mm"
     property string dateFormat: "dddd d MMMM yyyy"

@@ -3,22 +3,16 @@ import Quickshell
 import Quickshell.Widgets
 import qs.Commons
 
-// An icon-theme glyph recoloured to `color`, so symbolic icons follow
-// light/dark. `colorize: false` for real app icons. See the crux skill's
-// notes.md.
+// Icon-theme glyph recoloured to `color` (docs/design-notes.md, "Icons").
 Item {
   id: root
 
   property string iconName: ""
   property string fallbackIconName: ""
   property color color: Colors.surfaceText
-  // Matches NText and Chamfer: icons settle into a new color rather than
-  // cutting, which matters most on a matugen retheme, when every symbolic
-  // glyph in the shell changes at once.
+  // Eases colour like NText and Chamfer, which matters on a retheme.
   property bool animateColor: true
-  // Off for real app icons — the tray and the launcher show full-colour
-  // logos, which are legible in either mode and would be flattened to a
-  // single tone by the shader.
+  // Off for real app icons (tray, launcher), which the shader would flatten.
   property bool colorize: true
   // For callers that already hold a URL or path rather than a theme name.
   property string source: ""
@@ -27,8 +21,7 @@ Item {
   implicitWidth: 16
   implicitHeight: 16
 
-  // The shader reads _animatedColor, not color, so the tween happens on a
-  // plain property here rather than inside the effect.
+  // The shader reads _animatedColor so the tween runs on a plain property.
   property color _animatedColor: root.color
   Behavior on _animatedColor {
     enabled: root.animateColor
@@ -40,10 +33,7 @@ Item {
 
   IconImage {
     id: img
-    // Explicit size, not anchors.fill: an IconImage rasterises SVGs at the
-    // size it believes it is, and filling meant it asked for a buffer
-    // before geometry settled — 159 "requested buffer size is too big"
-    // warnings from the launcher's app list alone.
+    // Explicit size, not anchors.fill, or IconImage requests buffers before geometry settles (docs/design-notes.md).
     width: root.width
     height: root.height
     x: 0

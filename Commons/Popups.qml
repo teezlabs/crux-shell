@@ -3,15 +3,11 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// In-process handle on every named popup surface, keyed by name + screen —
-// bar widgets call popups directly instead of forking `qs ipc` back into
-// this same process. A surface exposes open()/close()/toggle(), optionally
-// openAt(x, y). See the crux skill's notes.md.
+// In-process handle on every popup surface by name and screen, so callers skip qs ipc (docs/design-notes.md, "Popups call each other directly").
 Singleton {
   id: root
 
-  // "<name>@<screenName>" -> surface object. Not a notifying property —
-  // every read here is an imperative lookup, nothing binds to it.
+  // "<name>@<screen>" -> surface. Not notifying; only read imperatively.
   property var surfaces: ({})
 
   function key(name, screen): string {
@@ -27,8 +23,7 @@ Singleton {
     delete root.surfaces[root.key(name, screen)];
   }
 
-  // Closes every registered popup on every screen. The focus grabs call this when a click
-  // lands outside them, on any monitor.
+  // Closes every popup on every screen; the focus grabs call this on an outside click.
   function closeAll(): void {
     for (const k in root.surfaces) {
       const s = root.surfaces[k];
@@ -37,8 +32,7 @@ Singleton {
     }
   }
 
-  // Falls back to a screen-less registration so a caller that doesn't know
-  // its screen still reaches a globally-unique surface.
+  // Falls back to a screen-less registration for callers that don't know their screen.
   function find(name, screen): var {
     return root.surfaces[root.key(name, screen)] || root.surfaces[root.key(name, null)] || null;
   }
@@ -53,17 +47,14 @@ Singleton {
       s.open();
   }
 
-  // Tells a surface which bar module it should fold into, so it can rest
-  // collapsed at that size before it is ever opened. No-op for surfaces
-  // that don't morph.
+  // Tells a surface which bar module to fold into, so it rests collapsed at that size. No-op if it doesn't morph.
   function setMorphSource(name, screen, x, y, w, h): void {
     const s = root.find(name, screen);
     if (s && s.setMorphSource)
       s.setMorphSource(x, y, w, h);
   }
 
-  // Morph-open: grows the surface out of the bar module at (x, y) sized
-  // w x h. Falls back to openAt for surfaces that don't implement it.
+  // Grows the surface out of the bar module at (x, y, w, h); falls back to openAt.
   function openFrom(name, screen, x, y, w, h): void {
     const s = root.find(name, screen);
     if (!s)

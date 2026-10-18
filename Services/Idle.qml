@@ -5,11 +5,7 @@ import Quickshell
 import Quickshell.Wayland
 import qs.Commons
 
-// Real idle-timeout backend — ext-idle-notify-v1 via Quickshell.Wayland's
-// IdleMonitor (native Wayland protocol), not a generated hypridle.conf.
-// Three built-in stages (screenOff/lock/suspend) plus custom commands,
-// each its own dynamically-created IdleMonitor (throws without the
-// protocol, so wrapped in try/catch).
+// Idle stages via ext-idle-notify-v1 (IdleMonitor): screen off, lock, suspend and custom commands, one monitor each.
 Singleton {
   id: root
 
@@ -53,16 +49,14 @@ Singleton {
   function _onIdle(stage) {
     if (!_isValidStage(stage) || !_isStageEnabled(stage))
       return;
-    // Keep-awake should hold off crux's own stages too, not just the
-    // compositor's idle notification.
+    // Keep-awake holds off crux's own stages too.
     if (IdleInhibitorService.active)
       return;
     root.pendingStage = stage;
     graceTimer.restart();
   }
 
-  // Any monitor going non-idle (real activity) cancels a pending fire and
-  // runs that stage's own resume command, if any.
+  // Activity cancels a pending fire and runs that stage's resume command, if any.
   function _onActive(stage) {
     if (root.pendingStage === stage) {
       graceTimer.stop();

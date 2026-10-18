@@ -1,8 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// Hairline rule. Flat, not noctalia's gradient fade — crux's language is
-// hard edges.
+// Hairline rule; flat, no gradient fade.
 Rectangle {
   property bool vertical: false
 

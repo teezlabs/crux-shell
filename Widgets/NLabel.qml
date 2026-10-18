@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 
-// Field label with an optional description underneath — the left half of
-// a settings row.
+// Field label with an optional description, the left half of a settings row.
 ColumnLayout {
   id: root
 
@@ -11,8 +10,7 @@ ColumnLayout {
   property string description: ""
   property color labelColor: Colors.surfaceText
   property color descriptionColor: Colors.labelText
-  // Off for a fixed-width label column, where wrapping would change the
-  // row height instead of eliding.
+  // Off for fixed-width label columns, which elide instead.
   property bool wrap: true
 
   opacity: enabled ? 1.0 : 0.6

@@ -2,17 +2,8 @@ import QtQuick
 import QtQuick.Shapes
 import qs.Commons
 
-// The fillet that joins a panel to the bar it grew out of: a square of
-// panel colour with its far corner cut off at 45°, so the junction reads
-// as one continuous surface instead of a box sitting next to a strip.
-//
-// Straight, not an arc. Crux's whole language is chamfers with an explicit
-// no-radius rule, and this was the last curve left in the shell — a
-// quarter-disc here read as a different material from the chamfered card
-// it was flaring out of.
-//
-// `corner` names which way it faces, as a compass point for the sharp
-// corner — the one that touches the junction.
+// Fillet joining a panel to the bar it grew from: a square with its far corner cut at 45° (docs/design-notes.md, "The drawer fillet").
+// `corner` names the sharp corner touching the junction, as a compass point.
 Item {
   id: root
 
@@ -25,9 +16,7 @@ Item {
 
   property int corner: ConcaveCorner.Corner.TopLeft
   property color fillColor: Colors.surface
-  // Optional outline along the diagonal only — the two legs sit flush
-  // against the panel and the bar, so stroking them would draw a seam
-  // through the very junction this shape exists to hide.
+  // Diagonal only; stroking the legs would draw a seam through the junction.
   property color strokeColor: "transparent"
   property real strokeWidth: 0
   property real size: Tokens.chamferPanel
@@ -37,8 +26,7 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  // Rotating one shape beats writing four: the geometry is the same corner
-  // every time, just facing a different way.
+  // One shape, rotated for each corner.
   readonly property int spin: {
     switch (root.corner) {
     case ConcaveCorner.Corner.TopRight:

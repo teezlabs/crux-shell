@@ -1,10 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// v2-styled slider: flat track (radius: 0 per hard rule 1), primary fill,
-// a thin tick instead of a circular thumb — kept continuous rather than
-// discretized into SegMeter cells, since settings sliders cover arbitrary
-// ranges (font size, opacity, spacing) a fixed cell count wouldn't suit.
+// Flat track, primary fill and a tick thumb; continuous, since settings ranges don't suit SegMeter cells.
 Item {
   id: root
 
@@ -58,8 +55,7 @@ Item {
     anchors.fill: parent
     anchors.margins: -4
     cursorShape: Qt.PointingHandCursor
-    // Without this, a slightly-off-horizontal drag lets the ancestor
-    // Flickable steal the grab and scroll the tab instead of dragging.
+    // Keeps an ancestor Flickable from stealing a slightly diagonal drag.
     preventStealing: true
     onPressed: mouse => root._setFromX(mouse.x - 4)
     onPositionChanged: mouse => {

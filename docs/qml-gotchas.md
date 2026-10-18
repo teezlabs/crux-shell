@@ -10,6 +10,7 @@ Each of these has already cost a debugging session on this box (Qt 6.11–6.12, 
 
 ## Sizing and layout
 
+- **A `ScrollBar` with an empty `background` collapses to zero width** and silently renders nothing, because it sizes itself from its background and content item. Give it an explicit `implicitWidth` (`NScrollView.qml`)
 - **`Loader` with `anchors.fill: parent` on an unsized `Item` makes the item 0×0.** It still draws but can't be clicked. Bind real `width`/`height` to the implicit size on the wrapper
 - **`Layout.preferredWidth` is only a hint.** A fixed-width child next to a `fillWidth` sibling needs `minimumWidth` and `maximumWidth` too. Then let something else shrink and elide
 - **A `Chamfer` inside a `Layout` needs a sized wrapper `Item`**

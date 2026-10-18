@@ -1,8 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// Chamfered group container for a set of fields or buttons. The chamfer
-// tier and the two-opposite-corner convention match every other surface.
+// Chamfered group container for fields or buttons.
 Item {
   id: root
 

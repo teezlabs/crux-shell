@@ -2,10 +2,7 @@ import QtQuick
 import qs.Commons
 import qs.Services
 
-// Geometric weather glyph drawn on Canvas — same "no icon font" rule every
-// other icon in crux follows (see the crux skill's font gotchas). Six
-// categories, matching Weather.qml's iconCategory(): sun, partly (sun +
-// cloud), cloud, fog, rain, snow, storm.
+// Weather glyph drawn on a Canvas, one per Weather.iconCategory() result.
 Canvas {
   id: root
 

@@ -32,6 +32,8 @@ Bar modules (and anything that copies them) use one meaning per color:
 
 - `Chamfer` takes `shadow` and `rimLight`, both off by default, tiered in Tokens §8
 - The shadow is masked out under the shape, because panels are translucent
+- Shadows are cast by the chamfered shape itself, never a rectangle behind it, so a cut corner still reads as cut. Three tiers only: the shell is flat by design, and depth says "this floats above that"
+- The shadow is hard black, not tinted. Over a near-black desktop a tinted shadow reads as a glow
 - On dark themes a shadow alone barely shows (about 3/255 luminance). The rim light is what reads as elevation
 - Floating surfaces use both. Bar modules and `SlideCard` use the rim only, since there's no room for a shadow to fall
 

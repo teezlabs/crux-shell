@@ -4,11 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// FFT bands for the default sink, from a cava child process in raw ascii mode.
-//
-// Capture only runs while something is displaying it: every visualiser
-// acquires on becoming visible and releases when it isn't, so a widget that
-// scrolled out of view or a closed panel stops the work.
+// FFT bands for the default sink from cava; runs only while a visualiser holds a reference.
 Singleton {
   id: root
 

@@ -1,16 +1,8 @@
 import QtQuick
 import qs.Commons
 
-// Chamfered button.
-//
-// `neutral` is the default because it's what crux's panels actually use —
-// a surface-toned cell with an outline and sentence-case body text.
-// `accent` is the primary-filled call to action, `destructive` recolors off
-// the error tone.
-//
-// Pointer handling is TapHandler/HoverHandler, never MouseArea — a
-// MouseArea anywhere under the bar's drag TapHandler kills widget
-// reordering outright (see the crux skill).
+// Chamfered button: neutral (default), accent for a call to action, destructive on the error tone.
+// TapHandler/HoverHandler only; a MouseArea breaks bar drag reordering.
 Item {
   id: root
 

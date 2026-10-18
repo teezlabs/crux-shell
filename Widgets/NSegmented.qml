@@ -2,13 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 
-// A row of chamfered pills where exactly one is selected — the picker
-// shape the settings panel uses for bar position, OSD position, temperature
-// unit and so on.
-//
-// NTabBar is the same visual language but owns navigation state; this owns
-// a value and reports changes, so a call site can bind it straight to a
-// setting.
+// Chamfered pills, exactly one selected, bindable straight to a setting. NTabBar owns navigation instead.
 RowLayout {
   id: root
 

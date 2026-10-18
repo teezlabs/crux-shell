@@ -5,10 +5,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 
-// Single owner of "keep the machine awake": the bar widget and the Control
-// Center tile both drive this. Backed by a Wayland IdleInhibitor (in
-// the Control Center, which has the window it needs) plus systemd-inhibit
-// here.
+// Single owner of keep-awake: systemd-inhibit here, plus a Wayland IdleInhibitor in Control Center, which has a window.
 Singleton {
   id: root
 

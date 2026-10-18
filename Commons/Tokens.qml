@@ -3,23 +3,17 @@ pragma Singleton
 import QtQuick
 import qs.Commons
 
-// Design tokens: type scale, chamfer sizes, meter geometry, panel opacity/
-// blur, motion durations/easings. font.letterSpacing is absolute px in Qt,
-// not em — *Tracking values are em fractions, multiply by the matching
-// *Size at the call site.
+// Design tokens. letterSpacing is absolute px in Qt, so *Tracking (em) is multiplied by the matching *Size.
 QtObject {
   id: root
 
   readonly property string fontFamily: Settings.isLoaded ? Settings.data.ui.fontFamily : "JetBrains Mono"
   readonly property string monoFontFamily: Settings.isLoaded ? Settings.data.ui.monoFontFamily : "JetBrains Mono"
 
-  // Every *Size token below is multiplied by this, so the General ->
-  // Basics font-scale slider moves the whole type scale at once.
+  // Scales every *Size token (General > Basics font scale).
   readonly property real fontScale: Settings.isLoaded ? Settings.data.ui.fontScale : 1.0
 
-  // §2 Type — weight is the lighter of any spec pair; call sites bump to
-  // the heavier variant themselves (e.g. font.weight: Font.DemiBold) for
-  // selected/active states.
+  // §2 Type: the lighter weight of each spec pair; call sites bump to DemiBold for active states.
   readonly property int displaySize: Math.round(132 * fontScale)
   readonly property int displayWeight: Font.ExtraLight // 200
   readonly property real displayTracking: -0.04
@@ -83,8 +77,7 @@ QtObject {
   // Screen edge to the bar's inner edge.
   readonly property int barExtent: (Settings.isLoaded ? Settings.data.bar.thickness : 0) + barMargin + (barDocked ? barJoinGap : 0)
 
-  // Corner radius for the few surfaces that are rounded rather than
-  // chamfered (the polkit dialog) — crux's own language is chamfers.
+  // Radius for the few rounded surfaces (the polkit dialog); crux otherwise uses chamfers.
   readonly property int radiusXXS: 2
 
   // §4 Borders
@@ -140,18 +133,13 @@ QtObject {
   readonly property int easingDropPulse: Easing.InOutQuad
   readonly property int easingWallpaperTransition: Easing.InOutCubic
 
-  // Color transitions. Every surface, label and icon that changes color on
-  // hover, on state, or when matugen regenerates the palette eases through
-  // it rather than cutting. Deliberately short: this should read as the
-  // color settling, not as an animation playing.
+  // Colour transitions: short enough to read as the colour settling, not an animation.
   readonly property int durationColor: 180
   readonly property int easingColor: Easing.OutCubic
-  // Slower, for a whole-palette change — a retheme is a real event and
-  // reads better as a cross-fade than as 180ms of flicker.
+  // A whole-palette change cross-fades more slowly.
   readonly property int durationRetheme: 420
 
-  // Press feedback: the control swells slightly on the way down and
-  // settles back more slowly, so the release reads as a release.
+  // Press: swell on the way down, settle back more slowly so the release reads.
   readonly property real pressScale: 1.04
   readonly property int durationPressIn: 100
   readonly property int easingPressIn: Easing.OutQuad
@@ -163,54 +151,36 @@ QtObject {
   readonly property int durationFlash: 350
   readonly property int easingFlash: Easing.OutExpo
 
-  // A sliding highlight moves its leading edge faster than its trailing
-  // edge, so it stretches in the direction of travel and snaps back to
-  // shape on arrival. Used by the tab bars and the workspace marker.
+  // Sliding highlight: the leading edge outruns the trailing one, stretching toward travel (tab bars, workspaces).
   readonly property int durationHighlightLead: 200
   readonly property int durationHighlightTrail: 350
   readonly property int easingHighlight: Easing.OutExpo
 
-  // §8 Elevation. Shadows are cast by the surface's own chamfered shape,
-  // never a rectangle behind it, so a cut corner still reads as cut in the
-  // shadow. Three tiers only: the shell is flat by design and depth is
-  // meant to say "this floats above that", not to decorate.
-  //
-  // Colour is a hard black rather than a tinted one. On the dark themes
-  // crux actually runs, a tinted shadow over a near-black desktop reads as
-  // a glow, not a shadow.
+  // §8 Elevation (docs/look-and-feel.md, "Depth"): shadows follow the chamfered shape, three tiers, hard black.
   readonly property color shadowColor: "#000000"
 
-  // Panels and popups: the launcher, settings, slide cards, the Control
-  // Center. These float clear of everything.
+  // Panels and popups, floating clear of everything.
   readonly property real shadowBlurPanel: 64
   readonly property real shadowOpacityPanel: 0.8
   readonly property real shadowOffsetPanel: 10
 
-  // Cards inside a panel, and notification toasts: lifted off their own
-  // background, not off the desktop, so much tighter.
+  // Cards inside a panel and notification toasts.
   readonly property real shadowBlurCard: 28
   readonly property real shadowOpacityCard: 0.55
   readonly property real shadowOffsetCard: 5
 
-  // Bar modules and tiles: barely there. Enough to separate the module
-  // from the wallpaper without turning the bar into a row of buttons.
+  // Bar modules and tiles: barely there.
   readonly property real shadowBlurModule: 12
   readonly property real shadowOpacityModule: 0.22
   readonly property real shadowOffsetModule: 2
 
-  // A lit top edge. On the dark themes crux runs, a black shadow over a
-  // near-black desktop moves the luminance by about three levels out of
-  // 255 — measurably there, visually nothing. A one-pixel highlight along
-  // the top edge is what actually makes a surface read as lifted, because
-  // it implies a light source above rather than relying on the background
-  // having somewhere darker to go.
+  // Rim light: a black shadow barely shows on a near-black desktop, so a lit top edge is what reads as lift.
   readonly property real rimOpacityPanel: 0.30
   readonly property real rimOpacityCard: 0.22
 
   // §6.1 Bar geometry
   readonly property int barHeight: 42
-  // Bar cells follow the bar's thickness, keeping 5px clear on each side, so their
-  // hover, press and outline boxes scale with it (32 / 30 at the default 42).
+  // Bar cells keep 5px clear inside the bar's thickness (32 / 30 at the default 42).
   readonly property int barCell: Math.max(20, (Settings.isLoaded ? Settings.data.bar.thickness : 42) - 10)
   readonly property int barModuleHeight: barCell - 2
   readonly property int barModuleSpacing: 6

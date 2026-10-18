@@ -1,9 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// v2-styled toggle switch: chamfered track (radius: 0 per hard rule 1,
-// same two-opposite-corner convention as every other chamfered element),
-// primaryContainer fill + primary border when on, sliding square thumb.
+// Chamfered toggle: primaryContainer fill and primary border when on, sliding square thumb.
 Item {
   id: root
 

@@ -3,14 +3,7 @@ import QtQuick.Effects
 import QtQuick.Shapes
 import qs.Commons
 
-// Chamfered-rectangle background, no rounded corners. Per-corner cut flags.
-//
-// Fill and stroke are both Shape geometry so they share one renderer and
-// one anti-aliasing pass. The stroke runs on the outline offset inward by
-// half its width, which is what makes it sit fully inside the item's
-// bounds while still meeting the fill exactly — the fill polygon is drawn
-// at the true outline underneath, so the stroke paints over its outer half
-// and no fill can bleed past it.
+// Chamfered rectangle with per-corner cuts; fill and stroke are one Shape (docs/design-notes.md, "Chamfer geometry").
 Item {
   id: root
 
@@ -21,45 +14,25 @@ Item {
   property bool cutBottomRight: false
   property color fillColor: "transparent"
   property color strokeColor: "transparent"
-  // Every chamfered surface in the shell eases between colors rather than
-  // cutting, so hover states settle and a matugen retheme cross-fades the
-  // whole desktop instead of snapping. Set false for anything that has to
-  // track a color instantly.
+  // Eases between colours so hovers settle and a retheme cross-fades; false where a colour must track instantly.
   property bool animateColor: true
 
-  // Opt-in drop shadow, cast by this exact chamfered outline rather than a
-  // rectangle behind it, so a cut corner stays cut in the shadow too.
-  // Off by default: most chamfers in the shell are flush chrome with
-  // nothing to float above, and every shadow costs a layer.
-  //
-  // The shadow is masked out anywhere the shape itself covers. Panels here
-  // are translucent on purpose, and an unmasked shadow would show through
-  // the fill and darken the panel instead of sitting under it.
+  // Opt-in shadow cast by this outline and masked out under the shape, since panels are translucent.
   property bool shadow: false
   property real shadowBlur: Tokens.shadowBlurPanel
   property real shadowOpacity: Tokens.shadowOpacityPanel
   property real shadowOffset: Tokens.shadowOffsetPanel
 
-  // Lit top edge, the other half of elevation. See Tokens §8 for why a
-  // shadow alone doesn't carry depth on a dark theme.
+  // Lit top edge, the other half of elevation (docs/look-and-feel.md, "Depth").
   property bool rimLight: false
   property real rimOpacity: Tokens.rimOpacityPanel
   property real strokeWidth: 0
-  // "top"/"right"/"bottom"/"left"/"" — skips drawing the stroke on that one
-  // edge (e.g. a popup flush against the bar shouldn't outline the edge
-  // touching it, so it reads as growing out of the bar instead of a fully
-  // separate bordered card). The fill still covers the full shape.
+  // Skip the stroke on one edge ("top"/"right"/"bottom"/"left"); the fill still covers it.
   property string omitStrokeSide: ""
-  // Pulls both free ends of an open stroke back along their own edges.
-  // Used where a ConcaveCorner fillet completes the corner instead: the
-  // fillet's arc leaves the card's side exactly this far from the omitted
-  // edge, so without the trim the side stroke runs past the arc's tangent
-  // point and the junction reads as a Y.
+  // Pulls both open stroke ends back so they meet a ConcaveCorner's tangent instead of forming a Y.
   property real strokeTrim: 0
 
-  // Outline as a clockwise ring, offset inward by `inset`. A 45° chamfer
-  // offset by d moves its endpoints along the edge by d*(sqrt(2)-1), so
-  // the diagonal stays parallel to the un-inset one instead of drifting.
+  // Clockwise ring inset by `inset`; chamfer endpoints shift by inset*(sqrt(2)-1) to keep the diagonal parallel.
   function outline(inset: real): var {
     const d = inset;
     const c = root.chamferSize + d * (Math.SQRT2 - 1);
@@ -68,8 +41,7 @@ Item {
     const pts = [];
     const add = p => {
       const last = pts[pts.length - 1];
-      // Consecutive duplicates appear wherever a corner isn't cut; they
-      // give the miter join nothing to work with, so drop them.
+      // Uncut corners produce duplicate points, which break the miter join.
       if (!last || Math.abs(last.x - p.x) > 0.001 || Math.abs(last.y - p.y) > 0.001)
         pts.push(p);
     };
@@ -101,9 +73,7 @@ Item {
     return pts;
   }
 
-  // Index in the ring where each edge *ends*. Rotating the ring to start
-  // there turns the closed loop into an open run that simply leaves out
-  // the omitted edge, instead of drawing it and hiding it.
+  // Index where each edge ends; starting the ring there leaves the omitted edge out of the run.
   function edgeStart(pts: var): int {
     const cuts = [root.cutTopLeft, root.cutTopRight, root.cutBottomRight, root.cutBottomLeft];
     const at = i => {
@@ -125,13 +95,10 @@ Item {
     return -1;
   }
 
-  // Spans the flat part of the top edge only, stopping where a cut corner
-  // starts, so it never overhangs a chamfer.
+  // Flat part of the top edge only, so it never overhangs a chamfer.
   Rectangle {
     visible: root.rimLight
-    // Sits on the top stroke rather than below it, so the top edge simply
-    // reads brighter than the other three. A separate line underneath the
-    // stroke read as a doubled border instead of light catching an edge.
+    // On the top stroke, not under it, which read as a doubled border.
     height: Math.max(1, root.strokeWidth)
     y: 0
     x: (root.cutTopLeft ? root.chamferSize : 0) + root.strokeWidth
@@ -140,8 +107,7 @@ Item {
     z: 1
   }
 
-  // `a` moved `dist` of the way toward `b`, never past its midpoint — a
-  // trim longer than the edge would fold the stroke back on itself.
+  // Moves a toward b by dist, never past the midpoint.
   function towards(a: var, b: var, dist: real): var {
     const dx = b.x - a.x;
     const dy = b.y - a.y;
@@ -152,8 +118,7 @@ Item {
     return Qt.point(a.x + dx * t, a.y + dy * t);
   }
 
-  // Silhouette of the same outline, used only as the shadow's caster and
-  // its own cut-out mask. Never drawn directly.
+  // Silhouette used only as the shadow caster and its mask.
   Shape {
     id: silhouette
     anchors.fill: parent

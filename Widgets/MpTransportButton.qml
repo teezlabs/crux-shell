@@ -1,10 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// Media player transport cell (§6.6): 5-cell strip, 1px gaps, on surface.
-// The active cell (play/pause when playing, shuffle/loop when toggled on)
-// gets primaryContainer fill + primary glyph. `available: false` (the
-// player doesn't support this control) dims it and blocks taps.
+// Media transport cell (§6.6); the active one is filled, `available: false` dims it and blocks taps.
 Item {
   id: root
 

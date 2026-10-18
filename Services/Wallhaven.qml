@@ -5,12 +5,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 
-// wallhaven.cc search. No API key is needed for SFW toplist search; one is
-// only required for NSFW results and for a user's own collections, and the
-// key comes from the wallpaper settings when set.
-//
-// Shared rather than per-window: only one browser is ever in use at a time,
-// and keeping the results here means reopening it doesn't re-fetch.
+// wallhaven.cc search; the key is only needed for NSFW and collections. Shared, so reopening the browser doesn't re-fetch.
 Singleton {
   id: root
 
@@ -50,8 +45,7 @@ Singleton {
     return url;
   }
 
-  // `append` adds to the current results instead of replacing them, for
-  // paging further down the same search.
+  // append pages further down the same search.
   function search(page, append) {
     if (root.loading)
       return;

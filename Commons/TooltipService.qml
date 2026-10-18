@@ -3,8 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Global hover-tooltip state (debounced show/hide) — holds no visual state
-// itself. TooltipOverlay.qml (one per screen) watches and draws it.
+// Debounced global tooltip state; one TooltipOverlay per screen draws it.
 Singleton {
   id: root
 
@@ -31,9 +30,7 @@ Singleton {
     }
   }
 
-  // item: the hovered Item to anchor the bubble to (its position/size are
-  // read by the overlay every time it repositions). text: plain string,
-  // "\n" allowed for a second line.
+  // item: the Item to anchor to. text: plain string, "\n" allowed for a second line.
   function show(item, str) {
     if (!item || !str) {
       hide();
@@ -42,9 +39,7 @@ Singleton {
 
     hideTimer.stop();
 
-    // Switching to a different target while a tooltip is already
-    // showing: drop it immediately and re-arm the show delay, rather
-    // than sliding the old bubble over to the new target.
+    // A new target while one is showing drops the bubble and re-arms the delay instead of sliding over.
     if (root.visible && root.anchorItem !== item) {
       root.visible = false;
     }
@@ -61,8 +56,7 @@ Singleton {
     hideTimer.start();
   }
 
-  // Quick hide with no delay — for cases like the widget being clicked
-  // (opening a popup) where lingering the tooltip a beat looks wrong.
+  // No delay, e.g. when a click opens a popup.
   function hideImmediately() {
     showTimer.stop();
     hideTimer.stop();

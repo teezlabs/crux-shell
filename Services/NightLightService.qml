@@ -5,9 +5,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 
-// Blue-light filter via wlsunset: off -> on -> forced -> off. Owns the
-// process so night light works whether or not the bar widget is present —
-// see the crux skill's notes.md.
+// wlsunset owner, off -> on -> forced, so night light works without the bar widget.
 Singleton {
   id: root
 
@@ -15,8 +13,7 @@ Singleton {
   readonly property bool forced: Settings.isLoaded ? Settings.data.nightLight.forced : false
 
   function init(): void {
-    // Clear anything left over from a previous session before starting our
-    // own; apply() runs from the kill's onExited.
+    // Kill a leftover wlsunset first; apply() runs from the kill's onExited.
     killStale.running = true;
   }
 
@@ -48,8 +45,7 @@ Singleton {
     const nl = Settings.data.nightLight;
     const cmd = ["wlsunset", "-t", String(nl.nightTemp), "-T", String(nl.dayTemp)];
     if (nl.forced) {
-      // Force full night temperature immediately: sunrise pinned almost a
-      // full day away, sunset at midnight, near-instant transition.
+      // Forced: full night temperature now, with sunrise pinned almost a day away.
       cmd.push("-S", "23:59", "-s", "00:00", "-d", "1");
     } else if (nl.useLocation && Weather.hasLocation) {
       cmd.push("-l", String(Weather.latitude), "-L", String(Weather.longitude));
@@ -101,10 +97,7 @@ Singleton {
     }
   }
 
-  // Geolocation resolves asynchronously. If useLocation was already on when
-  // wlsunset first launched, that first apply() ran on the manual-schedule
-  // fallback because Weather.hasLocation was still false — re-apply once it
-  // actually arrives.
+  // Re-apply once geolocation arrives, in case the first launch fell back to the manual schedule.
   readonly property Connections weatherConn: Connections {
     target: Weather
     function onHasLocationChanged() {

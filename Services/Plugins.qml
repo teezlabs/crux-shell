@@ -5,22 +5,8 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 
-// Plugin discovery + a git-registry marketplace on top of it. A plugin is
-// a directory under ~/.config/crux/plugins/<name>/ with manifest.json +
-// Widget.qml, loaded the same way a built-in bar widget is — that part is
-// unchanged and still works with zero sources configured. See crux
-// skill's notes.md for why qs.* imports still resolve inside it.
-//
-// Marketplace sources (Settings.data.plugins.sources) are git repos with
-// a registry.json at their root: {"plugins": [{"id","label","description",...}]}.
-// Installing fetches just that plugin's subdirectory via sparse-checkout
-// and copies it into pluginsDir. Fetching only ever shell-interpolates
-// the source's own url (something the user typed in themselves, same
-// trust level as any other configured URL) — every value that comes back
-// *from* a registry (plugin id, in particular) is passed as its own argv
-// entry to git/mkdir/cp, never built into a shell string, since a
-// malicious or compromised source could otherwise put shell metacharacters
-// in a plugin id and have them executed.
+// Local plugins (~/.config/crux/plugins/<name>/) plus a git-registry marketplace (docs/design-notes.md, "Plugin marketplace").
+// Registry-supplied values only ever travel as argv entries, never inside a shell string.
 Singleton {
   id: root
 
@@ -52,10 +38,7 @@ Singleton {
     scanProc.running = true;
   }
 
-  // Only [a-zA-Z0-9_-] survives, and the result must be non-empty — a
-  // remote registry's plugin id becomes a real local directory name
-  // (pluginsDir/<id>), so this is the one hard guard against a malicious
-  // id trying to path-traverse (e.g. "../../..") out of pluginsDir.
+  // Registry ids become directory names, so only [a-zA-Z0-9_-] survives: the guard against path traversal.
   function _safeId(id) {
     var cleaned = String(id || "").replace(/[^a-zA-Z0-9_-]/g, "");
     return cleaned;
@@ -63,8 +46,7 @@ Singleton {
 
   Component.onCompleted: rescan()
 
-  // One-shot python scan: emits {id, label, dir} (or {dir, error}) per
-  // qualifying subdirectory, one JSON object per line.
+  // Emits {id, label, dir} or {dir, error} per plugin directory, one JSON object per line.
   Process {
     id: scanProc
     command: ["python3", "-c", "\nimport json, os, sys\nroot = sys.argv[1]\nif not os.path.isdir(root):\n    sys.exit(0)\nfor name in sorted(os.listdir(root)):\n    d = os.path.join(root, name)\n    if not os.path.isdir(d):\n        continue\n    manifest = os.path.join(d, 'manifest.json')\n    widget = os.path.join(d, 'Widget.qml')\n    if not os.path.isfile(manifest):\n        continue\n    try:\n        with open(manifest) as f:\n            m = json.load(f)\n        wid = m['id']\n        label = m.get('label', wid)\n        if not os.path.isfile(widget):\n            print(json.dumps({'id': wid, 'error': 'no Widget.qml', 'dir': d}))\n            continue\n        print(json.dumps({'id': wid, 'label': label, 'dir': d}))\n    except Exception as e:\n        print(json.dumps({'id': name, 'error': str(e), 'dir': d}))\n", root.pluginsDir]
@@ -117,9 +99,7 @@ Singleton {
   }
 
   function _fetchOne(source, onDone) {
-    // Only source.url (something the user typed into Settings themselves)
-    // is interpolated into this shell string — nothing from the fetched
-    // registry itself.
+    // Only the user-typed source.url is interpolated here, nothing from the registry.
     var tmp = root._tmpBase + "-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
     var cmd = "mkdir -p " + JSON.stringify(tmp) + " && GIT_TERMINAL_PROMPT=0 git clone --filter=blob:none --sparse --depth=1 --quiet " + JSON.stringify(source.url) + " " + JSON.stringify(tmp) + " 2>/dev/null && git -C " + JSON.stringify(tmp) + " sparse-checkout set --no-cone /registry.json 2>/dev/null && cat " + JSON.stringify(tmp + "/registry.json") + "; rm -rf " + JSON.stringify(tmp);
     var proc = Qt.createQmlObject('import Quickshell.Io; Process { stdout: StdioCollector { waitForEnd: true } }', root, "PluginFetch_" + tmp);
@@ -167,8 +147,7 @@ Singleton {
     Quickshell.execDetached(["mkdir", "-p", tmp]);
 
     var clone = Qt.createQmlObject('import Quickshell.Io; Process {}', root, "PluginClone_" + tmp);
-    // source.url is user-configured; entry.id (registry-supplied) never
-    // enters a shell string anywhere in this chain, only argv positions.
+    // entry.id comes from the registry, so it stays in argv positions only.
     clone.command = ["git", "clone", "--filter=blob:none", "--sparse", "--depth=1", "--quiet", entry.source.url, tmp];
     clone.exited.connect(function (exitCode) {
       if (exitCode !== 0) {

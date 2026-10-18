@@ -1,8 +1,6 @@
 import Quickshell.Io
 
 // Notification daemon behavior, placement and per-urgency timeouts.
-// Split out of Settings.qml; the JsonAdapter serializes this exactly as
-// it did when the block was inline.
 JsonObject {
     property bool enabled: true
     property bool doNotDisturb: false

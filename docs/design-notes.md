@@ -899,3 +899,16 @@ QuickShell stops a `Process` when crux quits normally, but not when crux crashes
 Every long-running child is therefore started through `setpriv --pdeathsig TERM`, so the kernel signals it when crux dies. The flag survives `exec`, so a `sh -c '... | exec cava'` wrapper passes it on to cava. `systemd-inhibit` stops its own `sleep infinity` when it gets SIGTERM, so keep-awake only needs the flag on `systemd-inhibit`. One-shot commands that exit on their own don't need it.
 
 A singleton that owns such a child must exist once. The clipboard watchers used to live in `ClipboardPopupContent`, which PopupHost builds once per monitor, so two pairs ran side by side.
+
+## Chamfer geometry
+
+`Chamfer.qml` draws fill and stroke as one `Shape`, so they share a renderer and one anti-aliasing pass. The stroke runs along the outline inset by half its width, which keeps it fully inside the item's bounds while still meeting the fill exactly: the fill polygon sits at the true outline underneath, so the stroke paints over its outer half and the fill can't bleed past it.
+
+Insetting a 45° cut by `d` moves its endpoints along each edge by `d * (√2 - 1)`, which keeps the inset diagonal parallel to the outer one. Corners that aren't cut produce duplicate points in the ring, and those are dropped because they give the miter join nothing to work with. `omitStrokeSide` rotates the ring to start where the omitted edge ends, so the stroke becomes an open run that leaves that edge out, rather than drawing it and hiding it.
+
+## Plugin marketplace
+
+A plugin is a directory under `~/.config/crux/plugins/<name>/` with a `manifest.json` and a `Widget.qml`, loaded like a built-in bar widget. Marketplace sources (`Settings.data.plugins.sources`) are git repos with a `registry.json` at the root: `{"plugins": [{"id", "label", "description", ...}]}`. Installing sparse-checks-out that plugin's subdirectory and copies it into the plugins directory.
+
+Only the source URL, which the user typed in themselves, is ever interpolated into a shell string. Everything that comes back from a registry, the plugin id in particular, travels as its own argv entry to `git`, `mkdir` and `cp`, because a compromised source could otherwise put shell metacharacters in an id and have them run. Ids also become directory names, so `_safeId` keeps only `[a-zA-Z0-9_-]` and rejects an empty result, which is the guard against an id like `../../..` escaping the plugins directory.
+

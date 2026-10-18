@@ -1,8 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// Wi-Fi fan drawn on a Canvas (no icon-theme or font dependency): a dot and
-// three evenly spaced arcs, sized from the item so nothing clips at its edges.
+// Wi-Fi fan on a Canvas: a dot and three arcs, sized from the item so nothing clips.
 Canvas {
   id: root
 

@@ -4,16 +4,11 @@ import QtQuick
 import Quickshell
 import qs.Commons
 
-// Pure helpers shared by the Tray bar widget and its drawer: both need the
-// same pinned/unpinned split off the same live SystemTray list, and neither
-// owns the other. See the crux skill's notes.md.
+// Helpers shared by the Tray widget and its drawer.
 Singleton {
   id: root
 
-  // The identity a pin is stored against. `id` is the item's own DBus
-  // service identifier and is what survives a restart; the human-readable
-  // fields drift (a title can carry a message count) and would silently
-  // unpin the item.
+  // Pins are keyed by the DBus id, which survives restarts; titles drift and would silently unpin.
   function key(item): string {
     if (!item)
       return "";
@@ -26,9 +21,7 @@ Singleton {
     return item.tooltipTitle || item.title || item.id || "";
   }
 
-  // The drawer reveals itself alongside the chevron — leftward on a
-  // horizontal bar, upward on a vertical one — so the arrow points the way
-  // the icons travel.
+  // The chevron points the way the drawer's icons travel.
   function expandIcon(vertical): string {
     return vertical ? "arrow-up-symbolic" : "arrow-left-symbolic";
   }

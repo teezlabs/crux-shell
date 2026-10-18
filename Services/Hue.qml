@@ -5,10 +5,7 @@ import QtQuick
 import Quickshell
 import qs.Commons
 
-// Philips Hue bridge control, ported from noctalia-shell's HueService.qml.
-// No local discovery-mesh/zigbee talk — everything goes through the
-// bridge's own local HTTP API (v1, the same one noctalia targets), reached
-// directly over the LAN once paired.
+// Philips Hue control over the bridge's local HTTP API (v1), ported from noctalia's HueService.
 Singleton {
   id: root
 
@@ -23,8 +20,7 @@ Singleton {
   property string pairingError: ""
   property int pairingSecondsLeft: 0
 
-  // Raw group data from the bridge - only reassigned when the set of groups changes (fetch/refresh),
-  // never on brightness/on-off updates, so it can't feed a reactive loop through selectedGroup.
+  // Reassigned only when the set of groups changes, never on brightness or power updates, to avoid a binding loop.
   property var groupsData: [] // [{ groupId, name, on, brightness01 }]
 
   // Persistent Group objects (stable identity) mirroring groupsData, mutated in place
@@ -57,7 +53,7 @@ Singleton {
   }
 
   // --------------------------------
-  // Bridge discovery (Hue's public N-UPnP discovery endpoint - no auth required)
+  // Bridge discovery via Hue's public discovery endpoint
   function discoverBridge() {
     if (root.discovering)
       return;
@@ -102,7 +98,7 @@ Singleton {
   }
 
   // --------------------------------
-  // Pairing: repeatedly POST /api until the user presses the bridge's physical link button
+  // Pairing: POST /api until the bridge's link button is pressed
   Timer {
     id: pairingTimer
     interval: 1000
@@ -256,9 +252,7 @@ Singleton {
     request.send();
   }
 
-  // Persistent per-group object - identity is stable across brightness/on-off updates,
-  // which are applied in place instead of rebuilding the groups list (that rebuilding
-  // was the source of a reactive binding-loop + it hammered the bridge on every drag tick).
+  // Stable per-group object; updates apply in place rather than rebuilding the list (that looped and hammered the bridge).
   component Group: QtObject {
     id: group
 

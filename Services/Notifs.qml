@@ -5,9 +5,7 @@ import Quickshell
 import Quickshell.Services.Notifications
 import qs.Commons
 
-// Real org.freedesktop.Notifications DBus daemon — confirmed live (crux
-// owns the name now that it's the daily driver; verified via busctl and a
-// real notify-send).
+// The org.freedesktop.Notifications daemon.
 Singleton {
   id: root
 
@@ -19,9 +17,7 @@ Singleton {
       list[i].dismiss();
   }
 
-  // Persistent history (backs NotificationHistoryPopupContent.qml) — Quickshell's
-  // trackedNotifications is a live view only, so this snapshots each
-  // arrival separately, capped at maxHistory. Session-only, not on disk.
+  // Session-only history, capped at maxHistory: trackedNotifications is a live view, so each arrival is snapshotted.
   readonly property int maxHistory: Settings.data.notifications.historyLimit
   property var history: []
   property int _nextHistoryId: 1

@@ -1,20 +1,14 @@
 import QtQuick
 import qs.Commons
 
-// Press acknowledgement for a control: a brief swell, and a light wash that
-// fades out over it. Drop one inside the control, point scaleTarget at the
-// item that should swell, and call trigger() from the TapHandler.
-//
-// The wash is surfaceText at low alpha, not white — on a light theme a
-// white flash over a light surface is invisible, while the text tone is
-// always the one color guaranteed to contrast with the surface under it.
+// Press feedback: a brief swell plus a fading wash. Point scaleTarget at the item and call trigger().
+// The wash is surfaceText, not white, so it shows on light themes too.
 Item {
   id: root
 
   anchors.fill: parent
 
-  // The item that swells. Usually the control's own root; left unset, the
-  // pop is skipped and only the wash plays.
+  // Unset skips the swell and plays only the wash.
   property Item scaleTarget: null
   // Match the host's own chamfer so the wash has the control's shape.
   property int chamferSize: Tokens.chamferIcon
@@ -37,8 +31,7 @@ Item {
     cutBottomLeft: !root.invertChamfer
     fillColor: Colors.alpha(Colors.surfaceText, root._flash)
     strokeColor: "transparent"
-    // The wash is already an animation; easing its color as well would
-    // fight the fade.
+    // The wash already animates; easing its colour would fight the fade.
     animateColor: false
   }
 

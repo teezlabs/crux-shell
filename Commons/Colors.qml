@@ -4,12 +4,8 @@ import QtQuick
 import Quickshell
 import qs.Commons
 
-// Semantic color tokens, sourced live from Settings.data.theme, named per
-// the Material-3 tonal-spot roles in the "Quickshell Hyprland Shell v2"
-// spec (§1). A *Text role is the readable foreground on the matching fill;
-// it can't be named onPrimary/onError because QML reads a leading "on" as
-// a signal handler. The Settings.data.theme.* keys keep their older names
-// so an existing settings.json still loads.
+// Semantic colours from Settings.data.theme, named for the spec's tonal-spot roles (§1).
+// *Text roles are the foreground on the matching fill; "onPrimary" would read as a signal handler.
 Singleton {
   id: root
 
@@ -29,21 +25,14 @@ Singleton {
   readonly property color primaryText: Settings.data.theme.primaryText
   readonly property color errorText: Settings.data.theme.errorText
 
-  // Derived, per spec §1 ("Tertiary/label text" and "Disabled/empty" rows) —
-  // alpha-composited rather than a flat pre-blended hex, so it reads
-  // correctly against whatever's actually behind it instead of just the one
-  // background the spec's reference hex assumed.
+  // Alpha over the surface rather than a pre-blended hex, so it reads right on any background.
   readonly property color labelText: alpha(surfaceTextMuted, 0.55)
   readonly property color disabledText: alpha(surfaceTextMuted, 0.40)
 
-  // §6.7 calendar out-of-month days: spec gives this its own distinct
-  // reference hex (#2F383F) rather than reusing the general "disabled"
-  // derive above — solving the same alpha-blend-over-surface formula for
-  // that specific hex lands at ~30%, not disabledText's 40%.
+  // Calendar out-of-month days have their own spec hex (§6.7), which works out to ~30% rather than 40%.
   readonly property color calendarOutOfMonth: alpha(surfaceTextMuted, 0.30)
 
-  // The bar strip and the drawers joined to it: surface carrying a little of the accent, so the bar
-  // picks up the theme's hue even under schemes whose neutrals are pure grey.
+  // Bar strip and attached drawers: tinted toward the accent so grey schemes still carry the hue.
   readonly property color barSurface: mix(surface, primary, 0.08)
 
   // Convenience: color + alpha, for hover fills / scrims.

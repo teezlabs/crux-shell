@@ -1,8 +1,6 @@
 import Quickshell.Io
 
 // Caps/num/scroll lock indicator.
-// Split out of Settings.qml; the JsonAdapter serializes this exactly as
-// it did when the block was inline.
 JsonObject {
     property bool showCapsLock: true
     property bool showNumLock: true

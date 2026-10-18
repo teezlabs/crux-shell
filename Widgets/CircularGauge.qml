@@ -2,10 +2,7 @@ import QtQuick
 import qs.Commons
 import qs.Widgets
 
-// Circular arc gauge for Control Center telemetry — explicitly requested
-// to match a specific reference look (rounded dial meters), a deliberate
-// one-off departure from the rest of the app's "no radius, chamfer
-// instead" rule, scoped to this one panel only.
+// Circular arc gauge for Control Center telemetry, a deliberate exception to the no-radius rule.
 Item {
   id: root
 

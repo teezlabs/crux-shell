@@ -4,9 +4,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 
-// Wallpaper -> theme color generation via matugen, called directly — parses
-// matugen's --json output and writes Settings.data.theme itself, no
-// external script dependency.
+// Wallpaper -> theme colours via matugen's --json output, written straight into Settings.data.theme.
 Singleton {
   id: root
 
@@ -16,9 +14,7 @@ Singleton {
   readonly property bool darkMode: Settings.isLoaded ? Settings.data.theme.darkMode : true
   readonly property string variant: root.darkMode ? "dark" : "light"
 
-  // Flips the mode and re-themes from the current wallpaper. Without a
-  // wallpaper there's nothing to regenerate from, so the flag alone would
-  // leave the old palette in place — say so rather than silently no-op.
+  // Flips the mode and re-themes from the current wallpaper; says so when there's no wallpaper to regenerate from.
   function setDarkMode(on): void {
     if (!Settings.isLoaded || Settings.data.theme.darkMode === on)
       return;
@@ -38,18 +34,8 @@ Singleton {
     root.setDarkMode(!root.darkMode);
   }
 
-  // Light or dark per Settings.data.theme.darkMode. matugen's --json output
-  // carries both variants for every role regardless of --mode, so the mode
-  // flag is passed for the template files it writes while the shell's own
-  // roles are read from whichever half `variant` names. --type is
-  // Settings.data.wallpaper.matugenScheme; --source-color-index picks which
-  // dominant color to theme from (see cycleColorIndex) and also skips
-  // matugen's interactive disambiguation prompt.
-  // System-wide app retheming (Settings.data.wallpaper.templates.*).
-  // Every output below is crux-named — Hyprland, kitty, GTK, btop, and
-  // yazi's own config files reference these exact filenames (symlink,
-  // @import, color_theme=, flavor=), so renaming any of these means
-  // updating that consumer too, not just this list.
+  // --json carries both variants; `variant` picks the half the shell reads, --mode only affects the template files.
+  // Template outputs are crux-named files that each app's config references, so renaming one means updating that app too.
   readonly property string _templatesDir: Quickshell.shellDir + "/bin/theme-templates/"
   readonly property var _templateDefs: ({
       "hyprland": [
@@ -108,8 +94,7 @@ Singleton {
           "output": Quickshell.env("HOME") + "/.config/btop/themes/crux.theme"
         }
       ],
-      // Renders just the palette block to a staging file; bin/crux-splice-
-      // starship-palette swaps it into starship.toml between markers.
+      // Palette block only; bin/crux-splice-starship-palette splices it into starship.toml.
       "starship": [
         {
           "input": "starship-palette-block.toml",
@@ -157,9 +142,7 @@ Singleton {
     if (t.kitty)
       cmds.push("pkill -USR1 -x kitty");
     if (t.qt)
-      // qt6ct only reads whichever file its own color_scheme_path points
-      // at — point it at crux's output once (idempotent, cheap to redo on
-      // every regen) rather than requiring a one-time manual qt6ct-gui step.
+      // Point qt6ct at crux's colours on every regen, so no manual qt6ct step is needed.
       cmds.push("sed -i 's|^color_scheme_path=.*|color_scheme_path=" + Quickshell.env("HOME") + "/.config/qt6ct/colors/crux.conf|' " + Quickshell.env("HOME") + "/.config/qt6ct/qt6ct.conf");
     if (t.starship)
       cmds.push(Quickshell.shellDir + "/bin/crux-splice-starship-palette");
@@ -190,10 +173,7 @@ Singleton {
       root._runMatugen(imagePath, false);
       return;
     }
-    // mkdir -p first and only write the config/run matugen once that's
-    // done — FileView.setText() and matugen's own template output won't
-    // create missing parent directories (yazi's flavors/crux.yazi/,
-    // hypr/crux/, etc. may not exist yet on a fresh app).
+    // Neither FileView.setText() nor matugen creates parent directories, so mkdir first.
     mkdirProc._tomlText = built.toml;
     mkdirProc.command = ["sh", "-c", "mkdir -p ~/.cache/crux ~/.config/hypr/crux ~/.config/kitty/themes ~/.config/qt6ct/colors ~/.config/yazi/flavors/crux.yazi ~/.config/vesktop/themes ~/.cache/wal ~/.config/btop/themes"];
     mkdirProc.running = true;
@@ -223,8 +203,7 @@ Singleton {
     id: templatesConfigView
   }
 
-  // Cycles to the next of an image's 5 candidate dominant colors (0-4,
-  // wrapping) and re-runs theme generation on the current wallpaper.
+  // Cycles through the image's 5 candidate colours and re-themes.
   function cycleColorIndex() {
     Settings.data.wallpaper.matugenColorIndex = (Settings.data.wallpaper.matugenColorIndex + 1) % 5;
     root.generateFrom(Settings.data.wallpaper.path);

@@ -1,8 +1,6 @@
 import QtQuick
 
-// Keeps a popup surface registered in Popups under its current screen.
-// Registering at Component.onCompleted alone is too early for a surface
-// created inside a bar widget — see the crux skill's notes.md.
+// Keeps a popup surface registered in Popups under its current screen, re-registering when the screen arrives.
 QtObject {
   id: root
 
@@ -11,9 +9,7 @@ QtObject {
   required property var screen
 
   property string registeredScreen: ""
-  // Distinguishes "never registered" from "registered under the empty
-  // screen key", so the placeholder entry made before targetScreen
-  // arrives gets cleaned up rather than left dangling.
+  // Separates "never registered" from "registered under no screen", so the placeholder entry gets cleaned up.
   property bool registered: false
 
   function sync(): void {

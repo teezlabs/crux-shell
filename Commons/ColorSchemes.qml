@@ -4,10 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Colour-scheme presets read from Assets/ColorSchemes/*.json — adding a
-// scheme is dropping in a file. {"name", "dark": {<tonal-spot role>}}; all
-// load up front because the picker draws a swatch of each. See the crux
-// skill's notes.md.
+// Colour-scheme presets from Assets/ColorSchemes/*.json; all load up front because the picker shows a swatch of each.
 Singleton {
   id: root
 
@@ -33,8 +30,7 @@ Singleton {
     Toast.show("No scheme named " + name);
   }
 
-  // Unknown keys are ignored rather than copied, so a malformed file can't
-  // inject junk into the theme.
+  // Unknown keys are ignored, so a malformed file can't inject junk into the theme.
   function applyPalette(name, palette): void {
     const theme = Settings.data.theme;
     let applied = 0;
@@ -59,9 +55,7 @@ Singleton {
 
   Component.onCompleted: root.refresh()
 
-  // One "<name>\t<single-line json>" per scheme. Reading the directory and
-  // every file in one process keeps this to a single round trip and needs
-  // nothing beyond a POSIX shell.
+  // One "<name>\t<json>" line per scheme, read in a single process.
   readonly property Process listProc: Process {
     command: ["sh", "-c", 'for f in "$1"/*.json; do [ -e "$f" ] || continue; n=$(basename "$f" .json); printf "%s\\t" "$n"; tr -d "\\n" < "$f"; printf "\\n"; done', "sh", root.directory]
 

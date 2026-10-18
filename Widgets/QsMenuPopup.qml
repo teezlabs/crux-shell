@@ -6,25 +6,18 @@ import Quickshell.Widgets
 import qs.Commons
 import qs.Widgets
 
-// Custom-rendered replacement for QsMenuAnchor's native platform QMenu, restyled as ordinary chamfered rows.
-// One level of real submenu support: hasChildren opens another instance of this component to the right, recursing if needed.
+// Chamfered replacement for QsMenuAnchor's native QMenu; submenus open another instance to the right.
 PanelWindow {
   id: root
 
   property var targetScreen: null
   screen: targetScreen
 
-  // The QsMenuHandle to render (trayItem.menu, or a submenu entry's own
-  // handle — QsMenuEntry extends QsMenuHandle, see QsMenuOpener's own
-  // property type).
+  // The QsMenuHandle to render: a tray item's menu or a submenu entry.
   property var menuHandle: null
-  // Screen-local point (already in this window's own coordinate space,
-  // e.g. via mapToItem(null, x, y) from the triggering row) to anchor the
-  // menu's top-left near.
+  // Point in this window's coordinates to anchor the menu's top-left near.
   property point anchorPos: Qt.point(0, 0)
-  // Optional footer row appended below the DBusMenu's own entries. Empty
-  // label hides it. Used by the tray to offer pin/unpin without inventing a
-  // second menu surface.
+  // Optional footer row below the DBusMenu entries (the tray's pin/unpin). Empty hides it.
   property string pinLabel: ""
   property var trayItem: null
 
@@ -134,8 +127,7 @@ PanelWindow {
           anchors.rightMargin: 10
           spacing: 8
 
-          // Check/radio state — a plain dot for either type, filled when
-          // checked. Real DBusMenu state, not decorative.
+          // Check/radio state as a dot, filled when checked.
           Text {
             visible: row.modelData.buttonType !== QsMenuButtonType.None
             text: row.modelData.checkState === Qt.Checked ? "●" : "○"
@@ -190,8 +182,7 @@ PanelWindow {
       }
     }
 
-    // Pin/unpin, appended below the item's own DBusMenu entries. Divided
-    // off because it's crux's row, not the application's.
+    // Pin/unpin, divided off because it's crux's row, not the app's.
     Item {
       id: pinRow
       visible: root.pinLabel !== ""

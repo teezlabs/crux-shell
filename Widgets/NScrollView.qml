@@ -2,13 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import qs.Commons
 
-// Flickable scroll container with a thin flat scrollbar, shown whenever the
-// content actually overflows.
-//
-// The bar carries its own implicitWidth: a ScrollBar sizes itself from its
-// background and contentItem, so overriding the background with an empty
-// Item (to drop the stock track) collapses it to zero width and it renders
-// nothing at all, silently.
+// Flickable with a thin scrollbar shown on overflow. The bar sets its own implicitWidth (docs/qml-gotchas.md).
 Flickable {
   id: root
 

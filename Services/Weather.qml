@@ -5,16 +5,12 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 
-// Real weather via ip-api.com (geolocation) + open-meteo.com (forecast,
-// free/keyless) — no API key needed. Fetched via curl + Process, not
-// QML's XMLHttpRequest.
+// Weather from ip-api.com geolocation and open-meteo (keyless), fetched with curl.
 Singleton {
   id: root
 
   property string cityName: ""
-  // Named "F" throughout for historical reasons — actually holds whatever
-  // unit Settings.data.controlCenter.tempUnit last requested; use
-  // unitSuffix ("°F"/"°C") for display, not a hardcoded degree letter.
+  // Despite the name, in whatever unit controlCenter.tempUnit asked for; display with unitSuffix.
   property real currentTempF: NaN
   property int currentWeatherCode: -1
   property string gmtOffsetLabel: ""
@@ -26,9 +22,7 @@ Singleton {
 
   property real _lat: NaN
   property real _lon: NaN
-  // Non-underscored aliases — NightLight.qml's wlsunset -l/-L automatic
-  // sunrise/sunset also wants this same IP-geolocated position, no need
-  // for a separate LocationService just to hold two numbers twice.
+  // Public position for NightLightService's sun-position mode.
   readonly property real latitude: _lat
   readonly property real longitude: _lon
   readonly property bool hasLocation: !isNaN(_lat) && !isNaN(_lon)
@@ -99,10 +93,7 @@ Singleton {
     }
   }
 
-  // Weather doesn't need to be fresh-to-the-minute; geolocation basically
-  // never changes on a desktop (see the crux skill: this box isn't a
-  // laptop), so it's fetched once at startup and the forecast alone
-  // refreshes periodically.
+  // Geolocation is fetched once; only the forecast refreshes.
   Component.onCompleted: geoProc.running = true
 
   Connections {
@@ -119,8 +110,7 @@ Singleton {
     onTriggered: root.refreshForecast()
   }
 
-  // WMO weather codes (open-meteo's scheme) collapsed to the handful of
-  // icon categories CanvasWeatherIcon.qml actually draws.
+  // WMO codes collapsed to the categories WeatherIcon draws.
   function iconCategory(code) {
     if (code === 0)
       return "sun";

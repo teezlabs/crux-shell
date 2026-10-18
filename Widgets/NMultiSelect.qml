@@ -2,21 +2,16 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 
-// A row of chamfered chips where any number can be on — monitor pickers,
-// notification-urgency filters, wallpaper transition choices.
-//
-// NSegmented is the one-of-N version of the same shape.
+// Chamfered chips, any number on. NSegmented is the one-of-N version.
 Flow {
   id: root
 
   // ["a","b"] or [{key, label}] — a bare string is its own key.
   property var model: []
   property var selected: []
-  // Several settings treat an empty list as "everything", so a fresh
-  // config isn't a config that does nothing.
+  // Some settings treat an empty list as "everything".
   property bool emptyMeansAll: false
-  // Some rows must keep at least one chip on — a wallpaper transition list
-  // with nothing selected has no transition to pick from.
+  // Some rows need at least one chip on.
   property int minSelected: 0
   property real chipHeight: 28
   property bool uppercase: true
@@ -50,9 +45,7 @@ Flow {
 
   function toggle(key): void {
     let list = root.selected.slice();
-    // Everything was implicitly on, so turning one off means explicitly
-    // listing every other entry rather than leaving the list empty — which
-    // would read as "all" again.
+    // From "all", turning one off lists every other entry, since an empty list would mean all again.
     if (root.emptyMeansAll && list.length === 0) {
       list = root.entries.map(e => e.key).filter(k => k !== key);
       root.changed(list);

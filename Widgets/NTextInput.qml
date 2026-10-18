@@ -12,8 +12,7 @@ Item {
   property alias inputItem: input
   readonly property bool inputFocused: input.activeFocus
   property bool mono: false
-  // Overrides the token family — used by the font-picker fields, which
-  // render their own value as a live preview.
+  // Overrides the token family, for font-picker fields previewing their value.
   property string fontFamily: ""
   property color fillColor: Colors.surface
   property real horizontalPadding: 8

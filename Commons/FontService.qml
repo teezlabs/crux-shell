@@ -3,12 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Installed font families, for the settings panel's font pickers.
-//
-// Monospace detection is a width comparison rather than any font metadata:
-// Qt exposes no "is fixed pitch" flag through QML, but a monospaced face
-// advances 'i' and 'W' identically. Computed once, on first use — it walks
-// every family, which is ~600 of them here.
+// Installed font families for the font pickers. Monospace means 'i' and 'W' advance identically; computed once, lazily.
 Singleton {
   id: root
 

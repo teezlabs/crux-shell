@@ -5,24 +5,17 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 
-// Pre/post-action shell hooks. Each Settings.data.hooks.* field is a shell
-// command run via `sh -lc`, guarded by hooks.enabled. Only the session
-// hook blocks (power-menu actions wait for it); everything else is
-// fire-and-forget.
+// User shell hooks run via `sh -lc` when hooks.enabled. Only the session hook blocks; the rest are fire-and-forget.
 Singleton {
   id: root
 
-  // Becomes true only once settings have actually loaded AND init() has
-  // run — guards the live-bound wallpaper/darkMode Connections below
-  // against firing on the initial FileView load (a saved wallpaper path
-  // or darkMode value being applied at boot is not a "change").
+  // True once Settings has loaded and init() ran, so values applied at boot don't count as changes.
   property bool _ready: false
   property bool _startupDone: false
 
   // ---- Firing points (live-bound to Settings.data) ----
 
-  // Every wallpaper set routes through Settings.data.wallpaper.path —
-  // watching the property catches all of them, no per-call-site wiring needed.
+  // Every wallpaper set goes through Settings.data.wallpaper.path, so watching it catches them all.
   Connections {
     target: Settings.data.wallpaper
     function onPathChanged() {
@@ -31,10 +24,7 @@ Singleton {
     }
   }
 
-  // No dark/light-mode Connections here — crux has no such concept
-  // (Matugen.qml only ever generates a dark palette), unlike noctalia's
-  // original HooksService this was ported from. runDarkModeHook below
-  // stays callable manually if that ever changes, it just never auto-fires.
+  // runDarkModeHook isn't called anywhere yet.
 
   Connections {
     target: Settings
@@ -46,8 +36,6 @@ Singleton {
   // ---- Helpers ----
 
   function _themeName() {
-    // crux has no light/dark toggle — always dark (see the Connections
-    // comment above).
     return "dark";
   }
 
@@ -55,8 +43,7 @@ Singleton {
     return Settings.data.hooks.enabled;
   }
 
-  // ---- Individual hook runners (called by the wiring above and by the
-  // settings panel's Test buttons) ----
+  // ---- Hook runners, called by the wiring above and the settings panel's Test buttons ----
 
   function runWallpaperHook(wallpaperPath, screenName) {
     if (!root._enabled())
@@ -114,9 +101,7 @@ Singleton {
     Quickshell.execDetached(["sh", "-lc", script]);
   }
 
-  // Blocking session hook: runs `script <action>`, and only calls back
-  // once the process exits (noctalia's runPowerHook contract). Callers —
-  // the power menu's actions — run their real action in the callback.
+  // Blocking session hook: runs `script <action>` and calls back on exit; the power menu runs its action there.
   property var _pendingCallback: null
 
   Process {
@@ -143,10 +128,7 @@ Singleton {
 
   // ---- Init ----
 
-  // Called once from shell.qml's boot Timer (alongside Idle.init()). The
-  // startup hook must not run until Settings is loaded (the script lives
-  // in settings.json), so if init() beats the FileView load we wait for
-  // Settings.settingsLoaded above.
+  // Called from shell.qml's boot Timer; waits for Settings if init() beats the load.
   function _start() {
     root._ready = true;
     if (!root._startupDone) {

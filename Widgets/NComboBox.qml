@@ -2,18 +2,14 @@ import QtQuick
 import QtQuick.Controls
 import qs.Commons
 
-// Chamfered dropdown. `model` is [{key, label}] (a plain string list is
-// accepted too and treated as key === label). The popup is a Controls
-// Popup so it escapes any clipping ancestor without needing its own
-// window.
+// Chamfered dropdown; model is [{key, label}] or plain strings. A Controls Popup escapes clipping ancestors.
 Item {
   id: root
 
   property var model: []
   property string currentKey: ""
   property string placeholder: ""
-  // Prefix shown before the value ("QUALITY: 1080p+"), for compact filter
-  // rails where a separate label column doesn't fit.
+  // Prefix before the value ("QUALITY: 1080p+") for compact filter rails.
   property string label: ""
   property int textSize: NText.Size.BodySm
   property real popupMaxHeight: 220
@@ -64,8 +60,7 @@ Item {
       if (e.key === root.currentKey)
         return e.label;
     }
-    // A key the model doesn't carry yet — a lazily-built list, or a value
-    // set elsewhere — still reads better than the placeholder.
+    // A key missing from the model still reads better than the placeholder.
     return root.currentKey !== "" ? root.currentKey : root.placeholder;
   }
 
