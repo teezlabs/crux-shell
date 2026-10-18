@@ -1,8 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
-import Quickshell.Io
 import qs.Commons
+import qs.Services
 import qs.Widgets
 import qs.Modules.Popups
 
@@ -13,16 +12,12 @@ ColumnLayout {
 
   spacing: Tokens.spaceLg
 
-  // Bound to the owning SlideCard's `open` from PopupHost — drives the
-  // refresh timer and an immediate fetch on open, same as the old
-  // toggle()-triggered fetch.
+  // Bound to the owning SlideCard's `shown` from PopupHost; fetches fresh numbers on open.
   property bool active: false
-  onActiveChanged: if (root.active && !fetchProc.running)
-    fetchProc.running = true
+  onActiveChanged: if (root.active)
+    ClaudeUsageService.refresh()
 
-  readonly property string _binDir: Quickshell.shellDir + "/bin/"
-
-  property var record: ({})
+  readonly property var record: ClaudeUsageService.record
   readonly property var limits: record.limits || []
   readonly property string tierLabel: record.tierLabel || ""
   readonly property int todayPrompts: record.todayPrompts || 0
@@ -52,28 +47,6 @@ ColumnLayout {
     if (n >= 1000)
       return (n / 1000).toFixed(1) + "K";
     return String(Math.round(n));
-  }
-
-  Process {
-    id: fetchProc
-    command: [root._binDir + "crux-agent-usage-claude", "--limits-only"]
-    stdout: StdioCollector {
-      waitForEnd: true
-      onStreamFinished: {
-        try {
-          root.record = JSON.parse(text);
-        } catch (e) {}
-      }
-    }
-  }
-
-  Timer {
-    interval: 30000
-    repeat: true
-    running: root.active
-    triggeredOnStart: true
-    onTriggered: if (!fetchProc.running)
-      fetchProc.running = true
   }
 
   PopupHeader {

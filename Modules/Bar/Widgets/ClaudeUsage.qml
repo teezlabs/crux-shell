@@ -1,7 +1,6 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
 import qs.Commons
+import qs.Services
 import qs.Modules.Popups
 import qs.Modules.Bar.Extras
 
@@ -16,47 +15,13 @@ Item {
   property int sectionWidgetIndex: -1
   property bool invertChamfer: false
 
-  readonly property string _binDir: Quickshell.shellDir + "/bin/"
-  property var record: ({})
-  readonly property var limits: record.limits || []
-  readonly property var sessionLimit: {
-    for (var i = 0; i < limits.length; i++) {
-      if (limits[i] && limits[i].label === "Session (5-hour)")
-        return limits[i];
-    }
-    return null;
-  }
+  readonly property var sessionLimit: ClaudeUsageService.sessionLimit
   readonly property real sessionPercent: sessionLimit ? sessionLimit.percent : -1
-  readonly property var weeklyLimit: {
-    for (var i = 0; i < limits.length; i++) {
-      if (limits[i] && limits[i].label === "Weekly (7-day)")
-        return limits[i];
-    }
-    return null;
-  }
+  readonly property var weeklyLimit: ClaudeUsageService.weeklyLimit
   readonly property real weeklyPercent: weeklyLimit ? weeklyLimit.percent : -1
 
-  Process {
-    id: fetchProc
-    command: [root._binDir + "crux-agent-usage-claude", "--limits-only"]
-    stdout: StdioCollector {
-      waitForEnd: true
-      onStreamFinished: {
-        try {
-          root.record = JSON.parse(text);
-        } catch (e) {}
-      }
-    }
-  }
-
-  Timer {
-    interval: 60000
-    repeat: true
-    running: true
-    triggeredOnStart: true
-    onTriggered: if (!fetchProc.running)
-      fetchProc.running = true
-  }
+  Component.onCompleted: ClaudeUsageService.watchers++
+  Component.onDestruction: ClaudeUsageService.watchers--
 
   implicitWidth: btn.implicitWidth
   implicitHeight: btn.implicitHeight
