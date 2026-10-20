@@ -190,6 +190,15 @@ NPanelWindow {
     }
   }
 
+  // The full-size preview opened by right-click or Space.
+  property var previewFile: null
+  escapeCloses: root.previewFile === null
+
+  function openPreview(file) {
+    if (file && !(!file.isRemote && (file.ext === "mp4" || file.ext === "webm")))
+      root.previewFile = file;
+  }
+
   // Arm-then-confirm delete within 3s, keyed by path so moving disarms it.
   property string armedDeletePath: ""
 
@@ -229,6 +238,7 @@ NPanelWindow {
   }
 
   onVisibleChanged: if (visible) {
+    root.previewFile = null;
     root.selectedIndex = 0;
     root._selectCurrentOnScan = root.sourceMode === "local";
     root.rescan();
@@ -297,6 +307,21 @@ NPanelWindow {
     enabled: root.visible && !searchInput.activeFocus
     onActivated: root.requestDelete()
   }
+  Shortcut {
+    sequence: "Space"
+    enabled: root.visible && !searchInput.activeFocus
+    onActivated: {
+      if (root.previewFile)
+        root.previewFile = null;
+      else
+        root.openPreview(root.selectedFile);
+    }
+  }
+  Shortcut {
+    sequence: "Escape"
+    enabled: root.visible && root.previewFile !== null
+    onActivated: root.previewFile = null
+  }
 
   Item {
     id: card
@@ -350,7 +375,7 @@ NPanelWindow {
         NText {
           visible: !root.portrait
           tracking: true
-          text: (root.sourceMode === "wallhaven" ? "← → ↑ ↓" : "← →") + " MOVE · ⏎ APPLY + THEME · ⇧⏎ WALLPAPER ONLY · / SEARCH · R RANDOM"
+          text: (root.sourceMode === "wallhaven" ? "← → ↑ ↓" : "← →") + " MOVE · ⏎ APPLY + THEME · ⇧⏎ WALLPAPER ONLY · SPACE PREVIEW · / SEARCH · R RANDOM"
           color: Colors.labelText
           size: NText.Size.LabelXs
         }
@@ -634,6 +659,10 @@ NPanelWindow {
           skew: root._skew
           onPicked: i => root.selectedIndex = i
           onApplyRequested: root.applyWallpaper(true)
+          onPreviewRequested: {
+            root.selectedIndex = index;
+            root.openPreview(modelData);
+          }
         }
 
         // A vertical wheel steps through the strip one slice per notch.
@@ -716,6 +745,13 @@ NPanelWindow {
             TapHandler {
               onTapped: root.selectedIndex = cell.index
               onDoubleTapped: root.applyWallpaper(true)
+            }
+            TapHandler {
+              acceptedButtons: Qt.RightButton
+              onTapped: {
+                root.selectedIndex = cell.index;
+                root.openPreview(Wallhaven.results[cell.index]);
+              }
             }
           }
         }
@@ -851,6 +887,58 @@ NPanelWindow {
           }
         }
       }
+    }
+  }
+
+  // ---- Preview: the picked image at full size over a scrim; any click closes it ----
+  Item {
+    id: preview
+    anchors.fill: parent
+    visible: opacity > 0
+    opacity: root.previewFile ? 1 : 0
+    Behavior on opacity {
+      NumberAnimation {
+        duration: Tokens.durationPanel
+      }
+    }
+
+    Rectangle {
+      anchors.fill: parent
+      color: Colors.alpha(Colors.surface, 0.85)
+    }
+
+    MouseArea {
+      anchors.fill: parent
+      acceptedButtons: Qt.LeftButton | Qt.RightButton
+      onClicked: root.previewFile = null
+    }
+
+    // The thumbnail holds the space until the full image arrives.
+    Image {
+      anchors.fill: previewFull
+      visible: previewFull.status !== Image.Ready
+      source: root.previewFile ? (root.previewFile.isRemote ? root.previewFile.thumb : "file://" + (root.thumbs[root.previewFile.path] || root.previewFile.path)) : ""
+      fillMode: Image.PreserveAspectFit
+      asynchronous: true
+    }
+    Image {
+      id: previewFull
+      anchors.fill: parent
+      anchors.margins: 40
+      source: root.previewFile ? (root.previewFile.isRemote ? "" : "file://") + root.previewFile.path : ""
+      fillMode: Image.PreserveAspectFit
+      asynchronous: true
+      sourceSize: Qt.size(width, height)
+    }
+
+    NText {
+      anchors.horizontalCenter: parent.horizontalCenter
+      anchors.bottom: parent.bottom
+      anchors.bottomMargin: 12
+      tracking: true
+      text: (root.previewFile ? root.previewFile.name.toUpperCase() : "") + (previewFull.status === Image.Loading ? " · LOADING " + Math.round(previewFull.progress * 100) + "%" : "")
+      color: Colors.surfaceText
+      size: NText.Size.LabelXs
     }
   }
 }
