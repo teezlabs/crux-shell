@@ -166,11 +166,27 @@ NPanelWindow {
       root.close();
   }
 
-  // A fresh result set resets the selection.
+  // Appended to, not reassigned: a new array model resets the grid's scroll and currentIndex on every page.
+  ListModel {
+    id: whModel
+  }
+  function _whAppend(items) {
+    for (const item of items)
+      whModel.append({
+        "thumb": item.thumb
+      });
+  }
+  Component.onCompleted: root._whAppend(Wallhaven.results)
+
   Connections {
     target: Wallhaven
     function onResultsReplaced() {
+      whModel.clear();
+      root._whAppend(Wallhaven.results);
       root.selectedIndex = 0;
+    }
+    function onResultsAppended(items) {
+      root._whAppend(items);
     }
   }
 
@@ -644,7 +660,7 @@ NPanelWindow {
         Layout.preferredHeight: root._sliceHeight
         clip: true
         boundsBehavior: Flickable.StopAtBounds
-        model: visible ? root.filteredFiles : []
+        model: visible ? whModel : null
         readonly property int columns: Math.max(1, Math.floor(width / 240))
         cellWidth: Math.floor(width / columns)
         cellHeight: Math.round((cellWidth - 8) * 9 / 16) + 8
@@ -657,7 +673,7 @@ NPanelWindow {
 
         delegate: Item {
           id: cell
-          required property var modelData
+          required property string thumb
           required property int index
           readonly property bool selected: index === root.selectedIndex
           width: whGrid.cellWidth
@@ -680,7 +696,7 @@ NPanelWindow {
             Image {
               anchors.fill: parent
               anchors.margins: 3
-              source: cell.modelData.thumb
+              source: cell.thumb
               fillMode: Image.PreserveAspectCrop
               asynchronous: true
               cache: true
