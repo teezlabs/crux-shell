@@ -18,6 +18,13 @@ address=${2:-}
 [[ $action == "pair" || $action == "connect" || $action == "disconnect" || $action == "forget" ]] || usage
 [[ $address =~ ^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$ ]] || usage
 
+# Every call below hides its errors, so a missing bluetoothctl would otherwise fail silently.
+if ! "$SCRIPT_DIR/crux-cmd-present" bluetoothctl; then
+  echo "crux-bluetooth-device: bluetoothctl not found, install bluez-utils" >&2
+  command -v notify-send &>/dev/null && notify-send "Bluetooth" "bluetoothctl not found. Install bluez-utils."
+  exit 1
+fi
+
 power_on() {
   [[ $(timeout 2s bluetoothctl show 2>/dev/null) == *"Powered: yes"* ]] && return
   # Not bluetoothctl directly: Bluetooth is turned off by an rfkill soft block,
