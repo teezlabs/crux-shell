@@ -24,11 +24,13 @@ ColumnLayout {
     Layout.fillWidth: true
     Layout.fillHeight: true
 
-    Rectangle {
+    Chamfer {
       anchors.fill: parent
-      color: Colors.surfaceContainerLow
-      border.color: Colors.outline
-      border.width: Tokens.borderPanel
+      chamferSize: Tokens.chamferPanel
+      cutBottomLeft: true
+      fillColor: Colors.surfaceContainerLow
+      strokeColor: Colors.outline
+      strokeWidth: Tokens.borderPanel
     }
 
     ColumnLayout {

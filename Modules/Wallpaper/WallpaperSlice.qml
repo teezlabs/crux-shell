@@ -18,6 +18,7 @@ Item {
 
   signal picked(int index)
   signal applyRequested
+  signal previewRequested
 
   readonly property ListView view: ListView.view
   readonly property bool current: ListView.isCurrentItem
@@ -140,5 +141,9 @@ Item {
   TapHandler {
     onTapped: slice.picked(slice.index)
     onDoubleTapped: slice.applyRequested()
+  }
+  TapHandler {
+    acceptedButtons: Qt.RightButton
+    onTapped: slice.previewRequested()
   }
 }

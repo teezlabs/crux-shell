@@ -25,6 +25,7 @@ Singleton {
   property string query: ""
 
   signal resultsReplaced
+  signal resultsAppended(var items)
 
   readonly property string _purity: (Settings.data.wallpaper.wallhavenSfw ? "1" : "0") + (Settings.data.wallpaper.wallhavenSketchy ? "1" : "0") + (Settings.data.wallpaper.wallhavenNsfw ? "1" : "0")
 
@@ -89,7 +90,9 @@ Singleton {
         });
         root.results = searchProc.append ? root.results.concat(items) : items;
         root.lastPage = json.meta && json.meta.last_page ? json.meta.last_page : 1;
-        if (!searchProc.append)
+        if (searchProc.append)
+          root.resultsAppended(items);
+        else
           root.resultsReplaced();
       } catch (e) {
         root.error = "Parse error: " + e.message;

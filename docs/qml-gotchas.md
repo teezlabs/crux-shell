@@ -55,3 +55,11 @@ Each of these has already cost a debugging session on this box (Qt 6.11–6.12, 
 
 Reading `root.foo` when `foo` was never declared gives `undefined` with no warning, so bindings that read it look fine and the boot log stays clean. Assigning `root.foo = true` throws `Cannot assign to non-existent property "foo"` and aborts the rest of the function. When a refactor moves a property out of a file, grep for every remaining `root.<name>` in it. This silently broke Wallhaven downloads from 2026-09-10 to 2026-10-17: `_downloadAndApply` threw on `root.downloading = true`, one line before it would have started curl.
 
+
+## A reassigned array model resets the view
+
+A `ListView` or `GridView` whose `model` is a JS array treats every reassignment as a brand-new model: it rebuilds every delegate and resets `contentY` and `currentIndex` to 0, even when the new array only appends to the old one. A list that grows while the user scrolls needs a `ListModel` that gets `append`ed to. The Wallhaven grid jumped back to the top on every page load until 2026-10-19.
+
+## Two enabled `Escape` shortcuts cancel each other
+
+When two enabled `Shortcut`s in one window share a sequence, Qt treats it as ambiguous and fires neither one. A surface layered inside an `NPanelWindow` that wants Escape for itself sets `escapeCloses: false` while it is open and enables its own `Shortcut`, as the wallpaper browser's preview does.

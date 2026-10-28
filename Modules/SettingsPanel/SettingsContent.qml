@@ -14,12 +14,11 @@ ColumnLayout {
   property var tabs: []
   property string activeTab: ""
   property string jumpSubTab: ""
-  // The window's visible, renamed to avoid colliding with this item's.
-  property bool panelVisible: false
   property var targetScreen: null
   property string screenName: ""
 
   signal navigate(string tab, string subTab)
+  signal closeRequested
 
   // Each tab's opening sub-tab, so a visit without a target starts on its first page again.
   property var _firstSubTabs: []
@@ -112,7 +111,7 @@ ColumnLayout {
           cursorShape: Qt.PointingHandCursor
         }
         TapHandler {
-          onTapped: panel.panelVisible = false
+          onTapped: panel.closeRequested()
         }
       }
     }

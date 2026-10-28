@@ -16,6 +16,8 @@ PanelWindow {
   // Hyprland's blur rule matches these names, so a new namespace needs adding there too.
   property string surfaceNamespace: "crux-" + root.popupName
   property bool closeOnOutsideClick: true
+  // Off while a child surface claims Escape; two enabled Escape shortcuts are ambiguous and neither fires.
+  property bool escapeCloses: true
 
   screen: targetScreen
 
@@ -72,7 +74,7 @@ PanelWindow {
 
   Shortcut {
     sequence: "Escape"
-    enabled: root.visible
+    enabled: root.visible && root.escapeCloses
     onActivated: root.close()
   }
 

@@ -220,7 +220,7 @@ NPanelWindow {
                                                          "tab": tab,
                                                          "subTab": subTab
                                                        })
-        panelVisible: root.visible
+        onCloseRequested: root.visible = false
         targetScreen: root.targetScreen
         screenName: root.screenName
       }

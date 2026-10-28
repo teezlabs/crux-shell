@@ -21,3 +21,4 @@ The PAM stack uses `pam_faillock` (3 failures, 10-minute lock). Three non-intera
 - Don't drive the lock screen or polkit dialog with fake input
 - To check the polkit agent, watch for the `crux-polkit` namespace in `hyprctl layers -j`
 - To check for lockouts, use `faillock --user $USER` and `journalctl -b | grep -i polkit`
+- Never restart crux while the session is locked. `misc:allow_session_lock_restore` is off, so a dead lock client leaves Hyprland's red lockscreen-died screen and no way back in from the desk. `grim` still captures the lock screen while locked, so screenshots over SSH are safe
