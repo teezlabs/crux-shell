@@ -189,7 +189,7 @@ Loader {
             anchors.fill: parent
             source: {
               var custom = Settings.data.lockScreen.useCustomWallpaper && Settings.data.lockScreen.customWallpaperPath;
-              var path = custom ? Settings.data.lockScreen.customWallpaperPath : Settings.data.wallpaper.path;
+              var path = custom ? Settings.data.lockScreen.customWallpaperPath : Settings.getWallpaperForScreen(surface.screen ? surface.screen.name : "");
               return path ? "file://" + path : "";
             }
             fillMode: Image.PreserveAspectCrop
