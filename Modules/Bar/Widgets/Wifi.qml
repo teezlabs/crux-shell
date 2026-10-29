@@ -42,7 +42,7 @@ Item {
     id: btn
     invertChamfer: root.invertChamfer
     vertical: root.vertical
-    label: root.connectedNetwork ? (root.connectedNetwork.ssid || "") : (Networking.wifiEnabled ? "Not connected" : "Off")
+    label: root.connectedNetwork ? (root.connectedNetwork.name || "") : (Networking.wifiEnabled ? "Not connected" : "Off")
     onTapped: {
       var pos = root.mapToItem(null, 0, 0);
       Popups.openFrom("wifi", root.screen, pos.x, pos.y, root.width, root.height);
