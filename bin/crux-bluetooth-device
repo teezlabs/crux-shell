@@ -2,8 +2,6 @@
 
 # Control a Bluetooth device: pair, connect, disconnect, or forget.
 
-set -e
-
 # Resolved by location, not $PATH — see crux-network-status for why.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -29,24 +27,26 @@ trust_device() {
   bluetoothctl trust "$address" >/dev/null 2>&1 || true
 }
 
+# The last command's status is the script's, so callers can tell a failed connect from a slow one.
 case "$action" in
   pair)
     power_on
+    # Fails harmlessly on an already-paired device; the connect decides.
     timeout 20s bluetoothctl pair "$address" >/dev/null 2>&1 || true
     trust_device
-    timeout 20s bluetoothctl connect "$address" >/dev/null 2>&1 || true
+    timeout 20s bluetoothctl connect "$address" >/dev/null 2>&1
     ;;
   connect)
     power_on
     trust_device
-    timeout 20s bluetoothctl connect "$address" >/dev/null 2>&1 || true
+    timeout 20s bluetoothctl connect "$address" >/dev/null 2>&1
     ;;
   disconnect)
-    timeout 10s bluetoothctl disconnect "$address" >/dev/null 2>&1 || true
+    timeout 10s bluetoothctl disconnect "$address" >/dev/null 2>&1
     ;;
   forget)
     power_on
     timeout 10s bluetoothctl disconnect "$address" >/dev/null 2>&1 || true
-    timeout 10s bluetoothctl remove "$address" >/dev/null 2>&1 || true
+    timeout 10s bluetoothctl remove "$address" >/dev/null 2>&1
     ;;
 esac
