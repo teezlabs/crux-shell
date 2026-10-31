@@ -80,6 +80,10 @@ Singleton {
         {
           "input": "vesktop.css",
           "output": Quickshell.env("HOME") + "/.config/vesktop/themes/crux.theme.css"
+        },
+        {
+          "input": "vesktop.css",
+          "output": Quickshell.env("HOME") + "/.config/BetterDiscord/themes/crux.theme.css"
         }
       ],
       "pywalfox": [
@@ -194,7 +198,7 @@ Singleton {
     }
     // Neither FileView.setText() nor matugen creates parent directories, so mkdir first.
     mkdirProc._tomlText = built.toml;
-    mkdirProc.command = ["sh", "-c", "mkdir -p ~/.cache/crux ~/.config/hypr/crux ~/.config/kitty/themes ~/.config/qt6ct/colors ~/.config/yazi/flavors/crux.yazi ~/.config/vesktop/themes ~/.cache/wal ~/.config/btop/themes"];
+    mkdirProc.command = ["sh", "-c", "mkdir -p ~/.cache/crux ~/.config/hypr/crux ~/.config/kitty/themes ~/.config/qt6ct/colors ~/.config/yazi/flavors/crux.yazi ~/.config/vesktop/themes ~/.config/BetterDiscord/themes ~/.cache/wal ~/.config/btop/themes"];
     mkdirProc.running = true;
   }
 

@@ -44,7 +44,7 @@ All native, no external daemon.
 1. A wallpaper is picked in the settings grid or the Wallhaven browser (`Services/Wallhaven.qml`)
 2. That sets `Settings.data.wallpaper.path` through the `wallpaper` IPC target in `shell.qml`
 3. `Services/Matugen.qml` runs `matugen --json` and writes the result into `Settings.data.theme`
-4. Templates in `bin/theme-templates/` push the palette into Hyprland, kitty, GTK, Qt, yazi, btop, starship and Discord
+4. Templates in `bin/theme-templates/` push the palette into Hyprland, kitty, GTK, Qt, yazi, btop, starship and Discord (Vesktop and BetterDiscord share `vesktop.css`, whose META header BetterDiscord needs to list the theme)
 
 `skwd-daemon` and `~/.cache/skwd-wall/` were removed on purpose. Don't bring them back.
 
