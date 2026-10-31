@@ -39,7 +39,7 @@
 - Wallpaper browser: your local folder as a strip of slanted slices, Wallhaven search as a grid
 - Pick a wallpaper and crux generates a palette from it with matugen, in light or dark
 - Or pick a preset: Ayu, Catppuccin, Dracula, Eldritch, Everforest, Gruvbox, Kanagawa, Mocha, Nord, Rosé Pine, Tokyo Night
-- The palette is pushed into Hyprland, kitty, GTK, Qt, yazi, btop, starship and Discord (Vesktop)
+- The palette is pushed into Hyprland, kitty, GTK, Qt, yazi, btop, starship and Discord (Vesktop, BetterDiscord)
 - Windows get chamfered corners to match, through Hyprland shader overrides. Pick which corners are cut in Appearance settings
 
 <div align="center">
