@@ -11,14 +11,26 @@ import subprocess
 import sys
 from pathlib import Path
 
-settings_path = Path.home() / ".config/crux/settings.json"
-if not settings_path.exists():
-    sys.exit(0)
+#
+# Matugen.qml passes the live state in CRUX_GREETER_STATE, because
+# settings.json is saved on a debounce and is still the previous theme
+# when the hook fires. Run by hand, it falls back to settings.json.
+import os
 
-settings = json.loads(settings_path.read_text())
-wallpaper_path = settings.get("wallpaper", {}).get("path", "")
-theme = settings.get("theme", {})
-ui = settings.get("ui", {})
+state = os.environ.get("CRUX_GREETER_STATE")
+if state:
+    state = json.loads(state)
+    wallpaper_path = state.get("wallpaper", "")
+    theme = state.get("theme", {})
+    ui = {"fontFamily": state.get("fontFamily") or "JetBrains Mono"}
+else:
+    settings_path = Path.home() / ".config/crux/settings.json"
+    if not settings_path.exists():
+        sys.exit(0)
+    settings = json.loads(settings_path.read_text())
+    wallpaper_path = settings.get("wallpaper", {}).get("path", "")
+    theme = settings.get("theme", {})
+    ui = settings.get("ui", {})
 
 if not wallpaper_path or not Path(wallpaper_path).exists():
     sys.exit(0)
