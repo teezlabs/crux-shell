@@ -152,6 +152,25 @@ Singleton {
       cmds.push("gsettings set org.gnome.desktop.interface color-scheme prefer-" + root.variant);
     if (cmds.length === 0)
       return;
+    // settings.json is written on a debounce, so hand crux-sync-greeter the live values.
+    var theme = Settings.data.theme;
+    postHookProc.environment = {
+      "CRUX_GREETER_STATE": JSON.stringify({
+        "wallpaper": root._pendingImagePath || Settings.data.wallpaper.path,
+        "theme": {
+          "primary": theme.primary,
+          "primaryText": theme.primaryText,
+          "surface": theme.surface,
+          "surfaceText": theme.surfaceText,
+          "surfaceContainerHigh": theme.surfaceContainerHigh,
+          "surfaceTextMuted": theme.surfaceTextMuted,
+          "outline": theme.outline,
+          "errorTone": theme.errorTone,
+          "errorText": theme.errorText
+        },
+        "fontFamily": Settings.data.ui.fontFamily
+      })
+    };
     postHookProc.command = ["sh", "-c", cmds.join(" ; ")];
     postHookProc.running = true;
   }

@@ -63,3 +63,7 @@ A `ListView` or `GridView` whose `model` is a JS array treats every reassignment
 ## Two enabled `Escape` shortcuts cancel each other
 
 When two enabled `Shortcut`s in one window share a sequence, Qt treats it as ambiguous and fires neither one. A surface layered inside an `NPanelWindow` that wants Escape for itself sets `escapeCloses: false` while it is open and enables its own `Shortcut`, as the wallpaper browser's preview does.
+
+## `settings.json` on disk lags the live settings
+
+`Settings` writes `settings.json` on a 300 ms debounce, so a script launched right after a settings change reads the previous values. Pass a hook script what it needs through its `Process` arguments or `environment` instead. `crux-sync-greeter` read the file and kept the SDDM greeter one wallpaper behind until 2026-10-31.
