@@ -25,81 +25,65 @@ ColumnLayout {
   readonly property var knownDevices: deviceGroups.known || []
   readonly property var discoveredDevices: deviceGroups.discovered || []
 
-  // address -> "connecting" | "disconnecting" | "forgetting"
+  // address -> "connecting" | "disconnecting" | "forgetting", while crux-bluetooth-device runs
   property var pendingActions: ({})
+  // address -> true after a failed action, until the next action on it or the panel closes
+  property var failedActions: ({})
 
   readonly property string _binDir: Quickshell.shellDir + "/bin/"
 
-  function deviceFor(address) {
-    for (var i = 0; i < devices.length; i++) {
-      if (devices[i] && devices[i].address === address)
-        return devices[i];
+  // BlueZ's own state covers connects started elsewhere (auto-reconnect, bluetoothctl).
+  function liveAction(device) {
+    if (!device)
+      return "";
+    if (device.pairing)
+      return "pairing";
+    if (device.state === BluetoothDeviceState.Connecting)
+      return "connecting";
+    if (device.state === BluetoothDeviceState.Disconnecting)
+      return "disconnecting";
+    return "";
+  }
+
+  Component {
+    id: actionProcComponent
+    Process {
+      property string address
+      onExited: function (exitCode) {
+        root.pendingActions = Model.withPendingAction(root.pendingActions, address, "");
+        if (exitCode !== 0)
+          root.failedActions = Model.withPendingAction(root.failedActions, address, true);
+        destroy();
+      }
     }
-    return null;
   }
 
-  function setPendingAction(address, action) {
-    if (!address)
+  function runDeviceAction(device, action, pending) {
+    if (!device || !device.address || pendingActions[device.address])
       return;
-    var next = Model.cloneMap(pendingActions);
-    if (action)
-      next[address] = action;
-    else
-      delete next[address];
-    pendingActions = next;
-  }
-
-  function deviceCommand(action, address) {
-    return [root._binDir + "crux-bluetooth-device", action, address];
+    pendingActions = Model.withPendingAction(pendingActions, device.address, pending);
+    failedActions = Model.withPendingAction(failedActions, device.address, false);
+    var proc = actionProcComponent.createObject(root, {
+      "address": device.address,
+      "command": [root._binDir + "crux-bluetooth-device", action, device.address]
+    });
+    proc.running = true;
   }
 
   function connectDevice(device) {
     if (!device || device.connected)
       return;
-    var action = (device.paired || device.bonded || device.trusted) ? "connect" : "pair";
-    setPendingAction(device.address, "connecting");
-    Quickshell.execDetached(deviceCommand(action, device.address));
+    runDeviceAction(device, (device.paired || device.bonded || device.trusted) ? "connect" : "pair", "connecting");
   }
 
   function disconnectDevice(device) {
     if (!device || !device.connected)
       return;
-    setPendingAction(device.address, "disconnecting");
-    if (device.disconnect)
-      device.disconnect();
-    Quickshell.execDetached(deviceCommand("disconnect", device.address));
+    runDeviceAction(device, "disconnect", "disconnecting");
   }
 
   function forgetDevice(device) {
-    if (!device || !device.address)
-      return;
-    setPendingAction(device.address, "forgetting");
-    Quickshell.execDetached(deviceCommand("forget", device.address));
-  }
-
-  function syncPendingActions() {
-    var next = Model.cloneMap(pendingActions);
-    var changed = false;
-    for (var address in next) {
-      var action = next[address];
-      var found = deviceFor(address);
-      var done = (action === "connecting" && found && found.connected) || (action === "disconnecting" && found && !found.connected) || (action === "forgetting" && (!found || (!found.paired && !found.bonded && !found.trusted)));
-      if (done) {
-        delete next[address];
-        changed = true;
-      }
-    }
-    if (changed)
-      pendingActions = next;
-  }
-
-  onDevicesChanged: syncPendingActions()
-
-  Timer {
-    interval: 800
-    repeat: true
-    running: root.panelActive
-    onTriggered: root.syncPendingActions()
+    runDeviceAction(device, "forget", "forgetting");
   }
 
   function toggleBluetooth() {
@@ -111,15 +95,29 @@ ColumnLayout {
   // Other clients may hold the discovery session, so only stop discovery this panel started.
   property bool owesDiscoveryStop: false
 
-  onPanelActiveChanged: {
-    if (panelActive) {
-      if (adapter && adapter.enabled && !adapter.discovering) {
+  function updateDiscovery() {
+    if (panelActive && adapter && adapter.enabled) {
+      if (!adapter.discovering) {
         adapter.discovering = true;
         owesDiscoveryStop = true;
       }
-    } else if (owesDiscoveryStop && adapter && adapter.discovering) {
-      adapter.discovering = false;
+    } else if (owesDiscoveryStop) {
+      if (adapter && adapter.discovering)
+        adapter.discovering = false;
       owesDiscoveryStop = false;
+    }
+  }
+
+  onPanelActiveChanged: {
+    updateDiscovery();
+    if (!panelActive)
+      failedActions = ({});
+  }
+
+  Connections {
+    target: root.adapter
+    function onEnabledChanged() {
+      root.updateDiscovery();
     }
   }
 
@@ -204,7 +202,8 @@ ColumnLayout {
         spacing: 8
 
         readonly property var device: rowItem.modelData.device
-        readonly property string pending: device ? Model.pendingAction(root.pendingActions, device.address) : ""
+        readonly property string pending: device ? (Model.pendingAction(root.pendingActions, device.address) || root.liveAction(device)) : ""
+        readonly property bool failed: !!(device && pending === "" && root.failedActions[device.address])
 
         NText {
           text: parent.device && parent.device.connected ? "●" : "○"
@@ -224,6 +223,14 @@ ColumnLayout {
           text: parent.device ? Math.round(parent.device.battery * 100) + "%" : ""
           color: Colors.labelText
           size: NText.Size.Caption
+        }
+
+        NText {
+          tracking: true
+          visible: parent.failed
+          text: "FAILED"
+          color: Colors.error
+          size: NText.Size.LabelXs
         }
 
         NText {

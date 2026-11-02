@@ -27,6 +27,7 @@ ColumnLayout {
 
   property string actionSsid: ""
   property string actionKind: "" // "connect" | "disconnect" | "forget"
+  property var actionNetwork: null
   readonly property bool busy: actionKind !== ""
 
   property string passwordSsid: ""
@@ -194,6 +195,16 @@ ColumnLayout {
     failureReason = "";
     actionSsid = "";
     actionKind = "";
+    actionNetwork = null;
+  }
+
+  function failAction(reason) {
+    var ssid = actionSsid;
+    actionSsid = "";
+    actionKind = "";
+    actionNetwork = null;
+    failureSsid = ssid;
+    failureReason = reason;
   }
 
   function runAction(kind, network, callback) {
@@ -201,9 +212,32 @@ ColumnLayout {
       return;
     actionSsid = network.name || "";
     actionKind = kind;
+    actionNetwork = network;
     failureSsid = "";
     failureReason = "";
     callback(network);
+  }
+
+  Connections {
+    target: root.actionNetwork
+    ignoreUnknownSignals: true
+    function onConnectionFailed(reason) {
+      var network = root.actionNetwork;
+      var credentialed = root.requiresCredentials(network.security);
+      var ssid = root.actionSsid;
+      root.failAction(Model.networkFailureReason(reason, credentialed, ConnectionFailReason));
+      if (Model.shouldRepromptPassphrase(reason, credentialed, ConnectionFailReason)) {
+        root.passwordSsid = ssid;
+        root.passwordText = "";
+      }
+    }
+  }
+
+  // Backstop for a request NetworkManager never answers.
+  Timer {
+    interval: 30000
+    running: root.busy
+    onTriggered: root.failAction("Timed out")
   }
 
   function activateRow(row) {
@@ -270,10 +304,13 @@ ColumnLayout {
 
   onPanelActiveChanged: {
     setScannerEnabled(true);
-    if (panelActive)
+    if (panelActive) {
       syncWifiNetworks();
-    else
+    } else {
       passwordSsid = "";
+      failureSsid = "";
+      failureReason = "";
+    }
   }
   onWifiDeviceChanged: setScannerEnabled(true)
 
@@ -428,6 +465,13 @@ ColumnLayout {
     }
   }
 
+  NText {
+    visible: !Networking.wifiEnabled || !root.wifiDevice || root.wifiNetworks.length === 0
+    text: !Networking.wifiHardwareEnabled ? "Wi-Fi is blocked by a hardware switch" : (!Networking.wifiEnabled ? "Wi-Fi is off" : (!root.wifiDevice ? "No Wi-Fi adapter" : "Scanning…"))
+    color: Colors.labelText
+    size: NText.Size.BodySm
+  }
+
   ListView {
     Layout.fillWidth: true
     Layout.preferredHeight: Math.min(320, contentHeight)
@@ -471,6 +515,14 @@ ColumnLayout {
               color: Colors.surfaceText
               elide: Text.ElideRight
               Layout.fillWidth: true
+            }
+
+            NText {
+              tracking: true
+              visible: root.failureSsid !== "" && root.failureSsid === rowItem.modelData.ssid
+              text: root.failureReason.toUpperCase()
+              color: Colors.error
+              size: NText.Size.LabelXs
             }
 
             NText {
