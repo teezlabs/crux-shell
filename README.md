@@ -39,7 +39,7 @@
 - Wallpaper browser: your local folder as a strip of slanted slices, Wallhaven search as a grid
 - Pick a wallpaper and crux generates a palette from it with matugen, in light or dark
 - Or pick a preset: Ayu, Catppuccin, Dracula, Eldritch, Everforest, Gruvbox, Kanagawa, Mocha, Nord, Rosé Pine, Tokyo Night
-- The palette is pushed into Hyprland, kitty, GTK, Qt, yazi, btop, starship and Discord (Vesktop, BetterDiscord)
+- The palette is pushed into Hyprland, kitty, GTK, Qt, yazi, btop, starship, Neovim, cava and Discord (Vesktop, BetterDiscord)
 - Windows get chamfered corners to match, through Hyprland shader overrides. Pick which corners are cut in Appearance settings
 
 <div align="center">
@@ -60,7 +60,7 @@ Optional:
 | `wf-recorder` | The Control Center's record action |
 | `hyprpicker` | The Control Center's color picker |
 | `imagemagick` | Small cached thumbnails, so the wallpaper browser opens fast |
-| `kitty`, `gtk3`, `gtk4`, `qt6ct`, `yazi`, `btop`, `starship`, `vesktop` | Theming those apps from your wallpaper |
+| `kitty`, `gtk3`, `gtk4`, `qt6ct`, `yazi`, `btop`, `starship`, `neovim`, `cava`, `vesktop` | Theming those apps from your wallpaper |
 
 ## Install
 
@@ -109,6 +109,10 @@ Settings live in `~/.config/crux/settings.json`, but you shouldn't need to touch
 **Color presets:** drop a JSON file into `Assets/ColorSchemes/` and it shows up in the picker. Copy one of the existing files to see the format.
 
 **kitty:** add `include themes/crux.conf` to `~/.config/kitty/kitty.conf`, after any other theme include. Open kitty windows reload when the wallpaper changes.
+
+**Neovim:** install [base16-nvim](https://github.com/RRethy/base16-nvim) and call `require('matugen').setup()` from your config. crux writes `~/.config/nvim/lua/matugen.lua`, and open Neovim windows recolour when the wallpaper changes.
+
+**cava:** set `theme = 'crux'` in the `[color]` section of `~/.config/cava/config`. A running cava recolours when the wallpaper changes.
 
 **Window corners:** the size of the cut follows Hyprland's `decoration:rounding` (`rounding = 30` cuts about 14px), so set it above 0. Turning window corners off in Appearance settings restores Hyprland's stock shaders.
 

@@ -48,6 +48,8 @@ JsonObject {
       property bool pywalfox: false
       property bool btop: false
       property bool starship: false
+      property bool nvim: false
+      property bool cava: false
       // Accent trio for the local startpage served on :8080.
       property bool startpage: false
       // Syncs the crux SDDM theme's background and colours (bin/crux-sync-greeter).
