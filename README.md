@@ -114,6 +114,10 @@ Settings live in `~/.config/crux/settings.json`, but you shouldn't need to touch
 
 **cava:** set `theme = 'crux'` in the `[color]` section of `~/.config/cava/config`. A running cava recolours when the wallpaper changes.
 
+**yazi:** set `dark = "crux"` (and `light = "crux"`) under `[flavor]` in `~/.config/yazi/theme.toml`. yazi reads its flavor at startup, so reopen it after a wallpaper change.
+
+**btop:** set `color_theme = "crux"` in `~/.config/btop/btop.conf`, or pick crux in btop's options menu. btop reads it at startup.
+
 **Window corners:** the size of the cut follows Hyprland's `decoration:rounding` (`rounding = 30` cuts about 14px), so set it above 0. Turning window corners off in Appearance settings restores Hyprland's stock shaders.
 
 **Plugins:** put a `manifest.json` and a `Widget.qml` in `~/.config/crux/plugins/<name>/`. That's it, no marketplace.
