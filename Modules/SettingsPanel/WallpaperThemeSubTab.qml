@@ -205,6 +205,10 @@ NScrollView {
               "label": "Starship"
             },
             {
+              "key": "nvim",
+              "label": "Neovim"
+            },
+            {
               "key": "sddmGreeter",
               "label": "SDDM greeter"
             },
