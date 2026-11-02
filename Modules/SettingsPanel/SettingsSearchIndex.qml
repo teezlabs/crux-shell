@@ -94,7 +94,7 @@ Item {
     { "label": "Close on select", "description": "Dismiss the wallpaper browser once a wallpaper is applied", "tab": "wallpaper", "subTab": "library", "keywords": "browser dismiss auto close picker" },
     { "label": "Auto-theme", "description": "Regenerate theme colors from the wallpaper on pick", "tab": "wallpaper", "subTab": "theme", "keywords": "matugen colors" },
     { "label": "Theme generation", "description": "Matugen scheme and source-color index", "tab": "wallpaper", "subTab": "theme", "keywords": "matugen scheme color index" },
-    { "label": "System templates", "description": "Write theme colors into app configs (kitty, GTK, Qt, yazi, ...)", "tab": "wallpaper", "subTab": "theme", "keywords": "kitty gtk qt yazi discord pywalfox btop starship hyprland neovim nvim" },
+    { "label": "System templates", "description": "Write theme colors into app configs (kitty, GTK, Qt, yazi, ...)", "tab": "wallpaper", "subTab": "theme", "keywords": "kitty gtk qt yazi discord pywalfox btop starship hyprland neovim nvim cava" },
     { "label": "Sync system theme (gsettings)", "description": "Sets color-scheme prefer-dark so GTK4/libadwaita apps render dark", "tab": "wallpaper", "subTab": "theme", "keywords": "gnome gtk dark mode adwaita" },
     { "label": "Switch transition", "description": "Which shader plays when the wallpaper changes", "tab": "wallpaper", "subTab": "transition", "keywords": "fade wipe disc stripes pixelate honeycomb animation" },
 

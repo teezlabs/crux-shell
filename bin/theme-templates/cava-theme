@@ -1,0 +1,11 @@
+# Written by crux from bin/theme-templates/cava-theme on every wallpaper change.
+# Use it with theme = 'crux' in the [color] section of ~/.config/cava/config.
+[color]
+foreground = '{{colors.primary.default.hex}}'
+
+gradient = 1
+gradient_color_1 = '{{colors.primary_container.default.hex}}'
+gradient_color_2 = '{{colors.primary.default.hex}}'
+gradient_color_3 = '{{colors.tertiary.default.hex}}'
+
+horizontal_gradient = 0

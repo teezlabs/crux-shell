@@ -105,6 +105,13 @@ Singleton {
           "output": Quickshell.env("HOME") + "/.config/nvim/lua/matugen.lua"
         }
       ],
+      // Loaded by theme = 'crux' in ~/.config/cava/config.
+      "cava": [
+        {
+          "input": "cava-theme",
+          "output": Quickshell.env("HOME") + "/.config/cava/themes/crux"
+        }
+      ],
       // Palette block only; bin/crux-splice-starship-palette splices it into starship.toml.
       "starship": [
         {
@@ -154,6 +161,9 @@ Singleton {
       cmds.push("pkill -USR1 -x kitty");
     if (t.nvim)
       cmds.push("pkill -USR1 -x nvim");
+    if (t.cava)
+      // SIGUSR2 reloads only cava's colours.
+      cmds.push("pkill -USR2 -x cava");
     if (t.qt)
       // Point qt6ct at crux's colours on every regen, so no manual qt6ct step is needed.
       cmds.push("sed -i 's|^color_scheme_path=.*|color_scheme_path=" + Quickshell.env("HOME") + "/.config/qt6ct/colors/crux.conf|' " + Quickshell.env("HOME") + "/.config/qt6ct/qt6ct.conf");
@@ -207,7 +217,7 @@ Singleton {
     }
     // Neither FileView.setText() nor matugen creates parent directories, so mkdir first.
     mkdirProc._tomlText = built.toml;
-    mkdirProc.command = ["sh", "-c", "mkdir -p ~/.cache/crux ~/.config/hypr/crux ~/.config/kitty/themes ~/.config/qt6ct/colors ~/.config/yazi/flavors/crux.yazi ~/.config/vesktop/themes ~/.config/BetterDiscord/themes ~/.cache/wal ~/.config/btop/themes ~/.config/nvim/lua"];
+    mkdirProc.command = ["sh", "-c", "mkdir -p ~/.cache/crux ~/.config/hypr/crux ~/.config/kitty/themes ~/.config/qt6ct/colors ~/.config/yazi/flavors/crux.yazi ~/.config/vesktop/themes ~/.config/BetterDiscord/themes ~/.cache/wal ~/.config/btop/themes ~/.config/nvim/lua ~/.config/cava/themes"];
     mkdirProc.running = true;
   }
 
