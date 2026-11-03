@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>crux · sharp by design</title>
+  <meta name="description" content="crux is a chamfered Quickshell desktop shell for Hyprland: bar, Control Center, launcher, notifications, lock screen and wallpaper theming in one config.">
+  <meta property="og:title" content="crux · sharp by design">
+  <meta property="og:description" content="A chamfered Quickshell desktop shell for Hyprland.">
+  <meta property="og:image" content="https://teezlabs.github.io/crux-shell/screenshot.webp">
+  <meta name="theme-color" content="#0d0a07">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5 0h11v11l-5 5H0V5z' fill='%23e6a866'/%3E%3C/svg%3E">
+  <link rel="preload" href="fonts/DepartureMono-Regular.otf" as="font" type="font/otf" crossorigin>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="bar cham" aria-label="Site bar">
+    <a class="bar-mark" href="#top" aria-label="crux, back to top">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 0h11v11l-5 5H0V5z"/></svg>
+      <span>crux</span>
+    </a>
+    <nav class="ws" aria-label="Sections">
+      <a href="#top" data-ws="top"><span>1</span><em>crux</em></a>
+      <a href="#bar" data-ws="bar"><span>2</span><em>bar</em></a>
+      <a href="#desktop" data-ws="desktop"><span>3</span><em>desktop</em></a>
+      <a href="#theming" data-ws="theming"><span>4</span><em>theming</em></a>
+      <a href="#install" data-ws="install"><span>5</span><em>install</em></a>
+    </nav>
+    <div class="bar-right">
+      <button class="bar-theme" type="button" data-cycle aria-label="Next color preset">
+        <i class="dot"></i><span data-theme-name>Wallpaper</span>
+      </button>
+      <span class="bar-clock" data-clock="hm" aria-hidden="true">--:--</span>
+      <a class="bar-gh" href="https://github.com/teezlabs/crux-shell">GitHub</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" data-section>
+      <div class="hero-copy">
+        <p class="eyebrow">Quickshell · Hyprland · <a href="https://0ver.org">0ver</a> <span data-version>v0.1.0</span></p>
+        <h1 class="wordmark">crux</h1>
+        <p class="tagline">Sharp by design.</p>
+        <p class="lede">A desktop shell for Hyprland where every corner is cut at 45°. Bar, Control Center, launcher, notifications, lock screen and wallpaper theming, written in QML and configured from one settings panel.</p>
+        <div class="cta">
+          <div class="cmd cham">
+            <span class="prompt">$</span>
+            <code>yay -S crux-shell-git</code>
+            <button type="button" class="copy" data-copy="yay -S crux-shell-git">Copy</button>
+          </div>
+          <a class="btn cham" href="https://github.com/teezlabs/crux-shell">Source on GitHub</a>
+        </div>
+      </div>
+
+      <figure class="desk cham" aria-label="A live mock of the crux desktop, recolored by the preset picker">
+        <div class="desk-sky" data-fireflies aria-hidden="true"></div>
+
+        <div class="vbar cham" aria-hidden="true">
+          <svg class="ico" viewBox="0 0 16 16"><path d="M5 0h11v11l-5 5H0V5z"/></svg>
+          <svg class="ico" viewBox="0 0 16 16"><path d="M1 1h4v4H1zM6 1h4v4H6zM11 1h4v4h-4zM1 6h4v4H1zM6 6h4v4H6zM11 6h4v4h-4zM1 11h4v4H1zM6 11h4v4H6zM11 11h4v4h-4z"/></svg>
+          <span class="vclock"><b data-clock="h">--</b><b data-clock="m">--</b></span>
+          <svg class="ico on" viewBox="0 0 16 16"><path d="M1 3h14v12H1zM3 7v6h10V7z M4 1h2v3H4zM10 1h2v3h-2z"/></svg>
+          <svg class="ico" viewBox="0 0 16 16"><path d="M8 1a5 5 0 0 1 5 5v4l2 2v1H1v-1l2-2V6a5 5 0 0 1 5-5zM6 14h4v1H6z"/></svg>
+          <svg class="ico warn" viewBox="0 0 16 16"><path d="M8 1a5 5 0 0 1 3 9v2H5v-2a5 5 0 0 1 3-9zM5 13h6v2H5z"/></svg>
+          <svg class="ico on" viewBox="0 0 16 16"><path d="M8 13l2 2H6zM2 6a9 9 0 0 1 12 0l-1.5 1.5a7 7 0 0 0-9 0zM4.5 8.5a5.5 5.5 0 0 1 7 0L10 10a3.5 3.5 0 0 0-4 0z"/></svg>
+          <span class="vws"><i class="cur">1</i><i>2</i><i>3</i><i>4</i><i>5</i></span>
+          <span class="vspacer"></span>
+          <svg class="ico" viewBox="0 0 16 16"><path d="M7 0h2l1 2.5 2.5-1 1.5 1.5-1 2.5L16 7v2l-2.5 1 1 2.5-1.5 1.5-2.5-1L9 16H7l-1-2.5-2.5 1L2 13l1-2.5L0 9V7l3-1-1-2.5L3.5 2 6 3zM8 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
+          <svg class="ico err" viewBox="0 0 16 16"><path d="M7 0h2v8H7zM4 3l1.4 1.4a5 5 0 1 0 5.2 0L12 3a7 7 0 1 1-8 0z"/></svg>
+        </div>
+
+        <div class="cal cham" aria-hidden="true">
+          <p class="cal-head"><span data-cal-title>----</span><span>‹ ›</span></p>
+          <div class="cal-grid" data-cal></div>
+        </div>
+
+        <div class="clock cham" aria-hidden="true">
+          <p class="clock-big" data-clock="hms">--:--:--</p>
+          <p class="clock-date" data-clock="date">----------</p>
+        </div>
+
+        <div class="toast cham" data-toast aria-live="polite">
+          <p class="toast-app">crux · theme</p>
+          <p class="toast-body">Applied <b data-toast-name>Wallpaper</b></p>
+        </div>
+      </figure>
+    </section>
+
+    <section class="feat" id="bar" data-section>
+      <header class="feat-head">
+        <h2 class="mark">Bar</h2>
+        <p class="feat-sum">Any edge, any monitor. <span>37 widgets.</span></p>
+      </header>
+      <ul class="rows">
+        <li><b>Per-monitor edge</b><span>Top on one screen, left on the other. Docked strip or floating outlined pill.</span></li>
+        <li><b>Drag to reorder</b><span>Long-press a widget and move it, including between sections.</span></li>
+        <li><b>Joined drawers</b><span>Click a widget and its drawer opens fused to the bar's outline. On a floating bar it unfolds straight out of the widget.</span></li>
+        <li><b>Backdrop</b><span>A wallpaper strip behind the bar hides windows a scrolling layout parks off-screen, fading toward the work area.</span></li>
+        <li><b>The widgets</b><span>Workspaces, clock, media, tray, audio, network, Bluetooth, battery, system stats, updates and the rest.</span></li>
+      </ul>
+    </section>
+
+    <section class="feat" id="desktop" data-section>
+      <header class="feat-head">
+        <h2 class="mark">Desktop</h2>
+        <p class="feat-sum">One shell. <span>No extra daemons.</span></p>
+      </header>
+      <ul class="rows">
+        <li><b>Control Center</b><span>Quick toggles, audio sliders, weather, system gauges, and capture, record and color-pick actions.</span></li>
+        <li><b>Launcher</b><span>Fuzzy search, a run-command prefix and an inline calculator. Enter copies the result.</span></li>
+        <li><b>Notifications</b><span>History, do-not-disturb, a volume OSD and a session menu.</span></li>
+        <li><b>Lock and idle</b><span>Lock screen, polkit agent and idle handling (screen off, lock, suspend), all built in.</span></li>
+        <li><b>Extras</b><span>Night light, clipboard history and Philips Hue control.</span></li>
+        <li><b>Settings panel</b><span>A home page with your theme and shortcuts, 20 tabs in five sections, and a search box.</span></li>
+      </ul>
+      <figure class="shot cham">
+        <img src="screenshot.webp" width="2560" height="1440" loading="lazy" alt="crux on two monitors: a floating top bar on one, a floating vertical bar with the calendar drawer open on the other, and a large pixel clock on each">
+      </figure>
+    </section>
+
+    <section class="feat" id="theming" data-section>
+      <header class="feat-head">
+        <h2 class="mark">Theming</h2>
+        <p class="feat-sum">Pick a wallpaper. <span>Everything follows.</span></p>
+      </header>
+      <p class="feat-lede">crux runs matugen on your wallpaper and pushes the palette into Hyprland, kitty, GTK, Qt, yazi, btop, starship, Neovim, cava and Discord. Or skip the wallpaper and use a preset. These are the ones that ship with crux. Pick one and this page recolors the way your desktop would.</p>
+      <div class="presets" role="radiogroup" aria-label="Color presets" data-presets></div>
+      <figure class="shot cham">
+        <img src="screenshot-2.webp" width="2560" height="1440" loading="lazy" alt="the wallpaper browser showing local wallpapers as slanted slices, and the settings panel's home page with theme swatches">
+      </figure>
+    </section>
+
+    <section class="feat install" id="install" data-section>
+      <header class="feat-head">
+        <h2 class="mark">Install</h2>
+        <p class="feat-sum">Arch and Hyprland. <span>Lua config required.</span></p>
+      </header>
+
+      <div class="panel cham">
+        <div class="tabs" role="tablist" aria-label="Install method">
+          <button type="button" role="tab" id="t-aur" aria-controls="p-aur" aria-selected="true">AUR</button>
+          <button type="button" role="tab" id="t-git" aria-controls="p-git" aria-selected="false" tabindex="-1">Manual</button>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p-aur" aria-labelledby="t-aur">
+          <pre><code><span class="prompt">$</span> yay -S crux-shell-git
+<span class="prompt">$</span> qs -c crux</code></pre>
+          <button type="button" class="copy" data-copy="yay -S crux-shell-git && qs -c crux">Copy</button>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p-git" aria-labelledby="t-git" hidden>
+          <pre><code><span class="prompt">$</span> git clone https://github.com/teezlabs/crux-shell ~/.config/quickshell/crux
+<span class="prompt">$</span> qs -c crux</code></pre>
+          <button type="button" class="copy" data-copy="git clone https://github.com/teezlabs/crux-shell ~/.config/quickshell/crux && qs -c crux">Copy</button>
+        </div>
+      </div>
+
+      <div class="split">
+        <div class="panel cham">
+          <p class="panel-label">Start with Hyprland · hyprland.lua</p>
+          <pre><code>hl.on(<s>"hyprland.start"</s>, function()
+    hl.exec_cmd(<s>"qs -c crux"</s>)
+end)</code></pre>
+          <p class="note">crux dispatches in Lua syntax, so a classic <code>hyprland.conf</code> can't switch workspaces from the bar.</p>
+        </div>
+        <div class="panel cham">
+          <p class="panel-label">Bind anything · qs ipc</p>
+          <pre><code>qs ipc -c crux call launcher toggle
+qs ipc -c crux call controlCenter toggle
+qs ipc -c crux call wallpaperBrowser toggle
+qs ipc -c crux call lockscreen lock
+qs ipc -c crux call darkMode toggle</code></pre>
+          <p class="note">Opens on the focused monitor. <code>qs ipc -c crux show</code> lists every target.</p>
+        </div>
+      </div>
+
+      <div class="panel cham">
+        <p class="panel-label">Needs</p>
+        <p class="deps"><code>hyprland</code> <code>quickshell</code> <code>matugen</code> <code>brightnessctl</code> <code>wlsunset</code> <code>cliphist</code> <code>wl-clipboard</code> <code>playerctl</code> <code>networkmanager</code> <code>bluez</code> <code>python</code> <code>git</code></p>
+        <p class="panel-label">Nice to have</p>
+        <p class="deps soft"><code>lm_sensors</code> <code>wf-recorder</code> <code>hyprpicker</code> <code>imagemagick</code></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>crux is a personal daily driver. It changes without warning, and every corner gets chamfered whether you like it or not.</p>
+    <p><a href="https://github.com/teezlabs/crux-shell">github.com/teezlabs/crux-shell</a> · Set in <a href="https://departuremono.com">Departure Mono</a> · made with <s>Claude</s> love</p>
+  </footer>
+
+  <script src="main.js" defer></script>
+</body>
+</html>

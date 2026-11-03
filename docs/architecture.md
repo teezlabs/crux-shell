@@ -29,6 +29,7 @@ Modules/
 Assets/                  # bundled fonts and images
 bin/crux-*               # CLI helpers, many ported from Omarchy
 packaging/               # PKGBUILD (AUR source of truth), sudoers grants
+site/                    # teezlabs.github.io/crux-shell, deployed by pages.yml
 docs/                    # this reference; the visual spec PDF
 agents/skills/           # task guides for working on crux
 ```
