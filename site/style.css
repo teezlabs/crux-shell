@@ -116,6 +116,7 @@ figure { margin: 0; }
 .lede { margin-top: 20px; font-size: 19px; color: var(--muted); }
 
 /* Shots */
+.bare img { width: 100%; }
 .shot { --c: 18px; --fill: var(--shot-bg); padding: 1px; }
 .shot img { width: 100%; clip-path: polygon(17px 0, 100% 0, 100% calc(100% - 17px), calc(100% - 17px) 100%, 0 100%, 0 17px); }
 .shot-hero {
