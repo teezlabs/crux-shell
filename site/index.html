@@ -4,9 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>crux: a desktop shell for Hyprland</title>
-  <meta name="description" content="crux is a Quickshell desktop shell for Hyprland: bar, Control Center, launcher, notifications, lock screen and wallpaper theming, set up from one settings panel.">
+  <meta name="description" content="crux is a Quickshell desktop shell for Hyprland.">
   <meta property="og:title" content="crux: a desktop shell for Hyprland">
-  <meta property="og:description" content="Bar, Control Center, launcher, notifications, lock screen and wallpaper theming in one Quickshell config.">
   <meta property="og:image" content="https://teezlabs.github.io/crux-shell/screenshot.webp">
   <meta name="theme-color" content="#0a0a0b">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5 0h11v11l-5 5H0V5z' fill='%23e6a866'/%3E%3C/svg%3E">
@@ -14,223 +13,87 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a class="skip" href="#main">Skip to content</a>
-
-  <header class="nav">
-    <div class="wrap nav-in">
-      <a class="logo" href="#top" aria-label="crux home">
-        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 0h11v11l-5 5H0V5z"/></svg>
-        <span>crux</span>
-      </a>
-      <nav aria-label="Primary">
-        <a href="#features">Features</a>
-        <a href="#theming">Theming</a>
-        <a href="#settings">Settings</a>
-        <a href="#install">Install</a>
-      </nav>
-      <a class="btn btn-ghost btn-sm" href="https://github.com/teezlabs/crux-shell">
-        <svg class="gh" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.93-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.33.66.07-.52.28-.87.5-1.07-1.77-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.22 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"/></svg>
-        GitHub
-      </a>
-    </div>
+  <header class="nav wrap">
+    <a class="logo" href="#top" aria-label="crux home">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 0h11v11l-5 5H0V5z"/></svg>
+      <span>crux</span>
+    </a>
+    <a class="btn btn-ghost btn-sm" href="https://github.com/teezlabs/crux-shell">
+      <svg class="gh" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.93-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.33.66.07-.52.28-.87.5-1.07-1.77-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.22 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"/></svg>
+      GitHub
+    </a>
   </header>
 
-  <main id="main">
-    <section class="hero wrap" id="top">
-      <a class="pill" href="https://github.com/teezlabs/crux-shell/releases">
-        <span class="pill-tag">v0.1.0</span> Available on the AUR as crux-shell-git
-      </a>
-      <h1>The desktop shell for Hyprland, with every corner cut&nbsp;sharp.</h1>
-      <p class="lede">crux replaces your bar, launcher, notification daemon, lock screen and theming scripts with one Quickshell config. You set it up from a settings panel, not a dotfile.</p>
+  <main id="top">
+    <section class="hero wrap">
+      <h1>Sharp by design.</h1>
+      <p class="lede">A desktop shell for Hyprland, built on Quickshell.</p>
       <div class="cta">
         <div class="cmd cham">
-          <span class="cmd-p" aria-hidden="true">$</span>
           <code>yay -S crux-shell-git</code>
           <button type="button" class="copy" data-copy="yay -S crux-shell-git" aria-label="Copy install command">
             <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 1h7l3 3v8H5zM1 5h3v1.5H2.5v7h6V13H10v2H1z"/></svg>
           </button>
         </div>
-        <a class="btn btn-primary cham" href="#install">Get started</a>
       </div>
-      <figure class="hero-shot cham">
-        <img src="screenshot.webp" width="2560" height="1440" alt="crux on two monitors: a floating top bar on one, a floating vertical bar with the calendar drawer open on the other">
+    </section>
+
+    <figure class="shot shot-hero cham reveal">
+      <img src="screenshot.webp" width="2560" height="1440" alt="crux on two monitors: a floating top bar on one, a floating vertical bar with the calendar drawer open on the other">
+    </figure>
+
+    <ul class="parts wrap reveal" aria-label="What's included">
+      <li>Bar</li>
+      <li>Control Center</li>
+      <li>Launcher</li>
+      <li>Notifications</li>
+      <li>Lock screen</li>
+      <li>Wallpaper theming</li>
+    </ul>
+
+    <section class="gallery wrap">
+      <figure class="tile tile-wide reveal">
+        <div class="shot cham"><img src="wallpapers.webp" width="1100" height="484" loading="lazy" alt="the wallpaper browser: local wallpapers as slanted slices, with apply buttons along the bottom"></div>
+        <figcaption><b>Wallpaper browser</b> The palette follows the wallpaper, into Hyprland, GTK, Qt, kitty, Neovim and more.</figcaption>
       </figure>
-    </section>
 
-    <section class="section wrap" id="features">
-      <header class="sec-head">
-        <p class="kicker">Features</p>
-        <h2>Everything the desktop needs, in one process.</h2>
-        <p class="sec-sub">No separate bar, notification daemon or lock screen to configure. Each part shares one theme, one settings file and one IPC target list.</p>
-      </header>
-      <div class="grid">
-        <article class="card">
-          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v4H3zM6 7h4M15 7h3"/></svg>
-          <h3>Bar</h3>
-          <p>Any edge, set per monitor, docked or floating. 37 widgets, reordered by dragging.</p>
-        </article>
-        <article class="card">
-          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM17 13v8M13 17h8"/></svg>
-          <h3>Control Center</h3>
-          <p>Quick toggles, audio sliders, weather, system gauges, and screenshot, record and color-pick actions.</p>
-        </article>
-        <article class="card">
-          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3a7 7 0 1 1 0 14 7 7 0 0 1 0-14zM15 15l6 6"/></svg>
-          <h3>Launcher</h3>
-          <p>Fuzzy app search, a run-command prefix and an inline calculator. Enter copies the result.</p>
-        </article>
-        <article class="card">
-          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 1 6 6v5l2 3H4l2-3V9a6 6 0 0 1 6-6zM9.5 20h5"/></svg>
-          <h3>Notifications</h3>
-          <p>History, do-not-disturb, a volume OSD and a session menu.</p>
-        </article>
-        <article class="card">
-          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11h14v10H5zM8 11V7a4 4 0 0 1 8 0v4M12 15v2"/></svg>
-          <h3>Lock and idle</h3>
-          <p>Lock screen, polkit agent and idle handling for screen off, lock and suspend. All built in.</p>
-        </article>
-        <article class="card">
-          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1M12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
-          <h3>Extras</h3>
-          <p>Night light, clipboard history, Philips Hue control and drop-in QML plugins.</p>
-        </article>
-      </div>
-
-      <div class="feature">
-        <div class="feature-copy">
-          <h3 class="h3-lg">A bar that goes where you put it.</h3>
-          <p>Top on one monitor, left on the other. Click a widget and its drawer opens joined to the bar's outline. On a floating bar it unfolds straight out of the widget.</p>
-          <ul class="checks">
-            <li>Docked strip or floating outlined bar, per monitor</li>
-            <li>Long-press to drag widgets, including between sections</li>
-            <li>A wallpaper backdrop hides windows a scrolling layout parks off-screen</li>
-          </ul>
-        </div>
-        <figure class="frame cham frame-cal">
-          <img src="calendar.webp" width="290" height="340" loading="lazy" alt="the vertical bar with the calendar drawer open beside it, joined to the bar's outline">
-        </figure>
-      </div>
-    </section>
-
-    <section class="section wrap" id="theming">
-      <header class="sec-head">
-        <p class="kicker">Theming</p>
-        <h2>Pick a wallpaper. The whole desktop follows.</h2>
-        <p class="sec-sub">crux runs matugen on the wallpaper and writes the palette into Hyprland, kitty, GTK, Qt, yazi, btop, starship, Neovim, cava and Discord. Windows get chamfered corners to match, through Hyprland shader overrides.</p>
-      </header>
-      <figure class="frame cham">
-        <img src="wallpapers.webp" width="1100" height="484" loading="lazy" alt="the wallpaper browser: local wallpapers as slanted slices, with apply buttons along the bottom">
+      <figure class="tile reveal">
+        <div class="shot cham"><img src="settings.webp" width="640" height="560" loading="lazy" alt="the settings panel home page: theme swatches, quick toggles, and shortcut buttons into other settings pages"></div>
+        <figcaption><b>Settings panel</b> Every option in one place, with search.</figcaption>
       </figure>
-      <div class="presets-wrap">
-        <div>
-          <h3>Or start from a preset</h3>
-          <p class="muted">These ship with crux. Choose one to preview it on this page.</p>
-        </div>
-        <div class="presets" role="radiogroup" aria-label="Color presets" data-presets></div>
+
+      <div class="tile stats cham reveal">
+        <dl>
+          <div><dt>37</dt><dd>bar widgets</dd></div>
+          <div><dt>20</dt><dd>settings tabs</dd></div>
+          <div><dt>10</dt><dd>apps themed from your wallpaper</dd></div>
+          <div><dt>45°</dt><dd>on every corner</dd></div>
+        </dl>
       </div>
     </section>
 
-    <section class="section wrap" id="settings">
-      <div class="feature feature-rev">
-        <figure class="frame cham">
-          <img src="settings.webp" width="640" height="560" loading="lazy" alt="the settings panel home page: theme swatches, quick toggles, and shortcut buttons into other settings pages">
-        </figure>
-        <div class="feature-copy">
-          <p class="kicker">Settings</p>
-          <h2>Configured from a panel, not a dotfile.</h2>
-          <p>Every option has a control: 20 tabs in five sections, with search across all of them. The home page shows your theme, your most-used toggles and shortcuts into the rest.</p>
-          <dl class="sections">
-            <div><dt>Personalize</dt><dd>Appearance, wallpaper, bar, desktop widgets</dd></div>
-            <div><dt>Shell</dt><dd>Control Center, launcher, notifications</dd></div>
-            <div><dt>System</dt><dd>Audio, display, connections, peripherals, Hue</dd></div>
-            <div><dt>Session</dt><dd>Lock screen, power and idle</dd></div>
-            <div><dt>Advanced</dt><dd>Input, hooks, plugins</dd></div>
-          </dl>
+    <section class="get wrap reveal">
+      <h2>Get crux</h2>
+      <p class="lede">For Arch and Hyprland with a Lua config.</p>
+      <div class="cta">
+        <div class="cmd cham">
+          <code>yay -S crux-shell-git</code>
+          <button type="button" class="copy" data-copy="yay -S crux-shell-git" aria-label="Copy install command">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 1h7l3 3v8H5zM1 5h3v1.5H2.5v7h6V13H10v2H1z"/></svg>
+          </button>
         </div>
-      </div>
-    </section>
-
-    <section class="section wrap" id="install">
-      <header class="sec-head">
-        <p class="kicker">Install</p>
-        <h2>Running in three steps.</h2>
-        <p class="sec-sub">crux targets Arch with Hyprland on a Lua config (<code>hyprland.lua</code>). It sends Lua dispatches, so with a classic <code>hyprland.conf</code> the bar can't switch workspaces.</p>
-      </header>
-      <ol class="steps">
-        <li class="step">
-          <div class="step-h"><span class="step-n">1</span><h3>Install</h3></div>
-          <div class="code cham">
-            <div class="tabs" role="tablist" aria-label="Install method">
-              <button type="button" role="tab" id="t-aur" aria-controls="p-aur" aria-selected="true">AUR</button>
-              <button type="button" role="tab" id="t-git" aria-controls="p-git" aria-selected="false" tabindex="-1">From source</button>
-            </div>
-            <div class="code-body" role="tabpanel" id="p-aur" aria-labelledby="t-aur">
-              <pre><code>yay -S crux-shell-git</code></pre>
-              <button type="button" class="copy" data-copy="yay -S crux-shell-git" aria-label="Copy"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 1h7l3 3v8H5zM1 5h3v1.5H2.5v7h6V13H10v2H1z"/></svg></button>
-            </div>
-            <div class="code-body" role="tabpanel" id="p-git" aria-labelledby="t-git" hidden>
-              <pre><code>git clone https://github.com/teezlabs/crux-shell ~/.config/quickshell/crux</code></pre>
-              <button type="button" class="copy" data-copy="git clone https://github.com/teezlabs/crux-shell ~/.config/quickshell/crux" aria-label="Copy"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 1h7l3 3v8H5zM1 5h3v1.5H2.5v7h6V13H10v2H1z"/></svg></button>
-            </div>
-          </div>
-        </li>
-        <li class="step">
-          <div class="step-h"><span class="step-n">2</span><h3>Start it with Hyprland</h3></div>
-          <div class="code cham">
-            <p class="code-file">~/.config/hypr/hyprland.lua</p>
-            <div class="code-body">
-              <pre><code>hl.on(<em>"hyprland.start"</em>, function()
-    hl.exec_cmd(<em>"qs -c crux"</em>)
-end)</code></pre>
-            </div>
-          </div>
-        </li>
-        <li class="step">
-          <div class="step-h"><span class="step-n">3</span><h3>Bind your keys</h3></div>
-          <div class="code cham">
-            <p class="code-file">Any keybind can call crux over IPC</p>
-            <div class="code-body">
-              <pre><code>qs ipc -c crux call launcher toggle
-qs ipc -c crux call controlCenter toggle
-qs ipc -c crux call lockscreen lock</code></pre>
-            </div>
-          </div>
-          <p class="note">Each opens on the focused monitor. <code>qs ipc -c crux show</code> lists every target.</p>
-        </li>
-      </ol>
-
-      <div class="reqs">
-        <div>
-          <h3>Requires</h3>
-          <p class="pkgs"><code>hyprland</code><code>quickshell</code><code>matugen</code><code>brightnessctl</code><code>wlsunset</code><code>cliphist</code><code>wl-clipboard</code><code>playerctl</code><code>networkmanager</code><code>bluez</code><code>python</code><code>git</code></p>
-        </div>
-        <div>
-          <h3>Optional</h3>
-          <dl class="opt">
-            <div><dt><code>lm_sensors</code></dt><dd>CPU temperature</dd></div>
-            <div><dt><code>wf-recorder</code></dt><dd>Screen recording</dd></div>
-            <div><dt><code>hyprpicker</code></dt><dd>Color picker</dd></div>
-            <div><dt><code>imagemagick</code></dt><dd>Faster wallpaper thumbnails</dd></div>
-          </dl>
-        </div>
+        <a class="btn btn-primary cham" href="https://github.com/teezlabs/crux-shell#install">Setup guide</a>
       </div>
     </section>
   </main>
 
-  <footer class="foot">
-    <div class="wrap foot-in">
-      <a class="logo" href="#top" aria-label="crux home">
-        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 0h11v11l-5 5H0V5z"/></svg>
-        <span>crux</span>
-      </a>
-      <p class="muted">Pre-1.0 and versioned with 0ver. Expect things to change between releases.</p>
-      <nav aria-label="Footer">
-        <a href="https://github.com/teezlabs/crux-shell">Source</a>
-        <a href="https://github.com/teezlabs/crux-shell/releases">Releases</a>
-        <a href="https://github.com/teezlabs/crux-shell/issues">Issues</a>
-        <a href="https://aur.archlinux.org/packages/crux-shell-git">AUR</a>
-      </nav>
-    </div>
+  <footer class="foot wrap">
+    <span class="muted">crux · pre-1.0</span>
+    <nav aria-label="Footer">
+      <a href="https://github.com/teezlabs/crux-shell">Source</a>
+      <a href="https://github.com/teezlabs/crux-shell/releases">Releases</a>
+      <a href="https://aur.archlinux.org/packages/crux-shell-git">AUR</a>
+    </nav>
   </footer>
 
   <script src="main.js" defer></script>
