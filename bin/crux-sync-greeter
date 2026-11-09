@@ -10,7 +10,6 @@
 import json
 import subprocess
 import sys
-import time
 from pathlib import Path
 
 #
@@ -71,12 +70,14 @@ subprocess.run(["sudo", "-n", "chmod", "644", str(theme_conf)], check=False)
 # settings.json under XDG_CONFIG_HOME=/var/lib/crux-greeter: only the sections it draws with, and the
 # wallpaper pointed at the world-readable copy above. Nothing else (API keys and the like) is copied.
 greeter_config = Path("/var/lib/crux-greeter/crux")
-settings_path = Path.home() / ".config/crux/settings.json"
-if settings_path.exists():
-    # crux saves settings.json on a 300 ms debounce; wait it out so the theme read here is the new one.
-    time.sleep(1)
-    settings = json.loads(settings_path.read_text())
+if state and "greeter" in state:
+    greeter_settings = dict(state["greeter"])
+else:
+    settings = json.loads((Path.home() / ".config/crux/settings.json").read_text())
     greeter_settings = {key: settings[key] for key in ("theme", "ui", "lockScreen") if key in settings}
+if greeter_settings:
+    # The greeter can't read a custom lock wallpaper under /home either, so it always uses the copy above.
+    greeter_settings.setdefault("lockScreen", {})["useCustomWallpaper"] = False
     greeter_settings["wallpaper"] = {"path": str(greeter_bg), "screenOverrides": []}
     greeter_staging = Path.home() / ".cache/crux/greeter-settings.json"
     greeter_staging.write_text(json.dumps(greeter_settings, indent=2) + "\n")
