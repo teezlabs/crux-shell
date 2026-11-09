@@ -912,3 +912,9 @@ A plugin is a directory under `~/.config/crux/plugins/<name>/` with a `manifest.
 
 Only the source URL, which the user typed in themselves, is ever interpolated into a shell string. Everything that comes back from a registry, the plugin id in particular, travels as its own argv entry to `git`, `mkdir` and `cp`, because a compromised source could otherwise put shell metacharacters in an id and have them run. Ids also become directory names, so `_safeId` keeps only `[a-zA-Z0-9_-]` and rejects an empty result, which is the guard against an id like `../../..` escaping the plugins directory.
 
+
+## The greetd greeter
+
+`greeter.qml` is a second entry point in the crux root, so `qs -p <crux>/greeter.qml` resolves `qs.Commons` and `qs.Widgets` and the login screen is drawn with the same components as the shell, not a copy the way the SDDM theme is. It runs as the `greeter` user, which can't read `/home`, so it takes its settings from `$XDG_CONFIG_HOME/crux/settings.json` in a greeter-owned directory, and the wallpaper path in that copy points at a world-readable file. `Modules/Greeter/GreeterContext.qml` drives Quickshell's `Greetd` service: Enter starts a session for the selected user and answers the first secret prompt with the typed text, and any further prompt (a second factor) hands the field back to the user. `Greetd.launch(..., true)` quits the greeter once the session starts.
+
+When `Greetd.available` is false (run inside a normal session), the greeter is a preview: Enter and the power buttons only print a message, and Escape quits, since the surface takes exclusive keyboard focus on the overlay layer.
