@@ -147,9 +147,20 @@ Scope {
     }
   }
 
+  // A dry-run login for testing greetd: the only session is this shell command instead of a desktop.
+  readonly property string testSession: Quickshell.env("CRUX_GREETER_TEST_SESSION") || ""
+  Component.onCompleted: if (testSession)
+    sessions = [
+      {
+        "name": "Test",
+        "command": ["sh", "-c", testSession],
+        "environment": []
+      }
+    ]
+
   // Wayland sessions whose TryExec (or first Exec word) is installed; start-hyprland first, as SDDM had it.
   Process {
-    running: true
+    running: root.testSession === ""
     command: ["sh", "-c", "for f in /usr/share/wayland-sessions/*.desktop; do " + "n=$(sed -n 's/^Name=//p' \"$f\" | head -1); " + "e=$(sed -n 's/^Exec=//p' \"$f\" | head -1); " + "t=$(sed -n 's/^TryExec=//p' \"$f\" | head -1); " + "d=$(sed -n 's/^DesktopNames=//p' \"$f\" | head -1); " + "[ -n \"$e\" ] || continue; " + "command -v \"${t:-${e%% *}}\" >/dev/null 2>&1 || continue; " + "printf '%s\\t%s\\t%s\\n' \"$n\" \"$e\" \"$d\"; done"]
     stdout: StdioCollector {
       id: sessionsOut
