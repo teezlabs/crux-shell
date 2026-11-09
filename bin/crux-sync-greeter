@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-# Keeps /usr/share/sddm/themes/crux in sync with the real, live crux
-# wallpaper + theme — run from Matugen.qml's _runPostHooks() whenever
+# Keeps the login screen in sync with the real, live crux wallpaper + theme:
+# both /usr/share/sddm/themes/crux and the crux greeter's settings copy in
+# /var/lib/crux-greeter — run from Matugen.qml's _runPostHooks() whenever
 # Settings.data.wallpaper.templates.sddmGreeter is on, same "off by
 # default, each is a real write" convention every other template toggle
 # there follows. Needs passwordless sudo for the two system-path writes
@@ -9,6 +10,7 @@
 import json
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 #
@@ -64,3 +66,21 @@ subprocess.run(["sudo", "-n", "cp", wallpaper_path, str(greeter_bg)], check=Fals
 subprocess.run(["sudo", "-n", "chmod", "644", str(greeter_bg)], check=False)
 subprocess.run(["sudo", "-n", "cp", str(staging), str(theme_conf)], check=False)
 subprocess.run(["sudo", "-n", "chmod", "644", str(theme_conf)], check=False)
+
+# The crux greeter (greeter.qml) runs as the greeter user, which can't read /home, so it gets its own
+# settings.json under XDG_CONFIG_HOME=/var/lib/crux-greeter: only the sections it draws with, and the
+# wallpaper pointed at the world-readable copy above. Nothing else (API keys and the like) is copied.
+greeter_config = Path("/var/lib/crux-greeter/crux")
+settings_path = Path.home() / ".config/crux/settings.json"
+if settings_path.exists():
+    # crux saves settings.json on a 300 ms debounce; wait it out so the theme read here is the new one.
+    time.sleep(1)
+    settings = json.loads(settings_path.read_text())
+    greeter_settings = {key: settings[key] for key in ("theme", "ui", "lockScreen") if key in settings}
+    greeter_settings["wallpaper"] = {"path": str(greeter_bg), "screenOverrides": []}
+    greeter_staging = Path.home() / ".cache/crux/greeter-settings.json"
+    greeter_staging.write_text(json.dumps(greeter_settings, indent=2) + "\n")
+    subprocess.run(["sudo", "-n", "install", "-d", "-o", "greeter", "-g", "greeter", "-m", "700",
+                    str(greeter_config.parent), str(greeter_config)], check=False)
+    subprocess.run(["sudo", "-n", "install", "-o", "greeter", "-g", "greeter", "-m", "600",
+                    str(greeter_staging), str(greeter_config / "settings.json")], check=False)
