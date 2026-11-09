@@ -153,7 +153,7 @@ Scope {
     sessions = [
       {
         "name": "Test",
-        "command": ["sh", "-c", testSession],
+        "command": [testSession],
         "environment": []
       }
     ]
@@ -178,12 +178,13 @@ Scope {
           env.push("XDG_CURRENT_DESKTOP=" + f[2].replace(/;$/, "").replace(/;/g, ":"));
         list.push({
           "name": f[0] || f[1],
-          "command": f[1].replace(/ %[a-zA-Z]/g, "").trim().split(/\s+/),
+          // greetd joins the argv with spaces and runs it through sh -c, so the Exec line goes over whole.
+          "command": [f[1].replace(/ %[a-zA-Z]/g, "").trim()],
           "environment": env
         });
       }
       list.sort(function (a, b) {
-        return (b.command[0].indexOf("start-hyprland") >= 0) - (a.command[0].indexOf("start-hyprland") >= 0);
+        return (b.command[0].indexOf("start-hyprland") === 0) - (a.command[0].indexOf("start-hyprland") === 0);
       });
       root.sessions = list;
     }
