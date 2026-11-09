@@ -1,0 +1,9 @@
+# greetd showing crux's login screen. Copy to /etc/greetd/config.toml.
+[terminal]
+vt = 1
+
+[default_session]
+command = "start-hyprland -- --config /usr/share/crux/greetd/crux-hyprland.lua"
+user = "greeter"
+# Arch's greetd ships no greetd-greeter PAM file, so the greeter uses greetd's own.
+service = "greetd"

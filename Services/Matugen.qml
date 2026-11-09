@@ -150,6 +150,13 @@ Singleton {
     };
   }
 
+  function _pick(obj, keys) {
+    var out = {};
+    for (var i = 0; i < keys.length; i++)
+      out[keys[i]] = obj[keys[i]];
+    return out;
+  }
+
   function _runPostHooks() {
     var t = Settings.data.wallpaper.templates;
     var cmds = [];
@@ -191,7 +198,13 @@ Singleton {
           "errorTone": theme.errorTone,
           "errorText": theme.errorText
         },
-        "fontFamily": Settings.data.ui.fontFamily
+        "fontFamily": Settings.data.ui.fontFamily,
+        // Everything the crux greeter draws with; JsonObjects don't stringify, so the keys are listed.
+        "greeter": {
+          "theme": root._pick(theme, ["surface", "surfaceContainerLow", "surfaceContainer", "surfaceContainerHigh", "outline", "outlineVariant", "primary", "primaryContainer", "primaryContainerText", "tertiary", "errorTone", "surfaceText", "surfaceTextMuted", "primaryText", "errorText", "mOnPrimary", "mOnError", "barOpacity", "colorScheme", "darkMode"]),
+          "ui": root._pick(Settings.data.ui, ["fontFamily", "monoFontFamily", "fontScale"]),
+          "lockScreen": root._pick(Settings.data.lockScreen, ["clockFormat", "dateFormat", "blurAmount", "dimAmount"])
+        }
       })
     };
     postHookProc.command = ["sh", "-c", cmds.join(" ; ")];

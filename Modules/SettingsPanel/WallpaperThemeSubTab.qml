@@ -214,7 +214,7 @@ NScrollView {
             },
             {
               "key": "sddmGreeter",
-              "label": "SDDM greeter"
+              "label": "Login screen"
             },
             {
               "key": "gsettings",
