@@ -1,5 +1,5 @@
 -- Hyprland for greetd's greeter user: shows crux's login screen, exits once a session starts.
--- greetd runs it as `Hyprland --config /usr/share/crux/greetd/crux-hyprland.lua` (see config.toml).
+-- greetd runs it as `start-hyprland -- --config /usr/share/crux/greetd/crux-hyprland.lua` (see config.toml).
 
 local crux = os.getenv("CRUX_DIR") or "/etc/xdg/quickshell/crux"
 
