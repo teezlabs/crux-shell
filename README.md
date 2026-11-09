@@ -86,6 +86,35 @@ hl.on("hyprland.start", function()
 end)
 ```
 
+## Login screen
+
+crux has its own login screen for [greetd](https://sr.ht/~kennylevinsen/greetd/), drawn with the same components and theme as the desktop. It runs in a small Hyprland instance as the `greeter` user. Needs the AUR package, `greetd` and `sudo`.
+
+1. Point greetd at it:
+
+    ```sh
+    sudo cp /usr/share/crux/greetd/config.toml /etc/greetd/config.toml
+    ```
+
+2. Optional: put your monitor layout and GPU environment in `/etc/greetd/crux-local.lua`, written like your own Hyprland config. Without it, every monitor runs at its preferred mode.
+
+    ```lua
+    hl.monitor({ output = "DP-1", mode = "1920x1080@100", position = "auto", scale = 1, transform = 3 })
+    hl.env("GBM_BACKEND", "nvidia-drm")
+    ```
+
+3. Turn on **Wallpaper → Theme → Login screen** in crux's settings. Every theme change then copies the wallpaper and colours to the login screen.
+
+4. Switch display managers and reboot (swap `sddm` for whatever you use now):
+
+    ```sh
+    sudo systemctl disable sddm && sudo systemctl enable greetd
+    ```
+
+If the login screen doesn't come up, press Ctrl+Alt+F3, log in on the TTY and switch back with `sudo systemctl disable greetd && sudo systemctl enable sddm`.
+
+To preview it inside a running session, run `qs -p /etc/xdg/quickshell/crux/greeter.qml`. It never logs anyone in, and Escape closes it.
+
 ## Keybinds
 
 Everything crux opens can be driven from a keybind through Quickshell's IPC:
