@@ -1,0 +1,32 @@
+name: Release
+
+# When a raised pkgver reaches main (see version-check.yml), tag v<pkgver> on that commit and publish a
+# GitHub release whose notes list the PRs since the previous one. The README's 0ver badge reads this release.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - packaging/PKGBUILD
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Tag and release the new pkgver
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          version=$(sed -n 's/^pkgver=//p' packaging/PKGBUILD)
+          if gh release view "v$version" >/dev/null 2>&1; then
+            echo "v$version is already released; nothing to do."
+            exit 0
+          fi
+          gh release create "v$version" --target "$GITHUB_SHA" --title "crux $version" --generate-notes
+          echo "Released v$version."

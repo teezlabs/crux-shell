@@ -1,0 +1,40 @@
+name: Version bump check
+
+# Every PR that changes what the package ships must raise pkgver in packaging/PKGBUILD:
+# the patch number for fixes (0.2.0 -> 0.2.1), the minor number for features (0.2.x -> 0.3.0).
+# Merging it then tags and releases that version (release.yml). Docs, site and CI-only PRs pass without one.
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Compare pkgver with main
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -eu
+          # Everything the PKGBUILD's package() installs, plus the PKGBUILD itself.
+          shipped='^(shell\.qml|greeter\.qml|Commons/|Services/|Modules/|Widgets/|Assets/|bin/|packaging/greetd/|packaging/crux-dns\.sudoers|packaging/PKGBUILD)'
+          changed=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -E "$shipped" || true)
+          if [ -z "$changed" ]; then
+            echo "Nothing the package ships changed, so no version bump is needed."
+            exit 0
+          fi
+
+          base=$(git show "$BASE_SHA:packaging/PKGBUILD" | sed -n 's/^pkgver=//p')
+          head=$(git show "$HEAD_SHA:packaging/PKGBUILD" | sed -n 's/^pkgver=//p')
+          echo "main: $base   this PR: $head"
+          if [ "$base" = "$head" ] || [ "$(printf '%s\n%s\n' "$base" "$head" | sort -V | tail -1)" != "$head" ]; then
+            echo "::error file=packaging/PKGBUILD::This PR changes what crux ships, so raise pkgver above $base (patch for fixes, minor for features). Changed: $(echo $changed | tr '\n' ' ')"
+            exit 1
+          fi
+          echo "pkgver raised from $base to $head."

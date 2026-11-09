@@ -60,6 +60,7 @@ CLI helpers live in `bin/` and all start with `crux-`. Scripts ported from Omarc
 - Repo is `~/.config/quickshell/crux`, branch `main`. Remotes are `origin` (self-hosted) and `github` (`teezlabs/crux-shell`)
 - Commits are atomic and use a lowercase imperative subject that says what changes for the user (`add a do-not-disturb quick toggle`)
 - `packaging/PKGBUILD` is the AUR source of truth. `.github/workflows/aur-publish.yml` pushes it on changes to `main`
+- Every PR that changes what the package ships (anything `package()` installs) raises `pkgver` in `packaging/PKGBUILD`, using [0ver](https://0ver.org): the patch number for fixes (`0.2.0` → `0.2.1`), the minor number for features (`0.2.x` → `0.3.0`). `version-check.yml` fails a PR that doesn't, and `release.yml` tags and releases the new version when it merges. Docs, `site/` and CI-only PRs don't bump. If `main` reached your version while the PR was open, take the next one
 
 # Tests
 
