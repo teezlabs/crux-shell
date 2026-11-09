@@ -67,3 +67,7 @@ When two enabled `Shortcut`s in one window share a sequence, Qt treats it as amb
 ## `settings.json` on disk lags the live settings
 
 `Settings` writes `settings.json` on a 300 ms debounce, so a script launched right after a settings change reads the previous values. Pass a hook script what it needs through its `Process` arguments or `environment` instead. `crux-sync-greeter` read the file and kept the SDDM greeter one wallpaper behind until 2026-10-31.
+
+## An `Image` without `sourceSize` decodes at full size, even while hidden
+
+An `Image` keeps its decoded bitmap at the file's own resolution unless `sourceSize` caps it, and it decodes whether or not it's visible. Every settings tab is built at boot and hidden, so the wallpaper library's thumbnail grid held the whole wallpaper folder in RAM at full size: about 680 MB for 32 wallpapers, around half of crux's memory, until 2026-11-09. Give thumbnails a `sourceSize` near their drawn size, and never let it bind to 0, which means uncapped (a hidden layout's width is 0).
