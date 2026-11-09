@@ -111,6 +111,8 @@ NScrollView {
                 fillMode: Image.PreserveAspectCrop
                 asynchronous: true
                 cache: true
+                // Every tab loads at boot, so an uncapped decode keeps the whole folder at full size in RAM; 0 would mean uncapped.
+                sourceSize: Qt.size(Math.ceil(Math.max(thumbGrid.cellWidth, thumbGrid.minCell)), Math.ceil(Math.max(thumbGrid.cellHeight, thumbGrid.minCell * 74 / 130)))
               }
 
               HoverHandler {
