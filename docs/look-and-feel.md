@@ -26,6 +26,7 @@ Bar modules (and anything that copies them) use one meaning per color:
 
 - Durations and easings come from Tokens §7. Never type one at a call site
 - Color changes ease shell-wide because the `Behavior` lives in `Chamfer`, `NText` and `NIcon`. A retheme cross-fades the desktop. Set `animateColor: false` for anything that must track a value instantly
+- Mouse-wheel scrolling glides (`Widgets/NSmoothWheel.qml`, step and duration in Tokens §7), and scrolling content fades out at an edge with more to scroll (`Widgets/NScrollFade.qml`). `NScrollView` has both; a bare `ListView`, `GridView` or `Flickable` adds them itself. Touchpads keep Qt's own kinetic scrolling
 - `Widgets/NPressFeedback.qml` is the press response. Point `scaleTarget` at the control and call `trigger()` from the `TapHandler`. `NButton` and `BarIconButton` already include it
 
 ## Depth

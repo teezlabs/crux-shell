@@ -86,6 +86,9 @@ PanelWindow {
     }
 
     ListView {
+      NSmoothWheel {
+        flickable: list
+      }
       id: list
       anchors.top: parent.top
       anchors.left: parent.left

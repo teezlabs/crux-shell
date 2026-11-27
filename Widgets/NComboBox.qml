@@ -155,6 +155,9 @@ Item {
     }
 
     ListView {
+      NSmoothWheel {
+        flickable: list
+      }
       id: list
       anchors.top: root.searchable ? search.bottom : parent.top
       anchors.topMargin: root.searchable ? 4 : 0

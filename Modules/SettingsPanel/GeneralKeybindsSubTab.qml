@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
@@ -41,6 +42,21 @@ ColumnLayout {
     }
 
     Flickable {
+      id: scrollView
+      layer.enabled: scrollFade.active
+      layer.effect: MultiEffect {
+        maskEnabled: true
+        maskSource: scrollFade
+        maskThresholdMin: 0.5
+        maskSpreadAtMin: 1
+      }
+      NSmoothWheel {
+        flickable: scrollView
+      }
+      NScrollFade {
+        id: scrollFade
+        flickable: scrollView
+      }
       anchors.fill: parent
       anchors.margins: 8
       contentWidth: width
