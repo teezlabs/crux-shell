@@ -71,3 +71,7 @@ When two enabled `Shortcut`s in one window share a sequence, Qt treats it as amb
 ## An `Image` without `sourceSize` decodes at full size, even while hidden
 
 An `Image` keeps its decoded bitmap at the file's own resolution unless `sourceSize` caps it, and it decodes whether or not it's visible. Every settings tab is built at boot and hidden, so the wallpaper library's thumbnail grid held the whole wallpaper folder in RAM at full size: about 680 MB for 32 wallpapers, around half of crux's memory, until 2026-11-09. Give thumbnails a `sourceSize` near their drawn size, and never let it bind to 0, which means uncapped (a hidden layout's width is 0).
+
+## Chained `Canvas` arcs join with straight lines
+
+Each `ctx.arc()` in one path is connected to the previous point by a line, so several circles filled as one path come out notched where those lines cross the shape. `WeatherIcon`'s cloud hid this at 24px and showed a dark wedge once the weather popup drew it at 2.4×. Give each circle its own `beginPath()`/`fill()`, or `moveTo` its start point first.

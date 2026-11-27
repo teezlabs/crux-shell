@@ -7,10 +7,16 @@ Canvas {
   id: root
 
   property string category: "cloud"
+  // Clear and partly cloudy draw a moon instead of the sun.
+  property bool night: false
+  // The glyph is drawn about 24px across; this scales it about the centre.
+  property real glyphScale: 1
   property color strokeColor: Colors.surfaceText
   property color accentColor: Colors.tertiary
 
   onCategoryChanged: requestPaint()
+  onNightChanged: requestPaint()
+  onGlyphScaleChanged: requestPaint()
   onStrokeColorChanged: requestPaint()
   onAccentColorChanged: requestPaint()
 
@@ -33,15 +39,29 @@ Canvas {
     }
   }
 
+  // A crescent: a disc with an offset disc cut out of it.
+  function drawMoon(ctx, cx, cy, r) {
+    ctx.fillStyle = root.accentColor;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.beginPath();
+    ctx.arc(cx + r * 0.55, cy - r * 0.45, r * 0.85, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalCompositeOperation = "source-over";
+  }
+
   // Filled overlapping circles, not a stroked multi-arc path — chained arcs self-intersected into a tangled scribble at small sizes.
   function drawCloud(ctx, cx, cy, scale) {
     ctx.fillStyle = root.strokeColor;
-    ctx.beginPath();
-    ctx.arc(cx - 5 * scale, cy + 2 * scale, 4 * scale, 0, Math.PI * 2);
-    ctx.arc(cx - 1 * scale, cy - 2 * scale, 5 * scale, 0, Math.PI * 2);
-    ctx.arc(cx + 5 * scale, cy + 1 * scale, 4.5 * scale, 0, Math.PI * 2);
-    ctx.arc(cx, cy + 4 * scale, 4.5 * scale, 0, Math.PI * 2);
-    ctx.fill();
+    // One subpath per circle: chained arcs join with lines that cut notches into the fill.
+    const puffs = [[-5, 2, 4], [-1, -2, 5], [5, 1, 4.5], [0, 4, 4.5]];
+    for (const p of puffs) {
+      ctx.beginPath();
+      ctx.arc(cx + p[0] * scale, cy + p[1] * scale, p[2] * scale, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 
   function drawDrops(ctx, cx, cy, color) {
@@ -91,9 +111,16 @@ Canvas {
     ctx.reset();
     var cx = width / 2;
     var cy = height / 2;
+    ctx.translate(cx * (1 - glyphScale), cy * (1 - glyphScale));
+    ctx.scale(glyphScale, glyphScale);
 
-    if (category === "sun") {
+    if (category === "sun" && night) {
+      drawMoon(ctx, cx, cy, 7);
+    } else if (category === "sun") {
       drawSun(ctx, cx, cy, 6);
+    } else if (category === "partly" && night) {
+      drawMoon(ctx, cx - 4, cy - 4, 5);
+      drawCloud(ctx, cx + 2, cy + 3, 0.9);
     } else if (category === "partly") {
       drawSun(ctx, cx - 4, cy - 3, 4);
       drawCloud(ctx, cx + 2, cy + 3, 0.9);

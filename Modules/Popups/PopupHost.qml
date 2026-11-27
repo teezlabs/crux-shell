@@ -15,10 +15,10 @@ PanelWindow {
 
   readonly property string barPos: Settings.isLoaded ? Settings.getBarPositionForScreen(root.targetScreen ? root.targetScreen.name : "") : "top"
 
-  readonly property var cards: [soundCard, batteryCard, bluetoothCard, wifiCard, hueCard, microphoneCard, brightnessCard, clipboardCard, claudeUsageCard, notificationHistoryCard, systemStatsCard, calendarCard, mediaPlayerCard, controlCenterCard]
+  readonly property var cards: [soundCard, batteryCard, bluetoothCard, wifiCard, hueCard, microphoneCard, brightnessCard, clipboardCard, claudeUsageCard, notificationHistoryCard, systemStatsCard, calendarCard, mediaPlayerCard, controlCenterCard, weatherCard]
 
   // An explicit OR chain: array indirection in a binding is what QML's dependency tracker has been unreliable about.
-  readonly property bool anyOpen: soundCard.shown || batteryCard.shown || bluetoothCard.shown || wifiCard.shown || hueCard.shown || microphoneCard.shown || brightnessCard.shown || clipboardCard.shown || claudeUsageCard.shown || notificationHistoryCard.shown || systemStatsCard.shown || calendarCard.shown || mediaPlayerCard.shown || controlCenterCard.shown
+  readonly property bool anyOpen: soundCard.shown || batteryCard.shown || bluetoothCard.shown || wifiCard.shown || hueCard.shown || microphoneCard.shown || brightnessCard.shown || clipboardCard.shown || claudeUsageCard.shown || notificationHistoryCard.shown || systemStatsCard.shown || calendarCard.shown || mediaPlayerCard.shown || controlCenterCard.shown || weatherCard.shown
 
   function closeAll(): void {
     for (const card of root.cards)
@@ -286,6 +286,21 @@ PanelWindow {
     }
   }
 
+  SlideCard {
+    id: weatherCard
+    host: root
+    barPos: root.barPos
+    popupName: "weather"
+    cardWidth: 520
+    cardHeight: weatherContent.implicitHeight + contentMargins * 2
+
+    WeatherPopupContent {
+      id: weatherContent
+      anchors.fill: parent
+      active: weatherCard.shown
+    }
+  }
+
   PopupIpc {
     host: root
     card: soundCard
@@ -341,5 +356,9 @@ PanelWindow {
   PopupIpc {
     host: root
     card: controlCenterCard
+  }
+  PopupIpc {
+    host: root
+    card: weatherCard
   }
 }
