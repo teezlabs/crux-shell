@@ -46,8 +46,9 @@ NPanelWindow {
     id: searchIndex
   }
 
+  // A focused text field takes a typed "/" first, so this only fires outside one.
   Shortcut {
-    sequence: "Ctrl+F"
+    sequence: "/"
     enabled: root.visible
     onActivated: sidebar.focusSearch()
   }
