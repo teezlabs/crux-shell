@@ -37,6 +37,7 @@ RowLayout {
   NText {
     Layout.preferredWidth: root.readoutWidth > 0 ? root.readoutWidth : implicitWidth
     text: root.readoutText !== "" ? root.readoutText : root.format(root.value)
+    horizontalAlignment: Text.AlignRight
     size: NText.Size.BodySm
     color: Colors.labelText
   }

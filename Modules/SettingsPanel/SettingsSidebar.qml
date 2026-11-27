@@ -18,6 +18,11 @@ ColumnLayout {
   signal searchQueryEdited(string text)
   signal tabSelected(string id)
 
+  function focusSearch(): void {
+    searchInput.forceActiveFocus();
+    searchInput.selectAll();
+  }
+
   spacing: 2
 
   Item {
@@ -41,7 +46,7 @@ ColumnLayout {
       Item {
         id: searchBox
         Layout.fillWidth: true
-        Layout.preferredHeight: 28
+        Layout.preferredHeight: 32
 
         Chamfer {
           anchors.fill: parent
@@ -53,10 +58,33 @@ ColumnLayout {
           strokeWidth: Tokens.borderModule
         }
 
+        NIcon {
+          id: searchIcon
+          anchors.left: parent.left
+          anchors.leftMargin: 10
+          anchors.verticalCenter: parent.verticalCenter
+          width: 14
+          height: 14
+          iconName: "search"
+          color: Colors.labelText
+        }
+
+        NText {
+          id: shortcutHint
+          anchors.right: parent.right
+          anchors.rightMargin: 10
+          anchors.verticalCenter: parent.verticalCenter
+          visible: searchInput.text === "" && !searchInput.activeFocus
+          text: "CTRL F"
+          tracking: true
+          color: Colors.labelText
+          size: NText.Size.LabelXs
+        }
+
         TextInput {
           id: searchInput
           anchors.fill: parent
-          anchors.leftMargin: 8
+          anchors.leftMargin: 32
           anchors.rightMargin: 8
           verticalAlignment: TextInput.AlignVCenter
           color: Colors.surfaceText
@@ -68,7 +96,7 @@ ColumnLayout {
 
           NText {
             visible: searchInput.text === "" && !searchInput.activeFocus
-            text: "Search settings…"
+            text: "Search"
             color: Colors.labelText
             size: NText.Size.BodySm
             verticalAlignment: Text.AlignVCenter
@@ -118,7 +146,7 @@ ColumnLayout {
                 readonly property var modelData: sidebarEntry.modelData
                 readonly property bool active: panel.activeTab === modelData.id
                 Layout.fillWidth: true
-                Layout.preferredHeight: 26
+                Layout.preferredHeight: 32
 
                 Rectangle {
                   anchors.fill: parent
@@ -133,8 +161,19 @@ ColumnLayout {
                   color: Colors.primary
                 }
 
-                NText {
+                NIcon {
+                  id: tabIcon
                   anchors.left: parent.left
+                  anchors.leftMargin: 10
+                  anchors.verticalCenter: parent.verticalCenter
+                  width: 16
+                  height: 16
+                  iconName: sidebarItem.modelData.icon || ""
+                  color: sidebarItem.active ? Colors.primaryContainerText : Colors.surfaceTextMuted
+                }
+
+                NText {
+                  anchors.left: tabIcon.right
                   anchors.leftMargin: 10
                   anchors.right: parent.right
                   anchors.rightMargin: 6
