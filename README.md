@@ -151,6 +151,10 @@ Settings live in `~/.config/crux/settings.json`, but you shouldn't need to touch
 
 **Plugins:** put a `manifest.json` and a `Widget.qml` in `~/.config/crux/plugins/<name>/`. That's it, no marketplace.
 
+## License
+
+GPL-3.0-or-later. See [`LICENSE`](LICENSE).
+
 <div align="center">
 
 <sub>made with ~~Claude~~ love</sub>
