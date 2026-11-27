@@ -1,7 +1,7 @@
 name: Version bump check
 
 # Every PR that changes what the package ships must raise pkgver in packaging/PKGBUILD:
-# the patch number for fixes (0.2.0 -> 0.2.1), the minor number for features (0.2.x -> 0.3.0).
+# the patch number, features included (0.4.0 -> 0.4.1); the minor number only for a release the user asks for.
 # Merging it then tags and releases that version (release.yml). Docs, site and CI-only PRs pass without one.
 
 on:
@@ -34,7 +34,7 @@ jobs:
           head=$(git show "$HEAD_SHA:packaging/PKGBUILD" | sed -n 's/^pkgver=//p')
           echo "main: $base   this PR: $head"
           if [ "$base" = "$head" ] || [ "$(printf '%s\n%s\n' "$base" "$head" | sort -V | tail -1)" != "$head" ]; then
-            echo "::error file=packaging/PKGBUILD::This PR changes what crux ships, so raise pkgver above $base (patch for fixes, minor for features). Changed: $(echo $changed | tr '\n' ' ')"
+            echo "::error file=packaging/PKGBUILD::This PR changes what crux ships, so raise the patch number of pkgver above $base. Changed: $(echo $changed | tr '\n' ' ')"
             exit 1
           fi
           echo "pkgver raised from $base to $head."
