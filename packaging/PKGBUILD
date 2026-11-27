@@ -1,11 +1,11 @@
 # Maintainer: Teez <dmedoro13@gmail.com>
 pkgname=crux-shell-git
-pkgver=0.2.0
+pkgver=0.2.1
 pkgrel=1
 pkgdesc="A personal QuickShell desktop shell for Hyprland"
 arch=('any')
 url="https://github.com/teezlabs/crux-shell"
-license=('custom')
+license=('GPL-3.0-or-later' 'MIT')
 depends=(
   'quickshell'
   'matugen'
@@ -80,4 +80,7 @@ package() {
   # user (it belongs to the greetd package), and the compositor config is read from here so it updates with crux.
   install -Dm644 packaging/greetd/config.toml "$pkgdir/usr/share/crux/greetd/config.toml"
   install -Dm644 packaging/greetd/crux-hyprland.lua "$pkgdir/usr/share/crux/greetd/crux-hyprland.lua"
+
+  # GPL-3.0 is in Arch's common licenses; the MIT notices of the ported code have to ship.
+  install -Dm644 THIRD_PARTY_NOTICES.md "$pkgdir/usr/share/licenses/$pkgname/THIRD_PARTY_NOTICES.md"
 }
