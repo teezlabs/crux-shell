@@ -30,7 +30,15 @@ ColumnLayout {
       first.push(tabContentArea.children[i].subTab);
     panel._firstSubTabs = first;
   }
+  // Sidebar index of the page on screen, so the next one can slide in from the side it sits on.
+  property int _pageIndex: -1
   onActiveTabChanged: {
+    const next = panel.tabs.findIndex(t => t.id === panel.activeTab);
+    if (panel._pageIndex >= 0 && next !== panel._pageIndex) {
+      pageSlideFrom.from = next > panel._pageIndex ? Tokens.spaceXl : -Tokens.spaceXl;
+      pageIn.restart();
+    }
+    panel._pageIndex = next;
     if (panel.jumpSubTab !== "")
       return;
     for (let i = 0; i < tabContentArea.children.length; i++) {
@@ -159,6 +167,29 @@ ColumnLayout {
     Layout.fillHeight: true
     // Defensive: clips tabs taller than the card.
     clip: true
+    transform: Translate {
+      id: pageShift
+    }
+
+    ParallelAnimation {
+      id: pageIn
+      NumberAnimation {
+        target: tabContentArea
+        property: "opacity"
+        from: 0
+        to: 1
+        duration: Tokens.durationSidebarSlide
+        easing.type: Tokens.easingSidebarSlide
+      }
+      NumberAnimation {
+        id: pageSlideFrom
+        target: pageShift
+        property: "y"
+        to: 0
+        duration: Tokens.durationSidebarSlide
+        easing.type: Tokens.easingSidebarSlide
+      }
+    }
 
     HomeTab {
       anchors.fill: parent
