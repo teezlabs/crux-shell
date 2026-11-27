@@ -17,7 +17,7 @@
 > This is my personal daily driver. It changes under me without warning, and every corner gets chamfered whether you like it or not.
 
 > [!TIP]
-> Everything's configurable from the settings panel: a home page with your theme, quick toggles and shortcuts, 20 tabs in five sections, and a search box so you don't have to remember where anything lives.
+> Everything's configurable from the settings panel: a home page with your theme, quick toggles and shortcuts, 20 tabs in five sections, and a search box (press `/`) so you don't have to remember where anything lives.
 
 ## Features
 
@@ -29,7 +29,9 @@
 - A wallpaper backdrop behind the bar hides windows that a scrolling layout parks off-screen, fading out toward the work area
 
 **Desktop**
-- Control Center with quick toggles, audio sliders, weather, system gauges, and capture, record and color-pick actions
+- Control Center with labelled toggle tiles (Wi-Fi, Bluetooth, mic, night light, do not disturb, game mode, Tailscale and more), shortcuts for screenshot, screen recording, color picker, clipboard, wallpaper and lock, audio and brightness rows, a media player, weather and system gauges, a homelab status card and your latest notifications
+- Weather popup with a 24-hour temperature curve, rain chances and the week's ranges, from Open-Meteo with no API key
+- Game mode turns off Hyprland's animations, blur and shadows and switches to the performance profile, then puts everything back
 - App launcher with fuzzy search, a run-command prefix and an inline calculator (press Enter to copy the result)
 - Notifications with history and do-not-disturb, a volume OSD, a session menu
 - Lock screen, polkit agent and idle handling (screen off, lock, suspend), all built in
@@ -43,7 +45,9 @@
 - Windows get chamfered corners to match, through Hyprland shader overrides. Pick which corners are cut in Appearance settings
 
 <div align="center">
-<img src=".github/screenshot-2.png" alt="the wallpaper browser's slice strip, and the settings panel's home page" width="800">
+<img src=".github/screenshot-3.png" alt="the weather popup with its 24-hour curve and 7-day ranges, and the Control Center with toggle tiles, shortcuts, audio, weather, stats and the homelab card" width="800">
+<br><br>
+<img src=".github/screenshot-2.png" alt="the wallpaper browser's slice strip, and the settings panel's Bar page with its icon sidebar" width="800">
 </div>
 
 ## Requirements
