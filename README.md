@@ -157,7 +157,7 @@ Settings live in `~/.config/crux/settings.json`, but you shouldn't need to touch
 
 ## License
 
-GPL-3.0-or-later. See [`LICENSE`](LICENSE). The bundled icon font, Material Symbols Rounded, is Google's under Apache-2.0; its licence is in [`Assets/Fonts`](Assets/Fonts).
+GPL-3.0-or-later. See [`LICENSE`](LICENSE).
 
 <div align="center">
 
