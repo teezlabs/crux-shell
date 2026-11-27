@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
@@ -683,6 +684,20 @@ NPanelWindow {
 
       // ---- Wallhaven grid: thumbnails sit 3px inside a 5px chamfer, so no mask is needed ----
       GridView {
+        layer.enabled: scrollFade.active
+        layer.effect: MultiEffect {
+          maskEnabled: true
+          maskSource: scrollFade
+          maskThresholdMin: 0.5
+          maskSpreadAtMin: 1
+        }
+        NSmoothWheel {
+          flickable: whGrid
+        }
+        NScrollFade {
+          id: scrollFade
+          flickable: whGrid
+        }
         id: whGrid
         visible: root.sourceMode === "wallhaven"
         Layout.fillWidth: true

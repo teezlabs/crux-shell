@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
@@ -473,6 +474,21 @@ ColumnLayout {
   }
 
   ListView {
+    id: scrollView
+    layer.enabled: scrollFade.active
+    layer.effect: MultiEffect {
+      maskEnabled: true
+      maskSource: scrollFade
+      maskThresholdMin: 0.5
+      maskSpreadAtMin: 1
+    }
+    NSmoothWheel {
+      flickable: scrollView
+    }
+    NScrollFade {
+      id: scrollFade
+      flickable: scrollView
+    }
     Layout.fillWidth: true
     Layout.preferredHeight: Math.min(320, contentHeight)
     clip: true

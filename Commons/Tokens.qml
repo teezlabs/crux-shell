@@ -133,6 +133,13 @@ QtObject {
   readonly property int easingDropPulse: Easing.InOutQuad
   readonly property int easingWallpaperTransition: Easing.InOutCubic
 
+  // Mouse wheel: each notch glides this far, and notches in a row add up.
+  readonly property int scrollWheelStep: 96
+  readonly property int durationScrollGlide: 220
+  readonly property int easingScrollGlide: Easing.OutCubic
+  // Scrolling content fades over this many px at an edge with more to scroll.
+  readonly property int scrollFadeLength: 28
+
   // Colour transitions: short enough to read as the colour settling, not an animation.
   readonly property int durationColor: 180
   readonly property int easingColor: Easing.OutCubic

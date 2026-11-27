@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Effects
 import qs.Commons
 
 // Flickable with a thin scrollbar shown on overflow. The bar sets its own implicitWidth (docs/qml-gotchas.md).
@@ -18,8 +19,28 @@ Flickable {
   readonly property bool scrollable: contentHeight > height
 
   // A page shown again starts at the top, not wherever it was last left.
-  onVisibleChanged: if (visible)
-    root.contentY = 0
+  onVisibleChanged: if (visible) {
+    wheel.stop();
+    root.contentY = 0;
+  }
+
+  NSmoothWheel {
+    id: wheel
+    flickable: root
+  }
+
+  NScrollFade {
+    id: fade
+    flickable: root
+  }
+
+  layer.enabled: fade.active
+  layer.effect: MultiEffect {
+    maskEnabled: true
+    maskSource: fade
+    maskThresholdMin: 0.5
+    maskSpreadAtMin: 1
+  }
 
   ScrollBar.vertical: ScrollBar {
     id: bar
