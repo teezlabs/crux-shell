@@ -77,9 +77,9 @@ ColumnLayout {
 
   Component.onCompleted: {
     const kids = contentRow.children;
-    // A trailing Text is the row's description: it moves under the title (only Text has `elide`).
+    // A trailing caption is the row's description and moves under the title; a BodySm one is a readout and stays.
     const last = kids.length >= 2 ? kids[kids.length - 1] : null;
-    if (last && last.elide !== undefined) {
+    if (last && last.elide !== undefined && last.size === NText.Size.Caption) {
       last.parent = descSlot;
       last.Layout.fillWidth = true;
       last.wrapMode = Text.WordWrap;
