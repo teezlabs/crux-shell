@@ -15,7 +15,8 @@ radio_button_checked colorize wallpaper settings lock power_settings_new close c
 partly_cloudy_day partly_cloudy_night cloud rainy sunny clear_night foggy weather_snowy thunderstorm
 play_arrow pause skip_next skip_previous memory thermostat storage developer_board content_paste logout
 refresh more_horiz clear_all music_note headphones speaker person visibility visibility_off dark_mode
-palette search check expand_more air water_drop
+palette search check expand_more air water_drop sports_esports vpn_lock vpn_key_off dns
+open_in_new
 """.split()
 
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

@@ -18,9 +18,18 @@ ColumnLayout {
 
   // Set from the card's shown state; system stats are sampled only while open.
   property bool active: false
-  onActiveChanged: SystemStats.fullWatchers += active ? 1 : -1
-  Component.onDestruction: if (active)
-    SystemStats.fullWatchers--
+  // System stats, Tailscale and the homelab pings are sampled only while open.
+  onActiveChanged: {
+    const step = active ? 1 : -1;
+    SystemStats.fullWatchers += step;
+    Tailscale.watchers += step;
+    Homelab.watchers += step;
+  }
+  Component.onDestruction: if (active) {
+    SystemStats.fullWatchers--;
+    Tailscale.watchers--;
+    Homelab.watchers--;
+  }
   // This card's monitor, for opening other surfaces on the same screen.
   property var targetScreen: null
   // Asks PopupHost to close the card.
@@ -694,6 +703,113 @@ ColumnLayout {
           percent: SystemStats.rootDiskPercent
           value: Math.round(SystemStats.rootDiskPercent) + "%"
           label: "DISK"
+        }
+      }
+    }
+  }
+
+  // ======== Homelab: hosts from Settings.data.homelab, pinged while open ========
+  CcCard {
+    visible: Homelab.hosts.length > 0
+    spacing: Tokens.spaceSm
+
+    RowLayout {
+      Layout.fillWidth: true
+      spacing: Tokens.spaceSm
+
+      NSymbol {
+        name: "dns"
+        size: 16
+        color: Colors.primary
+      }
+      NText {
+        text: "HOMELAB"
+        tracking: true
+        size: NText.Size.LabelXs
+        font.weight: Font.DemiBold
+        color: Colors.labelText
+      }
+      NText {
+        Layout.fillWidth: true
+        text: Object.keys(Homelab.status).length === 0 ? "" : Homelab.upCount + "/" + Homelab.hosts.length + " up"
+        size: NText.Size.Caption
+        color: Homelab.upCount === Homelab.hosts.length ? Colors.primary : Colors.tertiary
+      }
+      NText {
+        visible: Settings.data.homelab.dashboardUrl !== ""
+        text: "DASHBOARD"
+        tracking: true
+        size: NText.Size.LabelXs
+        font.weight: Font.DemiBold
+        color: dashHover.hovered ? Colors.primary : Colors.labelText
+
+        HoverHandler {
+          id: dashHover
+          cursorShape: Qt.PointingHandCursor
+        }
+        TapHandler {
+          onTapped: {
+            root.requestClose();
+            Qt.openUrlExternally(Settings.data.homelab.dashboardUrl);
+          }
+        }
+      }
+    }
+
+    GridLayout {
+      Layout.fillWidth: true
+      columns: 3
+      uniformCellWidths: true
+      rowSpacing: Tokens.spaceXs
+      columnSpacing: Tokens.spaceXs
+
+      Repeater {
+        model: Homelab.hosts
+
+        delegate: Item {
+          id: hostCell
+          required property var modelData
+          readonly property var hostState: Homelab.status[modelData.name]
+          readonly property bool known: !!hostCell.hostState
+          readonly property bool up: hostCell.known && hostCell.hostState.up
+          Layout.fillWidth: true
+          implicitHeight: 30
+
+          Chamfer {
+            anchors.fill: parent
+            chamferSize: Tokens.chamferIcon
+            cutTopRight: true
+            cutBottomLeft: true
+            fillColor: Colors.surfaceContainerLow
+            strokeColor: hostCell.known && !hostCell.up ? Colors.alpha(Colors.error, Tokens.destructiveBorderAlpha * 2) : Colors.outlineVariant
+            strokeWidth: Tokens.borderModule
+          }
+
+          RowLayout {
+            anchors.fill: parent
+            anchors.leftMargin: Tokens.spaceMd
+            anchors.rightMargin: Tokens.spaceMd
+            spacing: Tokens.spaceSm
+
+            // Status square: up, down, or not checked yet.
+            Rectangle {
+              Layout.preferredWidth: 6
+              Layout.preferredHeight: 6
+              color: !hostCell.known ? Colors.disabledText : hostCell.up ? Colors.primary : Colors.error
+            }
+            NText {
+              Layout.fillWidth: true
+              text: hostCell.modelData.name
+              size: NText.Size.Caption
+              color: hostCell.known && !hostCell.up ? Colors.error : Colors.surfaceText
+            }
+            NText {
+              visible: hostCell.up && hostCell.hostState.ms >= 0
+              text: hostCell.up ? (hostCell.hostState.ms < 1 ? "<1" : hostCell.hostState.ms) + "ms" : ""
+              size: NText.Size.LabelXs
+              color: Colors.labelText
+            }
+          }
         }
       }
     }

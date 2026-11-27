@@ -77,7 +77,9 @@ Item {
     // ---- Control Center ----
     { "label": "Show weather card", "description": "Toggle the forecast card in the Control Center popup", "tab": "controlCenter", "subTab": "", "keywords": "forecast weather" },
     { "label": "Temperature unit", "description": "Fahrenheit or Celsius for the weather card", "tab": "controlCenter", "subTab": "", "keywords": "fahrenheit celsius degrees" },
-    { "label": "Screenshot command", "description": "Command run by the CAPTURE action tile", "tab": "controlCenter", "subTab": "", "keywords": "capture rishot screenshot" },
+    { "label": "Screenshot command", "description": "Command run by the screenshot shortcut", "tab": "controlCenter", "subTab": "", "keywords": "capture rishot screenshot" },
+    { "label": "Homelab hosts", "description": "Hosts the Control Center pings while open", "tab": "controlCenter", "subTab": "", "keywords": "server ping status lab homelab proxmox" },
+    { "label": "Homelab dashboard", "description": "Link opened from the Control Center's homelab card", "tab": "controlCenter", "subTab": "", "keywords": "dashboard url homelab" },
 
     // ---- Launcher ----
     { "label": "Fuzzy matching", "description": "Fuzzy vs plain substring app search", "tab": "launcher", "subTab": "", "keywords": "launcher apps search fuzzysort" },

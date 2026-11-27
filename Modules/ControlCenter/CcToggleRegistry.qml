@@ -4,7 +4,7 @@ import QtQuick
 
 // Toggle ids Control Center may show, each mapping to CcToggles/<id>.qml. An unlisted file is unreachable.
 QtObject {
-  readonly property var ids: ["Wifi", "Bluetooth", "Microphone", "NightLight", "KeepAwake", "PowerProfile", "DoNotDisturb"]
+  readonly property var ids: ["Wifi", "Bluetooth", "Microphone", "NightLight", "KeepAwake", "PowerProfile", "DoNotDisturb", "GameMode", "Tailscale"]
 
   function has(id) {
     return ids.indexOf(id) !== -1;

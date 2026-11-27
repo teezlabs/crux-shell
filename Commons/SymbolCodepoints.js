@@ -71,5 +71,10 @@ var map = {
   "check": 0xe668,
   "expand_more": 0xe5cf,
   "air": 0xefd8,
-  "water_drop": 0xe798
+  "water_drop": 0xe798,
+  "sports_esports": 0xea28,
+  "vpn_lock": 0xe62f,
+  "vpn_key_off": 0xeb7a,
+  "dns": 0xe875,
+  "open_in_new": 0xe89e
 };

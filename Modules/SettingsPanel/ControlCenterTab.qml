@@ -129,7 +129,7 @@ NScrollView {
 
   SettingsSection {
     title: "Actions"
-    description: "The command run by the CAPTURE action tile."
+    description: "The command run by the screenshot shortcut."
 
     SettingRow {
       label: "Screenshot command"
@@ -149,6 +149,37 @@ NScrollView {
       size: NText.Size.Caption
       wrapMode: Text.WordWrap
       Layout.fillWidth: true
+    }
+  }
+
+  SettingsSection {
+    title: "Homelab"
+    description: "Hosts the Control Center pings while it's open. The card is hidden while this list is empty."
+
+    SettingRow {
+      label: "Hosts"
+      description: "name=address, separated by commas"
+
+      NTextInput {
+        Layout.fillWidth: true
+        height: 28
+        text: Settings.data.homelab.hosts.join(", ")
+        placeholderText: "nas=10.0.0.5, pi=raspberrypi.lan"
+        onEditingFinished: Settings.data.homelab.hosts = text.split(",").map(h => h.trim()).filter(h => h.indexOf("=") > 0)
+      }
+    }
+
+    SettingRow {
+      label: "Dashboard"
+      description: "Opened by DASHBOARD on the card"
+
+      NTextInput {
+        Layout.fillWidth: true
+        height: 28
+        text: Settings.data.homelab.dashboardUrl
+        placeholderText: "https://dashboard.lan"
+        onEditingFinished: Settings.data.homelab.dashboardUrl = text.trim()
+      }
     }
   }
   }
