@@ -149,7 +149,7 @@ Settings live in `~/.config/crux/settings.json`, but you shouldn't need to touch
 
 ## License
 
-GPL-3.0-or-later. See [`LICENSE`](LICENSE). Code ported from noctalia-shell and Omarchy is MIT; their notices are in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+GPL-3.0-or-later. See [`LICENSE`](LICENSE).
 
 <div align="center">
 
