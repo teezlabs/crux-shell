@@ -1,7 +1,7 @@
 import QtQuick
 import qs.Commons
 
-// Chamfered toggle: primaryContainer fill and primary border when on, sliding square thumb.
+// Chamfered toggle: primaryContainer fill and primary border when on, sliding chamfered thumb.
 Item {
   id: root
 
@@ -21,13 +21,19 @@ Item {
     strokeWidth: Tokens.borderModule
   }
 
-  Rectangle {
+  // Square thumb cut on the corner facing the track's cut, so it follows whichever side it sits on.
+  Chamfer {
     id: thumb
-    width: parent.height - 6
-    height: parent.height - 6
+    readonly property real inset: 3
+    width: parent.height - inset * 2
+    height: parent.height - inset * 2
     anchors.verticalCenter: parent.verticalCenter
-    x: root.checked ? parent.width - width - 3 : 3
-    color: root.checked ? Colors.primary : Colors.labelText
+    x: root.checked ? parent.width - width - inset : inset
+    // The track's cut less the inset x (2 - sqrt 2), so the two cuts run parallel.
+    chamferSize: Tokens.chamferIcon - inset * (2 - Math.SQRT2)
+    cutTopRight: thumb.x > (root.width - thumb.width) / 2
+    cutBottomLeft: !thumb.cutTopRight
+    fillColor: root.checked ? Colors.primary : Colors.labelText
 
     Behavior on x {
       NumberAnimation {
