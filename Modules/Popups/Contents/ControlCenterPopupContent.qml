@@ -428,7 +428,7 @@ ColumnLayout {
         Layout.fillWidth: true
         spacing: 4
         Repeater {
-          model: Weather.daily
+          model: Weather.daily.slice(0, 6)
           // Item wrapper: a ColumnLayout won't grow past its children.
           delegate: Item {
             id: dayCell
