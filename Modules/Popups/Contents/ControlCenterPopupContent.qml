@@ -383,8 +383,18 @@ ColumnLayout {
       onMoved: pct => root.setBrightness(pct)
     }
   }
-  // ---- Weather from Services/Weather.qml ----
+  // ---- Weather from Services/Weather.qml; a click opens the full forecast ----
   CcCard {
+    HoverHandler {
+      cursorShape: Qt.PointingHandCursor
+    }
+    TapHandler {
+      onTapped: {
+        root.requestClose();
+        Popups.open("weather", root.targetScreen);
+      }
+    }
+
     ColumnLayout {
       Layout.fillWidth: true
       visible: Weather.ready && Settings.data.controlCenter.showWeather

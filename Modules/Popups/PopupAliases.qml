@@ -5,7 +5,7 @@ import qs.Commons
 QtObject {
   id: root
 
-  readonly property var names: ["sound", "battery", "bluetooth", "wifi", "hue", "microphone", "brightness", "clipboard", "claudeUsage", "notificationHistory", "systemStats", "controlCenter", "sidebar", "settings", "power", "wallpaperBrowser", "launcher", "calendar", "mediaPlayer"]
+  readonly property var names: ["sound", "battery", "bluetooth", "wifi", "hue", "microphone", "brightness", "clipboard", "claudeUsage", "notificationHistory", "systemStats", "controlCenter", "sidebar", "settings", "power", "wallpaperBrowser", "launcher", "calendar", "mediaPlayer", "weather"]
 
   readonly property Instantiator aliases: Instantiator {
     model: root.names
