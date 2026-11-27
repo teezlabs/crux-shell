@@ -1,25 +1,16 @@
 import QtQuick
-import Quickshell
-import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.ControlCenter
-import qs.Widgets
 import qs.Services
 
-// Night light quick toggle: off -> on -> forced -> off.
-CcCircleToggle {
+// Night light tile: off -> scheduled -> forced on -> off.
+CcTile {
   id: tile
   signal expandRequested(string which)
 
+  symbol: "nightlight"
+  label: "Night light"
+  status: !NightLightService.enabled ? "Off" : NightLightService.forced ? "Always on" : "Scheduled"
   active: NightLightService.enabled
   onTapped: NightLightService.cycle()
-
-  NIcon {
-    anchors.centerIn: parent
-    width: 16
-    height: 16
-    iconName: "weather-clear-night-symbolic"
-    fallbackIconName: "weather-clear-night"
-    color: tile.active ? Colors.primaryText : Colors.surfaceText
-  }
 }

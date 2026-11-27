@@ -53,3 +53,4 @@ All native, no external daemon.
 
 - Recolor symbolic icons. Leave app icons alone
 - Don't trust emoji or system Nerd Font glyphs here (`monospace` is Noto Sans Mono). Draw shapes, or load a bundled font from `Assets/Fonts/`
+- `Widgets/NSymbol.qml` draws Material Symbols Rounded, bundled in `Assets/Fonts/` and subset to the icons crux uses. `filled` eases the glyph between outline and solid, which is how the Control Center marks "on". To use a new icon, add its name to `packaging/subset-symbols.py` and rerun it against the full font from google/material-design-icons

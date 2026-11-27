@@ -1,21 +1,20 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Bluetooth
 import Quickshell.Io
-import Quickshell.Networking
 import Quickshell.Services.Pipewire
 import Quickshell.Wayland
 import qs.Commons
 import qs.Modules.ControlCenter
+import qs.Modules.Popups
 import qs.Services
 import qs.Widgets
 
-// Control Center: toggles, audio and brightness, weather, media and telemetry cards, laid out after noctalia's.
+// Control Center: profile and shortcuts, labelled toggle tiles, audio, media, weather, stats and recent notifications.
 ColumnLayout {
   id: root
 
-  spacing: Tokens.spaceLg
+  spacing: Tokens.spaceMd
 
   // Set from the card's shown state; system stats are sampled only while open.
   property bool active: false
@@ -27,37 +26,13 @@ ColumnLayout {
   // Asks PopupHost to close the card.
   signal requestClose
 
-  // Right-click on the WIFI/BLUETOOTH tiles expands their list inline.
-  property bool wifiExpanded: false
-  property bool btExpanded: false
-
-  // ---- Wifi ----
-  readonly property var wifiDevice: {
-    var devices = Networking.devices ? Networking.devices.values : [];
-    for (var i = 0; i < devices.length; i++) {
-      if (devices[i] && devices[i].type === DeviceType.Wifi)
-        return devices[i];
-    }
-    return null;
-  }
-  readonly property var connectedNetwork: {
-    var networks = wifiDevice && wifiDevice.networks ? wifiDevice.networks.values : [];
-    for (var i = 0; i < networks.length; i++) {
-      if (networks[i] && networks[i].connected)
-        return networks[i];
-    }
-    return null;
+  function closeAndOpen(name) {
+    root.requestClose();
+    Popups.open(name, root.targetScreen);
   }
 
-  // ---- Bluetooth ----
-  readonly property var btAdapter: Bluetooth.defaultAdapter
-  readonly property var btConnectedDevice: {
-    var devices = Bluetooth.devices ? Bluetooth.devices.values : [];
-    for (var i = 0; i < devices.length; i++)
-      if (devices[i] && devices[i].connected)
-        return devices[i];
-    return null;
-  }
+  // The chevron on the Wi-Fi and Bluetooth tiles opens their list inline, one at a time.
+  property string expandedList: ""
 
   // ---- Audio: sink (volume) + source (mic) ----
   readonly property var sink: Pipewire.ready ? Pipewire.defaultAudioSink : null
@@ -74,10 +49,6 @@ ColumnLayout {
   property bool hasBacklight: false
   property real brightnessPercent: 0
 
-  function refreshBrightness() {
-    brightnessProc.running = true;
-  }
-
   Process {
     id: brightnessProc
     command: ["sh", "-c", "brightnessctl -m -c backlight 2>/dev/null | head -1"]
@@ -86,19 +57,15 @@ ColumnLayout {
       waitForEnd: true
     }
     onExited: exitCode => {
-      var line = brightnessCollector.text.trim();
-      if (!line) {
-        root.hasBacklight = false;
-        return;
-      }
-      var parts = line.split(",");
-      root.hasBacklight = true;
-      root.brightnessPercent = parseInt(parts[3]) || 0;
+      const line = brightnessCollector.text.trim();
+      root.hasBacklight = line !== "";
+      if (root.hasBacklight)
+        root.brightnessPercent = parseInt(line.split(",")[3]) || 0;
     }
   }
 
   function setBrightness(pct) {
-    var clamped = Math.max(1, Math.min(100, Math.round(pct)));
+    const clamped = Math.max(1, Math.min(100, Math.round(pct)));
     root.brightnessPercent = clamped;
     Quickshell.execDetached(["brightnessctl", "set", clamped + "%"]);
   }
@@ -109,9 +76,8 @@ ColumnLayout {
     enabled: IdleInhibitorService.active
   }
 
-  // ---- User@host + uptime ----
+  // ---- User@host ----
   property string whoHost: "…"
-  readonly property string uptimeText: SystemStats.uptimeText.toUpperCase()
 
   Process {
     id: whoProc
@@ -123,20 +89,7 @@ ColumnLayout {
     onExited: exitCode => root.whoHost = whoCollector.text.trim()
   }
 
-  // ---- Telemetry: CPU / MEM / TEMP / DISK ----
-  readonly property real cpuPercent: SystemStats.cpuPercent
-  readonly property real memPercent: SystemStats.memPercent
-  readonly property real memUsedGb: SystemStats.memUsedGb
-  readonly property real tempC: SystemStats.tempC
-  readonly property real diskPercent: SystemStats.rootDiskPercent
-
-  // ---- Media ----
-  readonly property var activePlayer: MediaService.activePlayer
-  readonly property bool isPlaying: MediaService.isPlaying
-  readonly property real mediaPosition: MediaService.position
-  readonly property real mediaLength: MediaService.length
-
-  // ---- Action-grid tool availability (shown disabled, never faked) ----
+  // ---- Tools the shortcuts need (shown disabled when missing, never faked) ----
   property bool hasRecorder: false
   property bool hasColorPicker: false
 
@@ -153,35 +106,104 @@ ColumnLayout {
     }
   }
 
+  // ---- Screen recording: the focused output to ~/Videos, stopped with SIGINT so the file is finalized ----
+  property string recordingPath: ""
+
+  Process {
+    id: recorder
+    onExited: exitCode => {
+      if (root.recordingPath !== "")
+        Toast.show("Recording saved to " + root.recordingPath.replace(Quickshell.env("HOME"), "~"), 4000);
+      root.recordingPath = "";
+    }
+  }
+
+  function toggleRecording() {
+    if (recorder.running) {
+      recorder.signal(2);
+      return;
+    }
+    const dir = Quickshell.env("HOME") + "/Videos";
+    root.recordingPath = dir + "/recording-" + Qt.formatDateTime(new Date(), "yyyy-MM-dd_HH-mm-ss") + ".mp4";
+    const output = root.targetScreen ? root.targetScreen.name : "";
+    recorder.command = ["sh", "-c", "mkdir -p \"$1\" && exec wf-recorder " + (output !== "" ? "-o \"$3\" " : "") + "-f \"$2\"", "sh", dir, root.recordingPath, output];
+    recorder.running = true;
+    root.requestClose();
+  }
+
   Component.onCompleted: {
     whoProc.running = true;
-    root.refreshBrightness();
+    brightnessProc.running = true;
     toolCheckProc.running = true;
   }
 
+  // ---- Weather: WMO code to a symbol ----
+  function weatherSymbol(code, isDay) {
+    const cat = Weather.iconCategory(code);
+    if (cat === "sun")
+      return isDay ? "sunny" : "clear_night";
+    if (cat === "partly")
+      return isDay ? "partly_cloudy_day" : "partly_cloudy_night";
+    if (cat === "fog")
+      return "foggy";
+    if (cat === "rain")
+      return "rainy";
+    if (cat === "snow")
+      return "weather_snowy";
+    if (cat === "storm")
+      return "thunderstorm";
+    return "cloud";
+  }
 
-  // ---- Header. The round avatar and buttons are a deliberate exception to the no-radius rule ----
+  function ago(ts) {
+    const s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+    if (s < 60)
+      return "now";
+    if (s < 3600)
+      return Math.floor(s / 60) + "m";
+    if (s < 86400)
+      return Math.floor(s / 3600) + "h";
+    return Math.floor(s / 86400) + "d";
+  }
+
+  // Re-evaluates the notification ages while open.
+  property real now: Date.now()
+  Timer {
+    interval: 30000
+    running: root.active
+    repeat: true
+    triggeredOnStart: true
+    onTriggered: root.now = Date.now()
+  }
+
+  // ======== Profile and shortcuts ========
   CcCard {
+    spacing: Tokens.spaceLg
+
     RowLayout {
       Layout.fillWidth: true
-      spacing: 10
+      spacing: Tokens.spaceLg
 
+      // Round avatar: a deliberate exception to the no-radius rule, scoped to this panel.
       Item {
-        Layout.preferredWidth: 40
-        Layout.preferredHeight: 40
+        Layout.preferredWidth: 44
+        Layout.preferredHeight: 44
 
         Rectangle {
           anchors.fill: parent
           radius: width / 2
-          color: Colors.surfaceContainer
-          border.color: Colors.outline
-          border.width: Tokens.borderModule
+          color: Colors.surfaceContainerHigh
+          border.color: Colors.alpha(Colors.primary, 0.6)
+          border.width: Tokens.borderMarker
           clip: true
 
           Image {
             anchors.fill: parent
+            anchors.margins: Tokens.borderMarker
             visible: Settings.data.general.avatarImage !== ""
             source: Settings.data.general.avatarImage !== "" ? "file://" + Settings.data.general.avatarImage : ""
+            sourceSize.width: 88
+            sourceSize.height: 88
             fillMode: Image.PreserveAspectCrop
             asynchronous: true
           }
@@ -195,111 +217,139 @@ ColumnLayout {
       }
 
       ColumnLayout {
-        spacing: 0
+        Layout.fillWidth: true
+        spacing: Tokens.spaceXs
+
         NText {
+          Layout.fillWidth: true
           text: root.whoHost
-          color: Colors.surfaceText
           size: NText.Size.BodyLg
           font.weight: Font.DemiBold
         }
-        NText {
-          text: "Uptime: " + root.uptimeText
-          color: Colors.labelText
-          size: NText.Size.Caption
+        RowLayout {
+          spacing: Tokens.spaceSm
+          NSymbol {
+            name: "schedule"
+            size: 14
+            color: Colors.labelText
+          }
+          NText {
+            text: "up " + SystemStats.uptimeText
+            size: NText.Size.Caption
+            color: Colors.labelText
+          }
         }
       }
 
-      Item {
+      CcIconButton {
+        symbol: "settings"
+        tooltip: "Settings"
+        onTapped: root.closeAndOpen("settings")
+      }
+      CcIconButton {
+        symbol: "power_settings_new"
+        tooltip: "Session menu"
+        tone: "error"
+        onTapped: root.closeAndOpen("power")
+      }
+    }
+
+    RowLayout {
+      Layout.fillWidth: true
+      spacing: Tokens.spaceSm
+
+      CcIconButton {
         Layout.fillWidth: true
-      }
-
-      CcCircleToggle {
-        implicitWidth: 32
-        implicitHeight: 32
+        symbol: "screenshot_region"
+        tooltip: "Screenshot"
         onTapped: {
           root.requestClose();
-          Popups.open("settings", root.targetScreen);
-        }
-        NIcon {
-          anchors.centerIn: parent
-          width: 16
-          height: 16
-          iconName: "preferences-system-symbolic"
-          fallbackIconName: "preferences-system"
-          color: Colors.surfaceText
+          Quickshell.execDetached(["sh", "-c", Settings.data.controlCenter.screenshotCommand]);
         }
       }
-
-      CcCircleToggle {
-        implicitWidth: 32
-        implicitHeight: 32
+      CcIconButton {
+        Layout.fillWidth: true
+        symbol: "radio_button_checked"
+        tooltip: recorder.running ? "Stop recording" : "Record screen"
+        tone: recorder.running ? "error" : ""
+        available: root.hasRecorder
+        onTapped: root.toggleRecording()
+      }
+      CcIconButton {
+        Layout.fillWidth: true
+        symbol: "colorize"
+        tooltip: "Pick a color"
+        available: root.hasColorPicker
         onTapped: {
           root.requestClose();
-          Popups.open("power", root.targetScreen);
-        }
-        NIcon {
-          anchors.centerIn: parent
-          width: 16
-          height: 16
-          iconName: "system-shutdown-symbolic"
-          fallbackIconName: "system-shutdown"
-          color: Colors.surfaceText
+          Quickshell.execDetached(["hyprpicker", "-a"]);
         }
       }
-
-      CcCircleToggle {
-        implicitWidth: 32
-        implicitHeight: 32
-        onTapped: root.requestClose()
-        NIcon {
-          anchors.centerIn: parent
-          width: 14
-          height: 14
-          iconName: "window-close-symbolic"
-          fallbackIconName: "window-close"
-          color: Colors.surfaceText
+      CcIconButton {
+        Layout.fillWidth: true
+        symbol: "content_paste"
+        tooltip: "Clipboard"
+        onTapped: root.closeAndOpen("clipboard")
+      }
+      CcIconButton {
+        Layout.fillWidth: true
+        symbol: "wallpaper"
+        tooltip: "Wallpaper"
+        onTapped: {
+          root.requestClose();
+          Popups.openTab("settings", root.targetScreen, "wallpaper");
+        }
+      }
+      CcIconButton {
+        Layout.fillWidth: true
+        symbol: "lock"
+        tooltip: "Lock"
+        onTapped: {
+          root.requestClose();
+          Hooks.runSessionHook("lock", () => Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "lockscreen", "lock"]));
         }
       }
     }
   }
 
-  // ---- Toggle row from Settings.data.controlCenter.toggles (CcToggleRegistry) ----
+  // ======== Toggle tiles from Settings.data.controlCenter.toggles (CcToggleRegistry) ========
   CcCard {
-    RowLayout {
+    visible: Settings.data.controlCenter.toggles.length > 0
+
+    GridLayout {
       Layout.fillWidth: true
-      spacing: 10
+      columns: 2
+      uniformCellWidths: true
+      rowSpacing: Tokens.spaceSm
+      columnSpacing: Tokens.spaceSm
 
       Repeater {
         model: Settings.data.controlCenter.toggles
 
-        // Each toggle centered in an equal share of the row.
-        delegate: Item {
-          id: toggleSlot
+        delegate: Loader {
+          id: toggleLoader
           required property string modelData
+          required property int index
+          // An odd last tile takes the whole row.
+          readonly property int count: Settings.data.controlCenter.toggles.length
+          Layout.columnSpan: toggleLoader.index === toggleLoader.count - 1 && toggleLoader.count % 2 === 1 ? 2 : 1
           Layout.fillWidth: true
-          Layout.preferredHeight: 40
+          Layout.preferredHeight: 52
+          active: CcToggleRegistry.has(modelData)
+          source: CcToggleRegistry.sourceFor(modelData)
 
-          Loader {
-            id: toggleLoader
-            anchors.centerIn: parent
-            width: 40
-            height: 40
-            active: CcToggleRegistry.has(toggleSlot.modelData)
-            source: CcToggleRegistry.sourceFor(toggleSlot.modelData)
+          Binding {
+            target: toggleLoader.item
+            property: "expanded"
+            value: root.expandedList === (toggleLoader.modelData === "Wifi" ? "wifi" : toggleLoader.modelData === "Bluetooth" ? "bluetooth" : "-")
+            when: toggleLoader.status === Loader.Ready
           }
 
           Connections {
             target: toggleLoader.item
             ignoreUnknownSignals: true
             function onExpandRequested(which) {
-              // One list open at a time; tapping the same toggle again closes it.
-              if (which === "wifi") {
-                root.btExpanded = false;
-                root.wifiExpanded = !root.wifiExpanded;
-              } else if (which === "bluetooth") {
-                root.wifiExpanded = false;
-                root.btExpanded = !root.btExpanded;
-              }
+              root.expandedList = root.expandedList === which ? "" : which;
             }
           }
         }
@@ -307,334 +357,481 @@ ColumnLayout {
     }
   }
 
-  // ---- Inline WIFI/BLUETOOTH lists, the same content the standalone popups use ----
+  // Inline Wi-Fi and Bluetooth lists, the same content the standalone popups use.
   WifiPanelContent {
     Layout.fillWidth: true
-    visible: root.wifiExpanded
-    panelActive: root.wifiExpanded
-    onRequestClose: root.wifiExpanded = false
+    visible: root.expandedList === "wifi"
+    panelActive: root.expandedList === "wifi"
+    onRequestClose: root.expandedList = ""
   }
   BluetoothPanelContent {
     Layout.fillWidth: true
-    visible: root.btExpanded
-    panelActive: root.btExpanded
+    visible: root.expandedList === "bluetooth"
+    panelActive: root.expandedList === "bluetooth"
   }
 
-  // ---- Audio: two sliders, each labeled with the real device name ----
+  // ======== Audio and brightness ========
   CcCard {
+    spacing: Tokens.spaceMd
+
     RowLayout {
       Layout.fillWidth: true
-      spacing: 14
+      spacing: Tokens.spaceSm
 
-      ColumnLayout {
+      NSymbol {
+        name: "headphones"
+        size: 16
+        color: Colors.primary
+      }
+      NText {
+        text: "OUTPUT"
+        tracking: true
+        size: NText.Size.LabelXs
+        font.weight: Font.DemiBold
+        color: Colors.labelText
+      }
+      NText {
         Layout.fillWidth: true
-        spacing: 4
-        NText {
-          text: root.sink ? (root.sink.description || root.sink.name || "Output") : "No output"
-          color: Colors.labelText
-          size: NText.Size.Caption
-          elide: Text.ElideRight
-          Layout.fillWidth: true
+        text: root.sink ? (root.sink.description || root.sink.name || "Output") : "No output"
+        size: NText.Size.Caption
+        color: Colors.surfaceTextMuted
+      }
+      NSymbol {
+        name: "chevron_right"
+        size: 18
+        color: soundHover.hovered ? Colors.primary : Colors.surfaceTextMuted
+
+        HoverHandler {
+          id: soundHover
+          cursorShape: Qt.PointingHandCursor
         }
+        TapHandler {
+          onTapped: root.closeAndOpen("sound")
+        }
+      }
+    }
+
+    Repeater {
+      model: [
+        {
+          "kind": "out"
+        },
+        {
+          "kind": "in"
+        },
+        {
+          "kind": "bri"
+        }
+      ]
+
+      delegate: RowLayout {
+        id: level
+        required property var modelData
+        readonly property bool isOut: modelData.kind === "out"
+        readonly property bool isIn: modelData.kind === "in"
+        readonly property bool isBri: modelData.kind === "bri"
+        readonly property real pct: level.isOut ? (root.muted ? 0 : root.volume * 100) : level.isIn ? (root.source && root.source.audio && !root.micMuted ? root.source.audio.volume * 100 : 0) : root.brightnessPercent
+
+        visible: !level.isBri || root.hasBacklight
+        Layout.fillWidth: true
+        spacing: Tokens.spaceMd
+
+        CcIconButton {
+          size: 32
+          symbol: level.isBri ? "brightness_6" : level.isOut ? (root.muted ? "volume_off" : root.volume < 0.34 ? "volume_mute" : root.volume < 0.67 ? "volume_down" : "volume_up") : (root.micMuted ? "mic_off" : "mic")
+          tooltip: level.isBri ? "" : (level.isOut ? (root.muted ? "Unmute" : "Mute") : (root.micMuted ? "Unmute microphone" : "Mute microphone"))
+          tone: (level.isOut && root.muted) || (level.isIn && root.micMuted) ? "error" : ""
+          available: level.isBri || (level.isOut ? !!root.sink : !!root.source)
+          onTapped: {
+            if (level.isOut && root.sink && root.sink.audio)
+              root.sink.audio.muted = !root.sink.audio.muted;
+            else if (level.isIn && root.source && root.source.audio)
+              root.source.audio.muted = !root.source.audio.muted;
+          }
+        }
+
         CcLevelSlider {
           Layout.fillWidth: true
-          value: root.muted ? 0 : root.volume * 100
-          interactive: true
+          value: level.pct
+          interactive: level.isBri || (level.isOut ? !!root.sink : !!root.source)
           onMoved: pct => {
-            if (root.sink && root.sink.audio) {
+            if (level.isOut && root.sink && root.sink.audio) {
               root.sink.audio.volume = pct / 100;
               if (pct > 0)
                 root.sink.audio.muted = false;
+            } else if (level.isIn && root.source && root.source.audio) {
+              root.source.audio.volume = pct / 100;
+              if (pct > 0)
+                root.source.audio.muted = false;
+            } else if (level.isBri) {
+              root.setBrightness(pct);
             }
           }
+        }
+
+        NText {
+          Layout.preferredWidth: 40
+          Layout.minimumWidth: 40
+          Layout.maximumWidth: 40
+          horizontalAlignment: Text.AlignRight
+          text: Math.round(level.pct) + "%"
+          size: NText.Size.Caption
+          color: Colors.surfaceTextMuted
+          font.features: {
+            "tnum": 1
+          }
+        }
+      }
+    }
+  }
+
+  // ======== Media (only while a player exists) ========
+  CcCard {
+    visible: !!MediaService.activePlayer
+
+    RowLayout {
+      Layout.fillWidth: true
+      spacing: Tokens.spaceLg
+
+      Item {
+        Layout.preferredWidth: 52
+        Layout.preferredHeight: 52
+
+        Rectangle {
+          anchors.fill: parent
+          color: Colors.surfaceContainerHigh
+        }
+        Image {
+          id: cover
+          anchors.fill: parent
+          source: MediaService.activePlayer ? (MediaService.activePlayer.trackArtUrl || "") : ""
+          sourceSize.width: 104
+          sourceSize.height: 104
+          fillMode: Image.PreserveAspectCrop
+          asynchronous: true
+        }
+        NSymbol {
+          anchors.centerIn: parent
+          visible: cover.status !== Image.Ready
+          name: "music_note"
+          size: 24
+          color: Colors.labelText
         }
       }
 
       ColumnLayout {
         Layout.fillWidth: true
-        spacing: 4
+        spacing: Tokens.spaceXs
+
         NText {
-          text: root.source ? (root.source.description || root.source.name || "Input") : "No input"
-          color: Colors.labelText
-          size: NText.Size.Caption
-          elide: Text.ElideRight
           Layout.fillWidth: true
+          text: MediaService.activePlayer ? (MediaService.activePlayer.trackTitle || MediaService.activePlayer.identity) : ""
+          size: NText.Size.BodySm
+          font.weight: Font.DemiBold
+        }
+        NText {
+          Layout.fillWidth: true
+          text: MediaService.activePlayer ? (MediaService.activePlayer.trackArtist || MediaService.activePlayer.identity) : ""
+          size: NText.Size.Caption
+          color: Colors.labelText
         }
         CcLevelSlider {
           Layout.fillWidth: true
-          value: root.source && root.source.audio ? root.source.audio.volume * 100 : 0
-          interactive: !!root.source
+          Layout.topMargin: Tokens.spaceXs
+          thumbRadius: 5
+          trackHeight: 3
+          value: MediaService.length > 0 ? (MediaService.position / MediaService.length) * 100 : 0
+          interactive: !!MediaService.activePlayer && MediaService.activePlayer.canSeek
           onMoved: pct => {
-            if (root.source && root.source.audio)
-              root.source.audio.volume = pct / 100;
+            if (MediaService.activePlayer && MediaService.activePlayer.canSeek)
+              MediaService.activePlayer.position = (pct / 100) * MediaService.length;
           }
         }
       }
-    }
-  }
 
-  // ---- BRI slider (only if a backlight device exists) ----
-  CcCard {
-    visible: root.hasBacklight
-    CcSlider {
-      Layout.fillWidth: true
-      label: "BRI"
-      value: root.brightnessPercent
-      onMoved: pct => root.setBrightness(pct)
-    }
-  }
-  // ---- Weather from Services/Weather.qml; a click opens the full forecast ----
-  CcCard {
-    HoverHandler {
-      cursorShape: Qt.PointingHandCursor
-    }
-    TapHandler {
-      onTapped: {
-        root.requestClose();
-        Popups.open("weather", root.targetScreen);
+      CcIconButton {
+        size: 32
+        symbol: "skip_previous"
+        available: !!MediaService.activePlayer && MediaService.activePlayer.canGoPrevious
+        onTapped: MediaService.activePlayer.previous()
+      }
+      CcIconButton {
+        size: 36
+        symbol: MediaService.isPlaying ? "pause" : "play_arrow"
+        tone: "active"
+        available: !!MediaService.activePlayer && (MediaService.activePlayer.canPlay || MediaService.activePlayer.canPause)
+        onTapped: MediaService.activePlayer.togglePlaying()
+      }
+      CcIconButton {
+        size: 32
+        symbol: "skip_next"
+        available: !!MediaService.activePlayer && MediaService.activePlayer.canGoNext
+        onTapped: MediaService.activePlayer.next()
       }
     }
+  }
 
-    ColumnLayout {
-      Layout.fillWidth: true
+  // ======== Weather and system stats ========
+  RowLayout {
+    Layout.fillWidth: true
+    spacing: Tokens.spaceMd
+
+    // Weather; a click opens the full forecast.
+    CcCard {
       visible: Weather.ready && Settings.data.controlCenter.showWeather
-      spacing: 10
+      Layout.fillWidth: true
+      Layout.preferredWidth: 1
+      Layout.fillHeight: true
+
+      HoverHandler {
+        cursorShape: Qt.PointingHandCursor
+      }
+      TapHandler {
+        onTapped: root.closeAndOpen("weather")
+      }
 
       RowLayout {
         Layout.fillWidth: true
-        spacing: 10
-        WeatherIcon {
-          Layout.preferredWidth: 40
-          Layout.preferredHeight: 40
-          category: Weather.iconCategory(Weather.currentWeatherCode)
+        spacing: Tokens.spaceMd
+
+        NSymbol {
+          name: root.weatherSymbol(Weather.currentWeatherCode, Weather.isDay)
+          size: 40
+          filled: true
+          color: Colors.tertiary
         }
         ColumnLayout {
+          Layout.fillWidth: true
           spacing: 0
           NText {
-            text: Weather.cityName
-            color: Colors.surfaceText
-            font.weight: Font.DemiBold
+            text: Math.round(Weather.currentTempF) + "°"
+            size: NText.Size.Title
           }
-          RowLayout {
-            spacing: 6
-            NText {
-              text: Math.round(Weather.currentTempF) + Weather.unitSuffix
-              color: Colors.surfaceText
-              size: NText.Size.BodySm
-            }
-            NText {
-              text: "(" + Weather.gmtOffsetLabel + ")"
-              color: Colors.labelText
-              size: NText.Size.Caption
-            }
+          NText {
+            Layout.fillWidth: true
+            text: Weather.description(Weather.currentWeatherCode)
+            size: NText.Size.Caption
+            color: Colors.surfaceTextMuted
           }
-        }
-        Item {
-          Layout.fillWidth: true
         }
       }
-
       RowLayout {
         Layout.fillWidth: true
-        spacing: 4
-        Repeater {
-          model: Weather.daily.slice(0, 6)
-          // Item wrapper: a ColumnLayout won't grow past its children.
-          delegate: Item {
-            id: dayCell
-            required property var modelData
-            Layout.fillWidth: true
-            implicitWidth: dayCol.implicitWidth
-            implicitHeight: dayCol.implicitHeight
-
-            ColumnLayout {
-              id: dayCol
-              anchors.horizontalCenter: parent.horizontalCenter
-              spacing: 2
-              NText {
-                tracking: true
-                Layout.alignment: Qt.AlignHCenter
-                text: dayCell.modelData.dayName.toUpperCase()
-                color: Colors.labelText
-                font.pixelSize: Tokens.labelXsSize - 1
-                font.letterSpacing: Tokens.labelXsSize * Tokens.labelXsTracking
-              }
-              WeatherIcon {
-                Layout.alignment: Qt.AlignHCenter
-                Layout.preferredWidth: 22
-                Layout.preferredHeight: 22
-                category: Weather.iconCategory(dayCell.modelData.weatherCode)
-              }
-              NText {
-                Layout.alignment: Qt.AlignHCenter
-                text: dayCell.modelData.tempMaxF + "°/" + dayCell.modelData.tempMinF + "°"
-                color: Colors.surfaceTextMuted
-                font.pixelSize: Tokens.labelXsSize - 1
-              }
-            }
-          }
+        spacing: Tokens.spaceXs
+        NSymbol {
+          name: "water_drop"
+          size: 13
+          color: Colors.primary
         }
+        NText {
+          text: (Weather.daily.length > 0 ? Weather.daily[0].rain : 0) + "%"
+          size: NText.Size.Caption
+          color: Colors.labelText
+        }
+        NSymbol {
+          Layout.leftMargin: Tokens.spaceSm
+          name: "air"
+          size: 13
+          color: Colors.primary
+        }
+        NText {
+          Layout.fillWidth: true
+          text: Weather.windSpeed + " " + Weather.windUnit
+          size: NText.Size.Caption
+          color: Colors.labelText
+        }
+      }
+      NText {
+        Layout.fillWidth: true
+        text: Weather.cityName.toUpperCase()
+        tracking: true
+        size: NText.Size.LabelXs
+        color: Colors.labelText
       }
     }
-  }
 
-  // ---- Media (left, real MPRIS) + telemetry dials (right) ----
-  CcCard {
-    RowLayout {
+    // Live stats; a click opens the full system stats.
+    CcCard {
       Layout.fillWidth: true
-      spacing: 14
+      Layout.preferredWidth: 1
+      Layout.fillHeight: true
 
-      ColumnLayout {
-        Layout.fillWidth: true
-        visible: !!root.activePlayer
-        spacing: 6
-
-        NText {
-          text: root.activePlayer ? root.activePlayer.identity : ""
-          color: Colors.labelText
-          size: NText.Size.Caption
-          elide: Text.ElideRight
-          Layout.fillWidth: true
-        }
-        NText {
-          text: root.activePlayer ? root.activePlayer.trackTitle : ""
-          color: Colors.surfaceText
-          size: NText.Size.BodySm
-          font.weight: Font.DemiBold
-          elide: Text.ElideRight
-          Layout.fillWidth: true
-        }
-        SegMeter {
-          Layout.fillWidth: true
-          cellCount: Tokens.meterSidebarSeekCells
-          cellHeight: Tokens.meterSidebarSeekCellHeight
-          value: root.mediaLength > 0 ? (root.mediaPosition / root.mediaLength) * 100 : 0
-          interactive: !!root.activePlayer && root.activePlayer.canSeek
-          filledColor: Colors.primary
-          emptyColor: Colors.surfaceContainerHigh
-          onMoved: pct => {
-            if (root.activePlayer && root.activePlayer.canSeek)
-              root.activePlayer.position = (pct / 100) * root.mediaLength;
-          }
-        }
-        Item {
-          Layout.preferredHeight: 30
-          Layout.alignment: Qt.AlignHCenter
-
-          Rectangle {
-            anchors.fill: parent
-            radius: height / 2
-            color: root.isPlaying ? Colors.primary : Colors.surfaceContainer
-          }
-          Text {
-            anchors.centerIn: parent
-            text: root.isPlaying ? "⏸" : "▶"
-            color: root.isPlaying ? Colors.surface : Colors.surfaceText
-            font.pixelSize: 13
-          }
-          HoverHandler {
-            cursorShape: Qt.PointingHandCursor
-          }
-          TapHandler {
-            enabled: !!root.activePlayer && (root.activePlayer.canPlay || root.activePlayer.canPause)
-            onTapped: root.activePlayer.togglePlaying()
-          }
-          width: 60
-        }
+      HoverHandler {
+        cursorShape: Qt.PointingHandCursor
+      }
+      TapHandler {
+        onTapped: root.closeAndOpen("systemStats")
       }
 
-      // No player: the dials take the whole card as one row.
-      Grid {
-        id: gauges
-        Layout.fillWidth: !root.activePlayer
-        columns: root.activePlayer ? 2 : 4
-        rowSpacing: 4
-        columnSpacing: root.activePlayer ? 4 : Math.max(4, (parent.width - 4 * 52) / 3)
+      GridLayout {
+        Layout.fillWidth: true
+        Layout.alignment: Qt.AlignHCenter
+        columns: 2
+        rowSpacing: Tokens.spaceSm
+        columnSpacing: Tokens.spaceSm
 
         CircularGauge {
-          percent: root.cpuPercent
-          value: Math.round(root.cpuPercent) + "%"
+          Layout.alignment: Qt.AlignHCenter
+          percent: SystemStats.cpuPercent
+          value: Math.round(SystemStats.cpuPercent) + "%"
           label: "CPU"
         }
         CircularGauge {
-          percent: Math.min(100, root.tempC)
+          Layout.alignment: Qt.AlignHCenter
+          percent: Math.min(100, SystemStats.tempC)
           fillColor: Colors.tertiary
-          value: Math.round(root.tempC) + "°"
+          value: Math.round(SystemStats.tempC) + "°"
           label: "TEMP"
         }
         CircularGauge {
-          percent: root.memPercent
-          value: root.memUsedGb.toFixed(1) + "G"
+          Layout.alignment: Qt.AlignHCenter
+          percent: SystemStats.memPercent
+          value: SystemStats.memUsedGb.toFixed(1) + "G"
           label: "MEM"
         }
         CircularGauge {
-          percent: root.diskPercent
-          value: Math.round(root.diskPercent) + "%"
+          Layout.alignment: Qt.AlignHCenter
+          percent: SystemStats.rootDiskPercent
+          value: Math.round(SystemStats.rootDiskPercent) + "%"
           label: "DISK"
         }
       }
     }
   }
 
-  // ---- Action row: still real, still not fabricated ----
+  // ======== Recent notifications ========
   CcCard {
-    GridLayout {
-      Layout.fillWidth: true
-      columns: 3
-      rowSpacing: 1
-      columnSpacing: 1
+    spacing: Tokens.spaceSm
 
-      CcActionButton {
+    RowLayout {
+      Layout.fillWidth: true
+      spacing: Tokens.spaceSm
+
+      NSymbol {
+        name: Settings.data.notifications.doNotDisturb ? "notifications_off" : "notifications"
+        size: 16
+        filled: Notifs.history.length > 0
+        color: Colors.primary
+      }
+      NText {
+        text: "NOTIFICATIONS"
+        tracking: true
+        size: NText.Size.LabelXs
+        font.weight: Font.DemiBold
+        color: Colors.labelText
+      }
+      NText {
         Layout.fillWidth: true
-        label: "CAPTURE"
-        icon: "camera-photo-symbolic"
-        iconFallback: "camera-photo"
-        onTapped: {
-          root.requestClose();
-          Quickshell.execDetached(["sh", "-c", Settings.data.controlCenter.screenshotCommand]);
+        text: Notifs.history.length > 0 ? String(Notifs.history.length) : ""
+        size: NText.Size.Caption
+        color: Colors.primary
+      }
+      NText {
+        visible: Notifs.history.length > 0
+        text: "CLEAR"
+        tracking: true
+        size: NText.Size.LabelXs
+        font.weight: Font.DemiBold
+        color: clearHover.hovered ? Colors.error : Colors.labelText
+
+        HoverHandler {
+          id: clearHover
+          cursorShape: Qt.PointingHandCursor
+        }
+        TapHandler {
+          onTapped: Notifs.clearHistory()
         }
       }
-      CcActionButton {
-        Layout.fillWidth: true
-        label: "RECORD"
-        icon: "media-record-symbolic"
-        iconFallback: "media-record"
-        iconColor: Colors.error
-        available: root.hasRecorder
-      }
-      CcActionButton {
-        Layout.fillWidth: true
-        label: "COLOR"
-        icon: "color-select-symbolic"
-        iconFallback: "color-select"
-        available: root.hasColorPicker
-      }
-      CcActionButton {
-        Layout.fillWidth: true
-        label: "WALLPAPER"
-        icon: "desktop-symbolic"
-        iconFallback: "preferences-desktop-wallpaper"
-        onTapped: {
-          root.requestClose();
-          Popups.openTab("settings", root.targetScreen, "wallpaper");
+      NText {
+        Layout.leftMargin: Tokens.spaceMd
+        text: "SEE ALL"
+        tracking: true
+        size: NText.Size.LabelXs
+        font.weight: Font.DemiBold
+        color: allHover.hovered ? Colors.primary : Colors.labelText
+
+        HoverHandler {
+          id: allHover
+          cursorShape: Qt.PointingHandCursor
+        }
+        TapHandler {
+          onTapped: root.closeAndOpen("notificationHistory")
         }
       }
-      CcActionButton {
+    }
+
+    NText {
+      visible: Notifs.history.length === 0
+      Layout.fillWidth: true
+      Layout.topMargin: Tokens.spaceSm
+      Layout.bottomMargin: Tokens.spaceSm
+      horizontalAlignment: Text.AlignHCenter
+      text: "All caught up"
+      size: NText.Size.Caption
+      color: Colors.labelText
+    }
+
+    Repeater {
+      model: Notifs.history.slice(0, 3)
+
+      delegate: Item {
+        id: note
+        required property var modelData
+        required property int index
         Layout.fillWidth: true
-        label: IdleInhibitorService.active ? "IDLE ON" : "IDLE OFF"
-        icon: IdleInhibitorService.active ? "view-visible-symbolic" : "view-visible-off-symbolic"
-        iconFallback: IdleInhibitorService.active ? "view-visible" : "view-visible-off"
-        active: IdleInhibitorService.active
-        onTapped: IdleInhibitorService.toggle()
-      }
-      CcActionButton {
-        Layout.fillWidth: true
-        label: "SETTINGS"
-        icon: "preferences-system-symbolic"
-        iconFallback: "preferences-system"
-        onTapped: {
-          root.requestClose();
-          Popups.open("settings", root.targetScreen);
+        implicitHeight: noteCol.implicitHeight + Tokens.spaceMd * 2
+
+        PopupRowBackground {
+          anchors.fill: parent
+          hovered: false
+        }
+
+        Rectangle {
+          visible: note.modelData.urgency === 2
+          anchors.left: parent.left
+          anchors.top: parent.top
+          anchors.bottom: parent.bottom
+          width: Tokens.borderMarker
+          color: Colors.error
+        }
+
+        ColumnLayout {
+          id: noteCol
+          anchors.left: parent.left
+          anchors.right: parent.right
+          anchors.verticalCenter: parent.verticalCenter
+          anchors.leftMargin: Tokens.spaceMd
+          anchors.rightMargin: Tokens.spaceMd
+          spacing: 0
+
+          RowLayout {
+            Layout.fillWidth: true
+            NText {
+              Layout.fillWidth: true
+              text: (note.modelData.appName || "Notification").toUpperCase()
+              tracking: true
+              size: NText.Size.LabelXs
+              color: Colors.labelText
+            }
+            NText {
+              text: root.ago(note.modelData.timestamp + 0 * root.now)
+              size: NText.Size.Caption
+              color: Colors.labelText
+            }
+          }
+          NText {
+            Layout.fillWidth: true
+            text: note.modelData.summary
+            size: NText.Size.BodySm
+            font.weight: Font.DemiBold
+          }
+          NText {
+            Layout.fillWidth: true
+            visible: text !== ""
+            text: note.modelData.body.replace(/<[^>]*>/g, "").replace(/\n/g, " ")
+            size: NText.Size.Caption
+            color: Colors.surfaceTextMuted
+          }
         }
       }
     }
