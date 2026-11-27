@@ -1,27 +1,25 @@
 import QtQuick
-import Quickshell
 import Quickshell.Bluetooth
-import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.ControlCenter
-import qs.Widgets
 
-// Bluetooth quick toggle. Tapping expands the device list inline.
-CcCircleToggle {
+// Bluetooth tile: tap powers the adapter, the chevron opens the device list inline.
+CcTile {
   id: tile
   signal expandRequested(string which)
 
   readonly property var adapter: Bluetooth.defaultAdapter
-  active: !!adapter && adapter.enabled
-  available: !!adapter
-  onTapped: tile.expandRequested("bluetooth")
-
-  NIcon {
-    anchors.centerIn: parent
-    width: 16
-    height: 16
-    iconName: tile.active ? "preferences-system-bluetooth-activated-symbolic" : "preferences-system-bluetooth-inactive-symbolic"
-    fallbackIconName: "preferences-system-bluetooth"
-    color: tile.active ? Colors.primaryText : Colors.surfaceText
+  readonly property var connected: {
+    const devices = Bluetooth.devices ? Bluetooth.devices.values : [];
+    return devices.filter(d => d && d.connected);
   }
+
+  symbol: !tile.active ? "bluetooth_disabled" : (tile.connected.length > 0 ? "bluetooth_connected" : "bluetooth")
+  label: "Bluetooth"
+  status: !tile.adapter ? "No adapter" : !tile.active ? "Off" : tile.connected.length === 1 ? tile.connected[0].name : tile.connected.length > 1 ? tile.connected.length + " devices" : "On"
+  active: !!tile.adapter && tile.adapter.enabled
+  available: !!tile.adapter
+  expandable: true
+  onTapped: tile.adapter.enabled = !tile.adapter.enabled
+  onChevronTapped: tile.expandRequested("bluetooth")
 }

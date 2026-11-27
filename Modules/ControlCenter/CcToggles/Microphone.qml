@@ -1,30 +1,22 @@
 import QtQuick
-import Quickshell
 import Quickshell.Services.Pipewire
-import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.ControlCenter
-import qs.Widgets
 
-// Microphone mute quick toggle.
-CcCircleToggle {
+// Microphone mute tile.
+CcTile {
   id: tile
   signal expandRequested(string which)
 
   readonly property var source: Pipewire.defaultAudioSource
-  active: !!source && !!source.audio && !source.audio.muted
-  available: !!source
+
+  symbol: tile.active ? "mic" : "mic_off"
+  label: "Microphone"
+  status: !tile.source ? "No input" : tile.active ? "On" : "Muted"
+  active: !!tile.source && !!tile.source.audio && !tile.source.audio.muted
+  available: !!tile.source
   onTapped: {
     if (tile.source && tile.source.audio)
       tile.source.audio.muted = !tile.source.audio.muted;
-  }
-
-  NIcon {
-    anchors.centerIn: parent
-    width: 16
-    height: 16
-    iconName: tile.active ? "audio-input-microphone-symbolic" : "microphone-sensitivity-muted-symbolic"
-    fallbackIconName: tile.active ? "audio-input-microphone" : "microphone-sensitivity-muted"
-    color: tile.active ? Colors.primaryText : Colors.surfaceText
   }
 }

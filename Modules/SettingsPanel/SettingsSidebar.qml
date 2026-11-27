@@ -76,7 +76,7 @@ ColumnLayout {
           anchors.rightMargin: 10
           anchors.verticalCenter: parent.verticalCenter
           visible: searchInput.text === "" && !searchInput.activeFocus
-          text: "CTRL F"
+          text: "/"
           tracking: true
           color: Colors.labelText
           size: NText.Size.LabelXs

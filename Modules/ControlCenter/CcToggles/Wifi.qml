@@ -1,21 +1,27 @@
 import QtQuick
-import Quickshell
 import Quickshell.Networking
-import Quickshell.Widgets
 import qs.Commons
 import qs.Modules.ControlCenter
-import qs.Widgets
 
-// Wi-Fi toggle; tapping expands the network list inline.
-CcCircleToggle {
+// Wi-Fi tile: tap switches the radio, the chevron opens the network list inline.
+CcTile {
   id: tile
   signal expandRequested(string which)
 
-  active: Networking.wifiEnabled
-  onTapped: tile.expandRequested("wifi")
-
-  WifiGlyph {
-    anchors.centerIn: parent
-    color: tile.active ? Colors.primaryText : Colors.surfaceText
+  readonly property var device: {
+    const devices = Networking.devices ? Networking.devices.values : [];
+    return devices.find(d => d && d.type === DeviceType.Wifi) || null;
   }
+  readonly property var network: {
+    const networks = tile.device && tile.device.networks ? tile.device.networks.values : [];
+    return networks.find(n => n && n.connected) || null;
+  }
+
+  symbol: Networking.wifiEnabled ? "wifi" : "wifi_off"
+  label: "Wi-Fi"
+  status: !Networking.wifiEnabled ? "Off" : (tile.network ? tile.network.name : "Not connected")
+  active: Networking.wifiEnabled
+  expandable: true
+  onTapped: Networking.wifiEnabled = !Networking.wifiEnabled
+  onChevronTapped: tile.expandRequested("wifi")
 }

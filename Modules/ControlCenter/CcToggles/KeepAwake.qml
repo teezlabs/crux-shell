@@ -3,47 +3,14 @@ import qs.Commons
 import qs.Modules.ControlCenter
 import qs.Services
 
-// Keep-awake toggle sharing IdleInhibitorService with the bar widget; the eye is drawn, not themed.
-CcCircleToggle {
+// Keep-awake tile, sharing IdleInhibitorService with the bar widget.
+CcTile {
   id: tile
   signal expandRequested(string which)
 
+  symbol: "coffee"
+  label: "Keep awake"
+  status: tile.active ? "Screen stays on" : "Off"
   active: IdleInhibitorService.active
   onTapped: IdleInhibitorService.toggle()
-
-  Canvas {
-    anchors.centerIn: parent
-    width: 18
-    height: 12
-    readonly property bool isOn: tile.active
-    readonly property color drawColor: tile.active ? Colors.primaryText : Colors.surfaceText
-    onIsOnChanged: requestPaint()
-    onDrawColorChanged: requestPaint()
-    onPaint: {
-      const ctx = getContext("2d");
-      ctx.reset();
-      ctx.strokeStyle = drawColor;
-      ctx.fillStyle = drawColor;
-      ctx.lineWidth = 1.3;
-      ctx.lineCap = "round";
-      const cx = width / 2;
-      const cy = height / 2;
-      if (isOn) {
-        ctx.beginPath();
-        ctx.moveTo(1, cy);
-        ctx.quadraticCurveTo(cx, 0, width - 1, cy);
-        ctx.quadraticCurveTo(cx, height, 1, cy);
-        ctx.closePath();
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(cx, cy, 2.2, 0, Math.PI * 2);
-        ctx.fill();
-      } else {
-        ctx.beginPath();
-        ctx.moveTo(1, cy);
-        ctx.quadraticCurveTo(cx, cy + 5, width - 1, cy);
-        ctx.stroke();
-      }
-    }
-  }
 }
