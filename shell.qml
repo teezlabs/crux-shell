@@ -192,6 +192,27 @@ ShellRoot {
     }
   }
 
+  // Game mode from a keybind; it applies asynchronously, so toggle() reports the state it was asked for.
+  IpcHandler {
+    target: "gameMode"
+    function status(): string {
+      return GameMode.active ? "on" : "off";
+    }
+    function toggle(): string {
+      const next = !GameMode.active;
+      GameMode.toggle();
+      return next ? "on" : "off";
+    }
+    function on(): string {
+      GameMode.enable();
+      return "on";
+    }
+    function off(): string {
+      GameMode.disable();
+      return "off";
+    }
+  }
+
   // Power profile from a keybind, without going through the bar icon.
   IpcHandler {
     target: "powerProfile"

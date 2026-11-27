@@ -106,6 +106,10 @@ Singleton {
 
     property JsonObject controlCenter: ControlCenterSettings {}
 
+    property JsonObject gameMode: GameModeSettings {}
+
+    property JsonObject homelab: HomelabSettings {}
+
     // Semantic colour roles read by Commons/Colors.qml.
     property JsonObject theme: ThemeSettings {}
 

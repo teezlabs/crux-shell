@@ -29,6 +29,15 @@ cat /tmp/crux-boot.log
 ps aux | grep "qs -c crux" | grep -v grep
 ```
 
+From an SSH shell, launch through Hyprland instead, so crux joins the graphical login session. Started from SSH it lands in that session, and polkit then refuses things the desktop allows, such as switching the power profile:
+
+```bash
+hyprctl eval 'hl.exec_cmd("qs -c crux --log-rules qt.qpa.wayland.textinput.warning=false >/tmp/crux-boot.log 2>&1")'
+cat /proc/$(pgrep -f "^qs -c crux")/sessionid   # should match Hyprland's, not the SSH session's
+```
+
+Hot reload doesn't cover everything: files loaded through a `Loader` (the Control Center toggles) aren't watched, and new singletons added while crux runs can leave it failing with "X is not a type" until a real restart.
+
 ## Reading the boot log
 
 - A clean boot ends at `Configuration Loaded` with **no** `WARN` lines. Treat any warning as a bug to fix before calling the change done
