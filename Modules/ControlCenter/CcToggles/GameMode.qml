@@ -10,7 +10,7 @@ CcTile {
 
   symbol: "sports_esports"
   label: "Game mode"
-  status: GameMode.busy ? "Starting…" : tile.active ? "Effects off, performance" : "Off"
+  status: GameMode.busy ? "Starting…" : tile.active ? "Performance" : "Off"
   active: GameMode.active
   onTapped: GameMode.toggle()
 }
