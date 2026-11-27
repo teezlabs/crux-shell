@@ -17,6 +17,8 @@ ColumnLayout {
   property var targetScreen: null
   property string screenName: ""
 
+  readonly property var activeTabInfo: panel.tabs.find(t => t.id === panel.activeTab) || {}
+
   signal navigate(string tab, string subTab)
   signal closeRequested
 
@@ -47,25 +49,52 @@ ColumnLayout {
 
     RowLayout {
       Layout.fillWidth: true
-      spacing: 10
+      spacing: Tokens.spaceLg
 
-      Rectangle {
-        width: 3
-        height: 16
-        color: Colors.primary
+      // Icon tile: the tab's sidebar icon at heading size.
+      Item {
+        Layout.preferredWidth: 44
+        Layout.preferredHeight: 44
+        Layout.alignment: Qt.AlignTop
+
+        Chamfer {
+          anchors.fill: parent
+          chamferSize: Tokens.chamferModule
+          cutTopRight: true
+          cutBottomLeft: true
+          fillColor: Colors.alpha(Colors.primary, 0.14)
+          strokeColor: Colors.alpha(Colors.primary, 0.45)
+          strokeWidth: Tokens.borderModule
+        }
+
+        NIcon {
+          anchors.centerIn: parent
+          width: 22
+          height: 22
+          iconName: panel.activeTabInfo.icon || ""
+          color: Colors.primary
+        }
       }
 
-      NText {
-        text: {
-          for (var i = 0; i < panel.tabs.length; i++)
-            if (panel.tabs[i].id === panel.activeTab)
-              return panel.tabs[i].label;
-          return "";
-        }
-        color: Colors.surfaceText
-        size: NText.Size.BodyLg
-        font.weight: Font.DemiBold
+      ColumnLayout {
         Layout.fillWidth: true
+        Layout.alignment: Qt.AlignVCenter
+        spacing: Tokens.spaceXs
+
+        NText {
+          text: panel.activeTabInfo.label || ""
+          color: Colors.surfaceText
+          size: NText.Size.Title
+          Layout.fillWidth: true
+        }
+
+        NText {
+          visible: text !== ""
+          text: panel.activeTabInfo.description || ""
+          color: Colors.labelText
+          size: NText.Size.BodySm
+          Layout.fillWidth: true
+        }
       }
 
       // Chamfered close tile with a drawn X.
@@ -73,6 +102,7 @@ ColumnLayout {
         id: closeBtn
         width: 26
         height: 26
+        Layout.alignment: Qt.AlignTop
 
         Chamfer {
           anchors.fill: parent

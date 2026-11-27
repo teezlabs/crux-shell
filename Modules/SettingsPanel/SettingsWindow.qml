@@ -46,112 +46,160 @@ NPanelWindow {
     id: searchIndex
   }
 
+  Shortcut {
+    sequence: "Ctrl+F"
+    enabled: root.visible
+    onActivated: sidebar.focusSearch()
+  }
+
   // Sidebar order; a header is drawn wherever `section` changes.
   readonly property var tabs: [
     {
       "id": "home",
       "label": "Home",
-      "section": ""
+      "section": "",
+      "icon": "go-home",
+      "description": "Your theme at a glance, quick switches and shortcuts"
     },
     {
       "id": "appearance",
       "label": "Appearance",
-      "section": "Personalize"
+      "section": "Personalize",
+      "icon": "draw-brush",
+      "description": "Fonts, scale, window corners and color presets"
     },
     {
       "id": "wallpaper",
       "label": "Wallpaper",
-      "section": "Personalize"
+      "section": "Personalize",
+      "icon": "viewimage",
+      "description": "Wallpaper library, Wallhaven, theme generation and transitions"
     },
     {
       "id": "bar",
       "label": "Bar",
-      "section": "Personalize"
+      "section": "Personalize",
+      "icon": "view-split-left-right",
+      "description": "Position, size and look of the bar, and the widgets on it"
     },
     {
       "id": "desktopWidgets",
       "label": "Desktop Widgets",
-      "section": "Personalize"
+      "section": "Personalize",
+      "icon": "widget-alternatives",
+      "description": "The weather and media cards on the desktop"
     },
     {
       "id": "controlCenter",
       "label": "Control Center",
-      "section": "Shell"
+      "section": "Shell",
+      "icon": "dashboard-show",
+      "description": "Quick toggles, weather and action tiles"
     },
     {
       "id": "launcher",
       "label": "Launcher",
-      "section": "Shell"
+      "section": "Shell",
+      "icon": "view-grid",
+      "description": "The app launcher and clipboard history"
     },
     {
       "id": "notifications",
       "label": "Notifications",
-      "section": "Shell"
+      "section": "Shell",
+      "icon": "notifications",
+      "description": "Popups, how long they stay, history and the OSD"
     },
     {
       "id": "audio",
       "label": "Audio",
-      "section": "System"
+      "section": "System",
+      "icon": "audio-volume-high",
+      "description": "Volume, output and input devices, and media"
     },
     {
       "id": "display",
       "label": "Display",
-      "section": "System"
+      "section": "System",
+      "icon": "monitor",
+      "description": "Brightness and night light"
     },
     {
       "id": "connections",
       "label": "Connections",
-      "section": "System"
+      "section": "System",
+      "icon": "network-wireless",
+      "description": "Saved Wi-Fi networks and Bluetooth"
     },
     {
       "id": "peripherals",
       "label": "Peripherals",
-      "section": "System"
+      "section": "System",
+      "icon": "input-mouse",
+      "description": "Keyboard, lock keys and VPN connections"
     },
     {
       "id": "hue",
       "label": "Hue",
-      "section": "System"
+      "section": "System",
+      "icon": "brightness-high",
+      "description": "The Hue bridge and the room the bar controls"
     },
     {
       "id": "systemMonitor",
       "label": "System Monitor",
-      "section": "System"
+      "section": "System",
+      "icon": "office-chart-line",
+      "description": "How often stats are sampled and when they turn to warnings"
     },
     {
       "id": "updates",
       "label": "Updates",
-      "section": "System"
+      "section": "System",
+      "icon": "system-software-update",
+      "description": "How updates are checked and the commands that run them"
     },
     {
       "id": "lockScreen",
       "label": "Lock Screen",
-      "section": "Session"
+      "section": "Session",
+      "icon": "system-lock-screen",
+      "description": "Clock, wallpaper, status row and which monitors lock"
     },
     {
       "id": "idle",
       "label": "Power",
-      "section": "Session"
+      "section": "Session",
+      "icon": "battery-full",
+      "description": "Idle timeouts, custom idle commands and the session menu"
     },
     {
       "id": "general",
       "label": "Input",
-      "section": "Advanced"
+      "section": "Advanced",
+      "icon": "input-keyboard",
+      "description": "Clock format, scrolling and keybinds"
     },
     {
       "id": "hooks",
       "label": "Hooks",
-      "section": "Advanced"
+      "section": "Advanced",
+      "icon": "code-context",
+      "description": "Commands that run when the shell does something"
     },
     {
       "id": "plugins",
       "label": "Plugins",
-      "section": "Advanced"
+      "section": "Advanced",
+      "icon": "plugins",
+      "description": "Installed and discovered bar plugins and their sources"
     },
     {
       "id": "about",
       "label": "About",
-      "section": "Advanced"
+      "section": "Advanced",
+      "icon": "help-about",
+      "description": "Version, build and links"
     }
   ]
 
@@ -164,8 +212,8 @@ NPanelWindow {
   Item {
     id: card
     anchors.centerIn: parent
-    width: 900
-    height: 780
+    width: 1040
+    height: 800
 
     Chamfer {
       anchors.fill: parent
@@ -189,11 +237,12 @@ NPanelWindow {
       spacing: 0
 
       // ---------------- Sidebar ----------------
-      // 150px pinned with min and max (docs/qml-gotchas.md).
+      // Pinned with min and max (docs/qml-gotchas.md).
       SettingsSidebar {
-        Layout.preferredWidth: 150
-        Layout.minimumWidth: 150
-        Layout.maximumWidth: 150
+        id: sidebar
+        Layout.preferredWidth: 200
+        Layout.minimumWidth: 200
+        Layout.maximumWidth: 200
         Layout.fillHeight: true
 
         tabs: root.tabs
