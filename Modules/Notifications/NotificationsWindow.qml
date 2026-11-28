@@ -114,7 +114,8 @@ PanelWindow {
           cutTopRight: true
           cutBottomLeft: true
           fillColor: Colors.alpha(Colors.surfaceContainer, Settings.data.notifications.backgroundOpacity)
-          strokeColor: Colors.outlineVariant
+          // Urgency shows in the outline, which follows the chamfer; a side stripe would cut across it.
+          strokeColor: card.urgencyLevel === NotificationUrgency.Critical ? card.urgencyColor : Colors.outlineVariant
           strokeWidth: Tokens.borderModule
           shadow: true
           shadowBlur: Tokens.shadowBlurCard
@@ -122,14 +123,6 @@ PanelWindow {
           shadowOffset: Tokens.shadowOffsetCard
           rimLight: true
           rimOpacity: Tokens.rimOpacityCard
-        }
-
-        Rectangle {
-          anchors.left: parent.left
-          anchors.top: parent.top
-          anchors.bottom: parent.bottom
-          width: 2
-          color: card.urgencyColor
         }
 
         ColumnLayout {
