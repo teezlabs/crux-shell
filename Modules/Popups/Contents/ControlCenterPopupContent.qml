@@ -11,7 +11,7 @@ import qs.Services
 import qs.Widgets
 
 // Control Center: profile and shortcuts, labelled toggle tiles, audio, media, weather, stats and recent notifications.
-// The Wi-Fi and Bluetooth chevrons slide the panel to a sub-page; the card follows the current page's height.
+// Wi-Fi, Bluetooth, audio, weather and stats open sub-pages with a back arrow; the card follows the page's size.
 Item {
   id: root
 
@@ -38,9 +38,11 @@ Item {
   // Asks PopupHost to close the card.
   signal requestClose
 
-  // "" for the main page, else "wifi" or "bluetooth".
+  // "" for the main page, else "wifi", "bluetooth", "audio", "weather" or "stats".
   property string page: ""
-  // Height a sub-page may take; its list scrolls inside that.
+  // The weather and stats pages were laid out wider than the main page.
+  readonly property bool widePage: root.page === "weather" || root.page === "stats"
+  // Height a list sub-page may take; its list scrolls inside that.
   readonly property real subPageMax: 560
 
   function closeAndOpen(name) {
@@ -410,7 +412,7 @@ Item {
             cursorShape: Qt.PointingHandCursor
           }
           TapHandler {
-            onTapped: root.closeAndOpen("sound")
+            onTapped: root.page = "audio"
           }
         }
       }
@@ -580,7 +582,7 @@ Item {
       Layout.fillWidth: true
       spacing: Tokens.spaceMd
 
-      // Weather; a click opens the full forecast.
+      // Weather; a click opens the forecast page.
       CcCard {
         visible: Weather.ready && Settings.data.controlCenter.showWeather
         Layout.fillWidth: true
@@ -591,7 +593,7 @@ Item {
           cursorShape: Qt.PointingHandCursor
         }
         TapHandler {
-          onTapped: root.closeAndOpen("weather")
+          onTapped: root.page = "weather"
         }
 
         RowLayout {
@@ -654,7 +656,7 @@ Item {
         }
       }
 
-      // Live stats; a click opens the full system stats.
+      // Live stats; a click opens the full stats page.
       CcCard {
         Layout.fillWidth: true
         Layout.preferredWidth: 1
@@ -664,7 +666,7 @@ Item {
           cursorShape: Qt.PointingHandCursor
         }
         TapHandler {
-          onTapped: root.closeAndOpen("systemStats")
+          onTapped: root.page = "stats"
         }
 
         GridLayout {
@@ -954,8 +956,15 @@ Item {
     width: root.width
     // Keeps the last sub-page on screen while it slides away.
     property string shownPage: ""
-    readonly property Item content: subPage.shownPage === "bluetooth" ? btPage : wifiPage
-    implicitHeight: Math.min(subPage.content.implicitHeight, root.subPageMax)
+    readonly property Item content: ({
+        "wifi": wifiPage,
+        "bluetooth": btPage,
+        "audio": audioPage,
+        "weather": weatherPage,
+        "stats": statsPage
+      })[subPage.shownPage] || wifiPage
+    // Only the list pages scroll; weather and stats show at full height.
+    implicitHeight: subPage.shownPage === "weather" || subPage.shownPage === "stats" ? subPage.content.implicitHeight : Math.min(subPage.content.implicitHeight, root.subPageMax)
     height: subPage.implicitHeight
     visible: opacity > 0
     opacity: root.page !== "" ? 1 : 0
@@ -997,6 +1006,29 @@ Item {
       anchors.fill: parent
       visible: subPage.shownPage === "bluetooth"
       panelActive: root.active && root.page === "bluetooth"
+      showBack: true
+      onBackRequested: root.page = ""
+    }
+    AudioPanelContent {
+      id: audioPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "audio"
+      showBack: true
+      onBackRequested: root.page = ""
+    }
+    WeatherPopupContent {
+      id: weatherPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "weather"
+      active: root.active && root.page === "weather"
+      showBack: true
+      onBackRequested: root.page = ""
+    }
+    SystemStatsPopupContent {
+      id: statsPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "stats"
+      active: root.active && root.page === "stats"
       showBack: true
       onBackRequested: root.page = ""
     }

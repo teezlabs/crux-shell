@@ -17,6 +17,10 @@ ColumnLayout {
 
   spacing: Tokens.spaceLg
 
+  // Shown as a Control Center sub-page: the header gets a back arrow.
+  property bool showBack: false
+  signal backRequested
+
   readonly property var today: Weather.daily.length > 0 ? Weather.daily[0] : null
   // One point every two hours.
   readonly property var hours: Weather.hourly.filter((h, i) => i % 2 === 0)
@@ -49,6 +53,8 @@ ColumnLayout {
 
   PopupHeader {
     title: "WEATHER"
+    showBack: root.showBack
+    onBackTapped: root.backRequested()
     meta: Weather.lastUpdated > 0 ? "Updated " + root.timeLabel(Qt.formatDateTime(new Date(Weather.lastUpdated), "HH:mm")) : ""
     action: Weather.loading ? "…" : "REFRESH"
     actionColor: Colors.primary
