@@ -17,7 +17,15 @@ Variants {
     required property var modelData
     screen: modelData
 
-    readonly property var settingsSurface: Popups.find("settings", win.modelData)
+    // Popups doesn't notify, so look the settings window up when a trial starts, then follow its `visible`.
+    property var settingsSurface: null
+    Connections {
+      target: Monitors
+      function onTrialActiveChanged() {
+        if (Monitors.trialActive)
+          win.settingsSurface = Popups.find("settings", win.modelData);
+      }
+    }
     visible: Monitors.trialActive && !(win.settingsSurface && win.settingsSurface.visible)
     color: "transparent"
     implicitWidth: card.width

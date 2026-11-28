@@ -77,8 +77,9 @@ Singleton {
       return;
     root._stopTrial();
     const lines = ["-- Monitors: written by crux (Settings › Display › Monitors). Loaded by hyprland.lua after its own monitor lines.", ""].concat(root._pendingRules.map(root.ruleToLua));
-    outFile.setText(lines.join("\n") + "\n");
-    Toast.show("Monitor layout saved", 2500);
+    // FileView.setText doesn't create a missing file, so write through a temp file and rename.
+    writeProc.command = ["sh", "-c", 'printf "%s\\n" "$2" > "$1.tmp" && mv "$1.tmp" "$1"', "sh", root.filePath, lines.join("\n")];
+    writeProc.running = true;
   }
 
   function revert(): void {
@@ -178,12 +179,14 @@ Singleton {
     onFileChanged: reload()
   }
 
-  FileView {
-    id: outFile
-    path: root.filePath
-    atomicWrites: true
-    // Absent until the first Keep.
-    printErrors: false
+  Process {
+    id: writeProc
+    onExited: exitCode => {
+      if (exitCode === 0)
+        Toast.show("Monitor layout saved", 2500);
+      else
+        root.error = "Couldn't write " + root.filePath;
+    }
   }
 
   Process {
