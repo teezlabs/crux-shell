@@ -1,6 +1,9 @@
 <div align="center">
 
-# crux
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/logo-dark.svg">
+  <img src=".github/logo-light.svg" alt="crux" height="72">
+</picture>
 
 <img src=".github/screenshot.png" alt="crux with a floating top bar, and a floating vertical bar with the calendar drawer open" width="800">
 
