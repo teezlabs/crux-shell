@@ -920,3 +920,9 @@ Only the source URL, which the user typed in themselves, is ever interpolated in
 When `Greetd.available` is false (run inside a normal session), the greeter is a preview: Enter and the power buttons only print a message, and Escape quits, since the surface takes exclusive keyboard focus on the overlay layer.
 
 greetd joins the argv given to `Greetd.launch()` with spaces and runs it through `sh -c`, so a session's command is passed as one string, the whole `Exec=` line. An argv of `["sh", "-c", "touch /tmp/x"]` runs as `sh -c touch /tmp/x`, which is `touch` with no file. For a dry run of the whole greetd flow without starting a second desktop, set `CRUX_GREETER_TEST_SESSION` in the greeter compositor's environment: the session list becomes that one shell command, run as the user who logged in.
+
+## The logo
+
+The mark is the shell's chamfered octagon with its right edge removed, so the C ends in the same 45° cut as every panel corner. The diamond in the mouth has its edges parallel to the jaws, with an even gap to both. It sits on a 48-unit grid with a 4-unit margin and a 7-unit wall, and uses only 0°, 45° and 90° edges. It was picked from three families (an open C, the Southern Cross constellation and the four trimmed corners) because it's the one that still reads at 16px.
+
+`Assets/Logo/crux.svg` is the mark alone, filled with `currentColor`, for use inside the shell, where it should take `Colors.primary` and follow a retheme. `.github/logo-dark.svg` and `.github/logo-light.svg` are the README lockups. GitHub renders README images without the page's colors or fonts, so these use fixed colors (the amber `#ffb873` and its light-scheme counterpart `#8f4f0e`) and the "crux" text is converted to outlines from Departure Mono (OFL) at 44 units, 8 units from the mark.
