@@ -8,7 +8,7 @@ import qs.Modules.Notifications
 import qs.Modules.Popups
 import qs.Services
 
-// Persistent notification history, separate from NotificationsWindow's live stack.
+// Notification history, one entry per conversation (Notifs.conversations); tap one to read its whole thread.
 ColumnLayout {
   id: root
 
@@ -18,6 +18,18 @@ ColumnLayout {
   property bool active: false
 
   readonly property var history: Notifs.history
+  // Conversation key -> true while expanded.
+  property var expanded: ({})
+
+  function toggle(key) {
+    const next = Object.assign({}, root.expanded);
+    next[key] = !next[key];
+    root.expanded = next;
+  }
+
+  function plain(text) {
+    return (text || "").replace(/<[^>]*>/g, "").replace(/\n/g, " ");
+  }
 
   // Date.now() isn't a binding dependency, so the tick re-evaluates relative times.
   property int _tick: 0
@@ -81,12 +93,15 @@ ColumnLayout {
     Layout.preferredHeight: Math.min(460, contentHeight)
     clip: true
     visible: root.history.length > 0
-    model: root.history
+    model: Notifs.conversations
     spacing: 2
 
     delegate: Item {
       id: rowItem
       required property var modelData
+      readonly property var latest: modelData.messages[0]
+      readonly property int count: modelData.messages.length
+      readonly property bool open: !!root.expanded[modelData.key]
       width: ListView.view.width
       height: rowColumn.implicitHeight + 16
 
@@ -105,6 +120,11 @@ ColumnLayout {
 
       HoverHandler {
         id: rowHover
+        cursorShape: rowItem.count > 1 ? Qt.PointingHandCursor : Qt.ArrowCursor
+      }
+      TapHandler {
+        enabled: rowItem.count > 1
+        onTapped: root.toggle(rowItem.modelData.key)
       }
 
       ColumnLayout {
@@ -137,24 +157,60 @@ ColumnLayout {
           }
         }
 
-        NText {
+        RowLayout {
           Layout.fillWidth: true
-          text: rowItem.modelData.summary || ""
-          color: Colors.surfaceText
-          size: NText.Size.BodySm
-          font.weight: Font.DemiBold
-          elide: Text.ElideRight
+          spacing: Tokens.spaceSm
+
+          NText {
+            Layout.fillWidth: true
+            text: rowItem.modelData.summary || ""
+            color: Colors.surfaceText
+            size: NText.Size.BodySm
+            font.weight: Font.DemiBold
+            elide: Text.ElideRight
+          }
+          // Message count, and which way the thread folds.
+          NText {
+            visible: rowItem.count > 1
+            text: rowItem.count + (rowItem.open ? "  ▴" : "  ▾")
+            color: Colors.primary
+            size: NText.Size.LabelXs
+          }
         }
 
+        // Folded: the newest message. Open: the whole thread, oldest first.
         NText {
           Layout.fillWidth: true
-          visible: (rowItem.modelData.body || "") !== ""
-          text: rowItem.modelData.body || ""
-          color: Colors.surfaceTextMuted
+          visible: !rowItem.open && root.plain(rowItem.latest.body) !== ""
+          text: (rowItem.latest.own ? "You: " : "") + root.plain(rowItem.latest.body)
+          color: rowItem.latest.own ? Colors.primary : Colors.surfaceTextMuted
           size: NText.Size.BodySm
           wrapMode: Text.WordWrap
           maximumLineCount: 2
           elide: Text.ElideRight
+        }
+        Repeater {
+          model: rowItem.open ? rowItem.modelData.messages.slice().reverse() : []
+
+          delegate: RowLayout {
+            required property var modelData
+            Layout.fillWidth: true
+            spacing: Tokens.spaceSm
+
+            NText {
+              Layout.fillWidth: true
+              text: (modelData.own ? "You: " : "") + root.plain(modelData.body)
+              color: modelData.own ? Colors.primary : Colors.surfaceTextMuted
+              size: NText.Size.BodySm
+              wrapMode: Text.WordWrap
+            }
+            NText {
+              Layout.alignment: Qt.AlignTop
+              text: root.relativeTime(modelData.timestamp)
+              color: Colors.labelText
+              size: NText.Size.LabelXs
+            }
+          }
         }
       }
 
@@ -171,7 +227,7 @@ ColumnLayout {
           cursorShape: Qt.PointingHandCursor
         }
         TapHandler {
-          onTapped: Notifs.removeFromHistory(rowItem.modelData.id)
+          onTapped: Notifs.removeConversation(rowItem.modelData.key)
         }
       }
     }
