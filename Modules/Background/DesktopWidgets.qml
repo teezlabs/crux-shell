@@ -1,13 +1,15 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Wayland
 import qs.Commons
 import qs.Widgets
-import qs.Modules.Bar.Extras
+import qs.Modules.ControlCenter
 import qs.Services
 
-// Desktop info cards (weather, media) on the wallpaper layer, draggable and individually toggleable.
+// Desktop cards (weather, music, clock) on the wallpaper layer. Locked normally; DesktopEdit mode shows a grid,
+// and the cards drag, snap and resize (DesktopCard).
 Variants {
   model: Quickshell.screens
 
@@ -30,11 +32,16 @@ Variants {
 
     visible: Settings.isLoaded && Settings.data.desktopWidgets.enabled
 
-    // Only the cards take clicks; the rest of the window passes them through.
+    // Only the cards take clicks; in edit mode the whole screen does, for the grid and toolbar.
     mask: Region {
-      regions: [weatherRegion, mediaRegion]
+      item: DesktopEdit.active ? fullArea : null
+      regions: DesktopEdit.active ? [] : [weatherRegion, mediaRegion, clockRegion]
     }
 
+    Item {
+      id: fullArea
+      anchors.fill: parent
+    }
     Region {
       id: weatherRegion
       item: weatherCard.visible ? weatherCard : null
@@ -43,80 +50,165 @@ Variants {
       id: mediaRegion
       item: mediaCard.visible ? mediaCard : null
     }
+    Region {
+      id: clockRegion
+      item: clockCard.visible ? clockCard : null
+    }
 
     // Corner placement clears whichever edge the bar occupies.
     readonly property string _barPos: Settings.isLoaded ? Settings.getBarPositionForScreen(screen?.name) : "top"
     readonly property int _baseMargin: 20
     readonly property int _barGap: Tokens.barExtent + Tokens.barMargin + 12
+    readonly property int _marginTop: _baseMargin + (_barPos === "top" ? _barGap : 0)
     readonly property int _marginBottom: _baseMargin + (_barPos === "bottom" ? _barGap : 0)
     readonly property int _marginLeft: _baseMargin + (_barPos === "left" ? _barGap : 0)
     readonly property int _marginRight: _baseMargin + (_barPos === "right" ? _barGap : 0)
 
-    readonly property bool weatherReady: Weather.ready
-    readonly property var activePlayer: MediaService.activePlayer
-    readonly property bool hasPlayer: !!activePlayer
-    readonly property bool isPlaying: MediaService.isPlaying
-    readonly property real _position: MediaService.position
-    readonly property real _length: MediaService.length
+    // Windows on this monitor's workspace hide the cards; live work (the visualizer) pauses then.
+    readonly property var hyprMonitor: Hyprland.monitorFor(window.screen)
+    readonly property bool covered: {
+      const ws = window.hyprMonitor ? window.hyprMonitor.activeWorkspace : null;
+      return !!(ws && ws.toplevels && ws.toplevels.values.length > 0);
+    }
 
-    // --- Weather card: bottom-left corner by default, draggable ---
+    // Grid cell near 1.5% of the width, chosen so lines cross the screen centre (after noctalia's legacy-v4).
+    readonly property int gridSize: {
+      const base = Math.max(20, Math.min(60, Math.round(window.width * 0.015)));
+      const cx = Math.round(window.width / 2);
+      const cy = Math.round(window.height / 2);
+      let best = base;
+      let bestMiss = Infinity;
+      for (let c = Math.max(20, base - 10); c <= Math.min(60, base + 10); c++) {
+        const miss = (cx % c) + (cy % c);
+        if (miss < bestMiss || (miss === bestMiss && Math.abs(c - base) < Math.abs(best - base))) {
+          best = c;
+          bestMiss = miss;
+        }
+      }
+      return best;
+    }
+
+    // ---- Edit mode grid ----
+    Canvas {
+      id: grid
+      anchors.fill: parent
+      visible: DesktopEdit.active
+      readonly property color lineColor: Colors.primary
+      readonly property real cell: window.gridSize
+      readonly property bool snapping: Settings.data.desktopWidgets.gridSnap
+      onVisibleChanged: if (visible)
+        requestPaint()
+      onWidthChanged: requestPaint()
+      onHeightChanged: requestPaint()
+      onLineColorChanged: requestPaint()
+      onCellChanged: requestPaint()
+      onSnappingChanged: requestPaint()
+      onPaint: {
+        const ctx = getContext("2d");
+        ctx.reset();
+        ctx.fillStyle = Colors.alpha(Colors.surface, 0.35);
+        ctx.fillRect(0, 0, width, height);
+        if (!snapping)
+          return;
+        // Lines start at the centre and step outwards, so the centre lines are always drawn.
+        const cx = Math.round(width / 2);
+        const cy = Math.round(height / 2);
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = Colors.alpha(lineColor, 0.18);
+        ctx.beginPath();
+        for (let x = cx % cell; x <= width; x += cell) {
+          ctx.moveTo(Math.round(x) + 0.5, 0);
+          ctx.lineTo(Math.round(x) + 0.5, height);
+        }
+        for (let y = cy % cell; y <= height; y += cell) {
+          ctx.moveTo(0, Math.round(y) + 0.5);
+          ctx.lineTo(width, Math.round(y) + 0.5);
+        }
+        ctx.stroke();
+        ctx.strokeStyle = Colors.alpha(lineColor, 0.45);
+        ctx.beginPath();
+        ctx.moveTo(cx + 0.5, 0);
+        ctx.lineTo(cx + 0.5, height);
+        ctx.moveTo(0, cy + 0.5);
+        ctx.lineTo(width, cy + 0.5);
+        ctx.stroke();
+      }
+    }
+
+    // ---- Edit mode toolbar, top centre below the bar ----
     Item {
-      id: weatherCard
-      visible: window.weatherReady && Settings.data.desktopWidgets.weatherEnabled
-      width: 216
-      height: weatherColumn.implicitHeight + 24
-      x: Settings.data.desktopWidgets.weatherX >= 0 ? Settings.data.desktopWidgets.weatherX : window._marginLeft
-      y: Settings.data.desktopWidgets.weatherY >= 0 ? Settings.data.desktopWidgets.weatherY : window.height - height - window._marginBottom
-
-      DragHandler {
-        target: weatherCard
-        xAxis.minimum: 0
-        xAxis.maximum: window.width - weatherCard.width
-        yAxis.minimum: 0
-        yAxis.maximum: window.height - weatherCard.height
-        onActiveChanged: {
-          if (!active) {
-            Settings.data.desktopWidgets.weatherX = weatherCard.x;
-            Settings.data.desktopWidgets.weatherY = weatherCard.y;
-          }
-        }
-      }
-
-      // Dragging breaks the x/y binding, so restore it when "Reset position" sets these back to -1 (docs/qml-gotchas.md).
-      Connections {
-        target: Settings.data.desktopWidgets
-        function onWeatherXChanged() {
-          if (Settings.data.desktopWidgets.weatherX < 0)
-            weatherCard.x = Qt.binding(function () {
-              return Settings.data.desktopWidgets.weatherX >= 0 ? Settings.data.desktopWidgets.weatherX : window._marginLeft;
-            });
-        }
-        function onWeatherYChanged() {
-          if (Settings.data.desktopWidgets.weatherY < 0)
-            weatherCard.y = Qt.binding(function () {
-              return Settings.data.desktopWidgets.weatherY >= 0 ? Settings.data.desktopWidgets.weatherY : window.height - weatherCard.height - window._marginBottom;
-            });
-        }
-      }
+      id: toolbar
+      visible: DesktopEdit.active
+      z: 20
+      anchors.horizontalCenter: parent.horizontalCenter
+      y: window._marginTop
+      width: toolRow.implicitWidth + Tokens.spaceLg * 2
+      height: toolRow.implicitHeight + Tokens.spaceMd * 2
 
       Chamfer {
         anchors.fill: parent
         chamferSize: Tokens.chamferPanel
-        cutTopLeft: false
         cutTopRight: true
-        cutBottomLeft: false
-        cutBottomRight: false
+        cutBottomLeft: true
         fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
-        strokeColor: Colors.outline
+        strokeColor: Colors.primary
         strokeWidth: Tokens.borderPanel
       }
 
+      RowLayout {
+        id: toolRow
+        anchors.centerIn: parent
+        spacing: Tokens.spaceMd
+
+        NText {
+          text: "EDITING DESKTOP"
+          tracking: true
+          size: NText.Size.LabelXs
+          font.weight: Font.DemiBold
+          color: Colors.primary
+        }
+        NText {
+          text: "Drag to move · corner to resize"
+          size: NText.Size.Caption
+          color: Colors.labelText
+        }
+        NText {
+          text: "SNAP"
+          tracking: true
+          size: NText.Size.LabelXs
+          color: Colors.labelText
+          Layout.leftMargin: Tokens.spaceMd
+        }
+        NToggle {
+          checked: Settings.data.desktopWidgets.gridSnap
+          onToggled: checked => Settings.data.desktopWidgets.gridSnap = checked
+        }
+        NButton {
+          text: "Done"
+          onClicked: DesktopEdit.active = false
+        }
+      }
+    }
+
+    // --- Weather card: bottom-left by default ---
+    DesktopCard {
+      id: weatherCard
+      key: "weather"
+      label: "WEATHER"
+      area: fullArea
+      gridSize: window.gridSize
+      screen: window.screen
+      visible: Weather.ready && Settings.data.desktopWidgets.weatherEnabled && onThisScreen
+      contentWidth: 192
+      contentHeight: weatherColumn.implicitHeight
+      cutTopRight: true
+      cutBottomLeft: false
+      defaultX: window._marginLeft
+      defaultY: window.height - height - window._marginBottom
+
       ColumnLayout {
         id: weatherColumn
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.margins: 12
+        width: parent.width
         spacing: 8
 
         RowLayout {
@@ -193,161 +285,160 @@ Variants {
       }
     }
 
-    // --- Media card: bottom-right by default, hidden without an MPRIS player ---
-    Item {
+    // --- Music card: the Control Center's media card, bottom-right by default, hidden without a player ---
+    DesktopCard {
       id: mediaCard
-      visible: window.hasPlayer && Settings.data.desktopWidgets.mediaEnabled
-      width: 300
-      height: mediaColumn.implicitHeight + 24
-      x: Settings.data.desktopWidgets.mediaX >= 0 ? Settings.data.desktopWidgets.mediaX : window.width - width - window._marginRight
-      y: Settings.data.desktopWidgets.mediaY >= 0 ? Settings.data.desktopWidgets.mediaY : window.height - height - window._marginBottom
-
-      DragHandler {
-        target: mediaCard
-        xAxis.minimum: 0
-        xAxis.maximum: window.width - mediaCard.width
-        yAxis.minimum: 0
-        yAxis.maximum: window.height - mediaCard.height
-        onActiveChanged: {
-          if (!active) {
-            Settings.data.desktopWidgets.mediaX = mediaCard.x;
-            Settings.data.desktopWidgets.mediaY = mediaCard.y;
-          }
-        }
-      }
-
-      Connections {
-        target: Settings.data.desktopWidgets
-        function onMediaXChanged() {
-          if (Settings.data.desktopWidgets.mediaX < 0)
-            mediaCard.x = Qt.binding(function () {
-              return Settings.data.desktopWidgets.mediaX >= 0 ? Settings.data.desktopWidgets.mediaX : window.width - mediaCard.width - window._marginRight;
-            });
-        }
-        function onMediaYChanged() {
-          if (Settings.data.desktopWidgets.mediaY < 0)
-            mediaCard.y = Qt.binding(function () {
-              return Settings.data.desktopWidgets.mediaY >= 0 ? Settings.data.desktopWidgets.mediaY : window.height - mediaCard.height - window._marginBottom;
-            });
-        }
-      }
-
-      Chamfer {
-        anchors.fill: parent
-        chamferSize: Tokens.chamferPanel
-        cutTopLeft: true
-        cutTopRight: false
-        cutBottomLeft: false
-        cutBottomRight: false
-        fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
-        strokeColor: Colors.outline
-        strokeWidth: Tokens.borderPanel
-      }
+      key: "media"
+      label: "MUSIC"
+      area: fullArea
+      gridSize: window.gridSize
+      readonly property var player: MediaService.activePlayer
+      screen: window.screen
+      visible: !!player && Settings.data.desktopWidgets.mediaEnabled && onThisScreen
+      contentWidth: 340
+      contentHeight: mediaColumn.implicitHeight
+      cutTopLeft: true
+      cutTopRight: false
+      cutBottomLeft: false
+      defaultX: window.width - width - window._marginRight
+      defaultY: window.height - height - window._marginBottom
 
       ColumnLayout {
         id: mediaColumn
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.margins: 12
-        spacing: 8
+        width: parent.width
+        spacing: Tokens.spaceMd
 
         RowLayout {
           Layout.fillWidth: true
-          spacing: 10
+          spacing: Tokens.spaceLg
 
           Item {
-            Layout.preferredWidth: 44
-            Layout.preferredHeight: 44
+            Layout.preferredWidth: 52
+            Layout.preferredHeight: 52
 
-            Chamfer {
+            Rectangle {
               anchors.fill: parent
-              chamferSize: Tokens.chamferIcon
-              cutTopRight: true
-              cutBottomLeft: true
-              fillColor: Colors.surfaceContainer
-              strokeColor: Colors.outline
-              strokeWidth: Tokens.borderModule
+              color: Colors.surfaceContainerHigh
             }
-
             Image {
+              id: cover
               anchors.fill: parent
-              anchors.margins: Tokens.borderModule
-              visible: window.activePlayer && window.activePlayer.trackArtUrl !== ""
-              source: window.activePlayer ? window.activePlayer.trackArtUrl : ""
+              source: mediaCard.player ? (mediaCard.player.trackArtUrl || "") : ""
+              sourceSize.width: 104
+              sourceSize.height: 104
               fillMode: Image.PreserveAspectCrop
               asynchronous: true
             }
-
-            Text {
+            NSymbol {
               anchors.centerIn: parent
-              visible: !window.activePlayer || window.activePlayer.trackArtUrl === ""
-              text: window.isPlaying ? "▶" : "⏸"
+              visible: cover.status !== Image.Ready
+              name: "music_note"
+              size: 24
               color: Colors.labelText
-              font.pixelSize: Tokens.bodySize
             }
           }
 
           ColumnLayout {
             Layout.fillWidth: true
-            spacing: 1
+            spacing: Tokens.spaceXs
 
             NText {
               Layout.fillWidth: true
-              text: window.activePlayer ? window.activePlayer.trackTitle : ""
-              color: Colors.surfaceText
+              text: mediaCard.player ? (mediaCard.player.trackTitle || mediaCard.player.identity) : ""
+              size: NText.Size.BodySm
               font.weight: Font.DemiBold
               elide: Text.ElideRight
-              maximumLineCount: 1
             }
             NText {
               Layout.fillWidth: true
-              text: window.activePlayer ? window.activePlayer.trackArtist : ""
-              color: Colors.labelText
+              text: mediaCard.player ? (mediaCard.player.trackArtist || mediaCard.player.identity) : ""
               size: NText.Size.Caption
+              color: Colors.labelText
               elide: Text.ElideRight
-              maximumLineCount: 1
+            }
+            CcLevelSlider {
+              Layout.fillWidth: true
+              Layout.topMargin: Tokens.spaceXs
+              thumbRadius: 5
+              trackHeight: 3
+              value: MediaService.length > 0 ? (MediaService.position / MediaService.length) * 100 : 0
+              interactive: !!mediaCard.player && mediaCard.player.canSeek
+              onMoved: pct => {
+                if (mediaCard.player && mediaCard.player.canSeek)
+                  mediaCard.player.position = (pct / 100) * MediaService.length;
+              }
             }
           }
+
+          CcIconButton {
+            size: 32
+            symbol: "skip_previous"
+            available: !!mediaCard.player && mediaCard.player.canGoPrevious
+            onTapped: mediaCard.player.previous()
+          }
+          CcIconButton {
+            size: 36
+            symbol: MediaService.isPlaying ? "pause" : "play_arrow"
+            tone: "active"
+            available: !!mediaCard.player && (mediaCard.player.canPlay || mediaCard.player.canPause)
+            onTapped: mediaCard.player.togglePlaying()
+          }
+          CcIconButton {
+            size: 32
+            symbol: "skip_next"
+            available: !!mediaCard.player && mediaCard.player.canGoNext
+            onTapped: mediaCard.player.next()
+          }
         }
 
-        SegMeter {
+        CcSpectrum {
           Layout.fillWidth: true
-          cellCount: Tokens.meterSidebarSeekCells
-          cellHeight: Tokens.meterSidebarSeekCellHeight
-          value: window._length > 0 ? (window._position / window._length) * 100 : 0
-          interactive: !!window.activePlayer && window.activePlayer.canSeek
-          filledColor: Colors.primary
-          emptyColor: Colors.surfaceContainerHigh
-          onMoved: pct => {
-            if (window.activePlayer && window.activePlayer.canSeek)
-              window.activePlayer.position = (pct / 100) * window._length;
+          implicitHeight: 26
+          running: mediaCard.visible && window.visible && !window.covered && MediaService.isPlaying
+        }
+      }
+    }
+
+    // --- Clock card: big time and an optional date line, top-left by default ---
+    DesktopCard {
+      id: clockCard
+      key: "clock"
+      label: "CLOCK"
+      area: fullArea
+      gridSize: window.gridSize
+      screen: window.screen
+      visible: Settings.data.desktopWidgets.clockEnabled && onThisScreen
+      padding: Tokens.spaceXl
+      contentWidth: clockColumn.implicitWidth
+      contentHeight: clockColumn.implicitHeight
+      defaultX: window._marginLeft
+      defaultY: window._marginTop
+
+      SystemClock {
+        id: clock
+        precision: Settings.data.desktopWidgets.clockFormat.indexOf("s") !== -1 ? SystemClock.Seconds : SystemClock.Minutes
+      }
+
+      ColumnLayout {
+        id: clockColumn
+        spacing: Tokens.spaceSm
+
+        NText {
+          Layout.alignment: Qt.AlignHCenter
+          text: Qt.formatDateTime(clock.date, Settings.data.desktopWidgets.clockFormat)
+          size: NText.Size.Display
+          color: Colors.primary
+          font.features: {
+            "tnum": 1
           }
         }
-
-        RowLayout {
-          Layout.fillWidth: true
-          spacing: 1
-
-          MpTransportButton {
-            Layout.fillWidth: true
-            glyph: "⏮"
-            available: !!window.activePlayer && window.activePlayer.canGoPrevious
-            onTapped: window.activePlayer.previous()
-          }
-          MpTransportButton {
-            Layout.fillWidth: true
-            glyph: window.isPlaying ? "⏸" : "▶"
-            active: window.isPlaying
-            available: !!window.activePlayer && (window.activePlayer.canPlay || window.activePlayer.canPause)
-            onTapped: window.activePlayer.togglePlaying()
-          }
-          MpTransportButton {
-            Layout.fillWidth: true
-            glyph: "⏭"
-            available: !!window.activePlayer && window.activePlayer.canGoNext
-            onTapped: window.activePlayer.next()
-          }
+        NText {
+          Layout.alignment: Qt.AlignHCenter
+          visible: Settings.data.desktopWidgets.clockDateFormat !== ""
+          text: Qt.formatDateTime(clock.date, Settings.data.desktopWidgets.clockDateFormat).toUpperCase()
+          tracking: true
+          size: NText.Size.BodyLg
+          color: Colors.labelText
         }
       }
     }

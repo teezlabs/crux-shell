@@ -88,7 +88,7 @@ NPanelWindow {
       "label": "Desktop Widgets",
       "section": "Personalize",
       "icon": "widget-alternatives",
-      "description": "The weather and media cards on the desktop"
+      "description": "Clock, music and weather cards on the desktop"
     },
     {
       "id": "controlCenter",

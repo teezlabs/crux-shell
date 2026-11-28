@@ -83,3 +83,11 @@ Crux loads `Assets/Fonts/MaterialSymbolsRounded.ttf` once at boot. When the file
 ## Filled Material Symbols break under distance-field text
 
 Some Material Symbols glyphs (`settings` is the clear case) build their filled form from overlapping contours. QtQuick's default `Text.QtRendering` draws text through distance fields, which punch dark holes and stray lines where those contours overlap, so the gear looked speckled at `FILL` 1. `NSymbol` uses `Text.NativeRendering`, which draws it cleanly. `Text.CurveRendering` still leaves faint seams.
+
+## `DragHandler.activeTranslation` is zero by the time a drag ends
+
+`activeTranslation` resets as soon as the handler goes inactive, so reading it in `onActiveChanged` on release gives `(0, 0)`. `DesktopCard` saved every card back where the drag started until 2026-11-28. Keep the last value from `onActiveTranslationChanged` while `active` is true, and use that on release.
+
+## A handle's `DragHandler` measures from a handle that moves
+
+`translation` and `activeTranslation` are relative to the handler's own item. When dragging resizes the card and the corner handle moves with it, the offset stays near zero and nothing resizes. `DesktopCard`'s resize handle measures from `centroid.scenePosition` instead, and switches the card's move handler off while the pointer is over the handle, so the two can't compete for the same drag.

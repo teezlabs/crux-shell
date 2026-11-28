@@ -920,3 +920,13 @@ Only the source URL, which the user typed in themselves, is ever interpolated in
 When `Greetd.available` is false (run inside a normal session), the greeter is a preview: Enter and the power buttons only print a message, and Escape quits, since the surface takes exclusive keyboard focus on the overlay layer.
 
 greetd joins the argv given to `Greetd.launch()` with spaces and runs it through `sh -c`, so a session's command is passed as one string, the whole `Exec=` line. An argv of `["sh", "-c", "touch /tmp/x"]` runs as `sh -c touch /tmp/x`, which is `touch` with no file. For a dry run of the whole greetd flow without starting a second desktop, set `CRUX_GREETER_TEST_SESSION` in the greeter compositor's environment: the session list becomes that one shell command, run as the user who logged in.
+
+## Desktop widget edit mode
+
+Ported from noctalia's `legacy-v4` desktop widgets (`Modules/DesktopWidgets/DesktopWidgets.qml` and `DraggableDesktopWidget.qml`), rebuilt on crux's kit. Cards are locked until `DesktopEdit.active`, so a stray drag on the desktop can't move them. Edit mode makes the whole layer take input, draws the grid and a toolbar, and covers each card with a move layer, so the card's own buttons and sliders don't take the drag.
+
+The grid cell is about 1.5% of the screen width, clamped to 20–60px, picked so a line crosses the screen centre on both axes, as in noctalia. Crux keeps only the search around the base size and drops noctalia's GCD fallback, which only matters for odd resolutions. Drops snap the card's top-left corner to the grid, and resizing snaps the scaled width to whole cells.
+
+Resizing uses `Item.scale` on the card's frame, where noctalia multiplied every size by `widgetScale` to keep text sharp. That's one property instead of a size factor threaded through every widget, at the cost of slightly soft icons at odd scales: `NSymbol` uses native rendering (see the filled-glyph note in `docs/qml-gotchas.md`), which doesn't rescale crisply the way distance-field text does.
+
+Positions are bindings to the saved settings, with the live drag offset added while a drag is active. Nothing assigns `x` or `y` directly, so "Reset position and size" needs no binding restore.
