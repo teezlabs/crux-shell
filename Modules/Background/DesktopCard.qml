@@ -121,6 +121,8 @@ Item {
     DragHandler {
       id: move
       target: null
+      // The corner handle resizes; don't start a move from it.
+      enabled: !gripHover.hovered && !resize.active
       property real startX: 0
       property real startY: 0
       // activeTranslation is already zero when onActiveChanged fires on release, so keep the last one.
@@ -144,8 +146,8 @@ Item {
       id: grip
       anchors.right: parent.right
       anchors.bottom: parent.bottom
-      width: 14
-      height: 14
+      width: 18
+      height: 18
       color: resize.active || gripHover.hovered ? Colors.primary : Colors.alpha(Colors.primary, 0.6)
 
       HoverHandler {
@@ -157,14 +159,17 @@ Item {
         target: null
         property real startScale: 1
         property real startWidth: 1
+        property real startSceneX: 0
         property real lastDx: 0
         readonly property real liveScale: Math.max(0.5, Math.min(4, startScale * (startWidth + lastDx) / startWidth))
-        onActiveTranslationChanged: if (active)
-          lastDx = activeTranslation.x
+        // Measured in scene space: the handle itself moves as the card grows.
+        onCentroidChanged: if (active)
+          lastDx = centroid.scenePosition.x - startSceneX
         onActiveChanged: {
           if (active) {
             startScale = root.savedScale;
             startWidth = Math.max(1, root.width);
+            startSceneX = centroid.scenePressPosition.x;
             lastDx = 0;
             return;
           }

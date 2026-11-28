@@ -87,3 +87,7 @@ Some Material Symbols glyphs (`settings` is the clear case) build their filled f
 ## `DragHandler.activeTranslation` is zero by the time a drag ends
 
 `activeTranslation` resets as soon as the handler goes inactive, so reading it in `onActiveChanged` on release gives `(0, 0)`. `DesktopCard` saved every card back where the drag started until 2026-11-28. Keep the last value from `onActiveTranslationChanged` while `active` is true, and use that on release.
+
+## A handle's `DragHandler` measures from a handle that moves
+
+`translation` and `activeTranslation` are relative to the handler's own item. When dragging resizes the card and the corner handle moves with it, the offset stays near zero and nothing resizes. `DesktopCard`'s resize handle measures from `centroid.scenePosition` instead, and switches the card's move handler off while the pointer is over the handle, so the two can't compete for the same drag.
