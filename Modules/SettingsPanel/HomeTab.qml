@@ -261,7 +261,7 @@ NScrollView {
         NButton {
           text: "Restart crux"
           variant: "accent"
-          onClicked: Quickshell.execDetached(["bash", "-c", "pkill -f 'qs -c crux'; sleep 0.5; nohup qs -c crux --log-rules qt.qpa.wayland.textinput.warning=false >/dev/null 2>&1 & disown"])
+          onClicked: Quickshell.execDetached([Quickshell.shellDir + "/bin/crux-restart"])
         }
         NButton {
           text: "GitHub"
