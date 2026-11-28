@@ -11,7 +11,7 @@ CcTile {
   readonly property var source: Pipewire.defaultAudioSource
 
   symbol: tile.active ? "mic" : "mic_off"
-  label: "Microphone"
+  label: CcToggleRegistry.labelFor("Microphone")
   status: !tile.source ? "No input" : tile.active ? "On" : "Muted"
   active: !!tile.source && !!tile.source.audio && !tile.source.audio.muted
   available: !!tile.source

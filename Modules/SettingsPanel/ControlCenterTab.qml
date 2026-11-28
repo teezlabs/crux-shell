@@ -16,8 +16,8 @@ NScrollView {
     spacing: 20
 
   SettingsSection {
-    title: "Quick toggles"
-    description: "Buttons in the Control Center's top row, in order."
+    title: "Toggle tiles"
+    description: "The tiles under the shortcut buttons in the Control Center, in reading order."
 
     ColumnLayout {
       Layout.fillWidth: true
@@ -34,7 +34,7 @@ NScrollView {
           spacing: 6
 
           NText {
-            text: row.modelData
+            text: CcToggleRegistry.labelFor(row.modelData)
             color: Colors.surfaceText
             size: NText.Size.BodySm
             Layout.fillWidth: true
@@ -62,7 +62,7 @@ NScrollView {
 
       NText {
         visible: Settings.data.controlCenter.toggles.length === 0
-        text: "No toggles — the row is hidden."
+        text: "No tiles. The grid is hidden."
         color: Colors.labelText
         size: NText.Size.Caption
       }
@@ -84,7 +84,7 @@ NScrollView {
 
           delegate: NButton {
             required property string modelData
-            text: modelData
+            text: CcToggleRegistry.labelFor(modelData)
             textSize: NText.Size.LabelXs
             horizontalPadding: 8
             implicitHeight: 22

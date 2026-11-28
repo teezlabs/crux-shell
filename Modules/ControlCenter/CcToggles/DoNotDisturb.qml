@@ -8,7 +8,7 @@ CcTile {
   signal expandRequested(string which)
 
   symbol: tile.active ? "do_not_disturb_on" : "notifications"
-  label: "Do not disturb"
+  label: CcToggleRegistry.labelFor("DoNotDisturb")
   status: tile.active ? "Silenced" : "Off"
   active: Settings.data.notifications.doNotDisturb
   onTapped: Settings.data.notifications.doNotDisturb = !Settings.data.notifications.doNotDisturb

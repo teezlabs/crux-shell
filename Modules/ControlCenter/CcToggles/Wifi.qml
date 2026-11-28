@@ -18,7 +18,7 @@ CcTile {
   }
 
   symbol: Networking.wifiEnabled ? "wifi" : "wifi_off"
-  label: "Wi-Fi"
+  label: CcToggleRegistry.labelFor("Wifi")
   status: !Networking.wifiEnabled ? "Off" : (tile.network ? tile.network.name : "Not connected")
   active: Networking.wifiEnabled
   expandable: true
