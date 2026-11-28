@@ -3,7 +3,7 @@ import Quickshell.Networking
 import qs.Commons
 import qs.Modules.ControlCenter
 
-// Wi-Fi tile: tap switches the radio, the chevron opens the network list inline.
+// Wi-Fi tile: tap switches the radio, the chevron opens the network page.
 CcTile {
   id: tile
   signal expandRequested(string which)
@@ -18,7 +18,7 @@ CcTile {
   }
 
   symbol: Networking.wifiEnabled ? "wifi" : "wifi_off"
-  label: "Wi-Fi"
+  label: CcToggleRegistry.labelFor("Wifi")
   status: !Networking.wifiEnabled ? "Off" : (tile.network ? tile.network.name : "Not connected")
   active: Networking.wifiEnabled
   expandable: true

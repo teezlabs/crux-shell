@@ -9,7 +9,7 @@ CcTile {
   signal expandRequested(string which)
 
   symbol: "nightlight"
-  label: "Night light"
+  label: CcToggleRegistry.labelFor("NightLight")
   status: !NightLightService.enabled ? "Off" : NightLightService.forced ? "Always on" : "Scheduled"
   active: NightLightService.enabled
   onTapped: NightLightService.cycle()

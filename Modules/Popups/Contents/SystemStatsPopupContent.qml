@@ -12,6 +12,10 @@ ColumnLayout {
 
   spacing: Tokens.spaceLg
 
+  // Shown as a Control Center sub-page: the header gets a back arrow.
+  property bool showBack: false
+  signal backRequested
+
   // Bound to the owning SlideCard's `shown` from PopupHost; samples the full stats only while open.
   property bool active: false
   onActiveChanged: SystemStats.fullWatchers += active ? 1 : -1
@@ -33,6 +37,8 @@ ColumnLayout {
   // ---- Header ----
   PopupHeader {
     title: "SYSTEM STATS"
+    showBack: root.showBack
+    onBackTapped: root.backRequested()
     meta: "Up " + root.uptimeText
   }
 

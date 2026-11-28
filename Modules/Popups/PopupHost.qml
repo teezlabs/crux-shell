@@ -64,10 +64,16 @@ PanelWindow {
   WlrLayershell.keyboardFocus: root.anyOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
   exclusionMode: ExclusionMode.Ignore
 
+  // The only Escape shortcut here (two would cancel each other): a Control Center sub-page goes back first.
   Shortcut {
     sequence: "Escape"
     enabled: root.anyOpen
-    onActivated: root.closeAll()
+    onActivated: {
+      if (controlCenterCard.shown && controlCenterContent.page !== "")
+        controlCenterContent.page = "";
+      else
+        root.closeAll();
+    }
   }
 
   MouseArea {
@@ -274,7 +280,7 @@ PanelWindow {
     barPos: root.barPos
     popupName: "controlCenter"
     alwaysMorph: true
-    cardWidth: 436
+    cardWidth: controlCenterContent.widePage ? 520 : 436
     cardHeight: controlCenterContent.implicitHeight + contentMargins * 2
 
     ControlCenterPopupContent {

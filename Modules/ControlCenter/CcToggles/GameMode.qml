@@ -9,7 +9,7 @@ CcTile {
   signal expandRequested(string which)
 
   symbol: "sports_esports"
-  label: "Game mode"
+  label: CcToggleRegistry.labelFor("GameMode")
   status: GameMode.busy ? "Starting…" : tile.active ? "Performance" : "Off"
   active: GameMode.active
   onTapped: GameMode.toggle()

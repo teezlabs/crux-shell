@@ -9,7 +9,7 @@ CcTile {
   signal expandRequested(string which)
 
   symbol: "coffee"
-  label: "Keep awake"
+  label: CcToggleRegistry.labelFor("KeepAwake")
   status: tile.active ? "Screen stays on" : "Off"
   active: IdleInhibitorService.active
   onTapped: IdleInhibitorService.toggle()

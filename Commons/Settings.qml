@@ -228,30 +228,31 @@ Singleton {
 
   // Control Center toggles are one plain list, with no per-screen overrides.
   // Reassign the whole list<string>; mutating it in place doesn't persist.
-  function addCcToggle(id) {
-    const list = data.controlCenter.toggles.slice();
+  // Control Center id lists ("toggles", "shortcuts"): add once, remove by index, move by one.
+  function addCcItem(key, id) {
+    const list = data.controlCenter[key].slice();
     if (list.indexOf(id) !== -1)
       return;
     list.push(id);
-    data.controlCenter.toggles = list;
+    data.controlCenter[key] = list;
   }
 
-  function removeCcToggle(index) {
-    const list = data.controlCenter.toggles.slice();
+  function removeCcItem(key, index) {
+    const list = data.controlCenter[key].slice();
     if (index < 0 || index >= list.length)
       return;
     list.splice(index, 1);
-    data.controlCenter.toggles = list;
+    data.controlCenter[key] = list;
   }
 
-  function moveCcToggle(index, delta) {
-    const list = data.controlCenter.toggles.slice();
+  function moveCcItem(key, index, delta) {
+    const list = data.controlCenter[key].slice();
     const to = index + delta;
     if (index < 0 || index >= list.length || to < 0 || to >= list.length)
       return;
     const item = list.splice(index, 1)[0];
     list.splice(to, 0, item);
-    data.controlCenter.toggles = list;
+    data.controlCenter[key] = list;
   }
 
   // Appends a widget id to the end of one section.

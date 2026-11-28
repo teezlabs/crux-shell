@@ -75,3 +75,11 @@ An `Image` keeps its decoded bitmap at the file's own resolution unless `sourceS
 ## Chained `Canvas` arcs join with straight lines
 
 Each `ctx.arc()` in one path is connected to the previous point by a line, so several circles filled as one path come out notched where those lines cross the shape. `WeatherIcon`'s cloud hid this at 24px and showed a dark wedge once the weather popup drew it at 2.4×. Give each circle its own `beginPath()`/`fill()`, or `moveTo` its start point first.
+
+## Replacing a font file under a running shell scrambles its glyphs
+
+Crux loads `Assets/Fonts/MaterialSymbolsRounded.ttf` once at boot. When the file changes on disk while crux runs (rebuilding it with `packaging/subset-symbols.py`, or a `git switch` between branches with different subsets), text already drawn keeps glyph indices from the old file and draws the wrong icons from the new one. Hot reload doesn't notice. Anything that redraws picks up the new file, so a `CcIconButton` showed the right icon only while hovered, because hover changes `FILL`. After the font changes, do a full restart ([`dev-loop.md`](../agents/skills/dev-loop.md)). Seen on 2026-11-28 after the network and device icons were added.
+
+## Filled Material Symbols break under distance-field text
+
+Some Material Symbols glyphs (`settings` is the clear case) build their filled form from overlapping contours. QtQuick's default `Text.QtRendering` draws text through distance fields, which punch dark holes and stray lines where those contours overlap, so the gear looked speckled at `FILL` 1. `NSymbol` uses `Text.NativeRendering`, which draws it cleanly. `Text.CurveRendering` still leaves faint seams.

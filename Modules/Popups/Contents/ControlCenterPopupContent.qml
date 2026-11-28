@@ -11,15 +11,18 @@ import qs.Services
 import qs.Widgets
 
 // Control Center: profile and shortcuts, labelled toggle tiles, audio, media, weather, stats and recent notifications.
-ColumnLayout {
+// Wi-Fi, Bluetooth, audio, media, weather and stats open sub-pages with a back arrow; the card follows the page's size.
+Item {
   id: root
 
-  spacing: Tokens.spaceMd
+  implicitHeight: root.page === "" ? mainPage.implicitHeight : subPage.implicitHeight
 
   // Set from the card's shown state; system stats are sampled only while open.
   property bool active: false
   // System stats, Tailscale and the homelab pings are sampled only while open.
   onActiveChanged: {
+    if (!active)
+      root.page = "";
     const step = active ? 1 : -1;
     SystemStats.fullWatchers += step;
     Tailscale.watchers += step;
@@ -35,13 +38,17 @@ ColumnLayout {
   // Asks PopupHost to close the card.
   signal requestClose
 
+  // "" for the main page, else "wifi", "bluetooth", "audio", "media", "weather" or "stats".
+  property string page: ""
+  // The weather and stats pages were laid out wider than the main page.
+  readonly property bool widePage: root.page === "weather" || root.page === "stats"
+  // Height a list sub-page may take; its list scrolls inside that.
+  readonly property real subPageMax: 560
+
   function closeAndOpen(name) {
     root.requestClose();
     Popups.open(name, root.targetScreen);
   }
-
-  // The chevron on the Wi-Fi and Bluetooth tiles opens their list inline, one at a time.
-  property string expandedList: ""
 
   // ---- Audio: sink (volume) + source (mic) ----
   readonly property var sink: Pipewire.ready ? Pipewire.defaultAudioSink : null
@@ -140,6 +147,29 @@ ColumnLayout {
     root.requestClose();
   }
 
+  // What each CcShortcutRegistry id does.
+  function runShortcut(id) {
+    if (id === "Record") {
+      root.toggleRecording();
+      return;
+    }
+    root.requestClose();
+    if (id === "Screenshot")
+      Quickshell.execDetached(["sh", "-c", Settings.data.controlCenter.screenshotCommand]);
+    else if (id === "ColorPicker")
+      Quickshell.execDetached(["hyprpicker", "-a"]);
+    else if (id === "Clipboard")
+      Popups.open("clipboard", root.targetScreen);
+    else if (id === "Wallpaper")
+      Popups.openTab("settings", root.targetScreen, "wallpaper");
+    else if (id === "Lock")
+      Hooks.runSessionHook("lock", () => Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "lockscreen", "lock"]));
+    else if (id === "Launcher")
+      Popups.open("launcher", root.targetScreen);
+    else if (id === "Notifications")
+      Popups.open("notificationHistory", root.targetScreen);
+  }
+
   Component.onCompleted: {
     whoProc.running = true;
     brightnessProc.running = true;
@@ -185,629 +215,759 @@ ColumnLayout {
     onTriggered: root.now = Date.now()
   }
 
-  // ======== Profile and shortcuts ========
-  CcCard {
-    spacing: Tokens.spaceLg
+  // Pages slide a short way sideways and fade: forward to a sub-page, back to the main one.
+  ColumnLayout {
+    id: mainPage
+    width: root.width
+    spacing: Tokens.spaceMd
+    visible: opacity > 0
+    opacity: root.page === "" ? 1 : 0
+    x: root.page === "" ? 0 : -Tokens.spaceXl * 2
 
-    RowLayout {
-      Layout.fillWidth: true
+    Behavior on opacity {
+      NumberAnimation {
+        duration: Tokens.durationSidebarSlide
+        easing.type: Tokens.easingSidebarSlide
+      }
+    }
+    Behavior on x {
+      NumberAnimation {
+        duration: Tokens.durationSidebarSlide
+        easing.type: Tokens.easingSidebarSlide
+      }
+    }
+
+    // ======== Profile and shortcuts ========
+    CcCard {
       spacing: Tokens.spaceLg
 
-      // Round avatar: a deliberate exception to the no-radius rule, scoped to this panel.
-      Item {
-        Layout.preferredWidth: 44
-        Layout.preferredHeight: 44
+      RowLayout {
+        Layout.fillWidth: true
+        spacing: Tokens.spaceLg
 
-        Rectangle {
-          anchors.fill: parent
-          radius: width / 2
-          color: Colors.surfaceContainerHigh
-          border.color: Colors.alpha(Colors.primary, 0.6)
-          border.width: Tokens.borderMarker
-          clip: true
+        // Round avatar: a deliberate exception to the no-radius rule, scoped to this panel.
+        Item {
+          Layout.preferredWidth: 44
+          Layout.preferredHeight: 44
 
-          Image {
+          Rectangle {
             anchors.fill: parent
-            anchors.margins: Tokens.borderMarker
-            visible: Settings.data.general.avatarImage !== ""
-            source: Settings.data.general.avatarImage !== "" ? "file://" + Settings.data.general.avatarImage : ""
-            sourceSize.width: 88
-            sourceSize.height: 88
-            fillMode: Image.PreserveAspectCrop
-            asynchronous: true
+            radius: width / 2
+            color: Colors.surfaceContainerHigh
+            border.color: Colors.alpha(Colors.primary, 0.6)
+            border.width: Tokens.borderMarker
+            clip: true
+
+            Image {
+              anchors.fill: parent
+              anchors.margins: Tokens.borderMarker
+              visible: Settings.data.general.avatarImage !== ""
+              source: Settings.data.general.avatarImage !== "" ? "file://" + Settings.data.general.avatarImage : ""
+              sourceSize.width: 88
+              sourceSize.height: 88
+              fillMode: Image.PreserveAspectCrop
+              asynchronous: true
+            }
+          }
+          ArchLogo {
+            visible: Settings.data.general.avatarImage === ""
+            anchors.centerIn: parent
+            width: 22
+            height: 22
           }
         }
-        ArchLogo {
-          visible: Settings.data.general.avatarImage === ""
-          anchors.centerIn: parent
-          width: 22
-          height: 22
-        }
-      }
 
-      ColumnLayout {
-        Layout.fillWidth: true
-        spacing: Tokens.spaceXs
-
-        NText {
+        ColumnLayout {
           Layout.fillWidth: true
-          text: root.whoHost
-          size: NText.Size.BodyLg
-          font.weight: Font.DemiBold
-        }
-        RowLayout {
-          spacing: Tokens.spaceSm
-          NSymbol {
-            name: "schedule"
-            size: 14
-            color: Colors.labelText
-          }
+          spacing: Tokens.spaceXs
+
           NText {
-            text: "up " + SystemStats.uptimeText
-            size: NText.Size.Caption
-            color: Colors.labelText
+            Layout.fillWidth: true
+            text: root.whoHost
+            size: NText.Size.BodyLg
+            font.weight: Font.DemiBold
+          }
+          RowLayout {
+            spacing: Tokens.spaceSm
+            NSymbol {
+              name: "schedule"
+              size: 14
+              color: Colors.labelText
+            }
+            NText {
+              text: "up " + SystemStats.uptimeText
+              size: NText.Size.Caption
+              color: Colors.labelText
+            }
+          }
+        }
+
+        CcIconButton {
+          symbol: "settings"
+          tooltip: "Settings"
+          onTapped: root.closeAndOpen("settings")
+        }
+        CcIconButton {
+          symbol: "power_settings_new"
+          tooltip: "Session menu"
+          tone: "error"
+          onTapped: root.closeAndOpen("power")
+        }
+      }
+
+      RowLayout {
+        visible: Settings.data.controlCenter.shortcuts.length > 0
+        Layout.fillWidth: true
+        spacing: Tokens.spaceSm
+
+        Repeater {
+          model: Settings.data.controlCenter.shortcuts.filter(id => CcShortcutRegistry.has(id))
+
+          delegate: CcIconButton {
+            required property string modelData
+            readonly property bool isRecord: modelData === "Record"
+            Layout.fillWidth: true
+            symbol: CcShortcutRegistry.symbolFor(modelData)
+            tooltip: isRecord && recorder.running ? "Stop recording" : CcShortcutRegistry.labelFor(modelData)
+            tone: isRecord && recorder.running ? "error" : ""
+            available: modelData === "Record" ? root.hasRecorder : modelData === "ColorPicker" ? root.hasColorPicker : true
+            onTapped: root.runShortcut(modelData)
           }
         }
       }
-
-      CcIconButton {
-        symbol: "settings"
-        tooltip: "Settings"
-        onTapped: root.closeAndOpen("settings")
-      }
-      CcIconButton {
-        symbol: "power_settings_new"
-        tooltip: "Session menu"
-        tone: "error"
-        onTapped: root.closeAndOpen("power")
-      }
     }
 
-    RowLayout {
-      Layout.fillWidth: true
-      spacing: Tokens.spaceSm
+    // ======== Toggle tiles from Settings.data.controlCenter.toggles (CcToggleRegistry) ========
+    CcCard {
+      visible: Settings.data.controlCenter.toggles.length > 0
 
-      CcIconButton {
+      GridLayout {
         Layout.fillWidth: true
-        symbol: "screenshot_region"
-        tooltip: "Screenshot"
-        onTapped: {
-          root.requestClose();
-          Quickshell.execDetached(["sh", "-c", Settings.data.controlCenter.screenshotCommand]);
-        }
-      }
-      CcIconButton {
-        Layout.fillWidth: true
-        symbol: "radio_button_checked"
-        tooltip: recorder.running ? "Stop recording" : "Record screen"
-        tone: recorder.running ? "error" : ""
-        available: root.hasRecorder
-        onTapped: root.toggleRecording()
-      }
-      CcIconButton {
-        Layout.fillWidth: true
-        symbol: "colorize"
-        tooltip: "Pick a color"
-        available: root.hasColorPicker
-        onTapped: {
-          root.requestClose();
-          Quickshell.execDetached(["hyprpicker", "-a"]);
-        }
-      }
-      CcIconButton {
-        Layout.fillWidth: true
-        symbol: "content_paste"
-        tooltip: "Clipboard"
-        onTapped: root.closeAndOpen("clipboard")
-      }
-      CcIconButton {
-        Layout.fillWidth: true
-        symbol: "wallpaper"
-        tooltip: "Wallpaper"
-        onTapped: {
-          root.requestClose();
-          Popups.openTab("settings", root.targetScreen, "wallpaper");
-        }
-      }
-      CcIconButton {
-        Layout.fillWidth: true
-        symbol: "lock"
-        tooltip: "Lock"
-        onTapped: {
-          root.requestClose();
-          Hooks.runSessionHook("lock", () => Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "lockscreen", "lock"]));
-        }
-      }
-    }
-  }
+        columns: 2
+        uniformCellWidths: true
+        rowSpacing: Tokens.spaceSm
+        columnSpacing: Tokens.spaceSm
 
-  // ======== Toggle tiles from Settings.data.controlCenter.toggles (CcToggleRegistry) ========
-  CcCard {
-    visible: Settings.data.controlCenter.toggles.length > 0
+        Repeater {
+          model: Settings.data.controlCenter.toggles
 
-    GridLayout {
-      Layout.fillWidth: true
-      columns: 2
-      uniformCellWidths: true
-      rowSpacing: Tokens.spaceSm
-      columnSpacing: Tokens.spaceSm
+          delegate: Loader {
+            id: toggleLoader
+            required property string modelData
+            required property int index
+            // An odd last tile takes the whole row.
+            readonly property int count: Settings.data.controlCenter.toggles.length
+            Layout.columnSpan: toggleLoader.index === toggleLoader.count - 1 && toggleLoader.count % 2 === 1 ? 2 : 1
+            Layout.fillWidth: true
+            Layout.preferredHeight: 52
+            active: CcToggleRegistry.has(modelData)
+            source: CcToggleRegistry.sourceFor(modelData)
 
-      Repeater {
-        model: Settings.data.controlCenter.toggles
-
-        delegate: Loader {
-          id: toggleLoader
-          required property string modelData
-          required property int index
-          // An odd last tile takes the whole row.
-          readonly property int count: Settings.data.controlCenter.toggles.length
-          Layout.columnSpan: toggleLoader.index === toggleLoader.count - 1 && toggleLoader.count % 2 === 1 ? 2 : 1
-          Layout.fillWidth: true
-          Layout.preferredHeight: 52
-          active: CcToggleRegistry.has(modelData)
-          source: CcToggleRegistry.sourceFor(modelData)
-
-          Binding {
-            target: toggleLoader.item
-            property: "expanded"
-            value: root.expandedList === (toggleLoader.modelData === "Wifi" ? "wifi" : toggleLoader.modelData === "Bluetooth" ? "bluetooth" : "-")
-            when: toggleLoader.status === Loader.Ready
-          }
-
-          Connections {
-            target: toggleLoader.item
-            ignoreUnknownSignals: true
-            function onExpandRequested(which) {
-              root.expandedList = root.expandedList === which ? "" : which;
+            // The chevron on the Wi-Fi and Bluetooth tiles opens their sub-page.
+            Connections {
+              target: toggleLoader.item
+              ignoreUnknownSignals: true
+              function onExpandRequested(which) {
+                root.page = which;
+              }
             }
           }
         }
       }
     }
-  }
 
-  // Inline Wi-Fi and Bluetooth lists, the same content the standalone popups use.
-  WifiPanelContent {
-    Layout.fillWidth: true
-    visible: root.expandedList === "wifi"
-    panelActive: root.expandedList === "wifi"
-    onRequestClose: root.expandedList = ""
-  }
-  BluetoothPanelContent {
-    Layout.fillWidth: true
-    visible: root.expandedList === "bluetooth"
-    panelActive: root.expandedList === "bluetooth"
-  }
+    // ======== Audio and brightness ========
+    CcCard {
+      spacing: Tokens.spaceMd
 
-  // ======== Audio and brightness ========
-  CcCard {
-    spacing: Tokens.spaceMd
-
-    RowLayout {
-      Layout.fillWidth: true
-      spacing: Tokens.spaceSm
-
-      NSymbol {
-        name: "headphones"
-        size: 16
-        color: Colors.primary
-      }
-      NText {
-        text: "OUTPUT"
-        tracking: true
-        size: NText.Size.LabelXs
-        font.weight: Font.DemiBold
-        color: Colors.labelText
-      }
-      NText {
+      // The whole header row opens the audio page.
+      RowLayout {
         Layout.fillWidth: true
-        text: root.sink ? (root.sink.description || root.sink.name || "Output") : "No output"
-        size: NText.Size.Caption
-        color: Colors.surfaceTextMuted
-      }
-      NSymbol {
-        name: "chevron_right"
-        size: 18
-        color: soundHover.hovered ? Colors.primary : Colors.surfaceTextMuted
+        spacing: Tokens.spaceSm
 
         HoverHandler {
           id: soundHover
           cursorShape: Qt.PointingHandCursor
         }
         TapHandler {
-          onTapped: root.closeAndOpen("sound")
+          onTapped: root.page = "audio"
+        }
+
+        NSymbol {
+          name: "headphones"
+          size: 16
+          color: Colors.primary
+        }
+        NText {
+          text: "OUTPUT"
+          tracking: true
+          size: NText.Size.LabelXs
+          font.weight: Font.DemiBold
+          color: soundHover.hovered ? Colors.primary : Colors.labelText
+        }
+        NText {
+          Layout.fillWidth: true
+          text: root.sink ? (root.sink.description || root.sink.name || "Output") : "No output"
+          size: NText.Size.Caption
+          color: soundHover.hovered ? Colors.surfaceText : Colors.surfaceTextMuted
+        }
+        NSymbol {
+          name: "chevron_right"
+          size: 18
+          color: soundHover.hovered ? Colors.primary : Colors.surfaceTextMuted
+        }
+      }
+
+      Repeater {
+        model: [
+          {
+            "kind": "out"
+          },
+          {
+            "kind": "in"
+          },
+          {
+            "kind": "bri"
+          }
+        ]
+
+        delegate: RowLayout {
+          id: level
+          required property var modelData
+          readonly property bool isOut: modelData.kind === "out"
+          readonly property bool isIn: modelData.kind === "in"
+          readonly property bool isBri: modelData.kind === "bri"
+          readonly property real pct: level.isOut ? (root.muted ? 0 : root.volume * 100) : level.isIn ? (root.source && root.source.audio && !root.micMuted ? root.source.audio.volume * 100 : 0) : root.brightnessPercent
+
+          visible: !level.isBri || root.hasBacklight
+          Layout.fillWidth: true
+          spacing: Tokens.spaceMd
+
+          CcIconButton {
+            size: 32
+            symbol: level.isBri ? "brightness_6" : level.isOut ? (root.muted ? "volume_off" : root.volume < 0.34 ? "volume_mute" : root.volume < 0.67 ? "volume_down" : "volume_up") : (root.micMuted ? "mic_off" : "mic")
+            tooltip: level.isBri ? "" : (level.isOut ? (root.muted ? "Unmute" : "Mute") : (root.micMuted ? "Unmute microphone" : "Mute microphone"))
+            tone: (level.isOut && root.muted) || (level.isIn && root.micMuted) ? "error" : ""
+            available: level.isBri || (level.isOut ? !!root.sink : !!root.source)
+            onTapped: {
+              if (level.isOut && root.sink && root.sink.audio)
+                root.sink.audio.muted = !root.sink.audio.muted;
+              else if (level.isIn && root.source && root.source.audio)
+                root.source.audio.muted = !root.source.audio.muted;
+            }
+          }
+
+          CcLevelSlider {
+            Layout.fillWidth: true
+            value: level.pct
+            interactive: level.isBri || (level.isOut ? !!root.sink : !!root.source)
+            onMoved: pct => {
+              if (level.isOut && root.sink && root.sink.audio) {
+                root.sink.audio.volume = pct / 100;
+                if (pct > 0)
+                  root.sink.audio.muted = false;
+              } else if (level.isIn && root.source && root.source.audio) {
+                root.source.audio.volume = pct / 100;
+                if (pct > 0)
+                  root.source.audio.muted = false;
+              } else if (level.isBri) {
+                root.setBrightness(pct);
+              }
+            }
+          }
+
+          NText {
+            Layout.preferredWidth: 40
+            Layout.minimumWidth: 40
+            Layout.maximumWidth: 40
+            horizontalAlignment: Text.AlignRight
+            text: Math.round(level.pct) + "%"
+            size: NText.Size.Caption
+            color: Colors.surfaceTextMuted
+            font.features: {
+              "tnum": 1
+            }
+          }
         }
       }
     }
 
-    Repeater {
-      model: [
-        {
-          "kind": "out"
-        },
-        {
-          "kind": "in"
-        },
-        {
-          "kind": "bri"
-        }
-      ]
+    // ======== Media (only while a player exists); the art and title open the now-playing page ========
+    CcCard {
+      visible: !!MediaService.activePlayer
 
-      delegate: RowLayout {
-        id: level
-        required property var modelData
-        readonly property bool isOut: modelData.kind === "out"
-        readonly property bool isIn: modelData.kind === "in"
-        readonly property bool isBri: modelData.kind === "bri"
-        readonly property real pct: level.isOut ? (root.muted ? 0 : root.volume * 100) : level.isIn ? (root.source && root.source.audio && !root.micMuted ? root.source.audio.volume * 100 : 0) : root.brightnessPercent
-
-        visible: !level.isBri || root.hasBacklight
+      RowLayout {
         Layout.fillWidth: true
-        spacing: Tokens.spaceMd
+        spacing: Tokens.spaceLg
 
-        CcIconButton {
-          size: 32
-          symbol: level.isBri ? "brightness_6" : level.isOut ? (root.muted ? "volume_off" : root.volume < 0.34 ? "volume_mute" : root.volume < 0.67 ? "volume_down" : "volume_up") : (root.micMuted ? "mic_off" : "mic")
-          tooltip: level.isBri ? "" : (level.isOut ? (root.muted ? "Unmute" : "Mute") : (root.micMuted ? "Unmute microphone" : "Mute microphone"))
-          tone: (level.isOut && root.muted) || (level.isIn && root.micMuted) ? "error" : ""
-          available: level.isBri || (level.isOut ? !!root.sink : !!root.source)
-          onTapped: {
-            if (level.isOut && root.sink && root.sink.audio)
-              root.sink.audio.muted = !root.sink.audio.muted;
-            else if (level.isIn && root.source && root.source.audio)
-              root.source.audio.muted = !root.source.audio.muted;
+        Item {
+          Layout.preferredWidth: 52
+          Layout.preferredHeight: 52
+
+          HoverHandler {
+            id: artHover
+            cursorShape: Qt.PointingHandCursor
+          }
+          TapHandler {
+            onTapped: root.page = "media"
+          }
+
+          Rectangle {
+            anchors.fill: parent
+            color: Colors.surfaceContainerHigh
+          }
+          Image {
+            id: cover
+            anchors.fill: parent
+            source: MediaService.activePlayer ? (MediaService.activePlayer.trackArtUrl || "") : ""
+            sourceSize.width: 104
+            sourceSize.height: 104
+            fillMode: Image.PreserveAspectCrop
+            asynchronous: true
+          }
+          NSymbol {
+            anchors.centerIn: parent
+            visible: cover.status !== Image.Ready
+            name: "music_note"
+            size: 24
+            color: Colors.labelText
           }
         }
 
-        CcLevelSlider {
+        ColumnLayout {
           Layout.fillWidth: true
-          value: level.pct
-          interactive: level.isBri || (level.isOut ? !!root.sink : !!root.source)
-          onMoved: pct => {
-            if (level.isOut && root.sink && root.sink.audio) {
-              root.sink.audio.volume = pct / 100;
-              if (pct > 0)
-                root.sink.audio.muted = false;
-            } else if (level.isIn && root.source && root.source.audio) {
-              root.source.audio.volume = pct / 100;
-              if (pct > 0)
-                root.source.audio.muted = false;
-            } else if (level.isBri) {
-              root.setBrightness(pct);
+          spacing: Tokens.spaceXs
+
+          NText {
+            Layout.fillWidth: true
+            text: MediaService.activePlayer ? (MediaService.activePlayer.trackTitle || MediaService.activePlayer.identity) : ""
+            size: NText.Size.BodySm
+            font.weight: Font.DemiBold
+            color: titleHover.hovered || artHover.hovered ? Colors.primary : Colors.surfaceText
+
+            HoverHandler {
+              id: titleHover
+              cursorShape: Qt.PointingHandCursor
+            }
+            TapHandler {
+              onTapped: root.page = "media"
+            }
+          }
+          NText {
+            Layout.fillWidth: true
+            text: MediaService.activePlayer ? (MediaService.activePlayer.trackArtist || MediaService.activePlayer.identity) : ""
+            size: NText.Size.Caption
+            color: Colors.labelText
+          }
+          CcLevelSlider {
+            Layout.fillWidth: true
+            Layout.topMargin: Tokens.spaceXs
+            thumbRadius: 5
+            trackHeight: 3
+            value: MediaService.length > 0 ? (MediaService.position / MediaService.length) * 100 : 0
+            interactive: !!MediaService.activePlayer && MediaService.activePlayer.canSeek
+            onMoved: pct => {
+              if (MediaService.activePlayer && MediaService.activePlayer.canSeek)
+                MediaService.activePlayer.position = (pct / 100) * MediaService.length;
             }
           }
         }
 
-        NText {
-          Layout.preferredWidth: 40
-          Layout.minimumWidth: 40
-          Layout.maximumWidth: 40
-          horizontalAlignment: Text.AlignRight
-          text: Math.round(level.pct) + "%"
-          size: NText.Size.Caption
-          color: Colors.surfaceTextMuted
-          font.features: {
-            "tnum": 1
-          }
+        CcIconButton {
+          size: 32
+          symbol: "skip_previous"
+          available: !!MediaService.activePlayer && MediaService.activePlayer.canGoPrevious
+          onTapped: MediaService.activePlayer.previous()
+        }
+        CcIconButton {
+          size: 36
+          symbol: MediaService.isPlaying ? "pause" : "play_arrow"
+          tone: "active"
+          available: !!MediaService.activePlayer && (MediaService.activePlayer.canPlay || MediaService.activePlayer.canPause)
+          onTapped: MediaService.activePlayer.togglePlaying()
+        }
+        CcIconButton {
+          size: 32
+          symbol: "skip_next"
+          available: !!MediaService.activePlayer && MediaService.activePlayer.canGoNext
+          onTapped: MediaService.activePlayer.next()
         }
       }
+
+      CcSpectrum {
+        Layout.fillWidth: true
+        implicitHeight: 22
+        running: root.active && root.page === "" && !!MediaService.activePlayer
+      }
     }
-  }
 
-  // ======== Media (only while a player exists) ========
-  CcCard {
-    visible: !!MediaService.activePlayer
-
+    // ======== Weather and system stats ========
     RowLayout {
       Layout.fillWidth: true
-      spacing: Tokens.spaceLg
+      spacing: Tokens.spaceMd
 
-      Item {
-        Layout.preferredWidth: 52
-        Layout.preferredHeight: 52
-
-        Rectangle {
-          anchors.fill: parent
-          color: Colors.surfaceContainerHigh
-        }
-        Image {
-          id: cover
-          anchors.fill: parent
-          source: MediaService.activePlayer ? (MediaService.activePlayer.trackArtUrl || "") : ""
-          sourceSize.width: 104
-          sourceSize.height: 104
-          fillMode: Image.PreserveAspectCrop
-          asynchronous: true
-        }
-        NSymbol {
-          anchors.centerIn: parent
-          visible: cover.status !== Image.Ready
-          name: "music_note"
-          size: 24
-          color: Colors.labelText
-        }
-      }
-
-      ColumnLayout {
+      // Weather; a click opens the forecast page.
+      CcCard {
+        visible: Weather.ready && Settings.data.controlCenter.showWeather
         Layout.fillWidth: true
-        spacing: Tokens.spaceXs
+        Layout.preferredWidth: 1
+        Layout.fillHeight: true
 
-        NText {
-          Layout.fillWidth: true
-          text: MediaService.activePlayer ? (MediaService.activePlayer.trackTitle || MediaService.activePlayer.identity) : ""
-          size: NText.Size.BodySm
-          font.weight: Font.DemiBold
+        HoverHandler {
+          cursorShape: Qt.PointingHandCursor
         }
-        NText {
-          Layout.fillWidth: true
-          text: MediaService.activePlayer ? (MediaService.activePlayer.trackArtist || MediaService.activePlayer.identity) : ""
-          size: NText.Size.Caption
-          color: Colors.labelText
+        TapHandler {
+          onTapped: root.page = "weather"
         }
-        CcLevelSlider {
+
+        RowLayout {
           Layout.fillWidth: true
-          Layout.topMargin: Tokens.spaceXs
-          thumbRadius: 5
-          trackHeight: 3
-          value: MediaService.length > 0 ? (MediaService.position / MediaService.length) * 100 : 0
-          interactive: !!MediaService.activePlayer && MediaService.activePlayer.canSeek
-          onMoved: pct => {
-            if (MediaService.activePlayer && MediaService.activePlayer.canSeek)
-              MediaService.activePlayer.position = (pct / 100) * MediaService.length;
+          spacing: Tokens.spaceMd
+
+          NSymbol {
+            name: root.weatherSymbol(Weather.currentWeatherCode, Weather.isDay)
+            size: 40
+            filled: true
+            color: Colors.tertiary
+          }
+          ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 0
+            NText {
+              text: Math.round(Weather.currentTempF) + "°"
+              size: NText.Size.Title
+            }
+            NText {
+              Layout.fillWidth: true
+              text: Weather.description(Weather.currentWeatherCode)
+              size: NText.Size.Caption
+              color: Colors.surfaceTextMuted
+            }
           }
         }
-      }
-
-      CcIconButton {
-        size: 32
-        symbol: "skip_previous"
-        available: !!MediaService.activePlayer && MediaService.activePlayer.canGoPrevious
-        onTapped: MediaService.activePlayer.previous()
-      }
-      CcIconButton {
-        size: 36
-        symbol: MediaService.isPlaying ? "pause" : "play_arrow"
-        tone: "active"
-        available: !!MediaService.activePlayer && (MediaService.activePlayer.canPlay || MediaService.activePlayer.canPause)
-        onTapped: MediaService.activePlayer.togglePlaying()
-      }
-      CcIconButton {
-        size: 32
-        symbol: "skip_next"
-        available: !!MediaService.activePlayer && MediaService.activePlayer.canGoNext
-        onTapped: MediaService.activePlayer.next()
-      }
-    }
-  }
-
-  // ======== Weather and system stats ========
-  RowLayout {
-    Layout.fillWidth: true
-    spacing: Tokens.spaceMd
-
-    // Weather; a click opens the full forecast.
-    CcCard {
-      visible: Weather.ready && Settings.data.controlCenter.showWeather
-      Layout.fillWidth: true
-      Layout.preferredWidth: 1
-      Layout.fillHeight: true
-
-      HoverHandler {
-        cursorShape: Qt.PointingHandCursor
-      }
-      TapHandler {
-        onTapped: root.closeAndOpen("weather")
-      }
-
-      RowLayout {
-        Layout.fillWidth: true
-        spacing: Tokens.spaceMd
-
-        NSymbol {
-          name: root.weatherSymbol(Weather.currentWeatherCode, Weather.isDay)
-          size: 40
-          filled: true
-          color: Colors.tertiary
-        }
-        ColumnLayout {
+        RowLayout {
           Layout.fillWidth: true
-          spacing: 0
+          spacing: Tokens.spaceXs
+          NSymbol {
+            name: "water_drop"
+            size: 13
+            color: Colors.primary
+          }
           NText {
-            text: Math.round(Weather.currentTempF) + "°"
-            size: NText.Size.Title
+            text: (Weather.daily.length > 0 ? Weather.daily[0].rain : 0) + "%"
+            size: NText.Size.Caption
+            color: Colors.labelText
+          }
+          NSymbol {
+            Layout.leftMargin: Tokens.spaceSm
+            name: "air"
+            size: 13
+            color: Colors.primary
           }
           NText {
             Layout.fillWidth: true
-            text: Weather.description(Weather.currentWeatherCode)
+            text: Weather.windSpeed + " " + Weather.windUnit
             size: NText.Size.Caption
-            color: Colors.surfaceTextMuted
+            color: Colors.labelText
           }
-        }
-      }
-      RowLayout {
-        Layout.fillWidth: true
-        spacing: Tokens.spaceXs
-        NSymbol {
-          name: "water_drop"
-          size: 13
-          color: Colors.primary
-        }
-        NText {
-          text: (Weather.daily.length > 0 ? Weather.daily[0].rain : 0) + "%"
-          size: NText.Size.Caption
-          color: Colors.labelText
-        }
-        NSymbol {
-          Layout.leftMargin: Tokens.spaceSm
-          name: "air"
-          size: 13
-          color: Colors.primary
         }
         NText {
           Layout.fillWidth: true
-          text: Weather.windSpeed + " " + Weather.windUnit
-          size: NText.Size.Caption
+          text: Weather.cityName.toUpperCase()
+          tracking: true
+          size: NText.Size.LabelXs
           color: Colors.labelText
         }
       }
-      NText {
+
+      // Live stats; a click opens the full stats page.
+      CcCard {
         Layout.fillWidth: true
-        text: Weather.cityName.toUpperCase()
-        tracking: true
-        size: NText.Size.LabelXs
-        color: Colors.labelText
+        Layout.preferredWidth: 1
+        Layout.fillHeight: true
+
+        HoverHandler {
+          cursorShape: Qt.PointingHandCursor
+        }
+        TapHandler {
+          onTapped: root.page = "stats"
+        }
+
+        GridLayout {
+          Layout.fillWidth: true
+          Layout.alignment: Qt.AlignHCenter
+          columns: 2
+          rowSpacing: Tokens.spaceSm
+          columnSpacing: Tokens.spaceSm
+
+          CircularGauge {
+            Layout.alignment: Qt.AlignHCenter
+            percent: SystemStats.cpuPercent
+            value: Math.round(SystemStats.cpuPercent) + "%"
+            label: "CPU"
+          }
+          CircularGauge {
+            Layout.alignment: Qt.AlignHCenter
+            percent: Math.min(100, SystemStats.tempC)
+            fillColor: Colors.tertiary
+            value: Math.round(SystemStats.tempC) + "°"
+            label: "TEMP"
+          }
+          CircularGauge {
+            Layout.alignment: Qt.AlignHCenter
+            percent: SystemStats.memPercent
+            value: SystemStats.memUsedGb.toFixed(1) + "G"
+            label: "MEM"
+          }
+          CircularGauge {
+            Layout.alignment: Qt.AlignHCenter
+            percent: SystemStats.rootDiskPercent
+            value: Math.round(SystemStats.rootDiskPercent) + "%"
+            label: "DISK"
+          }
+        }
       }
     }
 
-    // Live stats; a click opens the full system stats.
+    // ======== Homelab: hosts from Settings.data.homelab, pinged while open ========
     CcCard {
-      Layout.fillWidth: true
-      Layout.preferredWidth: 1
-      Layout.fillHeight: true
+      visible: Homelab.hosts.length > 0
+      spacing: Tokens.spaceSm
 
-      HoverHandler {
-        cursorShape: Qt.PointingHandCursor
-      }
-      TapHandler {
-        onTapped: root.closeAndOpen("systemStats")
+      RowLayout {
+        Layout.fillWidth: true
+        spacing: Tokens.spaceSm
+
+        NSymbol {
+          name: "dns"
+          size: 16
+          color: Colors.primary
+        }
+        NText {
+          text: "HOMELAB"
+          tracking: true
+          size: NText.Size.LabelXs
+          font.weight: Font.DemiBold
+          color: Colors.labelText
+        }
+        NText {
+          Layout.fillWidth: true
+          text: Object.keys(Homelab.status).length === 0 ? "" : Homelab.upCount + "/" + Homelab.hosts.length + " up"
+          size: NText.Size.Caption
+          color: Homelab.upCount === Homelab.hosts.length ? Colors.primary : Colors.tertiary
+        }
+        NText {
+          visible: Settings.data.homelab.dashboardUrl !== ""
+          text: "DASHBOARD"
+          tracking: true
+          size: NText.Size.LabelXs
+          font.weight: Font.DemiBold
+          color: dashHover.hovered ? Colors.primary : Colors.labelText
+
+          HoverHandler {
+            id: dashHover
+            cursorShape: Qt.PointingHandCursor
+          }
+          TapHandler {
+            onTapped: {
+              root.requestClose();
+              Qt.openUrlExternally(Settings.data.homelab.dashboardUrl);
+            }
+          }
+        }
       }
 
       GridLayout {
         Layout.fillWidth: true
-        Layout.alignment: Qt.AlignHCenter
-        columns: 2
-        rowSpacing: Tokens.spaceSm
-        columnSpacing: Tokens.spaceSm
+        columns: 3
+        uniformCellWidths: true
+        rowSpacing: Tokens.spaceXs
+        columnSpacing: Tokens.spaceXs
 
-        CircularGauge {
-          Layout.alignment: Qt.AlignHCenter
-          percent: SystemStats.cpuPercent
-          value: Math.round(SystemStats.cpuPercent) + "%"
-          label: "CPU"
-        }
-        CircularGauge {
-          Layout.alignment: Qt.AlignHCenter
-          percent: Math.min(100, SystemStats.tempC)
-          fillColor: Colors.tertiary
-          value: Math.round(SystemStats.tempC) + "°"
-          label: "TEMP"
-        }
-        CircularGauge {
-          Layout.alignment: Qt.AlignHCenter
-          percent: SystemStats.memPercent
-          value: SystemStats.memUsedGb.toFixed(1) + "G"
-          label: "MEM"
-        }
-        CircularGauge {
-          Layout.alignment: Qt.AlignHCenter
-          percent: SystemStats.rootDiskPercent
-          value: Math.round(SystemStats.rootDiskPercent) + "%"
-          label: "DISK"
-        }
-      }
-    }
-  }
+        Repeater {
+          model: Homelab.hosts
 
-  // ======== Homelab: hosts from Settings.data.homelab, pinged while open ========
-  CcCard {
-    visible: Homelab.hosts.length > 0
-    spacing: Tokens.spaceSm
+          delegate: Item {
+            id: hostCell
+            required property var modelData
+            readonly property var hostState: Homelab.status[modelData.name]
+            readonly property bool known: !!hostCell.hostState
+            readonly property bool up: hostCell.known && hostCell.hostState.up
+            Layout.fillWidth: true
+            implicitHeight: 30
 
-    RowLayout {
-      Layout.fillWidth: true
-      spacing: Tokens.spaceSm
+            Chamfer {
+              anchors.fill: parent
+              chamferSize: Tokens.chamferIcon
+              cutTopRight: true
+              cutBottomLeft: true
+              fillColor: Colors.surfaceContainerLow
+              strokeColor: hostCell.known && !hostCell.up ? Colors.alpha(Colors.error, Tokens.destructiveBorderAlpha * 2) : Colors.outlineVariant
+              strokeWidth: Tokens.borderModule
+            }
 
-      NSymbol {
-        name: "dns"
-        size: 16
-        color: Colors.primary
-      }
-      NText {
-        text: "HOMELAB"
-        tracking: true
-        size: NText.Size.LabelXs
-        font.weight: Font.DemiBold
-        color: Colors.labelText
-      }
-      NText {
-        Layout.fillWidth: true
-        text: Object.keys(Homelab.status).length === 0 ? "" : Homelab.upCount + "/" + Homelab.hosts.length + " up"
-        size: NText.Size.Caption
-        color: Homelab.upCount === Homelab.hosts.length ? Colors.primary : Colors.tertiary
-      }
-      NText {
-        visible: Settings.data.homelab.dashboardUrl !== ""
-        text: "DASHBOARD"
-        tracking: true
-        size: NText.Size.LabelXs
-        font.weight: Font.DemiBold
-        color: dashHover.hovered ? Colors.primary : Colors.labelText
+            RowLayout {
+              anchors.fill: parent
+              anchors.leftMargin: Tokens.spaceMd
+              anchors.rightMargin: Tokens.spaceMd
+              spacing: Tokens.spaceSm
 
-        HoverHandler {
-          id: dashHover
-          cursorShape: Qt.PointingHandCursor
-        }
-        TapHandler {
-          onTapped: {
-            root.requestClose();
-            Qt.openUrlExternally(Settings.data.homelab.dashboardUrl);
+              // Status square: up, down, or not checked yet.
+              Rectangle {
+                Layout.preferredWidth: 6
+                Layout.preferredHeight: 6
+                color: !hostCell.known ? Colors.disabledText : hostCell.up ? Colors.primary : Colors.error
+              }
+              NText {
+                Layout.fillWidth: true
+                text: hostCell.modelData.name
+                size: NText.Size.Caption
+                color: hostCell.known && !hostCell.up ? Colors.error : Colors.surfaceText
+              }
+              NText {
+                visible: hostCell.up && hostCell.hostState.ms >= 0
+                text: hostCell.up ? (hostCell.hostState.ms < 1 ? "<1" : hostCell.hostState.ms) + "ms" : ""
+                size: NText.Size.LabelXs
+                color: Colors.labelText
+              }
+            }
           }
         }
       }
     }
 
-    GridLayout {
-      Layout.fillWidth: true
-      columns: 3
-      uniformCellWidths: true
-      rowSpacing: Tokens.spaceXs
-      columnSpacing: Tokens.spaceXs
+    // ======== Recent notifications ========
+    CcCard {
+      spacing: Tokens.spaceSm
+
+      RowLayout {
+        Layout.fillWidth: true
+        spacing: Tokens.spaceSm
+
+        NSymbol {
+          name: Settings.data.notifications.doNotDisturb ? "notifications_off" : "notifications"
+          size: 16
+          filled: Notifs.history.length > 0
+          color: Colors.primary
+        }
+        NText {
+          text: "NOTIFICATIONS"
+          tracking: true
+          size: NText.Size.LabelXs
+          font.weight: Font.DemiBold
+          color: Colors.labelText
+        }
+        NText {
+          Layout.fillWidth: true
+          text: Notifs.history.length > 0 ? String(Notifs.history.length) : ""
+          size: NText.Size.Caption
+          color: Colors.primary
+        }
+        NText {
+          visible: Notifs.history.length > 0
+          text: "CLEAR"
+          tracking: true
+          size: NText.Size.LabelXs
+          font.weight: Font.DemiBold
+          color: clearHover.hovered ? Colors.error : Colors.labelText
+
+          HoverHandler {
+            id: clearHover
+            cursorShape: Qt.PointingHandCursor
+          }
+          TapHandler {
+            onTapped: Notifs.clearHistory()
+          }
+        }
+        NText {
+          Layout.leftMargin: Tokens.spaceMd
+          text: "SEE ALL"
+          tracking: true
+          size: NText.Size.LabelXs
+          font.weight: Font.DemiBold
+          color: allHover.hovered ? Colors.primary : Colors.labelText
+
+          HoverHandler {
+            id: allHover
+            cursorShape: Qt.PointingHandCursor
+          }
+          TapHandler {
+            onTapped: root.closeAndOpen("notificationHistory")
+          }
+        }
+      }
+
+      NText {
+        visible: Notifs.history.length === 0
+        Layout.fillWidth: true
+        Layout.topMargin: Tokens.spaceSm
+        Layout.bottomMargin: Tokens.spaceSm
+        horizontalAlignment: Text.AlignHCenter
+        text: "All caught up"
+        size: NText.Size.Caption
+        color: Colors.labelText
+      }
 
       Repeater {
-        model: Homelab.hosts
+        model: Notifs.history.slice(0, 3)
 
         delegate: Item {
-          id: hostCell
+          id: note
           required property var modelData
-          readonly property var hostState: Homelab.status[modelData.name]
-          readonly property bool known: !!hostCell.hostState
-          readonly property bool up: hostCell.known && hostCell.hostState.up
+          required property int index
           Layout.fillWidth: true
-          implicitHeight: 30
+          implicitHeight: noteCol.implicitHeight + Tokens.spaceMd * 2
 
-          Chamfer {
+          PopupRowBackground {
             anchors.fill: parent
-            chamferSize: Tokens.chamferIcon
-            cutTopRight: true
-            cutBottomLeft: true
-            fillColor: Colors.surfaceContainerLow
-            strokeColor: hostCell.known && !hostCell.up ? Colors.alpha(Colors.error, Tokens.destructiveBorderAlpha * 2) : Colors.outlineVariant
-            strokeWidth: Tokens.borderModule
+            hovered: false
           }
 
-          RowLayout {
-            anchors.fill: parent
+          Rectangle {
+            visible: note.modelData.urgency === 2
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            width: Tokens.borderMarker
+            color: Colors.error
+          }
+
+          ColumnLayout {
+            id: noteCol
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
             anchors.leftMargin: Tokens.spaceMd
             anchors.rightMargin: Tokens.spaceMd
-            spacing: Tokens.spaceSm
+            spacing: 0
 
-            // Status square: up, down, or not checked yet.
-            Rectangle {
-              Layout.preferredWidth: 6
-              Layout.preferredHeight: 6
-              color: !hostCell.known ? Colors.disabledText : hostCell.up ? Colors.primary : Colors.error
+            RowLayout {
+              Layout.fillWidth: true
+              NText {
+                Layout.fillWidth: true
+                text: (note.modelData.appName || "Notification").toUpperCase()
+                tracking: true
+                size: NText.Size.LabelXs
+                color: Colors.labelText
+              }
+              NText {
+                text: root.ago(note.modelData.timestamp + 0 * root.now)
+                size: NText.Size.Caption
+                color: Colors.labelText
+              }
             }
             NText {
               Layout.fillWidth: true
-              text: hostCell.modelData.name
-              size: NText.Size.Caption
-              color: hostCell.known && !hostCell.up ? Colors.error : Colors.surfaceText
+              text: note.modelData.summary
+              size: NText.Size.BodySm
+              font.weight: Font.DemiBold
             }
             NText {
-              visible: hostCell.up && hostCell.hostState.ms >= 0
-              text: hostCell.up ? (hostCell.hostState.ms < 1 ? "<1" : hostCell.hostState.ms) + "ms" : ""
-              size: NText.Size.LabelXs
-              color: Colors.labelText
+              Layout.fillWidth: true
+              visible: text !== ""
+              text: note.modelData.body.replace(/<[^>]*>/g, "").replace(/\n/g, " ")
+              size: NText.Size.Caption
+              color: Colors.surfaceTextMuted
             }
           }
         }
@@ -815,141 +975,95 @@ ColumnLayout {
     }
   }
 
-  // ======== Recent notifications ========
-  CcCard {
-    spacing: Tokens.spaceSm
+  Item {
+    id: subPage
+    width: root.width
+    // Keeps the last sub-page on screen while it slides away.
+    property string shownPage: ""
+    readonly property Item content: ({
+        "wifi": wifiPage,
+        "bluetooth": btPage,
+        "audio": audioPage,
+        "media": mediaPage,
+        "weather": weatherPage,
+        "stats": statsPage
+      })[subPage.shownPage] || wifiPage
+    // Only the list pages scroll; weather and stats show at full height.
+    implicitHeight: subPage.shownPage === "weather" || subPage.shownPage === "stats" ? subPage.content.implicitHeight : Math.min(subPage.content.implicitHeight, root.subPageMax)
+    height: subPage.implicitHeight
+    visible: opacity > 0
+    opacity: root.page !== "" ? 1 : 0
+    x: root.page !== "" ? 0 : Tokens.spaceXl * 2
+    clip: true
 
-    RowLayout {
-      Layout.fillWidth: true
-      spacing: Tokens.spaceSm
-
-      NSymbol {
-        name: Settings.data.notifications.doNotDisturb ? "notifications_off" : "notifications"
-        size: 16
-        filled: Notifs.history.length > 0
-        color: Colors.primary
-      }
-      NText {
-        text: "NOTIFICATIONS"
-        tracking: true
-        size: NText.Size.LabelXs
-        font.weight: Font.DemiBold
-        color: Colors.labelText
-      }
-      NText {
-        Layout.fillWidth: true
-        text: Notifs.history.length > 0 ? String(Notifs.history.length) : ""
-        size: NText.Size.Caption
-        color: Colors.primary
-      }
-      NText {
-        visible: Notifs.history.length > 0
-        text: "CLEAR"
-        tracking: true
-        size: NText.Size.LabelXs
-        font.weight: Font.DemiBold
-        color: clearHover.hovered ? Colors.error : Colors.labelText
-
-        HoverHandler {
-          id: clearHover
-          cursorShape: Qt.PointingHandCursor
-        }
-        TapHandler {
-          onTapped: Notifs.clearHistory()
-        }
-      }
-      NText {
-        Layout.leftMargin: Tokens.spaceMd
-        text: "SEE ALL"
-        tracking: true
-        size: NText.Size.LabelXs
-        font.weight: Font.DemiBold
-        color: allHover.hovered ? Colors.primary : Colors.labelText
-
-        HoverHandler {
-          id: allHover
-          cursorShape: Qt.PointingHandCursor
-        }
-        TapHandler {
-          onTapped: root.closeAndOpen("notificationHistory")
-        }
+    Connections {
+      target: root
+      function onPageChanged() {
+        if (root.page !== "")
+          subPage.shownPage = root.page;
       }
     }
 
-    NText {
-      visible: Notifs.history.length === 0
-      Layout.fillWidth: true
-      Layout.topMargin: Tokens.spaceSm
-      Layout.bottomMargin: Tokens.spaceSm
-      horizontalAlignment: Text.AlignHCenter
-      text: "All caught up"
-      size: NText.Size.Caption
-      color: Colors.labelText
+    Behavior on opacity {
+      NumberAnimation {
+        duration: Tokens.durationSidebarSlide
+        easing.type: Tokens.easingSidebarSlide
+      }
+    }
+    Behavior on x {
+      NumberAnimation {
+        duration: Tokens.durationSidebarSlide
+        easing.type: Tokens.easingSidebarSlide
+      }
     }
 
-    Repeater {
-      model: Notifs.history.slice(0, 3)
-
-      delegate: Item {
-        id: note
-        required property var modelData
-        required property int index
-        Layout.fillWidth: true
-        implicitHeight: noteCol.implicitHeight + Tokens.spaceMd * 2
-
-        PopupRowBackground {
-          anchors.fill: parent
-          hovered: false
-        }
-
-        Rectangle {
-          visible: note.modelData.urgency === 2
-          anchors.left: parent.left
-          anchors.top: parent.top
-          anchors.bottom: parent.bottom
-          width: Tokens.borderMarker
-          color: Colors.error
-        }
-
-        ColumnLayout {
-          id: noteCol
-          anchors.left: parent.left
-          anchors.right: parent.right
-          anchors.verticalCenter: parent.verticalCenter
-          anchors.leftMargin: Tokens.spaceMd
-          anchors.rightMargin: Tokens.spaceMd
-          spacing: 0
-
-          RowLayout {
-            Layout.fillWidth: true
-            NText {
-              Layout.fillWidth: true
-              text: (note.modelData.appName || "Notification").toUpperCase()
-              tracking: true
-              size: NText.Size.LabelXs
-              color: Colors.labelText
-            }
-            NText {
-              text: root.ago(note.modelData.timestamp + 0 * root.now)
-              size: NText.Size.Caption
-              color: Colors.labelText
-            }
-          }
-          NText {
-            Layout.fillWidth: true
-            text: note.modelData.summary
-            size: NText.Size.BodySm
-            font.weight: Font.DemiBold
-          }
-          NText {
-            Layout.fillWidth: true
-            visible: text !== ""
-            text: note.modelData.body.replace(/<[^>]*>/g, "").replace(/\n/g, " ")
-            size: NText.Size.Caption
-            color: Colors.surfaceTextMuted
-          }
-        }
-      }
+    WifiPanelContent {
+      id: wifiPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "wifi"
+      panelActive: root.active && root.page === "wifi"
+      showBack: true
+      onBackRequested: root.page = ""
+      onRequestClose: root.page = ""
+    }
+    BluetoothPanelContent {
+      id: btPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "bluetooth"
+      panelActive: root.active && root.page === "bluetooth"
+      showBack: true
+      onBackRequested: root.page = ""
+    }
+    AudioPanelContent {
+      id: audioPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "audio"
+      showBack: true
+      onBackRequested: root.page = ""
+    }
+    MediaPanelContent {
+      id: mediaPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "media"
+      panelActive: root.active && root.page === "media"
+      showBack: true
+      onBackRequested: root.page = ""
+    }
+    WeatherPopupContent {
+      id: weatherPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "weather"
+      active: root.active && root.page === "weather"
+      showBack: true
+      onBackRequested: root.page = ""
+    }
+    SystemStatsPopupContent {
+      id: statsPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "stats"
+      active: root.active && root.page === "stats"
+      showBack: true
+      onBackRequested: root.page = ""
     }
   }
 }

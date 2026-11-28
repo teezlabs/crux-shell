@@ -12,7 +12,7 @@ CcTile {
   readonly property int profile: PowerProfileService.profile
 
   symbol: tile.profile === PowerProfile.Performance ? "bolt" : tile.profile === PowerProfile.PowerSaver ? "eco" : "balance"
-  label: "Power profile"
+  label: CcToggleRegistry.labelFor("PowerProfile")
   status: !PowerProfileService.available ? "Unavailable" : tile.profile === PowerProfile.Performance ? "Performance" : tile.profile === PowerProfile.PowerSaver ? "Power saver" : "Balanced"
   available: PowerProfileService.available
   active: PowerProfileService.available && tile.profile !== PowerProfile.Balanced

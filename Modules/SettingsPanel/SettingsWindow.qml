@@ -95,7 +95,7 @@ NPanelWindow {
       "label": "Control Center",
       "section": "Shell",
       "icon": "dashboard-show",
-      "description": "Quick toggles, weather and action tiles"
+      "description": "Toggle tiles, weather and shortcut actions"
     },
     {
       "id": "launcher",
