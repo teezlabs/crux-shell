@@ -77,6 +77,8 @@ Item {
     // ---- Control Center ----
     { "label": "Show weather card", "description": "Toggle the forecast card in the Control Center popup", "tab": "controlCenter", "subTab": "", "keywords": "forecast weather" },
     { "label": "Temperature unit", "description": "Fahrenheit or Celsius for the weather card", "tab": "controlCenter", "subTab": "", "keywords": "fahrenheit celsius degrees" },
+    { "label": "Shortcut buttons", "description": "Choose and order the Control Center's shortcut buttons", "tab": "controlCenter", "subTab": "", "keywords": "control center shortcuts buttons actions record lock clipboard" },
+    { "label": "Toggle tiles", "description": "Choose and order the Control Center's toggle tiles", "tab": "controlCenter", "subTab": "", "keywords": "control center quick toggles tiles wifi bluetooth" },
     { "label": "Screenshot command", "description": "Command run by the screenshot shortcut", "tab": "controlCenter", "subTab": "", "keywords": "capture rishot screenshot" },
     { "label": "Homelab hosts", "description": "Hosts the Control Center pings while open", "tab": "controlCenter", "subTab": "", "keywords": "server ping status lab homelab proxmox" },
     { "label": "Homelab dashboard", "description": "Link opened from the Control Center's homelab card", "tab": "controlCenter", "subTab": "", "keywords": "dashboard url homelab" },

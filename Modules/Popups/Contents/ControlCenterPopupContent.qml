@@ -145,6 +145,29 @@ Item {
     root.requestClose();
   }
 
+  // What each CcShortcutRegistry id does.
+  function runShortcut(id) {
+    if (id === "Record") {
+      root.toggleRecording();
+      return;
+    }
+    root.requestClose();
+    if (id === "Screenshot")
+      Quickshell.execDetached(["sh", "-c", Settings.data.controlCenter.screenshotCommand]);
+    else if (id === "ColorPicker")
+      Quickshell.execDetached(["hyprpicker", "-a"]);
+    else if (id === "Clipboard")
+      Popups.open("clipboard", root.targetScreen);
+    else if (id === "Wallpaper")
+      Popups.openTab("settings", root.targetScreen, "wallpaper");
+    else if (id === "Lock")
+      Hooks.runSessionHook("lock", () => Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "lockscreen", "lock"]));
+    else if (id === "Launcher")
+      Popups.open("launcher", root.targetScreen);
+    else if (id === "Notifications")
+      Popups.open("notificationHistory", root.targetScreen);
+  }
+
   Component.onCompleted: {
     whoProc.running = true;
     brightnessProc.running = true;
@@ -291,58 +314,22 @@ Item {
       }
 
       RowLayout {
+        visible: Settings.data.controlCenter.shortcuts.length > 0
         Layout.fillWidth: true
         spacing: Tokens.spaceSm
 
-        CcIconButton {
-          Layout.fillWidth: true
-          symbol: "screenshot_region"
-          tooltip: "Screenshot"
-          onTapped: {
-            root.requestClose();
-            Quickshell.execDetached(["sh", "-c", Settings.data.controlCenter.screenshotCommand]);
-          }
-        }
-        CcIconButton {
-          Layout.fillWidth: true
-          symbol: "radio_button_checked"
-          tooltip: recorder.running ? "Stop recording" : "Record screen"
-          tone: recorder.running ? "error" : ""
-          available: root.hasRecorder
-          onTapped: root.toggleRecording()
-        }
-        CcIconButton {
-          Layout.fillWidth: true
-          symbol: "colorize"
-          tooltip: "Pick a color"
-          available: root.hasColorPicker
-          onTapped: {
-            root.requestClose();
-            Quickshell.execDetached(["hyprpicker", "-a"]);
-          }
-        }
-        CcIconButton {
-          Layout.fillWidth: true
-          symbol: "content_paste"
-          tooltip: "Clipboard"
-          onTapped: root.closeAndOpen("clipboard")
-        }
-        CcIconButton {
-          Layout.fillWidth: true
-          symbol: "wallpaper"
-          tooltip: "Wallpaper"
-          onTapped: {
-            root.requestClose();
-            Popups.openTab("settings", root.targetScreen, "wallpaper");
-          }
-        }
-        CcIconButton {
-          Layout.fillWidth: true
-          symbol: "lock"
-          tooltip: "Lock"
-          onTapped: {
-            root.requestClose();
-            Hooks.runSessionHook("lock", () => Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "lockscreen", "lock"]));
+        Repeater {
+          model: Settings.data.controlCenter.shortcuts.filter(id => CcShortcutRegistry.has(id))
+
+          delegate: CcIconButton {
+            required property string modelData
+            readonly property bool isRecord: modelData === "Record"
+            Layout.fillWidth: true
+            symbol: CcShortcutRegistry.symbolFor(modelData)
+            tooltip: isRecord && recorder.running ? "Stop recording" : CcShortcutRegistry.labelFor(modelData)
+            tone: isRecord && recorder.running ? "error" : ""
+            available: modelData === "Record" ? root.hasRecorder : modelData === "ColorPicker" ? root.hasColorPicker : true
+            onTapped: root.runShortcut(modelData)
           }
         }
       }

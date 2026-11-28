@@ -16,83 +16,36 @@ NScrollView {
     spacing: 20
 
   SettingsSection {
+    title: "Shortcut buttons"
+    description: "The row of icon buttons under your name in the Control Center, left to right."
+
+    CcIdListEditor {
+      key: "shortcuts"
+      registry: CcShortcutRegistry
+      emptyText: "No shortcuts. The row is hidden."
+    }
+
+    SettingRow {
+      label: "Screenshot command"
+      description: "Run through sh -c, so flags work (e.g. \"rishot -c\")"
+
+      NTextInput {
+        Layout.preferredWidth: 220
+        height: 28
+        text: Settings.data.controlCenter.screenshotCommand
+        onEditingFinished: Settings.data.controlCenter.screenshotCommand = text
+      }
+    }
+  }
+
+  SettingsSection {
     title: "Toggle tiles"
     description: "The tiles under the shortcut buttons in the Control Center, in reading order."
 
-    ColumnLayout {
-      Layout.fillWidth: true
-      spacing: 6
-
-      Repeater {
-        model: Settings.data.controlCenter.toggles
-
-        delegate: RowLayout {
-          id: row
-          required property string modelData
-          required property int index
-          Layout.fillWidth: true
-          spacing: 6
-
-          NText {
-            text: CcToggleRegistry.labelFor(row.modelData)
-            color: Colors.surfaceText
-            size: NText.Size.BodySm
-            Layout.fillWidth: true
-          }
-
-          NButton {
-            text: "\u2191"
-            horizontalPadding: 8
-            enabled: row.index > 0
-            onClicked: Settings.moveCcToggle(row.index, -1)
-          }
-          NButton {
-            text: "\u2193"
-            horizontalPadding: 8
-            enabled: row.index < Settings.data.controlCenter.toggles.length - 1
-            onClicked: Settings.moveCcToggle(row.index, 1)
-          }
-          NButton {
-            text: "Remove"
-            variant: "destructive"
-            onClicked: Settings.removeCcToggle(row.index)
-          }
-        }
-      }
-
-      NText {
-        visible: Settings.data.controlCenter.toggles.length === 0
-        text: "No tiles. The grid is hidden."
-        color: Colors.labelText
-        size: NText.Size.Caption
-      }
-
-      NText {
-        tracking: true
-        text: "ADD"
-        color: Colors.labelText
-        size: NText.Size.LabelXs
-        Layout.topMargin: 4
-      }
-
-      Flow {
-        Layout.fillWidth: true
-        spacing: 4
-
-        Repeater {
-          model: CcToggleRegistry.ids
-
-          delegate: NButton {
-            required property string modelData
-            text: CcToggleRegistry.labelFor(modelData)
-            textSize: NText.Size.LabelXs
-            horizontalPadding: 8
-            implicitHeight: 22
-            enabled: Settings.data.controlCenter.toggles.indexOf(modelData) === -1
-            onClicked: Settings.addCcToggle(modelData)
-          }
-        }
-      }
+    CcIdListEditor {
+      key: "toggles"
+      registry: CcToggleRegistry
+      emptyText: "No tiles. The grid is hidden."
     }
   }
 
@@ -124,31 +77,6 @@ NScrollView {
         uppercase: false
         onSelected: key => Settings.data.controlCenter.tempUnit = key
       }
-    }
-  }
-
-  SettingsSection {
-    title: "Actions"
-    description: "The command run by the screenshot shortcut."
-
-    SettingRow {
-      label: "Screenshot command"
-
-      NTextInput {
-        id: captureInput
-        Layout.preferredWidth: 220
-        height: 28
-        text: Settings.data.controlCenter.screenshotCommand
-        onEditingFinished: Settings.data.controlCenter.screenshotCommand = text
-      }
-    }
-
-    NText {
-      text: "Run through sh -c, so flags/arguments work (e.g. \"rishot -c\")."
-      color: Colors.labelText
-      size: NText.Size.Caption
-      wrapMode: Text.WordWrap
-      Layout.fillWidth: true
     }
   }
 
