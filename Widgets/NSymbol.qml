@@ -26,6 +26,8 @@ Text {
 
   text: Symbols.glyph(root.name)
   color: Colors.surfaceText
+  // Distance-field rendering punches holes where filled glyphs overlap their own contours.
+  renderType: Text.NativeRendering
   font.family: Symbols.family
   font.pixelSize: root.size
   font.variableAxes: {
