@@ -3,7 +3,7 @@ import Quickshell.Networking
 import qs.Commons
 import qs.Modules.ControlCenter
 
-// Wi-Fi tile: tap switches the radio, the chevron opens the network list inline.
+// Wi-Fi tile: tap switches the radio, the chevron pops the network list out beside the panel.
 CcTile {
   id: tile
   signal expandRequested(string which)

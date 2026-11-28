@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
 
-// Control Center toggle tile: icon badge, name and live state. A chevron, when `expandable`, opens a detail list.
+// Control Center toggle tile: icon badge, name and live state. A chevron, when `expandable`, pops a detail list out beside the panel.
 Item {
   id: root
 
@@ -13,6 +13,7 @@ Item {
   property bool active: false
   property bool available: true
   property bool expandable: false
+  // Its detail list is popped out; the chevron stays lit.
   property bool expanded: false
   signal tapped
   signal chevronTapped
@@ -102,15 +103,7 @@ Item {
         anchors.centerIn: parent
         name: "chevron_right"
         size: 18
-        rotation: root.expanded ? 90 : 0
-        color: chevHover.hovered ? Colors.primary : Colors.surfaceTextMuted
-
-        Behavior on rotation {
-          NumberAnimation {
-            duration: Tokens.durationPanel
-            easing.type: Tokens.easingPanel
-          }
-        }
+        color: chevHover.hovered || root.expanded ? Colors.primary : Colors.surfaceTextMuted
       }
 
       HoverHandler {

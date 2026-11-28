@@ -286,6 +286,15 @@ PanelWindow {
     }
   }
 
+  // Wi-Fi and Bluetooth lists popping out beside the Control Center card.
+  CcFlyout {
+    host: root
+    card: controlCenterCard
+    which: controlCenterContent.flyout
+    anchorY: controlCenterContent.flyoutAnchorY
+    onCloseRequested: controlCenterContent.flyout = ""
+  }
+
   SlideCard {
     id: weatherCard
     host: root

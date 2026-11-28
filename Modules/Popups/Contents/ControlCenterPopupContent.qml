@@ -20,6 +20,8 @@ ColumnLayout {
   property bool active: false
   // System stats, Tailscale and the homelab pings are sampled only while open.
   onActiveChanged: {
+    if (!active)
+      root.flyout = "";
     const step = active ? 1 : -1;
     SystemStats.fullWatchers += step;
     Tailscale.watchers += step;
@@ -35,13 +37,14 @@ ColumnLayout {
   // Asks PopupHost to close the card.
   signal requestClose
 
+  // The Wi-Fi or Bluetooth list popped out beside the card (PopupHost's CcFlyout), and the window y of its tile.
+  property string flyout: ""
+  property real flyoutAnchorY: 0
+
   function closeAndOpen(name) {
     root.requestClose();
     Popups.open(name, root.targetScreen);
   }
-
-  // The chevron on the Wi-Fi and Bluetooth tiles opens their list inline, one at a time.
-  property string expandedList: ""
 
   // ---- Audio: sink (volume) + source (mic) ----
   readonly property var sink: Pipewire.ready ? Pipewire.defaultAudioSink : null
@@ -350,33 +353,22 @@ ColumnLayout {
           Binding {
             target: toggleLoader.item
             property: "expanded"
-            value: root.expandedList === (toggleLoader.modelData === "Wifi" ? "wifi" : toggleLoader.modelData === "Bluetooth" ? "bluetooth" : "-")
+            value: root.flyout !== "" && root.flyout === (toggleLoader.modelData === "Wifi" ? "wifi" : toggleLoader.modelData === "Bluetooth" ? "bluetooth" : "-")
             when: toggleLoader.status === Loader.Ready
           }
 
+          // The chevron on the Wi-Fi and Bluetooth tiles pops their list out beside the card; again closes it.
           Connections {
             target: toggleLoader.item
             ignoreUnknownSignals: true
             function onExpandRequested(which) {
-              root.expandedList = root.expandedList === which ? "" : which;
+              root.flyoutAnchorY = toggleLoader.mapToItem(null, 0, 0).y;
+              root.flyout = root.flyout === which ? "" : which;
             }
           }
         }
       }
     }
-  }
-
-  // Inline Wi-Fi and Bluetooth lists, the same content the standalone popups use.
-  WifiPanelContent {
-    Layout.fillWidth: true
-    visible: root.expandedList === "wifi"
-    panelActive: root.expandedList === "wifi"
-    onRequestClose: root.expandedList = ""
-  }
-  BluetoothPanelContent {
-    Layout.fillWidth: true
-    visible: root.expandedList === "bluetooth"
-    panelActive: root.expandedList === "bluetooth"
   }
 
   // ======== Audio and brightness ========
