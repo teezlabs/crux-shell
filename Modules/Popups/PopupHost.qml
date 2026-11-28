@@ -64,10 +64,16 @@ PanelWindow {
   WlrLayershell.keyboardFocus: root.anyOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
   exclusionMode: ExclusionMode.Ignore
 
+  // The only Escape shortcut here (two would cancel each other): a Control Center sub-page goes back first.
   Shortcut {
     sequence: "Escape"
     enabled: root.anyOpen
-    onActivated: root.closeAll()
+    onActivated: {
+      if (controlCenterCard.shown && controlCenterContent.page !== "")
+        controlCenterContent.page = "";
+      else
+        root.closeAll();
+    }
   }
 
   MouseArea {
@@ -284,15 +290,6 @@ PanelWindow {
       targetScreen: root.targetScreen
       onRequestClose: controlCenterCard.close()
     }
-  }
-
-  // Wi-Fi and Bluetooth lists popping out beside the Control Center card.
-  CcFlyout {
-    host: root
-    card: controlCenterCard
-    which: controlCenterContent.flyout
-    anchorY: controlCenterContent.flyoutAnchorY
-    onCloseRequested: controlCenterContent.flyout = ""
   }
 
   SlideCard {

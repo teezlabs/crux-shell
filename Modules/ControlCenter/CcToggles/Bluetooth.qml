@@ -3,7 +3,7 @@ import Quickshell.Bluetooth
 import qs.Commons
 import qs.Modules.ControlCenter
 
-// Bluetooth tile: tap powers the adapter, the chevron pops the device list out beside the panel.
+// Bluetooth tile: tap powers the adapter, the chevron opens the device page.
 CcTile {
   id: tile
   signal expandRequested(string which)

@@ -16,6 +16,9 @@ ColumnLayout {
 
   // True while this content is on screen, as a popup or inline in Control Center; drives discovery.
   property bool panelActive: false
+  // Shown as a Control Center sub-page: the header gets a back arrow.
+  property bool showBack: false
+  signal backRequested
 
   spacing: Tokens.spaceLg
 
@@ -124,6 +127,8 @@ ColumnLayout {
 
   PopupHeader {
     title: "BLUETOOTH"
+    showBack: root.showBack
+    onBackTapped: root.backRequested()
     NToggle {
       checked: !!(root.adapter && root.adapter.enabled)
       onToggled: root.toggleBluetooth()

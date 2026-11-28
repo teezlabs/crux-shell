@@ -16,6 +16,9 @@ ColumnLayout {
 
   // True while this content is on screen, as a popup or inline in Control Center; drives scanning and polling.
   property bool panelActive: false
+  // Shown as a Control Center sub-page: the header gets a back arrow.
+  property bool showBack: false
+  signal backRequested
   // Asks the host to close: a popup hides, an inline Control Center section collapses.
   signal requestClose
 
@@ -327,6 +330,8 @@ ColumnLayout {
 
   PopupHeader {
     title: "WI-FI"
+    showBack: root.showBack
+    onBackTapped: root.backRequested()
     NToggle {
       checked: Networking.wifiEnabled
       onToggled: root.toggleWifi()
