@@ -13,6 +13,11 @@ JsonObject {
   property string clockFormat: "HH:mm"
   property string clockDateFormat: "ddd  yyyy-MM-dd"
 
+  // The output each card lives on; "" = the first screen. Cards aren't mirrored across monitors.
+  property string weatherScreen: ""
+  property string mediaScreen: ""
+  property string clockScreen: ""
+
   // Card background behind each widget; off draws it straight on the wallpaper.
   property bool weatherCard: true
   property bool mediaCard: true

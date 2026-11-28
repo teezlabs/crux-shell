@@ -197,7 +197,8 @@ Variants {
       label: "WEATHER"
       area: fullArea
       gridSize: window.gridSize
-      visible: Weather.ready && Settings.data.desktopWidgets.weatherEnabled
+      screen: window.screen
+      visible: Weather.ready && Settings.data.desktopWidgets.weatherEnabled && onThisScreen
       contentWidth: 192
       contentHeight: weatherColumn.implicitHeight
       cutTopRight: true
@@ -292,7 +293,8 @@ Variants {
       area: fullArea
       gridSize: window.gridSize
       readonly property var player: MediaService.activePlayer
-      visible: !!player && Settings.data.desktopWidgets.mediaEnabled
+      screen: window.screen
+      visible: !!player && Settings.data.desktopWidgets.mediaEnabled && onThisScreen
       contentWidth: 340
       contentHeight: mediaColumn.implicitHeight
       cutTopLeft: true
@@ -404,7 +406,8 @@ Variants {
       label: "CLOCK"
       area: fullArea
       gridSize: window.gridSize
-      visible: Settings.data.desktopWidgets.clockEnabled
+      screen: window.screen
+      visible: Settings.data.desktopWidgets.clockEnabled && onThisScreen
       padding: Tokens.spaceXl
       contentWidth: clockColumn.implicitWidth
       contentHeight: clockColumn.implicitHeight

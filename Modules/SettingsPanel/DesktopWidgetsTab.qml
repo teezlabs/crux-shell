@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import qs.Commons
 import qs.Modules.SettingsPanel.Controls
 import qs.Widgets
@@ -42,6 +43,23 @@ NScrollView {
         Settings.data.desktopWidgets[reset.key + "Y"] = -1;
         Settings.data.desktopWidgets[reset.key + "Scale"] = 1;
       }
+    }
+  }
+
+  // Picks the monitor a card lives on; moving it resets its position there.
+  component ScreenPicker: NSegmented {
+    id: picker
+    required property string key
+    model: Quickshell.screens.map(s => ({
+          "key": s.name,
+          "label": s.name
+        }))
+    currentKey: Settings.data.desktopWidgets[picker.key + "Screen"] || (Quickshell.screens.length > 0 ? Quickshell.screens[0].name : "")
+    uppercase: false
+    onSelected: name => {
+      Settings.data.desktopWidgets[picker.key + "Screen"] = name;
+      Settings.data.desktopWidgets[picker.key + "X"] = -1;
+      Settings.data.desktopWidgets[picker.key + "Y"] = -1;
     }
   }
 
@@ -126,6 +144,12 @@ NScrollView {
         }
       }
       SettingRow {
+        label: "Monitor"
+        ScreenPicker {
+          key: "clock"
+        }
+      }
+      SettingRow {
         label: "Position"
         ResetButton {
           key: "clock"
@@ -153,6 +177,12 @@ NScrollView {
         }
       }
       SettingRow {
+        label: "Monitor"
+        ScreenPicker {
+          key: "media"
+        }
+      }
+      SettingRow {
         label: "Position"
         ResetButton {
           key: "media"
@@ -177,6 +207,12 @@ NScrollView {
         NToggle {
           checked: Settings.data.desktopWidgets.weatherCard
           onToggled: checked => Settings.data.desktopWidgets.weatherCard = checked
+        }
+      }
+      SettingRow {
+        label: "Monitor"
+        ScreenPicker {
+          key: "weather"
         }
       }
       SettingRow {

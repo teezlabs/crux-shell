@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import qs.Commons
 import qs.Widgets
 
@@ -33,6 +34,10 @@ Item {
   readonly property real cardScale: resize.active ? resize.liveScale : root.savedScale
   readonly property bool snapping: Settings.data.desktopWidgets.gridSnap
   readonly property bool background: root.store[root.key + "Card"] !== false
+  // The output this card belongs to; the card exists once, on that screen only.
+  readonly property string screenName: root.store[root.key + "Screen"] || (Quickshell.screens.length > 0 ? Quickshell.screens[0].name : "")
+  property var screen: null
+  readonly property bool onThisScreen: !!root.screen && root.screen.name === root.screenName
 
   width: frame.width * root.cardScale
   height: frame.height * root.cardScale
@@ -118,14 +123,19 @@ Item {
       target: null
       property real startX: 0
       property real startY: 0
+      // activeTranslation is already zero when onActiveChanged fires on release, so keep the last one.
+      property point last: Qt.point(0, 0)
+      onActiveTranslationChanged: if (active)
+        last = activeTranslation
       onActiveChanged: {
         if (active) {
           startX = root.x;
           startY = root.y;
+          last = Qt.point(0, 0);
           return;
         }
-        root.store[root.key + "X"] = root.clampX(root.snap(startX + activeTranslation.x));
-        root.store[root.key + "Y"] = root.clampY(root.snap(startY + activeTranslation.y));
+        root.store[root.key + "X"] = root.clampX(root.snap(startX + last.x));
+        root.store[root.key + "Y"] = root.clampY(root.snap(startY + last.y));
       }
     }
 
@@ -147,11 +157,15 @@ Item {
         target: null
         property real startScale: 1
         property real startWidth: 1
-        readonly property real liveScale: Math.max(0.5, Math.min(4, startScale * (startWidth + activeTranslation.x) / startWidth))
+        property real lastDx: 0
+        readonly property real liveScale: Math.max(0.5, Math.min(4, startScale * (startWidth + lastDx) / startWidth))
+        onActiveTranslationChanged: if (active)
+          lastDx = activeTranslation.x
         onActiveChanged: {
           if (active) {
             startScale = root.savedScale;
             startWidth = Math.max(1, root.width);
+            lastDx = 0;
             return;
           }
           let s = liveScale;
