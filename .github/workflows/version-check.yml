@@ -1,8 +1,7 @@
-name: Version bump check
+name: Version check
 
-# Every PR that changes what the package ships must raise pkgver in packaging/PKGBUILD:
-# the patch number, features included (0.4.0 -> 0.4.1); the minor number only for a release the user asks for.
-# Merging it then tags and releases that version (release.yml). Docs, site and CI-only PRs pass without one.
+# PRs don't bump pkgver; it's raised only for a release the user asks for (0ver: 0.4.4 -> 0.4.5, minor only on request).
+# Merging a raised pkgver then tags and releases it (release.yml). This only stops pkgver from going backwards.
 
 on:
   pull_request:
@@ -22,19 +21,15 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -eu
-          # Everything the PKGBUILD's package() installs, plus the PKGBUILD itself.
-          shipped='^(shell\.qml|greeter\.qml|Commons/|Services/|Modules/|Widgets/|Assets/|bin/|packaging/greetd/|packaging/crux-dns\.sudoers|packaging/PKGBUILD)'
-          changed=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -E "$shipped" || true)
-          if [ -z "$changed" ]; then
-            echo "Nothing the package ships changed, so no version bump is needed."
-            exit 0
-          fi
-
           base=$(git show "$BASE_SHA:packaging/PKGBUILD" | sed -n 's/^pkgver=//p')
           head=$(git show "$HEAD_SHA:packaging/PKGBUILD" | sed -n 's/^pkgver=//p')
           echo "main: $base   this PR: $head"
-          if [ "$base" = "$head" ] || [ "$(printf '%s\n%s\n' "$base" "$head" | sort -V | tail -1)" != "$head" ]; then
-            echo "::error file=packaging/PKGBUILD::This PR changes what crux ships, so raise the patch number of pkgver above $base. Changed: $(echo $changed | tr '\n' ' ')"
+          if [ "$(printf '%s\n%s\n' "$base" "$head" | sort -V | tail -1)" != "$head" ]; then
+            echo "::error file=packaging/PKGBUILD::pkgver went down from $base to $head."
             exit 1
           fi
-          echo "pkgver raised from $base to $head."
+          if [ "$base" = "$head" ]; then
+            echo "No version change; this ships in the next release."
+          else
+            echo "Release PR: pkgver raised from $base to $head."
+          fi

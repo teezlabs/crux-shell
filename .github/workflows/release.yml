@@ -1,6 +1,6 @@
 name: Release
 
-# When a raised pkgver reaches main (see version-check.yml), tag v<pkgver> on that commit and publish a
+# When a raised pkgver reaches main (only for a release the user asks for), tag v<pkgver> on that commit and publish a
 # GitHub release whose notes list the PRs since the previous one. The README's 0ver badge reads this release.
 
 on:
