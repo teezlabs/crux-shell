@@ -345,7 +345,7 @@ NScrollView {
       NText {
         Layout.fillWidth: true
         visible: text !== ""
-        text: Monitors.trialActive ? "Trying it: keep it within " + Monitors.trialRemaining + "s or it goes back" : Monitors.error
+        text: Monitors.trialActive ? "Trying it: Keep or Revert at the top" : Monitors.error
         color: Monitors.trialActive ? Colors.primary : Colors.error
         size: NText.Size.BodySm
         wrapMode: Text.WordWrap
@@ -358,17 +358,6 @@ NScrollView {
         text: "Discard"
         visible: root.dirty && !Monitors.trialActive
         onClicked: root.resetDraft()
-      }
-      NButton {
-        text: "Revert"
-        visible: Monitors.trialActive
-        onClicked: Monitors.revert()
-      }
-      NButton {
-        text: "Keep"
-        variant: "accent"
-        visible: Monitors.trialActive
-        onClicked: Monitors.keep()
       }
       NButton {
         text: "Apply"

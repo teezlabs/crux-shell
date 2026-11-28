@@ -7,7 +7,7 @@ import qs.Services
 import qs.Widgets
 
 // Keep-or-revert prompt during a Monitors trial, on every screen where the settings window isn't open: a new layout
-// can move it off view. Where it is open, the Monitors page has the buttons, since a click on this separate
+// can move it off view. Where it is open, the Display tab shows them above its subtabs, since a click on this separate
 // window would count as outside the settings window and close it.
 Variants {
   model: Quickshell.screens
