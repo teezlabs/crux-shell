@@ -1,13 +1,15 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Wayland
 import qs.Commons
 import qs.Widgets
 import qs.Modules.Bar.Extras
+import qs.Modules.Popups.Contents
 import qs.Services
 
-// Desktop info cards (weather, media) on the wallpaper layer, draggable and individually toggleable.
+// Desktop cards (weather, media, Control Center) on the wallpaper layer, draggable and individually toggleable.
 Variants {
   model: Quickshell.screens
 
@@ -27,12 +29,14 @@ Variants {
     WlrLayershell.layer: WlrLayer.Bottom
     WlrLayershell.namespace: "crux-desktop-widgets"
     exclusionMode: ExclusionMode.Ignore
+    // The Control Center card has text fields (Wi-Fi passwords); it takes the keyboard only when clicked.
+    WlrLayershell.keyboardFocus: ccCard.visible ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
     visible: Settings.isLoaded && Settings.data.desktopWidgets.enabled
 
     // Only the cards take clicks; the rest of the window passes them through.
     mask: Region {
-      regions: [weatherRegion, mediaRegion]
+      regions: [weatherRegion, mediaRegion, ccRegion]
     }
 
     Region {
@@ -42,6 +46,17 @@ Variants {
     Region {
       id: mediaRegion
       item: mediaCard.visible ? mediaCard : null
+    }
+    Region {
+      id: ccRegion
+      item: ccCard.visible ? ccCard : null
+    }
+
+    // Windows on this monitor's workspace hide the cards; the Control Center card pauses its sampling then.
+    readonly property var hyprMonitor: Hyprland.monitorFor(window.screen)
+    readonly property bool covered: {
+      const ws = window.hyprMonitor ? window.hyprMonitor.activeWorkspace : null;
+      return !!(ws && ws.toplevels && ws.toplevels.values.length > 0);
     }
 
     // Corner placement clears whichever edge the bar occupies.
@@ -349,6 +364,107 @@ Variants {
             onTapped: window.activePlayer.next()
           }
         }
+      }
+    }
+
+    // --- Control Center card: the full panel, on the screen picked in settings, dragged by its top strip ---
+    Item {
+      id: ccCard
+      readonly property string targetName: Settings.data.desktopWidgets.controlCenterScreen !== "" ? Settings.data.desktopWidgets.controlCenterScreen : (Quickshell.screens.length > 0 ? Quickshell.screens[0].name : "")
+      readonly property real margins: Tokens.spaceXl
+      readonly property real gripHeight: 14
+      visible: Settings.data.desktopWidgets.controlCenterEnabled && window.screen && window.screen.name === ccCard.targetName
+      width: (ccContent.widePage ? 520 : 436)
+      height: ccCard.gripHeight + ccContent.implicitHeight + ccCard.margins * 2
+      x: Settings.data.desktopWidgets.controlCenterX >= 0 ? Settings.data.desktopWidgets.controlCenterX : window._marginLeft
+      y: Settings.data.desktopWidgets.controlCenterY >= 0 ? Settings.data.desktopWidgets.controlCenterY : window._baseMargin + (window._barPos === "top" ? window._barGap : 0)
+
+      Behavior on width {
+        NumberAnimation {
+          duration: Tokens.durationSidebarSlide
+          easing.type: Tokens.easingSidebarSlide
+        }
+      }
+
+      // Dragging breaks the x/y binding, so restore it when "Reset position" sets these back to -1 (docs/qml-gotchas.md).
+      Connections {
+        target: Settings.data.desktopWidgets
+        function onControlCenterXChanged() {
+          if (Settings.data.desktopWidgets.controlCenterX < 0)
+            ccCard.x = Qt.binding(function () {
+              return Settings.data.desktopWidgets.controlCenterX >= 0 ? Settings.data.desktopWidgets.controlCenterX : window._marginLeft;
+            });
+        }
+        function onControlCenterYChanged() {
+          if (Settings.data.desktopWidgets.controlCenterY < 0)
+            ccCard.y = Qt.binding(function () {
+              return Settings.data.desktopWidgets.controlCenterY >= 0 ? Settings.data.desktopWidgets.controlCenterY : window._baseMargin + (window._barPos === "top" ? window._barGap : 0);
+            });
+        }
+      }
+
+      Chamfer {
+        anchors.fill: parent
+        chamferSize: Tokens.chamferPanel
+        cutTopRight: true
+        cutBottomLeft: true
+        fillColor: Colors.alpha(Colors.surface, Tokens.panelOpacity)
+        strokeColor: Colors.outline
+        strokeWidth: Tokens.borderPanel
+      }
+
+      // Drag strip: the panel's own controls keep their clicks and drags.
+      Item {
+        id: grip
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.topMargin: Tokens.spaceSm
+        height: ccCard.gripHeight
+
+        Row {
+          anchors.centerIn: parent
+          spacing: 3
+          Repeater {
+            model: 6
+            Rectangle {
+              width: 3
+              height: 3
+              color: gripHover.hovered || gripDrag.active ? Colors.primary : Colors.outline
+            }
+          }
+        }
+
+        HoverHandler {
+          id: gripHover
+          cursorShape: gripDrag.active ? Qt.ClosedHandCursor : Qt.OpenHandCursor
+        }
+        DragHandler {
+          id: gripDrag
+          target: ccCard
+          xAxis.minimum: 0
+          xAxis.maximum: window.width - ccCard.width
+          yAxis.minimum: 0
+          yAxis.maximum: window.height - ccCard.height
+          onActiveChanged: {
+            if (!active) {
+              Settings.data.desktopWidgets.controlCenterX = ccCard.x;
+              Settings.data.desktopWidgets.controlCenterY = ccCard.y;
+            }
+          }
+        }
+      }
+
+      ControlCenterPopupContent {
+        id: ccContent
+        x: ccCard.margins
+        y: ccCard.margins + ccCard.gripHeight - Tokens.spaceSm
+        width: ccCard.width - ccCard.margins * 2
+        height: implicitHeight
+        active: ccCard.visible && !window.covered
+        targetScreen: window.screen
+        // Nothing to close on the desktop; go back to the main page instead.
+        onRequestClose: ccContent.page = ""
       }
     }
   }

@@ -103,7 +103,8 @@ Item {
     { "label": "Switch transition", "description": "Which shader plays when the wallpaper changes", "tab": "wallpaper", "subTab": "transition", "keywords": "fade wipe disc stripes pixelate honeycomb animation" },
 
     // ---- Desktop Widgets ----
-    { "label": "Desktop widgets", "description": "Weather and now-playing cards pinned to the desktop", "tab": "desktopWidgets", "subTab": "", "keywords": "desktop cards" },
+    { "label": "Desktop widgets", "description": "Weather, now-playing and Control Center cards pinned to the desktop", "tab": "desktopWidgets", "subTab": "", "keywords": "desktop cards" },
+    { "label": "Control Center on the desktop", "description": "Pin the full Control Center to the desktop as a widget", "tab": "desktopWidgets", "subTab": "", "keywords": "control center desktop widget card pin monitor" },
     { "label": "Weather card", "description": "Show/hide and position of the weather card", "tab": "desktopWidgets", "subTab": "" },
     { "label": "Media card", "description": "Show/hide and position of the now-playing card", "tab": "desktopWidgets", "subTab": "", "keywords": "now playing" },
 
