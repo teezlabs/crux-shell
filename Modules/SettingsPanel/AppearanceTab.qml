@@ -23,6 +23,10 @@ ColumnLayout {
       {
         "id": "colors",
         "label": "Colors"
+      },
+      {
+        "id": "creator",
+        "label": "Create"
       }
     ]
     activeId: root.subTab
@@ -39,5 +43,11 @@ ColumnLayout {
     Layout.fillWidth: true
     Layout.fillHeight: true
     visible: root.subTab === "colors"
+  }
+
+  AppearanceThemeCreatorSubTab {
+    Layout.fillWidth: true
+    Layout.fillHeight: true
+    visible: root.subTab === "creator"
   }
 }
