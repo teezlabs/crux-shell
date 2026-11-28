@@ -11,7 +11,7 @@ import qs.Services
 import qs.Widgets
 
 // Control Center: profile and shortcuts, labelled toggle tiles, audio, media, weather, stats and recent notifications.
-// Wi-Fi, Bluetooth, audio, weather and stats open sub-pages with a back arrow; the card follows the page's size.
+// Wi-Fi, Bluetooth, audio, media, weather and stats open sub-pages with a back arrow; the card follows the page's size.
 Item {
   id: root
 
@@ -38,7 +38,7 @@ Item {
   // Asks PopupHost to close the card.
   signal requestClose
 
-  // "" for the main page, else "wifi", "bluetooth", "audio", "weather" or "stats".
+  // "" for the main page, else "wifi", "bluetooth", "audio", "media", "weather" or "stats".
   property string page: ""
   // The weather and stats pages were laid out wider than the main page.
   readonly property bool widePage: root.page === "weather" || root.page === "stats"
@@ -418,11 +418,6 @@ Item {
         }
       }
 
-      CcSpectrum {
-        Layout.fillWidth: true
-        running: root.active && root.page === ""
-      }
-
       Repeater {
         model: [
           {
@@ -497,7 +492,7 @@ Item {
       }
     }
 
-    // ======== Media (only while a player exists) ========
+    // ======== Media (only while a player exists); the art and title open the now-playing page ========
     CcCard {
       visible: !!MediaService.activePlayer
 
@@ -508,6 +503,14 @@ Item {
         Item {
           Layout.preferredWidth: 52
           Layout.preferredHeight: 52
+
+          HoverHandler {
+            id: artHover
+            cursorShape: Qt.PointingHandCursor
+          }
+          TapHandler {
+            onTapped: root.page = "media"
+          }
 
           Rectangle {
             anchors.fill: parent
@@ -540,6 +543,15 @@ Item {
             text: MediaService.activePlayer ? (MediaService.activePlayer.trackTitle || MediaService.activePlayer.identity) : ""
             size: NText.Size.BodySm
             font.weight: Font.DemiBold
+            color: titleHover.hovered || artHover.hovered ? Colors.primary : Colors.surfaceText
+
+            HoverHandler {
+              id: titleHover
+              cursorShape: Qt.PointingHandCursor
+            }
+            TapHandler {
+              onTapped: root.page = "media"
+            }
           }
           NText {
             Layout.fillWidth: true
@@ -580,6 +592,12 @@ Item {
           available: !!MediaService.activePlayer && MediaService.activePlayer.canGoNext
           onTapped: MediaService.activePlayer.next()
         }
+      }
+
+      CcSpectrum {
+        Layout.fillWidth: true
+        implicitHeight: 22
+        running: root.active && root.page === "" && !!MediaService.activePlayer
       }
     }
 
@@ -966,6 +984,7 @@ Item {
         "wifi": wifiPage,
         "bluetooth": btPage,
         "audio": audioPage,
+        "media": mediaPage,
         "weather": weatherPage,
         "stats": statsPage
       })[subPage.shownPage] || wifiPage
@@ -1019,6 +1038,14 @@ Item {
       id: audioPage
       anchors.fill: parent
       visible: subPage.shownPage === "audio"
+      showBack: true
+      onBackRequested: root.page = ""
+    }
+    MediaPanelContent {
+      id: mediaPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "media"
+      panelActive: root.active && root.page === "media"
       showBack: true
       onBackRequested: root.page = ""
     }
