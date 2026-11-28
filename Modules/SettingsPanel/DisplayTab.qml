@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Widgets
 
-// Display tab: Brightness and Night Light subtabs.
+// Display tab: Monitors, Brightness and Night Light subtabs.
 ColumnLayout {
   id: root
   spacing: 14
@@ -23,6 +23,10 @@ ColumnLayout {
       {
         "id": "nightLight",
         "label": "Night Light"
+      },
+      {
+        "id": "monitors",
+        "label": "Monitors"
       }
     ]
     activeId: root.subTab
@@ -39,5 +43,11 @@ ColumnLayout {
     Layout.fillWidth: true
     Layout.fillHeight: true
     visible: root.subTab === "nightLight"
+  }
+
+  DisplayMonitorsSubTab {
+    Layout.fillWidth: true
+    Layout.fillHeight: true
+    visible: root.subTab === "monitors"
   }
 }

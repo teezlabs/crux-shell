@@ -123,7 +123,7 @@ NPanelWindow {
       "label": "Display",
       "section": "System",
       "icon": "monitor",
-      "description": "Brightness and night light"
+      "description": "Monitors, brightness and night light"
     },
     {
       "id": "connections",

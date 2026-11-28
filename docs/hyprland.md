@@ -63,3 +63,11 @@ Testing a change:
 
 - Swapping shaders doesn't trigger a redraw, so a `grim` capture straight after a reload shows the old frame. Set `debug:damage_tracking` to 0 while capturing (`hyprctl eval 'hl.config({ debug = { damage_tracking = 0 } })'`), then back to 2
 - `glslangValidator` can compile the frags offline once the `#include`s are inlined
+
+## Monitor layout from Settings
+
+Settings › Display › Monitors (`Services/Monitors.qml`, after lyne-dots) never edits the `hl.monitor()` lines in `hyprland.lua`. It writes `~/.config/hypr/crux-monitors.lua`, and `hyprland.lua` loads it with `pcall(require, "crux-monitors")` straight after its own monitor lines. A later `hl.monitor()` for the same output overrides the earlier one, so with no file the hand-written lines stay in charge, and deleting the file goes back to them. The page offers to add the line, backing up to `hyprland.lua.bak-crux` first.
+
+- Apply sends the rules with `hyprctl eval` and starts a 15-second trial. Every rule writes every field (`disabled`, `mode`, `position`, `scale`, `transform`), because an evaluated `hl.monitor()` merges into the rule already there, and a field left out would survive.
+- Keep writes the file. Revert, or the countdown running out, runs `hyprctl reload`, which brings the saved layout back.
+- A detached `sh` watcher, started with the trial, reloads the config if the trial marker in `$XDG_RUNTIME_DIR` still exists after the countdown. So a crux crash mid-trial can't strand a broken layout.
