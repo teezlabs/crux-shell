@@ -380,9 +380,18 @@ Item {
     CcCard {
       spacing: Tokens.spaceMd
 
+      // The whole header row opens the audio page.
       RowLayout {
         Layout.fillWidth: true
         spacing: Tokens.spaceSm
+
+        HoverHandler {
+          id: soundHover
+          cursorShape: Qt.PointingHandCursor
+        }
+        TapHandler {
+          onTapped: root.page = "audio"
+        }
 
         NSymbol {
           name: "headphones"
@@ -394,27 +403,24 @@ Item {
           tracking: true
           size: NText.Size.LabelXs
           font.weight: Font.DemiBold
-          color: Colors.labelText
+          color: soundHover.hovered ? Colors.primary : Colors.labelText
         }
         NText {
           Layout.fillWidth: true
           text: root.sink ? (root.sink.description || root.sink.name || "Output") : "No output"
           size: NText.Size.Caption
-          color: Colors.surfaceTextMuted
+          color: soundHover.hovered ? Colors.surfaceText : Colors.surfaceTextMuted
         }
         NSymbol {
           name: "chevron_right"
           size: 18
           color: soundHover.hovered ? Colors.primary : Colors.surfaceTextMuted
-
-          HoverHandler {
-            id: soundHover
-            cursorShape: Qt.PointingHandCursor
-          }
-          TapHandler {
-            onTapped: root.page = "audio"
-          }
         }
+      }
+
+      CcSpectrum {
+        Layout.fillWidth: true
+        running: root.active && root.page === ""
       }
 
       Repeater {
