@@ -16,7 +16,9 @@ partly_cloudy_day partly_cloudy_night cloud rainy sunny clear_night foggy weathe
 play_arrow pause skip_next skip_previous memory thermostat storage developer_board content_paste logout
 refresh more_horiz clear_all music_note headphones speaker person visibility visibility_off dark_mode
 palette search check expand_more air water_drop sports_esports vpn_lock vpn_key_off dns
-open_in_new
+open_in_new lan content_copy more_vert link_off delete mouse keyboard smartphone computer tv
+network_wifi_1_bar network_wifi_2_bar network_wifi_3_bar signal_wifi_4_bar progress_activity bluetooth_searching
+arrow_downward arrow_upward router public lock_open watch speaker_group
 """.split()
 
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
