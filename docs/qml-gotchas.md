@@ -91,3 +91,7 @@ Some Material Symbols glyphs (`settings` is the clear case) build their filled f
 ## A handle's `DragHandler` measures from a handle that moves
 
 `translation` and `activeTranslation` are relative to the handler's own item. When dragging resizes the card and the corner handle moves with it, the offset stays near zero and nothing resizes. `DesktopCard`'s resize handle measures from `centroid.scenePosition` instead, and switches the card's move handler off while the pointer is over the handle, so the two can't compete for the same drag.
+
+## `FileView.setText` doesn't create a missing file
+
+On a `FileView` whose file doesn't exist yet, `setText()` silently writes nothing: no file, no log line. `Monitors.keep()` lost its first saved layout this way on 2026-11-28. To create a file, write it through a `Process` (`printf "%s\n" "$2" > "$1.tmp" && mv "$1.tmp" "$1"`).

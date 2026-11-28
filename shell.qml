@@ -37,6 +37,8 @@ ShellRoot {
 
   ToastOverlay {}
 
+  MonitorsConfirm {}
+
   LockScreen {}
 
   // Wallpaper browser, one per screen; "wallpaperBrowser" routes to the focused monitor's instance.
