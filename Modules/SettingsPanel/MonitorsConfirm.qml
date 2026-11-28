@@ -6,7 +6,9 @@ import qs.Commons
 import qs.Services
 import qs.Widgets
 
-// Keep-or-revert prompt during a Monitors trial, on every screen: a new layout can move the settings window off view.
+// Keep-or-revert prompt during a Monitors trial, on every screen where the settings window isn't open: a new layout
+// can move it off view. Where it is open, the Monitors page has the buttons, since a click on this separate
+// window would count as outside the settings window and close it.
 Variants {
   model: Quickshell.screens
 
@@ -15,7 +17,8 @@ Variants {
     required property var modelData
     screen: modelData
 
-    visible: Monitors.trialActive
+    readonly property var settingsSurface: Popups.find("settings", win.modelData)
+    visible: Monitors.trialActive && !(win.settingsSurface && win.settingsSurface.visible)
     color: "transparent"
     implicitWidth: card.width
     implicitHeight: card.height

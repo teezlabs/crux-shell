@@ -360,9 +360,21 @@ NScrollView {
         onClicked: root.resetDraft()
       }
       NButton {
+        text: "Revert"
+        visible: Monitors.trialActive
+        onClicked: Monitors.revert()
+      }
+      NButton {
+        text: "Keep"
+        variant: "accent"
+        visible: Monitors.trialActive
+        onClicked: Monitors.keep()
+      }
+      NButton {
         text: "Apply"
         variant: "accent"
-        enabled: root.dirty && !Monitors.trialActive
+        visible: !Monitors.trialActive
+        enabled: root.dirty
         onClicked: Monitors.apply(root.normalized(root.draft))
       }
     }
