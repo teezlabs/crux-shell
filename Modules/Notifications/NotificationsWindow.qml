@@ -7,7 +7,8 @@ import qs.Commons
 import qs.Widgets
 import qs.Services
 
-// Notification stack; cards dismiss on per-urgency timeouts from settings, never for resident ones.
+// Notification stack, one card per conversation; cards dismiss on per-urgency timeouts from settings, never for
+// resident ones, and never while you're typing a reply.
 PanelWindow {
   id: root
 
@@ -46,7 +47,9 @@ PanelWindow {
 
   WlrLayershell.layer: WlrLayer.Overlay
   WlrLayershell.namespace: "crux-notifications"
-  WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+  // A reply field needs the keyboard, so take it on click while one is shown.
+  readonly property bool anyReply: root.visibleNotifications.some(n => n && n.hasInlineReply)
+  WlrLayershell.keyboardFocus: root.anyReply ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
   exclusionMode: ExclusionMode.Ignore
 
   ColumnLayout {
@@ -63,6 +66,9 @@ PanelWindow {
       delegate: Item {
         id: card
         required property var modelData
+        required property int index
+        // The bottom card carries the stack's footer: how many are hidden, and clear all.
+        readonly property bool hasFooter: card.index === root.visibleNotifications.length - 1 && root.notifications.length > 1
         Layout.fillWidth: true
         Layout.preferredHeight: cardColumn.implicitHeight + 24
 
@@ -96,7 +102,7 @@ PanelWindow {
           readonly property int _urgencySec: card.urgencyLevel === NotificationUrgency.Critical ? Settings.data.notifications.criticalUrgencyDurationSec : (card.urgencyLevel === NotificationUrgency.Low ? Settings.data.notifications.lowUrgencyDurationSec : Settings.data.notifications.normalUrgencyDurationSec)
           // An app's own positive expireTimeout wins when respectAppExpireTimeout is on.
           readonly property int _effectiveMs: (Settings.data.notifications.respectAppExpireTimeout && card.modelData && card.modelData.expireTimeout > 0) ? card.modelData.expireTimeout : _urgencySec * 1000
-          running: card.modelData && !card.modelData.resident && _effectiveMs > 0
+          running: card.modelData && !card.modelData.resident && _effectiveMs > 0 && !replyField.inputFocused && replyField.text === ""
           interval: _effectiveMs
           onTriggered: if (card.modelData)
             card.modelData.dismiss()
@@ -162,6 +168,24 @@ PanelWindow {
             elide: Text.ElideRight
           }
 
+          // Earlier messages of this conversation, oldest first, above the newest.
+          Repeater {
+            model: {
+              const thread = Notifs.threadFor(Notifs.conversationKey(card.modelData), 4);
+              return thread.slice(0, Math.max(0, thread.length - 1));
+            }
+
+            delegate: NText {
+              required property var modelData
+              Layout.fillWidth: true
+              text: (modelData.own ? "You: " : "") + modelData.body.replace(/<[^>]*>/g, "").replace(/\n/g, " ")
+              color: modelData.own ? Colors.primary : Colors.labelText
+              size: NText.Size.Caption
+              elide: Text.ElideRight
+              maximumLineCount: 1
+            }
+          }
+
           NText {
             Layout.fillWidth: true
             visible: (card.modelData.body || "") !== ""
@@ -173,6 +197,27 @@ PanelWindow {
             elide: Text.ElideRight
           }
 
+          // Inline reply, for chat apps that offer it.
+          RowLayout {
+            visible: !!card.modelData.hasInlineReply
+            Layout.fillWidth: true
+            Layout.topMargin: 4
+            spacing: Tokens.spaceSm
+
+            NTextInput {
+              id: replyField
+              Layout.fillWidth: true
+              height: 28
+              placeholderText: card.modelData.inlineReplyPlaceholder || "Reply"
+              onAccepted: Notifs.reply(card.modelData, text)
+            }
+            NButton {
+              text: "Send"
+              enabled: replyField.text.trim() !== ""
+              onClicked: Notifs.reply(card.modelData, replyField.text)
+            }
+          }
+
           RowLayout {
             Layout.fillWidth: true
             Layout.topMargin: 4
@@ -181,7 +226,7 @@ PanelWindow {
 
             // Adjoining bordered cells with collapsed shared edges; only the first cell draws its own left edge.
             Repeater {
-              model: card.modelData.actions || []
+              model: (card.modelData.actions || []).filter(a => a.identifier !== "inline-reply")
               delegate: Rectangle {
                 id: actionCell
                 required property var modelData
@@ -293,41 +338,39 @@ PanelWindow {
               }
             }
           }
-        }
-      }
-    }
 
-    Rectangle {
-      Layout.fillWidth: true
-      Layout.preferredHeight: 28
-      visible: root.notifications.length > 0
-      color: Colors.surfaceContainerLow
+          RowLayout {
+            visible: card.hasFooter
+            Layout.fillWidth: true
+            Layout.topMargin: 4
+            spacing: Tokens.spaceMd
 
-      RowLayout {
-        anchors.fill: parent
-        anchors.margins: 9
+            Rectangle {
+              Layout.fillWidth: true
+              Layout.preferredHeight: Tokens.borderDivider
+              color: Colors.outlineVariant
+            }
+            NText {
+              tracking: true
+              visible: root.earlierCount > 0
+              text: root.earlierCount + " EARLIER"
+              color: Colors.labelText
+              size: NText.Size.LabelXs
+            }
+            NText {
+              tracking: true
+              text: "CLEAR ALL"
+              color: clearHover.hovered ? Colors.primary : Colors.alpha(Colors.primary, 0.8)
+              size: NText.Size.LabelXs
 
-        NText {
-          tracking: true
-          visible: root.earlierCount > 0
-          text: root.earlierCount + " EARLIER"
-          color: Colors.labelText
-          size: NText.Size.LabelXs
-        }
-        Item {
-          Layout.fillWidth: true
-        }
-        NText {
-          tracking: true
-          text: "CLEAR ALL"
-          color: Colors.primary
-          size: NText.Size.LabelXs
-
-          HoverHandler {
-            cursorShape: Qt.PointingHandCursor
-          }
-          TapHandler {
-            onTapped: Notifs.clearAll()
+              HoverHandler {
+                id: clearHover
+                cursorShape: Qt.PointingHandCursor
+              }
+              TapHandler {
+                onTapped: Notifs.clearAll()
+              }
+            }
           }
         }
       }
