@@ -4,11 +4,13 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Colour-scheme presets from Assets/ColorSchemes/*.json; all load up front because the picker shows a swatch of each.
+// Colour-scheme presets from Assets/ColorSchemes/*.json, plus themes saved from the theme creator in
+// ~/.config/crux/themes/*.json (same format, `custom: true`). All load up front: the picker shows a swatch of each.
 Singleton {
   id: root
 
   readonly property string directory: Quickshell.shellDir + "/Assets/ColorSchemes"
+  readonly property string userDirectory: Quickshell.env("HOME") + "/.config/crux/themes"
 
   // [{name, colors}], sorted by name.
   property var schemes: []
@@ -53,11 +55,56 @@ Singleton {
     Toast.show(name + " applied");
   }
 
+  // File name for a theme name: letters, digits, spaces, dashes and underscores only.
+  function fileNameFor(name): string {
+    return name.replace(/[^A-Za-z0-9 _-]/g, "").trim();
+  }
+
+  // Writes a custom theme (dark palette) and reloads the list.
+  function save(name, palette): void {
+    const file = root.fileNameFor(name);
+    if (file === "") {
+      Toast.show("Give the theme a name");
+      return;
+    }
+    const colors = {};
+    for (const role of root.roles) {
+      if (palette[role] !== undefined)
+        colors[role] = palette[role];
+    }
+    saveProc.command = ["sh", "-c", 'mkdir -p "$1" && printf "%s\n" "$3" > "$1/$2.json"', "sh", root.userDirectory, file, JSON.stringify({
+        "name": name.trim(),
+        "dark": colors
+      }, null, 2)];
+    saveProc.running = true;
+  }
+
+  function remove(name): void {
+    const file = root.fileNameFor(name);
+    if (file === "")
+      return;
+    removeProc.command = ["rm", "-f", root.userDirectory + "/" + file + ".json"];
+    removeProc.running = true;
+  }
+
+  readonly property Process saveProc: Process {
+    onExited: exitCode => {
+      if (exitCode === 0)
+        root.refresh();
+      else
+        Toast.show("Couldn't save the theme");
+    }
+  }
+  readonly property Process removeProc: Process {
+    onExited: root.refresh()
+  }
+
   Component.onCompleted: root.refresh()
 
   // One "<name>\t<json>" line per scheme, read in a single process.
   readonly property Process listProc: Process {
-    command: ["sh", "-c", 'for f in "$1"/*.json; do [ -e "$f" ] || continue; n=$(basename "$f" .json); printf "%s\\t" "$n"; tr -d "\\n" < "$f"; printf "\\n"; done', "sh", root.directory]
+    // "<custom 0|1>\t<name>\t<json>" per file.
+    command: ["sh", "-c", 'for d in 0 1; do dir="$1"; [ "$d" = 1 ] && dir="$2"; for f in "$dir"/*.json; do [ -e "$f" ] || continue; n=$(basename "$f" .json); printf "%s\\t%s\\t" "$d" "$n"; tr -d "\\n" < "$f"; printf "\\n"; done; done', "sh", root.directory, root.userDirectory]
 
     stdout: StdioCollector {
       onStreamFinished: {
@@ -65,15 +112,17 @@ Singleton {
         for (const line of text.split("\n")) {
           if (line.trim() === "")
             continue;
-          const tab = line.indexOf("\t");
-          if (tab < 0)
+          const parts = line.split("\t");
+          if (parts.length < 3)
             continue;
-          const name = line.substring(0, tab);
+          const custom = parts[0] === "1";
+          const name = parts[1];
           try {
-            const data = JSON.parse(line.substring(tab + 1));
+            const data = JSON.parse(parts.slice(2).join("\t"));
             found.push({
               "name": data.name || name,
-              "colors": data.dark || {}
+              "colors": data.dark || {},
+              "custom": custom
             });
           } catch (e) {
             console.warn("crux: unreadable color scheme", name);

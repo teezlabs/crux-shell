@@ -110,6 +110,21 @@ NScrollView {
               color: Colors.surfaceText
               size: NText.Size.BodySm
             }
+            // Themes saved from the creator can be deleted.
+            NText {
+              visible: !!swatch.modelData.custom
+              text: "×"
+              color: deleteHover.hovered ? Colors.error : Colors.labelText
+              size: NText.Size.BodyLg
+
+              HoverHandler {
+                id: deleteHover
+                cursorShape: Qt.PointingHandCursor
+              }
+              TapHandler {
+                onTapped: ColorSchemes.remove(swatch.modelData.name)
+              }
+            }
           }
 
           HoverHandler {
