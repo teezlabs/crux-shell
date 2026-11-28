@@ -10,7 +10,7 @@ import qs.Modules.SettingsPanel.Controls
 import "NetworkModel.js" as Model
 import qs.Widgets
 
-// Wi-Fi network list/connect UI, shared between the wifi popup (PopupHost.qml) and Control Center's inline expand. No window chrome of its own.
+// Network page: the wired connection, Wi-Fi and its networks, DNS. Shared by the wifi popup and the Control Center's sub-page; no window chrome of its own.
 ColumnLayout {
   id: root
 
@@ -19,7 +19,7 @@ ColumnLayout {
   // Shown as a Control Center sub-page: the header gets a back arrow.
   property bool showBack: false
   signal backRequested
-  // Asks the host to close: a popup hides, an inline Control Center section collapses.
+  // Asks the host to close: a popup hides, the Control Center goes back to its main page.
   signal requestClose
 
   spacing: Tokens.spaceLg
@@ -55,6 +55,42 @@ ColumnLayout {
   property real internetPingLatency: -1
   property int internetPingPacketLoss: 0
   readonly property bool hasTransferStats: info.rx_bytes !== undefined
+  readonly property bool isWired: info.type === "ethernet"
+  readonly property string linkSpeed: {
+    const mbps = parseInt(root.info.speed || "", 10);
+    if (!mbps || mbps < 0)
+      return "";
+    return mbps >= 1000 ? (mbps / 1000) + " Gbit/s" : mbps + " Mbit/s";
+  }
+  readonly property var connectedRows: wifiNetworks.filter(r => r.connected)
+  readonly property var otherRows: wifiNetworks.filter(r => !r.connected)
+  // The list area scrolls past this height.
+  property real maxListHeight: 480
+
+  function copyIp() {
+    if (!root.info.ip)
+      return;
+    Quickshell.clipboardText = root.info.ip;
+    Toast.show("Copied " + root.info.ip, 2000);
+  }
+
+  function signalSymbol(signal) {
+    if (signal >= 75)
+      return "signal_wifi_4_bar";
+    if (signal >= 50)
+      return "network_wifi_3_bar";
+    if (signal >= 25)
+      return "network_wifi_2_bar";
+    return "network_wifi_1_bar";
+  }
+
+  function rowStatus(row) {
+    if (root.actionKind !== "" && root.actionSsid === row.ssid)
+      return (root.actionKind === "connect" ? "Connecting" : (root.actionKind === "disconnect" ? "Disconnecting" : "Forgetting")) + "…";
+    if (root.failureSsid !== "" && root.failureSsid === row.ssid)
+      return root.failureReason;
+    return "";
+  }
 
   function updateDetails(raw) {
     var next = Model.parseKeyValue(raw);
@@ -328,109 +364,70 @@ ColumnLayout {
 
   onWifiNetworkObjectsChanged: syncWifiNetworks()
 
-  PopupHeader {
-    title: "WI-FI"
-    showBack: root.showBack
-    onBackTapped: root.backRequested()
-    NToggle {
-      checked: Networking.wifiEnabled
-      onToggled: root.toggleWifi()
-    }
-  }
-
-  // ---------------- Connection details ----------------
-  GridLayout {
+  // Ping, throughput and loss for the live connection, on one line.
+  component StatsLine: RowLayout {
     Layout.fillWidth: true
-    visible: !!root.info.iface
-    columns: 4
-    columnSpacing: 14
-    rowSpacing: 4
+    Layout.leftMargin: Tokens.spaceSm
+    Layout.topMargin: Tokens.spaceXs
+    spacing: Tokens.spaceSm
 
-    NText {
-      tracking: true
-      text: "PING"
+    NSymbol {
+      name: "speed"
+      size: 14
       color: Colors.labelText
-      size: NText.Size.LabelXs
     }
     NText {
       text: Model.formatPingLatency(root.internetPingLatency, root.internetPingSamples.length > 0)
-      color: root.internetPingPacketLoss > 0 ? Colors.error : Colors.surfaceText
       size: NText.Size.Caption
-    }
-    NText {
-      tracking: true
-      text: "LOSS"
-      color: Colors.labelText
-      size: NText.Size.LabelXs
-    }
-    NText {
-      text: Model.formatPacketLoss(root.internetPingPacketLoss, root.internetPingSamples.length > 0)
       color: root.internetPingPacketLoss > 0 ? Colors.error : Colors.surfaceText
-      size: NText.Size.Caption
     }
-
     NText {
-      tracking: true
-      text: "DOWN"
+      visible: root.internetPingPacketLoss > 0
+      text: Model.formatPacketLoss(root.internetPingPacketLoss, true) + " loss"
+      size: NText.Size.Caption
+      color: Colors.error
+    }
+    NSymbol {
+      Layout.leftMargin: Tokens.spaceSm
+      name: "arrow_downward"
+      size: 14
       color: Colors.labelText
-      size: NText.Size.LabelXs
     }
     NText {
       text: root.hasTransferStats ? Model.formatRate(root.downloadRate) : "--"
-      color: Colors.surfaceText
       size: NText.Size.Caption
     }
-    NText {
-      tracking: true
-      text: "UP"
+    NSymbol {
+      Layout.leftMargin: Tokens.spaceSm
+      name: "arrow_upward"
+      size: 14
       color: Colors.labelText
-      size: NText.Size.LabelXs
     }
     NText {
+      Layout.fillWidth: true
       text: root.hasTransferStats ? Model.formatRate(root.uploadRate) : "--"
-      color: Colors.surfaceText
-      size: NText.Size.Caption
-    }
-
-    NText {
-      tracking: true
-      text: "IP"
-      color: Colors.labelText
-      size: NText.Size.LabelXs
-    }
-    NText {
-      text: root.info.ip || "--"
-      color: Colors.surfaceText
-      size: NText.Size.Caption
-    }
-    NText {
-      tracking: true
-      text: "GATEWAY"
-      color: Colors.labelText
-      size: NText.Size.LabelXs
-    }
-    NText {
-      text: root.info.gateway || "--"
-      color: Colors.surfaceText
       size: NText.Size.Caption
     }
   }
 
-  // ---------------- DNS provider ----------------
-  ColumnLayout {
+  // DNS provider for the live connection.
+  component DnsSwitch: ColumnLayout {
     Layout.fillWidth: true
-    spacing: 4
+    Layout.leftMargin: Tokens.spaceSm
+    Layout.topMargin: Tokens.spaceSm
+    spacing: Tokens.spaceXs
 
     NText {
+      text: "DNS"
       tracking: true
-      text: "DNS PROVIDER"
-      color: Colors.labelText
       size: NText.Size.LabelXs
+      font.weight: Font.DemiBold
+      color: Colors.labelText
     }
 
     RowLayout {
       Layout.fillWidth: true
-      spacing: 4
+      spacing: Tokens.spaceXs
 
       Repeater {
         model: root.dnsProviders
@@ -440,27 +437,26 @@ ColumnLayout {
           required property string modelData
           readonly property bool selected: root.dnsProvider === modelData
           Layout.fillWidth: true
-          height: 24
+          implicitHeight: 24
 
           Chamfer {
             anchors.fill: parent
             chamferSize: Tokens.chamferIcon
             cutTopRight: true
             cutBottomLeft: true
-            fillColor: dnsPill.selected ? Colors.primaryContainer : Colors.surfaceContainer
-            strokeColor: dnsPill.selected ? Colors.primary : Colors.outline
+            fillColor: dnsPill.selected ? Colors.primaryContainer : (dnsHover.hovered ? Colors.surfaceContainerHigh : Colors.surfaceContainerLow)
+            strokeColor: dnsPill.selected ? Colors.primary : Colors.outlineVariant
             strokeWidth: Tokens.borderModule
           }
-
           NText {
-            tracking: true
             anchors.centerIn: parent
             text: dnsPill.modelData.toUpperCase()
-            color: dnsPill.selected ? Colors.primaryContainerText : Colors.surfaceText
+            tracking: true
             size: NText.Size.LabelXs
+            color: dnsPill.selected ? Colors.primaryContainerText : Colors.surfaceText
           }
-
           HoverHandler {
+            id: dnsHover
             cursorShape: Qt.PointingHandCursor
           }
           TapHandler {
@@ -471,131 +467,43 @@ ColumnLayout {
     }
   }
 
-  NText {
-    visible: !Networking.wifiEnabled || !root.wifiDevice || root.wifiNetworks.length === 0
-    text: !Networking.wifiHardwareEnabled ? "Wi-Fi is blocked by a hardware switch" : (!Networking.wifiEnabled ? "Wi-Fi is off" : (!root.wifiDevice ? "No Wi-Fi adapter" : "Scanning…"))
-    color: Colors.labelText
-    size: NText.Size.BodySm
+  PopupHeader {
+    title: root.passwordSsid !== "" ? "JOIN NETWORK" : "NETWORK"
+    showBack: root.showBack || root.passwordSsid !== ""
+    onBackTapped: {
+      if (root.passwordSsid !== "") {
+        root.passwordSsid = "";
+        root.passwordText = "";
+      } else {
+        root.backRequested();
+      }
+    }
   }
 
-  ListView {
-    id: scrollView
-    layer.enabled: scrollFade.active
-    layer.effect: MultiEffect {
-      maskEnabled: true
-      maskSource: scrollFade
-      maskThresholdMin: 0.5
-      maskSpreadAtMin: 1
-    }
-    NSmoothWheel {
-      flickable: scrollView
-    }
-    NScrollFade {
-      id: scrollFade
-      flickable: scrollView
-    }
+  NScrollView {
+    id: scroll
     Layout.fillWidth: true
-    Layout.preferredHeight: Math.min(320, contentHeight)
-    clip: true
-    visible: Networking.wifiEnabled
-    model: root.wifiNetworks
+    Layout.preferredHeight: Math.min(cards.implicitHeight, root.maxListHeight)
+    contentHeight: cards.implicitHeight
 
-    delegate: Item {
-      id: rowItem
-      required property var modelData
-      required property int index
-      width: ListView.view.width
-      height: rowItem.modelData.ssid === root.passwordSsid ? Tokens.rowHeight + 40 : Tokens.rowHeight
+    ColumnLayout {
+      id: cards
+      width: scroll.width - (scroll.scrollable ? scroll.gutter : 0)
+      spacing: Tokens.spaceMd
 
-      Column {
-        anchors.fill: parent
-        spacing: 4
-
-        Item {
-          width: parent.width
-          height: Tokens.rowHeight
-
-          PopupRowBackground {
-            hovered: rowHover.hovered
-            selected: !!rowItem.modelData.connected
-          }
-
-          RowLayout {
-            anchors.fill: parent
-            anchors.leftMargin: Tokens.spaceMd
-            anchors.rightMargin: Tokens.spaceMd
-
-            NText {
-              text: rowItem.modelData.connected ? "●" : (rowItem.modelData.known ? "○" : "·")
-              color: rowItem.modelData.connected ? Colors.primary : Colors.labelText
-              size: NText.Size.BodySm
-            }
-
-            NText {
-              text: rowItem.modelData.ssid
-              color: Colors.surfaceText
-              elide: Text.ElideRight
-              Layout.fillWidth: true
-            }
-
-            NText {
-              tracking: true
-              visible: root.failureSsid !== "" && root.failureSsid === rowItem.modelData.ssid
-              text: root.failureReason.toUpperCase()
-              color: Colors.error
-              size: NText.Size.LabelXs
-            }
-
-            NText {
-              text: rowItem.modelData.signal + "%"
-              color: Colors.labelText
-              size: NText.Size.Caption
-            }
-
-            // Forget a saved network; only shown for known, non-connected networks (avoids a confusing disconnect+forget).
-            Text {
-              visible: rowItem.modelData.known && !rowItem.modelData.connected && !(root.actionKind !== "" && root.actionSsid === rowItem.modelData.ssid)
-              text: "×"
-              color: forgetHover.hovered ? Colors.error : Colors.labelText
-              font.pixelSize: Tokens.bodyLgSize
-              HoverHandler {
-                id: forgetHover
-                cursorShape: Qt.PointingHandCursor
-              }
-              MouseArea {
-                anchors.fill: parent
-                anchors.margins: -4
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.forgetRow(rowItem.modelData)
-              }
-            }
-
-            NText {
-              tracking: true
-              visible: root.actionKind !== "" && root.actionSsid === rowItem.modelData.ssid
-              text: (root.actionKind === "connect" ? "CONNECTING" : (root.actionKind === "disconnect" ? "DISCONNECTING" : "FORGETTING")) + "…"
-              color: Colors.primary
-              size: NText.Size.LabelXs
-            }
-          }
-
-          HoverHandler {
-            id: rowHover
-            cursorShape: Qt.PointingHandCursor
-          }
-          TapHandler {
-            onTapped: root.activateRow(rowItem.modelData)
-          }
-        }
+      // ---- Password for a secured network: replaces the lists until it connects or is cancelled ----
+      NetSection {
+        visible: root.passwordSsid !== ""
+        label: root.passwordSsid
 
         RowLayout {
-          visible: rowItem.modelData.ssid === root.passwordSsid
-          width: parent.width
-          spacing: 6
+          Layout.fillWidth: true
+          Layout.margins: Tokens.spaceXs
+          spacing: Tokens.spaceSm
 
           Item {
             Layout.fillWidth: true
-            height: 24
+            implicitHeight: 32
 
             Chamfer {
               anchors.fill: parent
@@ -606,39 +514,162 @@ ColumnLayout {
               strokeColor: pwInput.activeFocus ? Colors.primary : Colors.outline
               strokeWidth: Tokens.borderModule
             }
-
             TextInput {
               id: pwInput
               anchors.fill: parent
-              anchors.leftMargin: 6
-              anchors.rightMargin: 6
+              anchors.leftMargin: Tokens.spaceMd
+              anchors.rightMargin: Tokens.spaceMd
               verticalAlignment: Text.AlignVCenter
               text: root.passwordText
               onTextChanged: root.passwordText = text
               echoMode: TextInput.Password
               color: Colors.surfaceText
               font.family: Tokens.fontFamily
-              font.pixelSize: Tokens.captionSize
-              focus: rowItem.modelData.ssid === root.passwordSsid
-
+              font.pixelSize: Tokens.bodySmSize
+              clip: true
               Keys.onReturnPressed: root.submitPassword()
+              Keys.onEnterPressed: root.submitPassword()
+
+              NText {
+                anchors.fill: parent
+                visible: pwInput.text === ""
+                text: "Password"
+                size: NText.Size.BodySm
+                color: Colors.labelText
+              }
             }
           }
 
-          NText {
-            tracking: true
-            text: "CONNECT"
-            color: Colors.primary
-            size: NText.Size.LabelXs
-            MouseArea {
-              anchors.fill: parent
-              anchors.margins: -4
-              cursorShape: Qt.PointingHandCursor
-              onClicked: root.submitPassword()
+          NButton {
+            text: root.actionKind === "connect" ? "…" : "Connect"
+            enabled: root.passwordText !== "" && root.actionKind === ""
+            onClicked: root.submitPassword()
+          }
+        }
+
+        NText {
+          Layout.fillWidth: true
+          Layout.leftMargin: Tokens.spaceXs
+          visible: text !== ""
+          text: root.failureSsid === root.passwordSsid ? root.failureReason : ""
+          size: NText.Size.Caption
+          color: Colors.error
+        }
+      }
+
+      // ---- Wired ----
+      NetSection {
+        visible: root.passwordSsid === "" && root.isWired
+        label: "ETHERNET"
+        active: true
+
+        NetRow {
+          symbol: "lan"
+          highlighted: true
+          interactive: false
+          title: root.info.iface || "Ethernet"
+          subtitle: (root.info.ip || "No address") + (root.linkSpeed !== "" ? "  ·  " + root.linkSpeed : "")
+          actions: [
+            {
+              "label": "Copy IP",
+              "symbol": "content_copy"
             }
+          ]
+          onActionTriggered: root.copyIp()
+        }
+        StatsLine {}
+        DnsSwitch {}
+      }
+
+      // ---- Wi-Fi ----
+      NetSection {
+        visible: root.passwordSsid === ""
+        label: "WI-FI"
+        active: !root.isWired && root.connectedRows.length > 0
+        trailing: [
+          NToggle {
+            checked: Networking.wifiEnabled
+            enabled: Networking.wifiHardwareEnabled
+            onToggled: root.toggleWifi()
+          }
+        ]
+
+        NText {
+          visible: !Networking.wifiEnabled || !root.wifiDevice || root.wifiNetworks.length === 0
+          Layout.fillWidth: true
+          Layout.margins: Tokens.spaceSm
+          text: !Networking.wifiHardwareEnabled ? "Blocked by a hardware switch" : (!root.wifiDevice ? "No Wi-Fi adapter" : (!Networking.wifiEnabled ? (root.isWired ? "Off. You're on the cable." : "Off") : "Scanning…"))
+          size: NText.Size.BodySm
+          color: Colors.labelText
+        }
+
+        Repeater {
+          model: Networking.wifiEnabled ? root.connectedRows : []
+
+          delegate: NetRow {
+            required property var modelData
+            symbol: root.signalSymbol(modelData.signal)
+            ring: modelData.signal
+            highlighted: true
+            title: modelData.ssid
+            subtitle: root.rowStatus(modelData) || "Connected" + (root.isWired ? "" : (root.info.ip ? "  ·  " + root.info.ip : ""))
+            actions: [
+              {
+                "label": "Disconnect",
+                "symbol": "link_off"
+              },
+              {
+                "label": "Forget",
+                "symbol": "delete",
+                "tone": "error"
+              }
+            ]
+            onTapped: root.activateRow(modelData)
+            onActionTriggered: index => index === 0 ? root.activateRow(modelData) : root.forgetRow(modelData)
+          }
+        }
+
+        StatsLine {
+          visible: !root.isWired && root.connectedRows.length > 0
+        }
+        DnsSwitch {
+          visible: !root.isWired && root.connectedRows.length > 0
+        }
+      }
+
+      // ---- Other networks ----
+      NetSection {
+        visible: root.passwordSsid === "" && Networking.wifiEnabled && root.otherRows.length > 0
+        label: "NETWORKS"
+
+        Repeater {
+          model: root.otherRows
+
+          delegate: NetRow {
+            required property var modelData
+            readonly property string status: root.rowStatus(modelData)
+            symbol: root.signalSymbol(modelData.signal)
+            ring: modelData.signal
+            title: modelData.ssid
+            subtitle: modelData.known ? "Saved" : (root.requiresCredentials(modelData.security) ? "Secured" : "Open")
+            trailing: status
+            trailingColor: root.failureSsid === modelData.ssid ? Colors.error : Colors.primary
+            locked: root.requiresCredentials(modelData.security) && !modelData.known
+            actions: modelData.known ? [
+              {
+                "label": "Forget",
+                "symbol": "delete",
+                "tone": "error"
+              }
+            ] : []
+            onTapped: root.activateRow(modelData)
+            onActionTriggered: root.forgetRow(modelData)
           }
         }
       }
     }
   }
+
+  onPasswordSsidChanged: if (root.passwordSsid !== "")
+    Qt.callLater(() => pwInput.forceActiveFocus())
 }

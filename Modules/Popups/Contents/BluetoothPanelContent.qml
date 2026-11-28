@@ -10,7 +10,7 @@ import qs.Modules.SettingsPanel.Controls
 import "BluetoothModel.js" as Model
 import qs.Widgets
 
-// Bluetooth device list/pair UI, shared between the bluetooth popup (PopupHost.qml) and Control Center's inline expand. No window chrome of its own.
+// Bluetooth page: connected, paired and nearby devices. Shared by the bluetooth popup and the Control Center's sub-page; no window chrome of its own.
 ColumnLayout {
   id: root
 
@@ -35,6 +35,37 @@ ColumnLayout {
   property var failedActions: ({})
 
   readonly property string _binDir: Quickshell.shellDir + "/bin/"
+  readonly property bool powered: !!(root.adapter && root.adapter.enabled)
+  // The list area scrolls past this height.
+  property real maxListHeight: 480
+
+  // BlueZ's icon name (the device class) to a symbol.
+  function deviceSymbol(device) {
+    const icon = device && device.icon ? device.icon : "";
+    if (icon.indexOf("headset") !== -1 || icon.indexOf("headphone") !== -1)
+      return "headphones";
+    if (icon.indexOf("audio") !== -1 || icon.indexOf("speaker") !== -1)
+      return "speaker";
+    if (icon.indexOf("mouse") !== -1)
+      return "mouse";
+    if (icon.indexOf("keyboard") !== -1)
+      return "keyboard";
+    if (icon.indexOf("gaming") !== -1 || icon.indexOf("joystick") !== -1)
+      return "sports_esports";
+    if (icon.indexOf("phone") !== -1)
+      return "smartphone";
+    if (icon.indexOf("computer") !== -1)
+      return "computer";
+    if (icon.indexOf("video") !== -1 || icon.indexOf("display") !== -1)
+      return "tv";
+    if (icon.indexOf("watch") !== -1)
+      return "watch";
+    return "bluetooth";
+  }
+
+  function pendingFor(device) {
+    return device ? (Model.pendingAction(root.pendingActions, device.address) || root.liveAction(device)) : "";
+  }
 
   // BlueZ's own state covers connects started elsewhere (auto-reconnect, bluetoothctl).
   function liveAction(device) {
@@ -130,169 +161,154 @@ ColumnLayout {
     showBack: root.showBack
     onBackTapped: root.backRequested()
     NToggle {
-      checked: !!(root.adapter && root.adapter.enabled)
+      checked: root.powered
+      enabled: !!root.adapter
       onToggled: root.toggleBluetooth()
     }
   }
 
-  NText {
-    visible: !root.adapter || !root.adapter.enabled
-    text: root.adapter ? "Bluetooth is off" : "No adapter"
-    color: Colors.labelText
-    size: NText.Size.BodySm
-  }
-
-  ListView {
-    id: scrollView
-    layer.enabled: scrollFade.active
-    layer.effect: MultiEffect {
-      maskEnabled: true
-      maskSource: scrollFade
-      maskThresholdMin: 0.5
-      maskSpreadAtMin: 1
-    }
-    NSmoothWheel {
-      flickable: scrollView
-    }
-    NScrollFade {
-      id: scrollFade
-      flickable: scrollView
-    }
+  NScrollView {
+    id: scroll
     Layout.fillWidth: true
-    Layout.preferredHeight: Math.min(360, contentHeight)
-    clip: true
-    visible: root.adapter && root.adapter.enabled
-    spacing: 2
+    Layout.preferredHeight: Math.min(cards.implicitHeight, root.maxListHeight)
+    contentHeight: cards.implicitHeight
 
-    model: {
-      var rows = [];
-      if (root.connectedDevices.length > 0)
-        rows.push({
-          "header": "CONNECTED"
-        });
-      for (var i = 0; i < root.connectedDevices.length; i++)
-        rows.push({
-          "device": root.connectedDevices[i]
-        });
-      if (root.knownDevices.length > 0)
-        rows.push({
-          "header": "KNOWN"
-        });
-      for (var j = 0; j < root.knownDevices.length; j++)
-        rows.push({
-          "device": root.knownDevices[j]
-        });
-      if (root.adapter && root.adapter.discovering && root.discoveredDevices.length > 0)
-        rows.push({
-          "header": "NEARBY"
-        });
-      if (root.adapter && root.adapter.discovering)
-        for (var k = 0; k < root.discoveredDevices.length; k++)
-          rows.push({
-            "device": root.discoveredDevices[k]
-          });
-      return rows;
-    }
+    ColumnLayout {
+      id: cards
+      width: scroll.width - (scroll.scrollable ? scroll.gutter : 0)
+      spacing: Tokens.spaceMd
 
-    delegate: Item {
-      id: rowItem
-      required property var modelData
-      width: ListView.view.width
-      height: modelData.header !== undefined ? 22 : Tokens.rowHeight
+      NetSection {
+        visible: !root.powered
 
-      NText {
-        tracking: true
-        visible: rowItem.modelData.header !== undefined
-        text: (rowItem.modelData.header || "").toUpperCase()
-        color: Colors.labelText
-        size: NText.Size.LabelXs
-        anchors.verticalCenter: parent.verticalCenter
-      }
-
-      PopupRowBackground {
-        visible: rowItem.modelData.device !== undefined
-        hovered: rowHover.hovered
-        selected: !!(rowItem.modelData.device && rowItem.modelData.device.connected)
-      }
-
-      RowLayout {
-        visible: rowItem.modelData.device !== undefined
-        anchors.fill: parent
-        anchors.leftMargin: Tokens.spaceMd
-        anchors.rightMargin: Tokens.spaceMd
-        spacing: 8
-
-        readonly property var device: rowItem.modelData.device
-        readonly property string pending: device ? (Model.pendingAction(root.pendingActions, device.address) || root.liveAction(device)) : ""
-        readonly property bool failed: !!(device && pending === "" && root.failedActions[device.address])
-
-        NText {
-          text: parent.device && parent.device.connected ? "●" : "○"
-          color: parent.device && parent.device.connected ? Colors.primary : Colors.labelText
-          size: NText.Size.BodySm
-        }
-
-        NText {
-          text: parent.device ? Model.deviceLabel(parent.device) : ""
-          color: Colors.surfaceText
-          elide: Text.ElideRight
+        RowLayout {
           Layout.fillWidth: true
-        }
+          Layout.margins: Tokens.spaceSm
+          spacing: Tokens.spaceMd
 
-        NText {
-          visible: !!(parent.device && parent.device.batteryAvailable)
-          text: parent.device ? Math.round(parent.device.battery * 100) + "%" : ""
-          color: Colors.labelText
-          size: NText.Size.Caption
-        }
-
-        NText {
-          tracking: true
-          visible: parent.failed
-          text: "FAILED"
-          color: Colors.error
-          size: NText.Size.LabelXs
-        }
-
-        NText {
-          visible: parent.pending !== ""
-          text: parent.pending.toUpperCase() + "…"
-          color: Colors.primary
-          size: NText.Size.Caption
-        }
-
-        NText {
-          tracking: true
-          visible: !!(parent.pending === "" && parent.device && (parent.device.paired || parent.device.bonded || parent.device.trusted))
-          text: "FORGET"
-          color: Colors.error
-          size: NText.Size.LabelXs
-          MouseArea {
-            anchors.fill: parent
-            anchors.margins: -4
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.forgetDevice(parent.parent.device)
+          NSymbol {
+            name: "bluetooth_disabled"
+            size: 22
+            color: Colors.labelText
+          }
+          NText {
+            Layout.fillWidth: true
+            text: root.adapter ? "Bluetooth is off" : "No Bluetooth adapter"
+            size: NText.Size.BodySm
+            color: Colors.labelText
+          }
+          NButton {
+            visible: !!root.adapter
+            text: "Turn on"
+            onClicked: root.toggleBluetooth()
           }
         }
       }
 
-      HoverHandler {
-        id: rowHover
-        enabled: rowItem.modelData.device !== undefined
+      // ---- Connected ----
+      NetSection {
+        visible: root.powered && root.connectedDevices.length > 0
+        label: "CONNECTED"
+        active: true
+
+        Repeater {
+          model: root.connectedDevices
+
+          delegate: NetRow {
+            required property var modelData
+            readonly property string pending: root.pendingFor(modelData)
+            symbol: root.deviceSymbol(modelData)
+            ring: modelData.batteryAvailable ? Math.round(modelData.battery * 100) : -1
+            highlighted: true
+            title: Model.deviceLabel(modelData)
+            subtitle: pending !== "" ? pending.charAt(0).toUpperCase() + pending.slice(1) + "…" : (modelData.batteryAvailable ? "Connected  ·  " + Math.round(modelData.battery * 100) + "%" : "Connected")
+            actions: [
+              {
+                "label": "Disconnect",
+                "symbol": "link_off"
+              },
+              {
+                "label": "Forget",
+                "symbol": "delete",
+                "tone": "error"
+              }
+            ]
+            onTapped: root.disconnectDevice(modelData)
+            onActionTriggered: index => index === 0 ? root.disconnectDevice(modelData) : root.forgetDevice(modelData)
+          }
+        }
       }
-      MouseArea {
-        visible: rowItem.modelData.device !== undefined
-        anchors.fill: parent
-        z: -1
-        cursorShape: Qt.PointingHandCursor
-        onClicked: {
-          var device = rowItem.modelData.device;
-          if (!device)
-            return;
-          if (device.connected)
-            root.disconnectDevice(device);
-          else
-            root.connectDevice(device);
+
+      // ---- Paired ----
+      NetSection {
+        visible: root.powered && root.knownDevices.length > 0
+        label: "PAIRED"
+
+        Repeater {
+          model: root.knownDevices
+
+          delegate: NetRow {
+            required property var modelData
+            readonly property string pending: root.pendingFor(modelData)
+            readonly property bool failed: pending === "" && !!root.failedActions[modelData.address]
+            symbol: root.deviceSymbol(modelData)
+            title: Model.deviceLabel(modelData)
+            subtitle: pending !== "" ? pending.charAt(0).toUpperCase() + pending.slice(1) + "…" : (failed ? "Couldn't connect" : "Tap to connect")
+            trailingColor: Colors.error
+            actions: [
+              {
+                "label": "Forget",
+                "symbol": "delete",
+                "tone": "error"
+              }
+            ]
+            onTapped: root.connectDevice(modelData)
+            onActionTriggered: root.forgetDevice(modelData)
+          }
+        }
+      }
+
+      // ---- Nearby: only while this page is discovering ----
+      NetSection {
+        visible: root.powered
+        label: "NEARBY"
+        trailing: [
+          NSymbol {
+            name: "progress_activity"
+            size: 14
+            color: Colors.primary
+            visible: !!(root.adapter && root.adapter.discovering)
+            RotationAnimation on rotation {
+              running: !!(root.adapter && root.adapter.discovering) && root.panelActive
+              from: 0
+              to: 360
+              duration: 1200
+              loops: Animation.Infinite
+            }
+          }
+        ]
+
+        NText {
+          visible: root.discoveredDevices.length === 0
+          Layout.fillWidth: true
+          Layout.margins: Tokens.spaceSm
+          text: root.adapter && root.adapter.discovering ? "Searching for devices…" : "Not searching"
+          size: NText.Size.Caption
+          color: Colors.labelText
+        }
+
+        Repeater {
+          model: root.adapter && root.adapter.discovering ? root.discoveredDevices : []
+
+          delegate: NetRow {
+            required property var modelData
+            readonly property string pending: root.pendingFor(modelData)
+            readonly property bool failed: pending === "" && !!root.failedActions[modelData.address]
+            symbol: root.deviceSymbol(modelData)
+            title: Model.deviceLabel(modelData)
+            subtitle: pending !== "" ? pending.charAt(0).toUpperCase() + pending.slice(1) + "…" : (failed ? "Couldn't pair" : "Tap to pair")
+            onTapped: root.connectDevice(modelData)
+          }
         }
       }
     }
