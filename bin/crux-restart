@@ -1,0 +1,17 @@
+#!/bin/bash
+# Restarts crux: stops the running instance, waits for it to exit, then starts a new one.
+# The pattern is anchored so it can't match this script or the shell that started it.
+
+pattern='^qs -c crux( |$)'
+
+pkill -f "$pattern"
+for (( i = 0; i < 50; i++ )); do
+  pgrep -f "$pattern" >/dev/null || break
+  sleep 0.1
+done
+if pgrep -f "$pattern" >/dev/null; then
+  pkill -9 -f "$pattern"
+  sleep 0.2
+fi
+
+exec setsid qs -c crux --log-rules qt.qpa.wayland.textinput.warning=false >/dev/null 2>&1
