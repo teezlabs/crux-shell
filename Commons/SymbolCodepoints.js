@@ -99,5 +99,8 @@ var map = {
   "public": 0xe80b,
   "lock_open": 0xe898,
   "watch": 0xe334,
-  "speaker_group": 0xe32e
+  "speaker_group": 0xe32e,
+  "shuffle": 0xe043,
+  "repeat": 0xe040,
+  "repeat_one": 0xe041
 };

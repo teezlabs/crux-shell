@@ -11,7 +11,7 @@ import qs.Services
 import qs.Widgets
 
 // Control Center: profile and shortcuts, labelled toggle tiles, audio, media, weather, stats and recent notifications.
-// The Wi-Fi and Bluetooth chevrons slide the panel to a sub-page; the card follows the current page's height.
+// Wi-Fi, Bluetooth, audio, media, weather and stats open sub-pages with a back arrow; the card follows the page's size.
 Item {
   id: root
 
@@ -38,9 +38,11 @@ Item {
   // Asks PopupHost to close the card.
   signal requestClose
 
-  // "" for the main page, else "wifi" or "bluetooth".
+  // "" for the main page, else "wifi", "bluetooth", "audio", "media", "weather" or "stats".
   property string page: ""
-  // Height a sub-page may take; its list scrolls inside that.
+  // The weather and stats pages were laid out wider than the main page.
+  readonly property bool widePage: root.page === "weather" || root.page === "stats"
+  // Height a list sub-page may take; its list scrolls inside that.
   readonly property real subPageMax: 560
 
   function closeAndOpen(name) {
@@ -143,6 +145,29 @@ Item {
     recorder.command = ["sh", "-c", "mkdir -p \"$1\" && exec wf-recorder " + (output !== "" ? "-o \"$3\" " : "") + "-f \"$2\"", "sh", dir, root.recordingPath, output];
     recorder.running = true;
     root.requestClose();
+  }
+
+  // What each CcShortcutRegistry id does.
+  function runShortcut(id) {
+    if (id === "Record") {
+      root.toggleRecording();
+      return;
+    }
+    root.requestClose();
+    if (id === "Screenshot")
+      Quickshell.execDetached(["sh", "-c", Settings.data.controlCenter.screenshotCommand]);
+    else if (id === "ColorPicker")
+      Quickshell.execDetached(["hyprpicker", "-a"]);
+    else if (id === "Clipboard")
+      Popups.open("clipboard", root.targetScreen);
+    else if (id === "Wallpaper")
+      Popups.openTab("settings", root.targetScreen, "wallpaper");
+    else if (id === "Lock")
+      Hooks.runSessionHook("lock", () => Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "lockscreen", "lock"]));
+    else if (id === "Launcher")
+      Popups.open("launcher", root.targetScreen);
+    else if (id === "Notifications")
+      Popups.open("notificationHistory", root.targetScreen);
   }
 
   Component.onCompleted: {
@@ -291,58 +316,22 @@ Item {
       }
 
       RowLayout {
+        visible: Settings.data.controlCenter.shortcuts.length > 0
         Layout.fillWidth: true
         spacing: Tokens.spaceSm
 
-        CcIconButton {
-          Layout.fillWidth: true
-          symbol: "screenshot_region"
-          tooltip: "Screenshot"
-          onTapped: {
-            root.requestClose();
-            Quickshell.execDetached(["sh", "-c", Settings.data.controlCenter.screenshotCommand]);
-          }
-        }
-        CcIconButton {
-          Layout.fillWidth: true
-          symbol: "radio_button_checked"
-          tooltip: recorder.running ? "Stop recording" : "Record screen"
-          tone: recorder.running ? "error" : ""
-          available: root.hasRecorder
-          onTapped: root.toggleRecording()
-        }
-        CcIconButton {
-          Layout.fillWidth: true
-          symbol: "colorize"
-          tooltip: "Pick a color"
-          available: root.hasColorPicker
-          onTapped: {
-            root.requestClose();
-            Quickshell.execDetached(["hyprpicker", "-a"]);
-          }
-        }
-        CcIconButton {
-          Layout.fillWidth: true
-          symbol: "content_paste"
-          tooltip: "Clipboard"
-          onTapped: root.closeAndOpen("clipboard")
-        }
-        CcIconButton {
-          Layout.fillWidth: true
-          symbol: "wallpaper"
-          tooltip: "Wallpaper"
-          onTapped: {
-            root.requestClose();
-            Popups.openTab("settings", root.targetScreen, "wallpaper");
-          }
-        }
-        CcIconButton {
-          Layout.fillWidth: true
-          symbol: "lock"
-          tooltip: "Lock"
-          onTapped: {
-            root.requestClose();
-            Hooks.runSessionHook("lock", () => Quickshell.execDetached(["qs", "ipc", "-c", "crux", "call", "lockscreen", "lock"]));
+        Repeater {
+          model: Settings.data.controlCenter.shortcuts.filter(id => CcShortcutRegistry.has(id))
+
+          delegate: CcIconButton {
+            required property string modelData
+            readonly property bool isRecord: modelData === "Record"
+            Layout.fillWidth: true
+            symbol: CcShortcutRegistry.symbolFor(modelData)
+            tooltip: isRecord && recorder.running ? "Stop recording" : CcShortcutRegistry.labelFor(modelData)
+            tone: isRecord && recorder.running ? "error" : ""
+            available: modelData === "Record" ? root.hasRecorder : modelData === "ColorPicker" ? root.hasColorPicker : true
+            onTapped: root.runShortcut(modelData)
           }
         }
       }
@@ -391,9 +380,18 @@ Item {
     CcCard {
       spacing: Tokens.spaceMd
 
+      // The whole header row opens the audio page.
       RowLayout {
         Layout.fillWidth: true
         spacing: Tokens.spaceSm
+
+        HoverHandler {
+          id: soundHover
+          cursorShape: Qt.PointingHandCursor
+        }
+        TapHandler {
+          onTapped: root.page = "audio"
+        }
 
         NSymbol {
           name: "headphones"
@@ -405,26 +403,18 @@ Item {
           tracking: true
           size: NText.Size.LabelXs
           font.weight: Font.DemiBold
-          color: Colors.labelText
+          color: soundHover.hovered ? Colors.primary : Colors.labelText
         }
         NText {
           Layout.fillWidth: true
           text: root.sink ? (root.sink.description || root.sink.name || "Output") : "No output"
           size: NText.Size.Caption
-          color: Colors.surfaceTextMuted
+          color: soundHover.hovered ? Colors.surfaceText : Colors.surfaceTextMuted
         }
         NSymbol {
           name: "chevron_right"
           size: 18
           color: soundHover.hovered ? Colors.primary : Colors.surfaceTextMuted
-
-          HoverHandler {
-            id: soundHover
-            cursorShape: Qt.PointingHandCursor
-          }
-          TapHandler {
-            onTapped: root.closeAndOpen("sound")
-          }
         }
       }
 
@@ -502,7 +492,7 @@ Item {
       }
     }
 
-    // ======== Media (only while a player exists) ========
+    // ======== Media (only while a player exists); the art and title open the now-playing page ========
     CcCard {
       visible: !!MediaService.activePlayer
 
@@ -513,6 +503,14 @@ Item {
         Item {
           Layout.preferredWidth: 52
           Layout.preferredHeight: 52
+
+          HoverHandler {
+            id: artHover
+            cursorShape: Qt.PointingHandCursor
+          }
+          TapHandler {
+            onTapped: root.page = "media"
+          }
 
           Rectangle {
             anchors.fill: parent
@@ -545,6 +543,15 @@ Item {
             text: MediaService.activePlayer ? (MediaService.activePlayer.trackTitle || MediaService.activePlayer.identity) : ""
             size: NText.Size.BodySm
             font.weight: Font.DemiBold
+            color: titleHover.hovered || artHover.hovered ? Colors.primary : Colors.surfaceText
+
+            HoverHandler {
+              id: titleHover
+              cursorShape: Qt.PointingHandCursor
+            }
+            TapHandler {
+              onTapped: root.page = "media"
+            }
           }
           NText {
             Layout.fillWidth: true
@@ -586,6 +593,12 @@ Item {
           onTapped: MediaService.activePlayer.next()
         }
       }
+
+      CcSpectrum {
+        Layout.fillWidth: true
+        implicitHeight: 22
+        running: root.active && root.page === "" && !!MediaService.activePlayer
+      }
     }
 
     // ======== Weather and system stats ========
@@ -593,7 +606,7 @@ Item {
       Layout.fillWidth: true
       spacing: Tokens.spaceMd
 
-      // Weather; a click opens the full forecast.
+      // Weather; a click opens the forecast page.
       CcCard {
         visible: Weather.ready && Settings.data.controlCenter.showWeather
         Layout.fillWidth: true
@@ -604,7 +617,7 @@ Item {
           cursorShape: Qt.PointingHandCursor
         }
         TapHandler {
-          onTapped: root.closeAndOpen("weather")
+          onTapped: root.page = "weather"
         }
 
         RowLayout {
@@ -667,7 +680,7 @@ Item {
         }
       }
 
-      // Live stats; a click opens the full system stats.
+      // Live stats; a click opens the full stats page.
       CcCard {
         Layout.fillWidth: true
         Layout.preferredWidth: 1
@@ -677,7 +690,7 @@ Item {
           cursorShape: Qt.PointingHandCursor
         }
         TapHandler {
-          onTapped: root.closeAndOpen("systemStats")
+          onTapped: root.page = "stats"
         }
 
         GridLayout {
@@ -967,8 +980,16 @@ Item {
     width: root.width
     // Keeps the last sub-page on screen while it slides away.
     property string shownPage: ""
-    readonly property Item content: subPage.shownPage === "bluetooth" ? btPage : wifiPage
-    implicitHeight: Math.min(subPage.content.implicitHeight, root.subPageMax)
+    readonly property Item content: ({
+        "wifi": wifiPage,
+        "bluetooth": btPage,
+        "audio": audioPage,
+        "media": mediaPage,
+        "weather": weatherPage,
+        "stats": statsPage
+      })[subPage.shownPage] || wifiPage
+    // Only the list pages scroll; weather and stats show at full height.
+    implicitHeight: subPage.shownPage === "weather" || subPage.shownPage === "stats" ? subPage.content.implicitHeight : Math.min(subPage.content.implicitHeight, root.subPageMax)
     height: subPage.implicitHeight
     visible: opacity > 0
     opacity: root.page !== "" ? 1 : 0
@@ -1010,6 +1031,37 @@ Item {
       anchors.fill: parent
       visible: subPage.shownPage === "bluetooth"
       panelActive: root.active && root.page === "bluetooth"
+      showBack: true
+      onBackRequested: root.page = ""
+    }
+    AudioPanelContent {
+      id: audioPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "audio"
+      showBack: true
+      onBackRequested: root.page = ""
+    }
+    MediaPanelContent {
+      id: mediaPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "media"
+      panelActive: root.active && root.page === "media"
+      showBack: true
+      onBackRequested: root.page = ""
+    }
+    WeatherPopupContent {
+      id: weatherPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "weather"
+      active: root.active && root.page === "weather"
+      showBack: true
+      onBackRequested: root.page = ""
+    }
+    SystemStatsPopupContent {
+      id: statsPage
+      anchors.fill: parent
+      visible: subPage.shownPage === "stats"
+      active: root.active && root.page === "stats"
       showBack: true
       onBackRequested: root.page = ""
     }

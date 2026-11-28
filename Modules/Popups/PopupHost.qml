@@ -280,7 +280,7 @@ PanelWindow {
     barPos: root.barPos
     popupName: "controlCenter"
     alwaysMorph: true
-    cardWidth: 436
+    cardWidth: controlCenterContent.widePage ? 520 : 436
     cardHeight: controlCenterContent.implicitHeight + contentMargins * 2
 
     ControlCenterPopupContent {
